@@ -38,7 +38,8 @@ Its approved output is the visual contract `qa-review` checks the build against.
 
 ## Execution Steps
 1. Two decisions, not one. **Run the generator** (`assets/gallery/_build-gallery.php`), never copy —
-   it writes both chassis; use the one matching SITE TYPE, never corporate from the ecommerce one.
+   pass `--chassis-out=` with this project's own dir so a sibling cannot overwrite it. It writes both
+   chassis; use the one matching SITE TYPE, never corporate from the ecommerce one.
    Then **re-point `AXIS POSITIONS`** at the resolved anchor: five token lines + `Anchor:`, together
    (`RT_MOCKUP_AXES_MISMATCH` gates it). Detail: `references/mockup-guide.md`.
 2. Build ONE responsive file: semantic `header/main/section/footer`, one `.page` per page, only

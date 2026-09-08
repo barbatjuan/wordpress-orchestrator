@@ -24,7 +24,7 @@
  */
 
 import { spawn } from 'node:child_process';
-import { copyFileSync, existsSync, mkdirSync, writeFileSync } from 'node:fs';
+import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -77,8 +77,29 @@ function chromeBinary() {
 const sleep = ( ms ) => new Promise( ( r ) => setTimeout( r, ms ) );
 
 /* Chrome writes the chosen port to stderr when asked for port 0, but it also writes a great deal
-   else, and on Windows the line can arrive split. Polling the HTTP endpoint is slower by a few
-   hundred milliseconds and never races. */
+   else, and on Windows the line can arrive split. It ALSO writes it to `DevToolsActivePort` in the
+   profile directory, first line, which is a file and therefore pollable rather than raced — that is
+   what waitForPort() below reads. Polling the HTTP endpoint after it is slower by a few hundred
+   milliseconds and never races either. */
+/* Which port Chrome actually took. It writes it to `DevToolsActivePort` in the profile directory
+   as soon as the debugger is listening: first line the port, second the browser target path. The
+   file appears late enough that reading it once races, so it is polled — and a profile directory
+   is per-process, so nothing else can be writing this one. */
+async function waitForPort( profile, timeoutMs = 20000 ) {
+	const portFile = join( profile, 'DevToolsActivePort' );
+	const deadline = Date.now() + timeoutMs;
+	while ( Date.now() < deadline ) {
+		if ( existsSync( portFile ) ) {
+			const first = /^[0-9]+/.exec( readFileSync( portFile, 'utf8' ) );
+			if ( first ) {
+				return Number( first[ 0 ] );
+			}
+		}
+		await sleep( 100 );
+	}
+	throw new Error( `Chrome did not report a debugger port in ${ portFile } within ${ timeoutMs } ms` );
+}
+
 async function waitForDebugger( port, timeoutMs = 20000 ) {
 	const deadline = Date.now() + timeoutMs;
 	while ( Date.now() < deadline ) {
@@ -145,18 +166,25 @@ function cdp( ws ) {
 async function main() {
 	const target = process.argv[ 2 ];
 	const label = arg( '--label' );
-	const outDir = resolve( arg( '--out', process.cwd() ) );
+	const outDir = arg( '--out' ) ? resolve( arg( '--out' ) ) : null;
 	const framesOverride = arg( '--frames' );
 
-	if ( ! target || ! label ) {
-		console.error( 'usage: node capture.mjs <file-or-url> --label <name> [--out <dir>] [--frames 4]' );
+	/* --out is REQUIRED, and used to default to process.cwd(). Two captures run from the same
+	   directory with the same --label then overwrite each other's frames in silence, and at the
+	   volume this is now built for that is not a corner case. A caller that has to name the
+	   directory cannot collide with one by accident. */
+	if ( ! target || ! label || ! outDir ) {
+		console.error( 'usage: node capture.mjs <file-or-url> --label <name> --out <dir> [--frames 4]' );
 		process.exit( 2 );
 	}
 
 	const url = /^https?:\/\//i.test( target ) ? target : pathToFileURL( resolve( target ) ).href;
 	mkdirSync( outDir, { recursive: true } );
 
-	const port = 9222 + Math.floor( process.pid % 500 );
+	/* The port used to be `9222 + pid % 500`, which narrows collisions rather than removing them:
+	   over 500 buckets, fifteen concurrent captures collide about a fifth of the time, and a
+	   collision means one capture attaches to ANOTHER capture's browser and photographs its page.
+	   Port 0 lets the OS pick a free one; Chrome reports which. */
 	const profile = join( tmpdir(), `blind-judges-${ process.pid }` );
 	const chrome = spawn(
 		chromeBinary(),
@@ -171,7 +199,7 @@ async function main() {
 			   straight into the comparison. */
 			'--font-render-hinting=none',
 			'--disable-lcd-text',
-			`--remote-debugging-port=${ port }`,
+			'--remote-debugging-port=0',
 			`--user-data-dir=${ profile }`,
 			'about:blank',
 		],
@@ -180,7 +208,7 @@ async function main() {
 
 	const written = [];
 	try {
-		const wsUrl = await waitForDebugger( port );
+		const wsUrl = await waitForDebugger( await waitForPort( profile ) );
 		const ws = new WebSocket( wsUrl );
 		await new Promise( ( ok, fail ) => {
 			ws.addEventListener( 'open', ok, { once: true } );

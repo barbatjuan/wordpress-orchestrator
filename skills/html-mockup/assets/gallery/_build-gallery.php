@@ -32,6 +32,26 @@ $MANIFEST = $DIR . '/_gallery-images.md';
 $IMG_DIR  = $DIR . '/img';
 $OUT      = $DIR . '/index.html';
 
+/* --chassis-out=<dir> sends the client chassis somewhere OTHER than the two fixed demo files.
+   Why it exists: `assets/chassis/corporate.html` and `ecommerce.html` are two paths, and every
+   project starts from one of them and re-points its `AXIS POSITIONS` block. That is fine for one
+   project at a time and silently destructive for two — the second run overwrites the first
+   project's re-pointed chassis, and the generated header says so in as many words ("the next run
+   overwrites it entire"). A project that generates into its OWN directory cannot be overwritten
+   by a sibling.
+   The DEFAULT is unchanged on purpose: the two demo files still exist, still get rebuilt, and
+   `RT_CHASSIS_NOT_BUILT` still polices them. This adds a destination, it does not move one. */
+$CHASSIS_OUT = null;
+foreach ( array_slice( $argv, 1 ) as $a ) {
+	if ( 0 === strpos( $a, '--chassis-out=' ) ) {
+		$CHASSIS_OUT = substr( $a, strlen( '--chassis-out=' ) );
+	}
+}
+if ( null !== $CHASSIS_OUT && '' === trim( $CHASSIS_OUT ) ) {
+	fwrite( STDERR, "build-gallery: --chassis-out= was given with no directory\n" );
+	exit( 2 );
+}
+
 /* WHAT THIS BUILD WAS MADE OF, stamped into the output so the claim can be checked later rather
    than trusted. Since index.html stopped being tracked, git can no longer show that it drifted
    from its inputs — nothing could, which is how a gallery built before a TPL-*.md edit stayed
@@ -16895,7 +16915,10 @@ exec( 'node --version 2>&1', $probe, $probe_rc );
 if ( 0 === $probe_rc ) {
 	$node_ok = true;
 	foreach ( $js_blocks as $bi => $js ) {
-		$tmp = sys_get_temp_dir() . '/nm-gallery-js-' . $bi . '.js';
+		/* getmypid(), because the name used to be just the block index: two generator runs on one
+		   machine then write and unlink the SAME path, and one run's `node --check` reads the
+		   other's bytes or finds nothing there at all. Same convention as tests/. */
+		$tmp = sys_get_temp_dir() . '/nm-gallery-js-' . getmypid() . '-' . $bi . '.js';
 		file_put_contents( $tmp, $js );
 		$out = array();
 		exec( 'node --check ' . escapeshellarg( $tmp ) . ' 2>&1', $out, $rc );
@@ -18096,7 +18119,7 @@ JS;
 // `assets/gallery/`, not inside it, so the rule that exists to protect the catalog page never
 // evaluates a chassis at all. `html_assets_deep()` still walks it recursively either way, so every
 // `RT_MOCKUP_*` rule still applies — a chassis is a mockup, just not a gallery entry.
-$CHASSIS_DIR = dirname( $DIR ) . '/chassis';
+$CHASSIS_DIR = ( null !== $CHASSIS_OUT ) ? rtrim( $CHASSIS_OUT, '/' . '\\' ) : dirname( $DIR ) . '/chassis';
 if ( ! is_dir( $CHASSIS_DIR ) && ! mkdir( $CHASSIS_DIR, 0777, true ) && ! is_dir( $CHASSIS_DIR ) ) {
 	fail( "cannot create $CHASSIS_DIR — the chassis artifact has nowhere to write" );
 }
@@ -18167,6 +18190,7 @@ foreach ( array( 'corporate', 'ecommerce' ) as $chassis_site ) {
 
 // ── the receipt ────────────────────────────────────────────────────────────────────────────────
 
+printf( "build-gallery: chassis written to %s%s\n", $CHASSIS_DIR, ( null !== $CHASSIS_OUT ) ? ' (--chassis-out)' : ' (default)' );
 printf( "build-gallery: %d strip(s), %d image(s) used of %d in the manifest\n", $n_strip, count( $only_used ), count( $IMAGES ) );
 printf( "               images %s KB raw → %s KB base64, paid once\n",
 	number_format( $raw_bytes / 1024, 1 ), number_format( $b64_bytes / 1024, 1 ) );

@@ -445,6 +445,14 @@ hand-edited: the next run overwrites each entire, same discipline as `index.html
 hand-maintained originals this section used to describe, `corporate-mockup.html` /
 `ecommerce-mockup.html`, are gone (style-catalog PR 1f) — run the generator, never copy a file.
 
+**`--chassis-out=<dir>`, and why a real project must pass it.** Without it the generator writes the
+two fixed demo files, and every project starts from one of those two paths and re-points its
+`AXIS POSITIONS` block in place. That is fine for one project at a time and silently destructive
+for two: the second run overwrites the first project's re-pointed chassis, and the generated header
+says so in as many words. A project generating into its own directory cannot be overwritten by a
+sibling. The default is unchanged, so the demo pair still exists and `RT_CHASSIS_NOT_BUILT` still
+polices it — this adds a destination, it does not move one.
+
 **Why this needed saying.** Until it did, step 1 read *pick the starting asset by site type* and
 stopped there, and the `:root` comment read *Default anchor* — so every corporate project shipped
 `STY-INSTITUTIONAL` and every commerce one `STY-MATTER`, not because anyone chose them but
