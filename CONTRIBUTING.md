@@ -162,6 +162,11 @@ the code — adding a check without adding its row here fails the audit on itsel
 | `RT_MARKER_PROSE_ONLY` | JUDGE | a `(verifier: …)` marker names no locatable target |
 | `RT_MARKER_OUTSIDE_RULES` | WARN | a verifier-marker-shaped line sits outside `## Hard Rules` |
 | `RT_ERRORLOG_NO_STDOUT` | FAIL | an error_log call has no paired stdout channel |
+| `RT_CAPTURE_OUT_DEFAULTED` | FAIL | a `.mjs` asset gives `--out` a default instead of requiring it |
+| `RT_ROWTYPE_PHANTOM` | FAIL | prose in `skills/` or `agents/` cites a row type `ROW_TYPES` does not declare |
+| `RT_HOUSERULES_NO_WORLD` | FAIL | a house-rules row calls the library but never says which world it can be proven in |
+| `RT_MIGRATION_NO_EXCLUDE` | FAIL | a `references/migration.md` never names `novamira-sandbox` |
+| `RT_HOUSERULES_ROW_PHANTOM` | FAIL | house-rules prose cites a row number the table does not contain |
 | `RT_HELPER_UNROUTABLE` | WARN | an asset function no asset calls is named by no markdown either |
 | `RT_WRITE_NOT_LISTED` | FAIL | code writes to WordPress but the skill is missing from `$WRITE_CAPABLE` |
 | `RT_AGENT_CODE_BLOCK` | FAIL | an agent markdown file contains a code block |
@@ -235,7 +240,7 @@ php skills/html-mockup/assets/gallery/_build-gallery.php
 First, offline — no WordPress, no connector, both run in a second:
 
 ```bash
-php skills/framework-audit/assets/framework-audit.php && php tests/test-container-hygiene.php && php tests/test-framework-audit.php && php tests/test-audit-signals.php && php tests/test-write-path.php
+php skills/framework-audit/assets/framework-audit.php && php tests/test-container-hygiene.php && php tests/test-framework-audit.php && php tests/test-audit-signals.php && php tests/test-write-path.php && php tests/test-replay.php
 ```
 
 The audit enforces everything on this page that a machine can decide: frontmatter, the word
@@ -250,6 +255,10 @@ did not do what was asked. `test-audit-signals.php` runs itself twice, in a pare
 child, because `ES_AUDIT_SILENT` is a constant and a single process can only ever observe one of
 the two worlds. `test-write-path.php` drives a WordPress that can be told to fail on demand, which
 is the only way to reach branches a real site reaches only when something has already gone wrong.
+`test-replay.php` asserts the property migration-by-replay rests on: that a build reproduces
+itself. It shares `test-write-path.php`'s fake WordPress through `tests/lib/fake-wp.php` rather
+than copying it, because two fake WordPresses drift and the day they differ is the day one suite
+proves determinism the other one has already lost.
 
 This chain is a static `&&` list, not a glob, so a new test file that nobody adds here would
 silently never run. There is a check, and it is worth knowing exactly what it proves: the audit

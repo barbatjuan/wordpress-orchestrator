@@ -519,8 +519,11 @@ function es_token_recipes() {
    are recorded in the golden dump's diff. Drift is not a naming problem: two
    keys for one job are two things to remember to change together, and the
    whole point of this block is that there is only one. */
-function es_tokens( array $override = array() ) {
+function es_tokens( array $override = array(), $reset = false ) {
 	static $t = null;
+	if ( $reset ) {
+		$t = null;
+	}
 	if ( null === $t || $override ) {
 		$base = array(
 			/* ground ------------------------------------------------ */
@@ -2415,7 +2418,7 @@ function es_manifest_read() {
 }
 
 /**
- * The four sections the manifest knows how to hold, in order. A flat list, not a writer map:
+ * The five sections the manifest knows how to hold, in order. A flat list, not a writer map:
  * who writes a section is a fact about the tree, established by grepping for
  * `es_manifest_record( '<name>'` call sites, not by this function asserting it. A map baked
  * into the return value would be the code making a claim about itself that nothing re-reads —
@@ -2425,10 +2428,66 @@ function es_manifest_read() {
  * by that same step (`front_page_id`) and read back by `es_manifest_verify()`, below. `design`
  * is written by `es_record_style_resolution()`, below, once intake resolves a style; `delivery`
  * is written by nothing and read by nothing — named here so the remaining gap is countable, not
- * backfilled with a promise nothing keeps.
+ * backfilled with a promise nothing keeps. `build` holds what the site was built WITH —
+ * `es_build_fingerprint()`, below — and it is written by `elementor-core` SKILL.md step 8,
+ * alongside `pages`. It answers one question a finished site cannot answer about itself: whether
+ * the production it was moved to is running the same PHP, WordPress, Elementor and Elementor Pro
+ * the QA pass ran against. An older Elementor on the destination refuses controls the build wrote,
+ * and the page renders wrong while every other check stays green.
  */
 function es_manifest_sections() {
-	return array( 'site', 'design', 'pages', 'delivery' );
+	return array( 'site', 'design', 'pages', 'delivery', 'build' );
+}
+
+/**
+ * Drop the token cache so the NEXT build starts from the documented defaults.
+ *
+ * MEASURED, not assumed: `es_tokens()` caches in `static $t` and only recomputes when `$override`
+ * is truthy — and `array()` is falsy. So a second build in the same process asking for
+ * `es_tokens( array() )` does not get the defaults back. It gets the PREVIOUS build's palette,
+ * silently, with every check reporting green. A run reporting success over work it never did:
+ * the same disease as a page WordPress refused to create leaving no trace.
+ *
+ * It does not bite the path this library grew up on, where one build is one process and the cache
+ * outlives nothing. It bites the moment builds are chained — and it contradicts the premise replay
+ * rests on, because a build whose output depends on what ran BEFORE it in the same process is not
+ * reproducible by definition.
+ *
+ * `es_tokens( $defaults )` was the existing workaround (tests/test-write-path.php restores that
+ * way), but it only works for a caller already holding a copy of the defaults. This does not
+ * require one: the defaults live in `es_tokens()` and stay there.
+ */
+function es_tokens_reset() {
+	return es_tokens( array(), true );
+}
+
+/**
+ * What this site was built WITH — the one fact a replay cannot re-derive later.
+ *
+ * Rebuilding a finished site against a second target reproduces it only when the SAME library
+ * emitted both. Element ids are `md5( $seed . '-' . $n )` and therefore stable by construction,
+ * which is exactly what makes the failure invisible: change the library between the local build
+ * and the production replay and the ids stay plausible while the layout underneath them moved.
+ * Nothing downstream would notice — the pages exist, the slugs resolve, every check reports green.
+ *
+ * So the identity of the library is read from the library, never declared beside it. `sha1_file()`
+ * on `__FILE__` cannot disagree with the code that is running, because it IS the code that is
+ * running; a version constant maintained by hand is a claim, and claims drift. Same reason
+ * `es_manifest_record()` re-reads what it wrote instead of trusting `update_option()`.
+ *
+ * A version this cannot read is recorded as `unknown`, never as a plausible default. The
+ * distinction is load-bearing at comparison time: two invented `3.0.0`s MATCH, and declare
+ * identical a pair nobody checked. `es_save_page()` does carry a `3.0.0` fallback, because
+ * Elementor expects that meta to exist — a fingerprint expects nothing, it reads.
+ */
+function es_build_fingerprint() {
+	return array(
+		'library_sha1' => sha1_file( __FILE__ ),
+		'php'          => PHP_VERSION,
+		'wp'           => isset( $GLOBALS['wp_version'] ) ? (string) $GLOBALS['wp_version'] : 'unknown',
+		'elementor'    => defined( 'ELEMENTOR_VERSION' ) ? ELEMENTOR_VERSION : 'unknown',
+		'elementor_pro' => defined( 'ELEMENTOR_PRO_VERSION' ) ? ELEMENTOR_PRO_VERSION : 'unknown',
+	);
 }
 
 /**

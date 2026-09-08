@@ -19,7 +19,7 @@ unchanged. Agrees with "Modified Capabilities: None"; adds
 ### Requirement: Manifest Section List Is Machine-Readable
 
 `es_manifest_sections()` MUST exist in `es-builder.php` and return exactly
-`array('site','design','pages','delivery')`, in order. Every name MUST
+`array('site','design','pages','delivery','build')`, in order. Every name MUST
 round-trip through `es_manifest_record()`/`es_manifest_read()`. Prose at
 `es-builder.php:2398-2401` and `knowledge.md:52-55` MUST cite the function,
 not restate it.
@@ -27,7 +27,7 @@ not restate it.
 #### Scenario: Exact order and count
 - GIVEN `es-builder.php` is loaded
 - WHEN `es_manifest_sections()` is called
-- THEN it returns `['site','design','pages','delivery']`, in order, no fifth name
+- THEN it returns `['site','design','pages','delivery','build']`, in order, no sixth name
 
 #### Scenario: Every section round-trips
 - GIVEN each name `es_manifest_sections()` returns

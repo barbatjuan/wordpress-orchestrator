@@ -40,7 +40,7 @@ yes yourself and stop until you get it.
   `references/gotchas.md` → "Container hygiene".
   (verifier: es_container_report() prints the container verdict from inside the save, before that page's data is written.)
 - Deterministic IDs: `es_uid_reset('<page>')` once per page, `es_uid()` per element.
-  (no verifier: nothing re-builds a page twice to diff the generated ids, so a non-deterministic one only surfaces later as a spurious diff.)
+  (verifier: `tests/test-replay.php` builds one page twice and diffs the emitted bytes, with a control proving the diff can fail.)
 - Wrap all build logic in named functions — the sandbox `require_once`s every `.php` it holds on
   EVERY request, not on upload, and one fatal switches the whole directory off.
   (no verifier: self-verifying — top-level logic fatals the site before `execute-php` is ever reached, so a violation cannot ship quietly.)
@@ -65,8 +65,8 @@ yes yourself and stop until you get it.
    what `/` serves. Read what it returns.
 7. Verify server-side: fetch compiled `post-<id>.css` / front HTML, `substr_count` the expected
    selectors. State that visual confirmation needs the user.
-8. `es_manifest_record('pages', …)` — slug → id **only**. Front page id: `'site'`. A `false`
-   means the next session starts blind.
+8. `es_manifest_record('pages', …)` — slug → id **only**. Front page id: `'site'`; `'build'`:
+   `es_build_fingerprint()`. A `false` means the next session starts blind.
 
 ## Output Contract
 Report pages/templates built (ids), the audit verdict line, and the server-side grep counts that
