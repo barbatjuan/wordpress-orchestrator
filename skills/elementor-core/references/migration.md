@@ -36,8 +36,13 @@ pass and why an empty 200 is the trap.
 **2. `blog_public` travels.** Zero is WordPress's "discourage search engines", which a local site is
 often built with, and it is carried into production verbatim: the site is delivered looking perfect
 and stays invisible for weeks. Set it before the export with `es_indexing_state()` reading it back,
-and confirm after over HTTP — WordPress emits a virtual `robots.txt` carrying `Disallow: /` when it
-is zero. Row 23.
+and confirm after over HTTP by reading a page's `<meta name="robots">`, which carries
+`noindex, nofollow` when the option is zero.
+
+**Not `/robots.txt`.** Measured on a live site: with `blog_public` = 0 and Yoast active, robots.txt
+served `Disallow:` — allow everything — because Yoast filters it and replaces core's output, while
+the page meta correctly said `noindex`. Reading robots.txt for this question gives a false pass on
+any Yoast site. Row 23.
 
 **3. The destination's runtime is not the one QA ran on.** An older Elementor on production refuses
 controls the build wrote, so the page renders wrong while every other check stays green.
