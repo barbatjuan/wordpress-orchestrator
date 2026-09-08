@@ -1072,7 +1072,7 @@ function fx_house_rules( $extra_rows = '' ) {
 	return "# House Rules\n\n"
 		. '| 1 | The build stands at the approved axis positions | Compare the approved mockup `:root` against `es_tokens()`:'
 		. ' `--type-ratio`, `--display-lh`, `--fs-h1-max`, `--sp-scale`, `--elev-rest`,'
-		. " and the `LP-CENTERED` composition blueprint the user confirms by eye | **auto (declared) + eyes (composition)** |\n"
+		. " and the `LP-CENTERED` composition blueprint the user confirms by eye. World: W1 or W3 | **auto (declared) + eyes (composition)** |\n"
 		. $extra_rows;
 }
 
@@ -1650,6 +1650,144 @@ fx(
 list( , $out19 ) = fx_run_ok( $audit, $r19 );
 ok( has( $out19, 'RT_ERRORLOG_NO_STDOUT' ), 'error_log() with no paired stdout channel nearby is RT_ERRORLOG_NO_STDOUT', $out19 );
 fx_rrmdir( $r19 );
+
+echo "--- a .mjs asset that defaults --out is RT_CAPTURE_OUT_DEFAULTED ---\n";
+/* A capture tool whose --out falls back to the working directory lets two runs started from the
+   same place overwrite each other's frames in silence. It is a one-line defect and it was live:
+   blind-judges/assets/capture.mjs did exactly this. A one-line fix with nothing watching it comes
+   back, so the rule is what keeps it fixed. */
+$r_out = fx_tmp_root();
+fx_base( $r_out );
+fx(
+	$r_out,
+	'skills/sample-capture/SKILL.md',
+	"---\nname: sample-capture\ndescription: \"Trigger: fixture.\"\nlicense: MIT\nmetadata:\n  author: fixture\n  version: \"1.0\"\n---\n\nSee `assets/shoot.mjs`.\n"
+);
+fx(
+	$r_out,
+	'skills/sample-capture/assets/shoot.mjs',
+	"const outDir = resolve( arg( '--out', process.cwd() ) );\n"
+);
+list( , $out_out ) = fx_run_ok( $audit, $r_out );
+ok( has( $out_out, 'RT_CAPTURE_OUT_DEFAULTED' ), 'a .mjs asset that gives --out a default is RT_CAPTURE_OUT_DEFAULTED', $out_out );
+fx_rrmdir( $r_out );
+
+echo "--- a .mjs asset that REQUIRES --out is clean ---\n";
+/* The other half, and the one that keeps the rule from being satisfied by deleting the flag:
+   requiring --out must NOT fire it. Without this a rule that flags every .mjs would pass too. */
+$r_out2 = fx_tmp_root();
+fx_base( $r_out2 );
+fx(
+	$r_out2,
+	'skills/sample-capture/SKILL.md',
+	"---\nname: sample-capture\ndescription: \"Trigger: fixture.\"\nlicense: MIT\nmetadata:\n  author: fixture\n  version: \"1.0\"\n---\n\nSee `assets/shoot.mjs`.\n"
+);
+fx(
+	$r_out2,
+	'skills/sample-capture/assets/shoot.mjs',
+	"const outDir = arg( '--out' ) ? resolve( arg( '--out' ) ) : null;\n"
+);
+list( , $out_out2 ) = fx_run_ok( $audit, $r_out2 );
+ok( ! has( $out_out2, 'RT_CAPTURE_OUT_DEFAULTED' ), 'and requiring --out does not fire it', $out_out2 );
+fx_rrmdir( $r_out2 );
+
+echo "--- prose naming a row type that does not exist is RT_ROWTYPE_PHANTOM ---\n";
+/* The class this closes, found live: es-builder.php's manifest docblock claimed
+   `RT_REPLAY_NO_FINGERPRINT` FAILed while nothing recorded the fingerprint. That row did not exist
+   and could not have — the audit cannot read a live WordPress option (CONTRIBUTING.md:209) — so the
+   sentence was a verifier promised and never built, in a file whose docblocks no check reads.
+   RT_ROWTYPE_UNDOCUMENTED already catches a row declared and undocumented; this is the mirror,
+   and between them the pair is closed in both directions. */
+$r_ph = fx_tmp_root();
+fx_base( $r_ph );
+fx( $r_ph, 'skills/sample-phantom/SKILL.md', "---\nname: sample-phantom\ndescription: \"Trigger: fixture.\"\nlicense: MIT\nmetadata:\n  author: fixture\n  version: \"1.0\"\n---\n\nSee `assets/lib.php`.\n" );
+fx( $r_ph, 'skills/sample-phantom/assets/lib.php', "<?php\n/* Guarded by `RT_INVENTED_BY_THIS_FIXTURE`, which nothing declares. */\n" );
+list( , $out_ph ) = fx_run_ok( $audit, $r_ph );
+ok( has( $out_ph, 'RT_ROWTYPE_PHANTOM' ), 'prose naming a row type ROW_TYPES does not declare is RT_ROWTYPE_PHANTOM', $out_ph );
+ok( has( $out_ph, 'RT_INVENTED_BY_THIS_FIXTURE' ), 'and it names the id, which is the only thing the reader can search for', $out_ph );
+fx_rrmdir( $r_ph );
+
+echo "--- naming a row type that DOES exist is clean ---\n";
+/* Without this half, a rule that flagged every backticked RT_* alike would pass the half above.
+   Citing a real row is the whole point of the marker grammar; it must stay free. */
+$r_ph2 = fx_tmp_root();
+fx_base( $r_ph2 );
+fx( $r_ph2, 'skills/sample-phantom/SKILL.md', "---\nname: sample-phantom\ndescription: \"Trigger: fixture.\"\nlicense: MIT\nmetadata:\n  author: fixture\n  version: \"1.0\"\n---\n\nSee `assets/lib.php`.\n" );
+fx( $r_ph2, 'skills/sample-phantom/assets/lib.php', "<?php\n/* Guarded by `RT_ORPHAN_FILE`, which ROW_TYPES declares. */\n" );
+list( , $out_ph2 ) = fx_run_ok( $audit, $r_ph2 );
+ok( ! has( $out_ph2, 'RT_ROWTYPE_PHANTOM' ), 'and citing a row type that IS declared does not fire it', $out_ph2 );
+fx_rrmdir( $r_ph2 );
+
+echo "--- a house-rules row calling the library without naming a world is RT_HOUSERULES_NO_WORLD ---\n";
+/* A row whose method is a library call cannot run everywhere: production runs no bridge of ours,
+   so unless one PHP file can be evaluated there, that row has NO production arm at all. A row
+   that does not say which world it runs in reads as checkable everywhere and is checkable
+   nowhere — which is precisely how UNVERIFIED becomes PASS without anyone deciding to allow it.
+   Scoped to library-calling rows on purpose: a pure-HTTP row runs in every world, and demanding
+   it say so would be ceremony that teaches the reader to skip the annotation. */
+$r_w = fx_tmp_root();
+fx_base( $r_w );
+fx( $r_w, 'skills/qa-review/references/house-rules.md', "| # | Rule | What to check | Server-side method | Verdict source |\n|---|---|---|---|---|\n| 1 | Fixture rule | something | Call `es_manifest_verify()` and require an empty drift list | **auto** |\n" );
+list( , $out_w ) = fx_run_ok( $audit, $r_w );
+ok( has( $out_w, 'RT_HOUSERULES_NO_WORLD' ), 'a library-calling row that names no world is RT_HOUSERULES_NO_WORLD', $out_w );
+fx_rrmdir( $r_w );
+
+echo "--- naming the world clears it ---\n";
+$r_w2 = fx_tmp_root();
+fx_base( $r_w2 );
+fx( $r_w2, 'skills/qa-review/references/house-rules.md', "| # | Rule | What to check | Server-side method | Verdict source |\n|---|---|---|---|---|\n| 1 | Fixture rule | something | Call `es_manifest_verify()` and require an empty drift list. World: W1 or W3 | **auto** |\n" );
+list( , $out_w2 ) = fx_run_ok( $audit, $r_w2 );
+ok( ! has( $out_w2, 'RT_HOUSERULES_NO_WORLD' ), 'and the same row naming W1 or W3 does not fire it', $out_w2 );
+fx_rrmdir( $r_w2 );
+
+echo "--- a migration doc that never names the sandbox is RT_MIGRATION_NO_EXCLUDE ---\n";
+/* The sandbox directory sits INSIDE wp-content, so a literal copy ships it to the client's
+   server, executable and reachable by URL. It is the one exclusion whose absence is
+   catastrophic, so its presence stops being something a writer remembers.
+   What this proves and what it does not: that the document NAMES it, not that any archive
+   actually excluded it. House-rules row 33 is what proves the archive. */
+$r_mx = fx_tmp_root();
+fx_base( $r_mx );
+fx( $r_mx, 'skills/sample-mig/SKILL.md', "---\nname: sample-mig\ndescription: \"Trigger: fixture.\"\nlicense: MIT\nmetadata:\n  author: fixture\n  version: \"1.0\"\n---\n\nSee `references/migration.md`.\n" );
+fx( $r_mx, 'skills/sample-mig/references/migration.md', "# Migration\n\nCopy wp-content and the database. Exclude the caches.\n" );
+list( , $out_mx ) = fx_run_ok( $audit, $r_mx );
+ok( has( $out_mx, 'RT_MIGRATION_NO_EXCLUDE' ), 'a migration doc that never names novamira-sandbox is RT_MIGRATION_NO_EXCLUDE', $out_mx );
+fx_rrmdir( $r_mx );
+
+echo "--- naming it clears that too ---\n";
+$r_mx2 = fx_tmp_root();
+fx_base( $r_mx2 );
+fx( $r_mx2, 'skills/sample-mig/SKILL.md', "---\nname: sample-mig\ndescription: \"Trigger: fixture.\"\nlicense: MIT\nmetadata:\n  author: fixture\n  version: \"1.0\"\n---\n\nSee `references/migration.md`.\n" );
+fx( $r_mx2, 'skills/sample-mig/references/migration.md', "# Migration\n\nExcluded: wp-content/novamira-sandbox/** — it must never travel.\n" );
+list( , $out_mx2 ) = fx_run_ok( $audit, $r_mx2 );
+ok( ! has( $out_mx2, 'RT_MIGRATION_NO_EXCLUDE' ), 'and one that names it does not fire it', $out_mx2 );
+fx_rrmdir( $r_mx2 );
+
+echo "--- a house-rules row citing a row number the table does not have is RT_HOUSERULES_ROW_PHANTOM ---\n";
+/* Rows cross-reference each other constantly — "the same call as row 11", "row 22 empties the
+   sandbox first" — and that is how the file stays one document instead of thirty-four. It also
+   means renumbering or deleting a row leaves prose pointing at nothing.
+   Not hypothetical: deleting three rows in one edit left four references behind in this very
+   file, and nothing caught them. RT_ROWTYPE_PHANTOM does not: it reads backticked RT_* ids. The
+   marker grammar does not either: it only resolves `house-rule row N` inside a (verifier: …)
+   marker, and these citations live in the method column, which no check reads. */
+$r_rp = fx_tmp_root();
+fx_base( $r_rp );
+fx( $r_rp, 'skills/qa-review/references/house-rules.md', "| # | Rule | What to check | Server-side method | Verdict source |\n|---|---|---|---|---|\n| 1 | Fixture rule | something | Same call as row 99, which already reports it. World: W1 | **auto** |\n" );
+list( , $out_rp ) = fx_run_ok( $audit, $r_rp );
+ok( has( $out_rp, 'RT_HOUSERULES_ROW_PHANTOM' ), 'prose citing a row the table does not contain is RT_HOUSERULES_ROW_PHANTOM', $out_rp );
+ok( has( $out_rp, '99' ), 'and it names the number, which is the only thing the reader can search for', $out_rp );
+fx_rrmdir( $r_rp );
+
+echo "--- citing a row that DOES exist is clean ---\n";
+/* Without this half, a rule that flagged every `row N` alike would pass the half above — and
+   cross-referencing is the point of the file, not a smell. */
+$r_rp2 = fx_tmp_root();
+fx_base( $r_rp2 );
+fx( $r_rp2, 'skills/qa-review/references/house-rules.md', "| # | Rule | What to check | Server-side method | Verdict source |\n|---|---|---|---|---|\n| 1 | Fixture rule | something | Same call as row 1, which already reports it. World: W1 | **auto** |\n" );
+list( , $out_rp2 ) = fx_run_ok( $audit, $r_rp2 );
+ok( ! has( $out_rp2, 'RT_HOUSERULES_ROW_PHANTOM' ), 'and citing a row that exists does not fire it', $out_rp2 );
+fx_rrmdir( $r_rp2 );
 
 echo "--- an agent markdown file with a code block is RT_AGENT_CODE_BLOCK ---\n";
 $r20 = fx_tmp_root();

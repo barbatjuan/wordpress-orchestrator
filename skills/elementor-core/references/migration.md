@@ -1,0 +1,93 @@
+# Local to production
+
+**This is one of two routes, and the optional one.** Building directly on the client's WordPress
+through the NovaMira connector is the default and stays exactly as it was — there is nothing here
+to do on that route, because nothing moves. Everything below applies only when a site was built
+locally first.
+
+On this route a site is built on a local WordPress with full freedom — wp-admin, plugins, the Elementor UI,
+media, menus — and moved to production as a copy of itself.
+
+**The local environment is LocalWP and the copy is made by All-in-One WP Migration.** Neither is
+this framework's job, and neither should become one: both are mature, both are used by hundreds of
+thousands of sites, and a bespoke ritual here would be a second implementation of a solved problem.
+LocalWP's Blueprints are the golden image; the plugin's export and import are the migration.
+
+Why a copy rather than re-running the build script against production: a rebuild carries only what
+the script generates. Plugin settings, WooCommerce configuration, an edit made in the Elementor UI,
+the media library, the menu — none of it is in the script. A local WordPress you can only edit
+through a build script is not a local WordPress you can do anything in.
+
+## The three things the migration plugin does not know
+
+It packages a WordPress. It has no idea this framework was ever here. All three of these ship a
+site that looks perfect.
+
+**1. The sandbox must be gone BEFORE the export runs.** `es_sandbox_dir()` is
+`WP_CONTENT_DIR . '/novamira-sandbox'` — inside wp-content, so the export packages it with
+everything else and `es-builder.php` lands on the client's server reachable by URL. No plugin knows
+to leave it out.
+
+Ordering is the whole rule. `es_sandbox_purge()` then `es_sandbox_report()` returning empty,
+**immediately before the export** — a sandbox emptied and then used once more for one last fix is a
+sandbox that ships. qa-review row 33 carries the production probe, including why a 403 is not a
+pass and why an empty 200 is the trap.
+
+**2. `blog_public` travels.** Zero is WordPress's "discourage search engines", which a local site is
+often built with, and it is carried into production verbatim: the site is delivered looking perfect
+and stays invisible for weeks. Set it before the export with `es_indexing_state()` reading it back,
+and confirm after over HTTP — WordPress emits a virtual `robots.txt` carrying `Disallow: /` when it
+is zero. Row 23.
+
+**3. The destination's runtime is not the one QA ran on.** An older Elementor on production refuses
+controls the build wrote, so the page renders wrong while every other check stays green.
+`es_build_fingerprint()` records the PHP, WordPress, Elementor and Elementor Pro versions the build
+was verified against; row 34 compares them.
+
+## After the import
+
+**Save Settings → Permalinks once.** The rewrite rules live in a file, not the database, so they
+were never in the export — and on nginx they never existed. Until that is done, every URL except
+the front page returns 404. It is the most likely production-only failure of a migration, and row
+25 is where it surfaces.
+
+## What goes in the Blueprint
+
+The Blueprint is what every new site is cloned from, so anything missing here is missing three
+hundred times, and anything wrong here is wrong three hundred times.
+
+- **Hello Elementor plus its child theme.** The child theme is load-bearing beyond styling: it is
+  where a file that registers a WordPress hook belongs, and row 22 refuses to let such a file live
+  in the sandbox.
+- **Elementor and Elementor Pro, licensed.** Verify the licence survives a clone before building on
+  it — a licence keyed to a domain breaks exactly here, and quietly.
+- **A `menu-principal` nav menu, already created.** Nothing in this framework creates one:
+  `es-theme-parts.example.php` only checks it exists and omits the nav widget when it does not, so
+  without it every site ships headerless until a human notices.
+- **A seeded Elementor kit**, so a build overrides a known starting point rather than whatever the
+  defaults were that day.
+- **`blog_public` at 1** — closing trap 2 once, in the one place it stays closed.
+- **Permalinks on post name.**
+- **No content, no uploads, no extra users.** A demo page in the Blueprint is a demo page in three
+  hundred sites, and nobody remembers putting it there.
+
+Refresh the Blueprint deliberately and note the date and what moved — that date is the answer to
+"why do sites built before March behave differently". Refreshing does not touch sites already
+created, which is intended, and is also why the runtime fingerprint exists.
+
+## What the build still has to guarantee
+
+Two properties of the build itself, unchanged by any of this and guarded by
+`tests/test-replay.php`:
+
+1. **Stable ids.** `es_uid()` is `substr( md5( $seed . '-' . $n ), 0, 7 )`, reset per page by
+   `es_uid_reset( $slug )`. No time, no randomness.
+2. **A clean starting state.** `es_tokens()` caches in `static $t` and only recomputes when
+   `$override` is truthy — and `array()` is falsy, so a second build in the same process silently
+   inherits the previous build's palette. `es_tokens_reset()` drops the cache.
+
+## Status
+
+The three traps above are specified and their rows exist. **None has been exercised against a real
+migration yet** — no site has gone from LocalWP to a production host through this checklist. Record
+the result here the first time it does, and say what broke rather than only that it worked.

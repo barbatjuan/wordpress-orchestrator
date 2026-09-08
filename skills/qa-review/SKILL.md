@@ -47,12 +47,14 @@ work?" / "verify".
    legible in BOTH states, are tap targets comfortable and not merely ≥ 44px.
 5. **Regression**: nothing adjacent broke (header not wrapping, no leftover template hijack,
    kit/global CSS intact).
+6. **Built locally?** Name the world per row; some have no production arm. Run the pass locally
+   first and compose both. `references/house-rules.md` → "The three worlds".
 
 ## Output Contract
 Return a short checklist with PASS / FAIL / UNVERIFIED / N/A + the evidence (grep counts, the four
 Lighthouse scores per page, the container-audit counts) per item, house-rule rows included, then
 what only the user can confirm visually, then follow-ups. UNVERIFIED is not a pass. If anything
-failed, the orchestrator must NOT report done.
+failed, the orchestrator must NOT report done. A row with no arm in your world is UNVERIFIED.
 
 ## References
 - `references/house-rules.md` — per house rule: the server-side method, and whether it is

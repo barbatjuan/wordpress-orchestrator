@@ -57,6 +57,11 @@ const ROW_TYPES = array(
 	'RT_GATE_NOT_LISTED'         => 'FAIL  — a skill declares a blocking build gate but is not in $WRITE_CAPABLE',
 	'RT_BROKEN_REFERENCE'        => 'FAIL  — SKILL.md points at a references/assets path that does not exist',
 	'RT_ORPHAN_FILE'             => 'WARN  — a references/ or assets/ file, at any depth, is reachable from nothing',
+	'RT_CAPTURE_OUT_DEFAULTED'   => 'FAIL  — a .mjs asset gives --out a default instead of requiring it',
+	'RT_ROWTYPE_PHANTOM'         => 'FAIL  — prose cites a row type ROW_TYPES does not declare',
+	'RT_HOUSERULES_NO_WORLD'     => 'FAIL  — a house-rules row calls the library but names no world',
+	'RT_MIGRATION_NO_EXCLUDE'    => 'FAIL  — a references/migration.md never names novamira-sandbox',
+	'RT_HOUSERULES_ROW_PHANTOM'  => 'FAIL  — house-rules prose cites a row number the table does not contain',
 	'RT_NO_HARD_RULES'           => 'WARN  — SKILL.md states no Hard Rules: section absent, or present with no "- " bullets',
 	'RT_HARD_RULES_MISSING_WRITE' => 'FAIL  — a write-capable skill states no Hard Rules: section absent, or bullet-less',
 	'RT_AGENT_NO_HOUSE_RULES'    => 'FAIL  — an agent states no House rules: section absent, or present with no "- " bullets',
@@ -774,6 +779,36 @@ foreach ( $skill_dirs as $dir ) {
 			}
 		}
 	}
+	/* --- a .mjs tool that defaults its output directory (CONTRIBUTING §3) ---
+	 *
+	 * An --out that falls back to the working directory is not a convenience, it is a collision:
+	 * two runs started from the same place, with the same label, overwrite each other's files and
+	 * neither says so. It was live in blind-judges/assets/capture.mjs, where it meant one capture
+	 * could quietly photograph another capture's page. The fix is one line, which is exactly why
+	 * it needs a row: a one-line fix with nothing watching it comes back.
+	 *
+	 * Matches `arg( '--out', <anything> )` — a second argument to the flag reader IS the default.
+	 * Requiring the flag reads as `arg( '--out' )` with no comma and does not match, which the
+	 * paired fixture in tests/test-framework-audit.php pins so the rule cannot be satisfied by a
+	 * check that flags every .mjs alike. */
+	foreach ( glob( $dir . '/assets/*.mjs' ) as $mjs ) {
+		$mjs_lines = explode( "
+", slurp( $mjs ) );
+		foreach ( $mjs_lines as $mi => $mline ) {
+			if ( preg_match( '#^\s*(\*|//|/\*)#', $mline ) ) {
+				continue;
+			}
+			if ( preg_match( '/\barg\(\s*.--out.\s*,/', $mline ) ) {
+				add(
+					'RT_CAPTURE_OUT_DEFAULTED',
+					'FAIL',
+					$name,
+					basename( $mjs ) . ':' . ( $mi + 1 ) . ' gives --out a default — two runs from one directory then overwrite each other. Require it and exit(2) without it'
+				);
+			}
+		}
+	}
+
 	if ( $write_capable_hit && ! in_array( $name, $WRITE_CAPABLE, true ) ) {
 		add( 'RT_WRITE_NOT_LISTED', 'FAIL', $name, 'writes to WordPress (' . $write_capable_hit . ') but is not in the write-capable list' );
 	}
@@ -992,6 +1027,58 @@ if ( file_exists( $hr_file ) ) {
 		}
 		if ( ! preg_match( '/\|\s*\*\*[^|]*(auto|eyes|measured|manual)[^|]*\*\*\s*\|\s*$/i', rtrim( $line ) ) ) {
 			add( 'RT_HOUSERULES_NO_VERDICT', 'FAIL', 'qa-review', 'house-rules.md:' . ( $i + 1 ) . ' row has no verdict source in its last column' );
+		}
+
+		/* Which world a row can be proven in.
+		 *
+		 * Production runs no bridge plugin of ours. A row whose method is a LIBRARY call therefore
+		 * has no production arm at all unless one PHP file can be evaluated there — and a row that
+		 * does not say so reads as checkable everywhere while being checkable nowhere, which is
+		 * exactly how UNVERIFIED turns into PASS without anybody deciding to allow it.
+		 *
+		 * Scoped to library-calling rows on purpose. A pure-HTTP row runs in every world, so
+		 * demanding it declare one would be ceremony — and ceremony is what teaches a reader to
+		 * skim the annotation that matters. Structural twin of RT_HOUSERULES_NO_VERDICT above:
+		 * naming, not automating, is what is being asked. */
+		if ( preg_match( '/\bes_[a-z_]+\s*\(/', $line ) && ! preg_match( '/\bW[123]\b/', $line ) ) {
+			add( 'RT_HOUSERULES_NO_WORLD', 'FAIL', 'qa-review', 'house-rules.md:' . ( $i + 1 ) . ' row calls the library but never says which world it can be proven in — W1 local, W2 production over HTTP, W3 production by ephemeral PHP' );
+		}
+	}
+
+	/* Prose citing a row number the table does not contain.
+	 *
+	 * Rows cross-reference each other constantly — "the same call as row 11", "it must run BEFORE
+	 * row 22 empties the sandbox" — and that is what keeps this file one document rather than
+	 * thirty-four unrelated checks. It also means deleting or renumbering a row leaves prose
+	 * pointing at nothing, and the reader who follows the pointer learns to stop following them.
+	 *
+	 * Not hypothetical: removing three rows in one edit left four such references behind in this
+	 * very file, and nothing caught them. RT_ROWTYPE_PHANTOM does not — it reads backticked RT_*
+	 * ids. The marker grammar does not either — it resolves `house-rule row N` only inside a
+	 * (verifier: …) marker, and these citations live in the method column, which no check reads. */
+	$hr_rows = array();
+	foreach ( explode( "\n", slurp( $hr_file ) ) as $hr_line ) {
+		if ( preg_match( '/^\|\s*(\d+)\s*\|/', $hr_line, $hr_m ) ) {
+			$hr_rows[ (int) $hr_m[1] ] = true;
+		}
+	}
+	foreach ( explode( "\n", slurp( $hr_file ) ) as $i => $line ) {
+		/* "rows 13-15", "rows 11, 16, 22, 23, 24 and 28", "row 22's reason" all have to parse, so
+		   the number list is captured whole and every integer in it is checked. An en dash is a
+		   range in this file's prose, and both its endpoints exist when the range is honest. */
+		if ( ! preg_match_all( '/\brows?\s+((?:\d+)(?:\s*(?:,|and|-|\x{2013}|\x{2014})\s*\d+)*)/u', $line, $cm ) ) {
+			continue;
+		}
+		$said = array();
+		foreach ( $cm[1] as $group ) {
+			preg_match_all( '/\d+/', $group, $nums );
+			foreach ( $nums[0] as $n ) {
+				if ( isset( $hr_rows[ (int) $n ] ) || isset( $said[ $n ] ) ) {
+					continue;
+				}
+				$said[ $n ] = true;
+				add( 'RT_HOUSERULES_ROW_PHANTOM', 'FAIL', 'qa-review', 'house-rules.md:' . ( $i + 1 ) . ' cites row ' . $n . ', which this table does not contain — a pointer left behind by a deletion or a renumber' );
+			}
 		}
 	}
 
@@ -4030,6 +4117,91 @@ if ( file_exists( $ledger_file ) ) {
 
 if ( ! glob( $root . '/tests/*.php' ) ) {
 	add( 'RT_NO_OFFLINE_TESTS', 'FAIL', 'tests', 'no offline test suite — the code that enforces the rules has nothing enforcing it' );
+}
+
+/* --------------------------------------------------- phantom verifiers */
+
+/* Prose that names a row type this audit does not declare.
+ *
+ * RT_ROWTYPE_UNDOCUMENTED catches a row DECLARED and never written down. This is its mirror: a
+ * row WRITTEN DOWN and never declared — a verifier promised in prose and never built. Between
+ * them the pair is closed in both directions, which one alone never was.
+ *
+ * Found live, and that is why it exists: es-builder.php's manifest docblock claimed
+ * `RT_REPLAY_NO_FINGERPRINT` FAILed for as long as nothing recorded the build fingerprint. That
+ * row did not exist, and could not have — this audit cannot read a live WordPress option
+ * (CONTRIBUTING.md says so in as many words). The sentence read as a guarantee and was a wish, in
+ * a PHP docblock, which is a surface no other check in this file looks at.
+ *
+ * SCOPE, deliberately narrow: skills/ and agents/ only, the files that instruct the model. docs/
+ * is history — a plan naming a row that was proposed and never built is an accurate record, not a
+ * false claim, and flagging it would be noise that teaches the reader to skip this row.
+ *
+ * Two files are exempt BY EXACT PATH, never by pattern: a pattern exemption is silenceable by
+ * moving text into a matching filename. This file declares every id, and the audit's own test
+ * suite invents ids on purpose.
+ *
+ * One row per id per file: a helper cited on ten lines is one missing verifier, not ten. */
+$phantom_slash  = chr( 92 );
+$phantom_root   = str_replace( $phantom_slash, '/', $root );
+$phantom_exempt = array(
+	$phantom_root . '/skills/framework-audit/assets/framework-audit.php',
+	$phantom_root . '/tests/test-framework-audit.php',
+);
+foreach ( array( $root . '/skills', $root . '/agents' ) as $proot ) {
+	if ( ! is_dir( $proot ) ) {
+		continue;
+	}
+	$pwalk = new RecursiveIteratorIterator( new RecursiveDirectoryIterator( $proot, FilesystemIterator::SKIP_DOTS ) );
+	foreach ( $pwalk as $pf ) {
+		if ( ! $pf->isFile() || ! in_array( strtolower( $pf->getExtension() ), array( 'php', 'md' ), true ) ) {
+			continue;
+		}
+		$ppath = str_replace( $phantom_slash, '/', $pf->getPathname() );
+		if ( in_array( $ppath, $phantom_exempt, true ) ) {
+			continue;
+		}
+		$pseen = array();
+		foreach ( explode( "\n", slurp( $ppath ) ) as $pi => $pline ) {
+			if ( ! preg_match_all( '/`(RT_[A-Z0-9_]+)`/', $pline, $pm ) ) {
+				continue;
+			}
+			foreach ( $pm[1] as $pid ) {
+				if ( array_key_exists( $pid, ROW_TYPES ) || isset( $pseen[ $pid ] ) ) {
+					continue;
+				}
+				$pseen[ $pid ] = true;
+				add(
+					'RT_ROWTYPE_PHANTOM',
+					'FAIL',
+					substr( $ppath, strlen( $phantom_root ) + 1 ),
+					'line ' . ( $pi + 1 ) . ' cites ' . $pid . ', which ROW_TYPES does not declare — a verifier named in prose and never built. Build the row, or say what actually checks this'
+				);
+			}
+		}
+	}
+}
+
+
+/* ------------------------------------------------- migration exclusions */
+
+/* A migration document that never names the sandbox directory.
+ *
+ * es_sandbox_dir() is WP_CONTENT_DIR . '/novamira-sandbox' — INSIDE wp-content. So a literal
+ * "copy wp-content to production" ships it: es-builder.php, and anything pasted in to debug
+ * something once, land on the client's server executable and reachable by URL. It is the one
+ * exclusion whose absence is catastrophic rather than untidy, so its presence stops being
+ * something a writer has to remember.
+ *
+ * WHAT THIS PROVES, and what it does not: that the document NAMES the directory. It cannot know
+ * whether any archive actually excluded it — that is qa-review house-rules row 33, which reads the
+ * archive's own file listing. A rule that claimed more than it reads would be the exact defect
+ * RT_ROWTYPE_PHANTOM exists to catch. */
+foreach ( glob( $root . '/skills/*/references/migration.md' ) as $mig ) {
+	if ( false === strpos( slurp( $mig ), 'novamira-sandbox' ) ) {
+		$mig_skill = basename( dirname( dirname( $mig ) ) );
+		add( 'RT_MIGRATION_NO_EXCLUDE', 'FAIL', $mig_skill, 'references/migration.md never names novamira-sandbox — the sandbox lives inside wp-content, so a copy that does not exclude it puts executable files on the client site' );
+	}
 }
 
 /* ------------------------------------------------- gate self-registration */

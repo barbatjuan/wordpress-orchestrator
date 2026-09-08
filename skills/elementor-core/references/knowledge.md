@@ -57,6 +57,12 @@
   `front_page_id`. It lives in a WordPress option and NOT beside this library, because the
   library sits in a sandbox the delivery phase deletes — state that dies with the sandbox is not
   state.
+  `es_build_fingerprint()` fills `build` — the library's own sha1 plus the PHP/WP/Elementor
+  versions, so a replay can tell whether the SAME library emitted both sites; a version it cannot
+  read is `unknown`, never a plausible default. `es_tokens_reset()` drops the token cache, which
+  chained builds need because `es_tokens( array() )` returns the PREVIOUS build's palette.
+  Both, plus how a finished site reaches production and the three things the migration plugin does
+  not know about it: `references/migration.md`.
   `es_record_style_resolution($sty_id, $negative_brief, $rejected_tone)` is `design`'s call site
   (`art-direction-ledger`): call it once the style pick, negative brief and rejected colour
   temperature are resolved (`web-templates/references/recommender.md`), e.g. right where Step 2

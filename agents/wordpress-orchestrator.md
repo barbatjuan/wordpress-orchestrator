@@ -120,6 +120,47 @@ before running builder-core — the native build is an outward, hard-to-reverse 
 existing site, also confirm each page overwrite by name. No mockup approval + no explicit yes →
 no native build.
 
+**Two routes, and this gate is where they diverge.** Everything before it is identical.
+- **Direct on the client's WordPress, through the connector.** The default, and the ONLY route for
+  an existing site — there is nothing to migrate onto a site that already exists and has content.
+  One site, full PHP execution on it, every qa-review row runs in one place.
+- **Local first, copied over when approved.** Optional, and worth it when the client's site should
+  not be touched until the work is finished, or when a plugin has to be configured by hand rather
+  than by script. Adds the transfer phase below, and splits qa-review into what is provable locally
+  and what is provable on a production with no connector.
+
+Ask which one, do not assume. The builder skills do not know or care: they write to whichever
+WordPress is in front of them.
+
+## Transfer phase — when the site was built locally
+A site built on a local WordPress moves to production as a COPY of itself, made by an off-the-shelf
+migration plugin. Building locally is what buys the freedom to work without limits: a rebuild
+against production would carry only what the build script generates and would lose every hand edit,
+every plugin setting, the media library and the menu.
+
+The copying is not this framework's job and it should not become one — the tooling for it is
+mature, and a bespoke ritual here would be a second implementation of a solved problem.
+
+**What IS this framework's job is the three things no migration plugin knows about the site it is
+packaging.** All three are quiet: each ships a site that looks perfect.
+
+1. **The sandbox must be gone BEFORE the export runs.** It lives inside wp-content, so the plugin
+   packages it along with everything else, and `es-builder.php` lands on the client's server
+   reachable by URL. Ordering is the whole rule — emptied, then used once more for a fix, is a
+   sandbox that ships. qa-review row 33.
+2. **Indexing travels.** `blog_public` at zero is carried into production verbatim and the site
+   stays invisible to search with every page correct. Set it before the export, confirm it after
+   over HTTP. Row 23.
+3. **The destination's runtime is not the one QA ran on.** An older Elementor there refuses
+   controls the build wrote, and the page renders wrong while every other check stays green. Row 34
+   reads the fingerprint recorded at hand-off.
+
+After the import, one thing that is not in any database: save Settings → Permalinks once on
+production. The rewrite rules were never in the export, and without that every URL except the front
+page returns 404. Row 25.
+
+`elementor-core/references/migration.md` carries the detail and the order.
+
 ## Delivery phase — blocking, and it is not "we are done"
 The build ending is not the job ending. Four things must be TRUE before you tell anyone the site is
 delivered, and each one is a read, never a claim:
@@ -133,12 +174,19 @@ delivered, and each one is a read, never a claim:
    wrapping every page in the `<main>` landmark the theme does not print, so it was the site's
    accessibility rather than build scaffolding, and hand-off day would have deleted it in silence.
    Move a hooking file into the child theme, then delete it here — never the other way round.
+   **On a transferred site the question changes shape.** The sandbox lives inside wp-content, so
+   a copy would carry it to the client's server; the proof is that the archive never contained it,
+   corroborated by a production request returning 404. Read only the status code: `es-builder.php`
+   exits without `ABSPATH`, so a live file answers with an empty 200 that a careless probe reads as
+   absence, and a 403 proves the server declines to serve rather than that nothing is there.
 2. **The backup keys are handed over.** `es_backup_keys($ids)` returns the restore keys per page,
    newest last. "There is a backup" is not a deliverable; the key and the restore call are.
 3. **The indexing state is declared out loud.** `es_indexing_state()` reads `blog_public`. Zero is
    WordPress's "discourage search engines", which every staging site is built with and nobody
    remembers to turn off — the site is delivered looking perfect and stays invisible for weeks.
-   Never hand over SEO work without stating this value.
+   Never hand over SEO work without stating this value. On a transferred site, SET it locally
+   before the export and let it travel in the dump — production's own `/robots.txt` then confirms
+   the transfer carried the value, instead of being the thing that sets it.
 4. **Nothing is claimed that was not read.** Anything you could not verify is UNVERIFIED and named.
 
 Do not report the job as done while any of the four is unmet. A delivery that skips this is the
