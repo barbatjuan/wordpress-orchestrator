@@ -94,9 +94,9 @@ const ROW_TYPES = array(
 	'RT_ROWTYPE_UNDOCUMENTED'    => 'FAIL  — a ROW_TYPES ID is not listed in CONTRIBUTING.md',
 	'RT_PERS_CATALOG_MISSING'    => 'FAIL  — ux-design-system/references/style-catalog/ has no STY-*.md entries',
 	'RT_PERS_MISSING_FIELD'      => 'FAIL  — a STY-*.md entry is missing a required field',
-	'RT_PERS_DUPLICATE_ID'       => 'FAIL  — two STY-*.md files declare the same style ID',
+	'RT_PERS_DUPLICATE_ID'       => 'FAIL  — two style-catalog files (STY-*.md or BSP-*.md) declare the same ID',
 	'RT_STYLE_TOO_SIMILAR'       => 'FAIL  — two catalog entries share more than two axis positions',
-	'RT_PERS_BAD_AXIS'           => 'FAIL  — a style names an axis position no axis defines',
+	'RT_PERS_BAD_AXIS'           => 'FAIL  — a style or a ROUTE-BESPOKE declaration names an axis position no axis defines',
 	'RT_TPL_TOO_SIMILAR'         => 'FAIL  — two archetypes of one family share more than half of their combined section inventory',
 	'RT_TPL_NO_WIREFRAME'        => 'FAIL  — a TPL-*.md wireframe is not fully readable: no fenced block, no COMP-* id in it, or a row carrying no id',
 	'RT_TPL_UNROUTABLE'          => 'FAIL  — a TPL-*.md exists that recommender.md or its folder _README.md never names, so nothing can route a client to it',
@@ -1253,6 +1253,15 @@ if ( array() === $sty_files ) {
 } else {
 	$found   = array();
 	$axes_of = array();
+	/* $axes_of answers two DIFFERENT questions, and only one of them is catalog-only: "what does
+	   this anchor hold" (RT_MOCKUP_AXES_MISMATCH, which a `BSP-*.md` must also be able to answer --
+	   see the ROUTE-BESPOKE block below) and "which entries owe each other distinctness"
+	   (RT_STYLE_TOO_SIMILAR, which is `STY-*.md` and nothing else). $sty_ids is the second
+	   question's own membership, captured HERE where the catalog files are the only thing in scope,
+	   so the pairwise loop cannot widen by accident later: a bespoke entry merged into $axes_of is
+	   invisible to it whatever order the two blocks end up in. Deriving that list from
+	   array_keys($axes_of) instead would make the exclusion an ordering accident. */
+	$sty_ids = array();
 	foreach ( $sty_files as $sty_file ) {
 		$block = slurp( $sty_file );
 		/* The id pattern does NOT hardcode `STY-` the way the old `PERS-[A-Z-]+` split regex hardcoded
@@ -1296,9 +1305,10 @@ if ( array() === $sty_files ) {
 		   and counting it would report two entries as "too similar" over a typo. */
 		if ( $ok ) {
 			$axes_of[ $pid ] = $axes;
+			$sty_ids[]       = $pid;
 		}
 	}
-	$ids = array_keys( $axes_of );
+	$ids = $sty_ids;
 	foreach ( $ids as $i => $a ) {
 		foreach ( array_slice( $ids, $i + 1 ) as $b ) {
 			$shared = array();
@@ -1350,15 +1360,70 @@ foreach ( $bsp_files as $bsp_file ) {
 	$bsp_base  = basename( $bsp_file );
 	$bsp_block = slurp( $bsp_file );
 	$bsp_axes  = pers_axes( $bsp_block );
+	$bsp_ok    = true;
 	foreach ( $PERS_AXES as $bsp_axis => $bsp_positions ) {
 		if ( ! isset( $bsp_axes[ $bsp_axis ] ) ) {
 			add( 'RT_BESPOKE_UNDECLARED', 'FAIL', 'ux-design-system', $bsp_base . ' names no position for axis "' . $bsp_axis . '" -- ROUTE-BESPOKE answers every axis explicitly, none inherited' );
+			$bsp_ok = false;
+		} elseif ( ! in_array( $bsp_axes[ $bsp_axis ], $bsp_positions, true ) ) {
+			/* The route "buys freedom to COMBINE any position on any axis without inheriting a
+			   pre-bundled `STY-*`, not freedom to invent" one (`_bespoke-route.md`) -- a rule that
+			   nothing read while this loop only asked whether each axis was ANSWERED. It has to be
+			   read now that the answers become an anchor below: an unvalidated position would have
+			   the mockup gate compare a real `:root` against a typo and call the pair coherent.
+			   RT_PERS_BAD_AXIS rather than a row of its own, because a bespoke declaration's axes
+			   line IS a catalog entry's (same `pers_axes()`), so this is the same fact about the
+			   same vocabulary, and that row's message already states it in these exact words. */
+			add( 'RT_PERS_BAD_AXIS', 'FAIL', 'ux-design-system', $bsp_base . ' places axis "' . $bsp_axis . '" at "' . $bsp_axes[ $bsp_axis ] . '", which that axis does not define' );
+			$bsp_ok = false;
 		}
 	}
 	$bsp_wire = tpl_wireframe_comps( $bsp_block );
 	if ( null === $bsp_wire || array() === $bsp_wire[0] ) {
 		add( 'RT_BESPOKE_UNDECLARED', 'FAIL', 'ux-design-system', $bsp_base . ' declares no wireframe under "## 2. Wireframe" -- ROUTE-BESPOKE still owes QA a declared inventory to build against' );
 	}
+	/* ---- and the declaration becomes an ANCHOR a mockup may be stamped with ----
+	 *
+	 * Without this, ROUTE-BESPOKE had no conforming way to mark its own mockup: `Anchor: BSP-X`
+	 * FAILed RT_MOCKUP_AXES_MISMATCH as an id the catalog does not define, so the route's only
+	 * moves were to name a `STY-*` it does not hold -- the exact defect that row exists to catch --
+	 * or to omit the marker, which is RT_MOCKUP_ANCHOR_UNDECLARED on any asset that requires one.
+	 * An escape hatch whose only conforming move is to break one of two rules is not one.
+	 *
+	 * The merge lands HERE and not in $sty_ids: the eight positions are the same eight, read by the
+	 * same parser, so the mockup gate compares a bespoke anchor exactly as it compares a catalog
+	 * one -- while RT_STYLE_TOO_SIMILAR keeps its own membership list and never sees this entry,
+	 * which is `_bespoke-route.md`'s stated contract ("a different glob prefix, so it never enters
+	 * RT_STYLE_TOO_SIMILAR's own comparison").
+	 *
+	 * $bsp_ok gates entry for the reason the catalog loop gates its own: an invalid position is not
+	 * a coincidence, and an anchor built out of one validates a mockup against a typo. A file whose
+	 * heading names no id registers nothing and says nothing -- membership is the glob's to decide
+	 * (same reasoning as the catalog's own id regex above), and an unusable heading surfaces where
+	 * it is actionable, as the mockup that tried to point at it.
+	 */
+	if ( ! $bsp_ok || ! isset( $axes_of ) ) {
+		/* No catalog at all is RT_PERS_CATALOG_MISSING's row and $axes_of does not exist. Creating
+		   it here would hand RT_MOCKUP_AXES_MISMATCH a map to miss against and charge every mockup
+		   in the tree for one absent catalog -- the same double-report its own `isset` guard below
+		   exists to avoid. */
+		continue;
+	}
+	if ( ! preg_match( '/^#+\s*`([A-Z][A-Z-]*)`/m', $bsp_block, $bsp_hm ) ) {
+		continue;
+	}
+	$bsp_pid = $bsp_hm[1];
+	/* Two namespaces merging into one map is how one silently overwrites the other, and a
+	   `BSP-*.md` headed with a catalog id would replace that entry in the lookup after the pairwise
+	   comparison has already run over the real one -- nothing downstream would ever notice. This is
+	   the file-level collision RT_PERS_DUPLICATE_ID already exists for one level up, so it is the
+	   row reused and the FIRST claimant stays authoritative, the same "report, never merge". */
+	if ( isset( $found[ $bsp_pid ] ) ) {
+		add( 'RT_PERS_DUPLICATE_ID', 'FAIL', 'ux-design-system', $bsp_base . ' declares "' . $bsp_pid . '", already claimed by ' . $found[ $bsp_pid ] . ' — the bespoke declaration registers no anchor rather than silently replacing the first' );
+		continue;
+	}
+	$found[ $bsp_pid ]   = $bsp_base;
+	$axes_of[ $bsp_pid ] = $bsp_axes;
 }
 
 /**
@@ -2567,7 +2632,7 @@ foreach ( $mockup_assets as $mockup_path ) {
 		   same absence a second time here would send the reader to the wrong file. */
 		$mockup_declares = 0;
 	} elseif ( ! isset( $axes_of[ $mockup_anm[1] ] ) ) {
-		add( 'RT_MOCKUP_AXES_MISMATCH', 'FAIL', 'html-mockup', 'assets/' . $mockup_name . ' is pointed at "' . $mockup_anm[1] . '", which the style catalog (references/style-catalog/) does not define as a valid anchor' );
+		add( 'RT_MOCKUP_AXES_MISMATCH', 'FAIL', 'html-mockup', 'assets/' . $mockup_name . ' is pointed at "' . $mockup_anm[1] . '", which references/style-catalog/ defines as neither a catalog entry (STY-*.md) nor a ROUTE-BESPOKE declaration (BSP-*.md) — a bespoke project stamps its own BSP id here, it does not borrow a STY it does not hold' );
 	} else {
 		$mockup_pid    = $mockup_anm[1];
 		$mockup_labels = array();

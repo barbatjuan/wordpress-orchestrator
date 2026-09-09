@@ -42,7 +42,25 @@ positions are still drawn from `design-system.md`'s own nine ground families and
 inheriting a pre-bundled `STY-*`, not freedom to invent an unvetted colour outside the AAA/4.5:1
 math Slice 3 already cleared for every ground family. `RT_BESPOKE_UNDECLARED` FAILs a `BSP-*.md`
 missing any of the 8 axes — naming the missing one — or missing a declared wireframe; it does not
-FAIL a complete one.
+FAIL a complete one. A position outside the vocabulary is `RT_PERS_BAD_AXIS`, the same row a
+`STY-*.md` answers to, since the axes line is the same line read by the same parser.
+
+## The `BSP-*` id is the anchor a mockup is stamped with
+
+Head the file `# \`BSP-<PROJECT-ID>\`` in caps, and stamp that exact id into the mockup's `:root`
+as `/* Anchor: BSP-<PROJECT-ID> */`. It is the heading that decides the id — `BSP-` on the
+FILENAME only puts the file in the glob — so a heading in lower case registers no anchor at all,
+and the mockup that points at it FAILs as an id nothing declares.
+
+`RT_MOCKUP_AXES_MISMATCH` then reads a bespoke anchor exactly as it reads a catalog one: every
+axis label in the mockup must be the position this file holds, and every token in its `:root` must
+be the value `design-system.md` gives that position. Nothing is relaxed. Before the row could see
+`BSP-*.md`, a bespoke project's only moves were to stamp a `STY-*` it does not hold — the exact
+defect that row exists to catch — or to leave the marker off, so this is what makes the route
+conforming rather than merely tolerated.
+
+Two ids can never collide: a `BSP-*.md` heading that claims an id a `STY-*.md` already claims is
+`RT_PERS_DUPLICATE_ID`, and the catalog entry stays authoritative.
 
 ## No accessibility exemption
 

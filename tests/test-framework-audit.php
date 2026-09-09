@@ -405,9 +405,16 @@ function fx_sty_precharge( $root, $id, $axes_from, array $tgl_rows ) {
    shape (parsed by the same pers_axes() RT_PERS_BAD_AXIS uses) plus a wireframe block in
    fx_tpl()'s exact shape (parsed by the same tpl_wireframe_comps() RT_TPL_NO_WIREFRAME uses).
    $ornament === null (fx_pers()'s own omission convention) writes an incomplete manifest --
-   RT_BESPOKE_UNDECLARED's own RED case; $comps === null omits the wireframe heading entirely. */
-function fx_bsp( $root, $id, $scale, $ground, $density, $composition, $elevation, $accent = null, $chassis = null, $ornament = null, $comps = array( 'HERO' ) ) {
-	$block = fx_pers( $id, $scale, $ground, $density, $composition, $elevation, $accent, $chassis, $ornament );
+   RT_BESPOKE_UNDECLARED's own RED case; $comps === null omits the wireframe heading entirely.
+
+   $heading overrides the id written INSIDE the file, which the FILENAME does not decide: the
+   anchor a mockup may point at is read from the heading (`_bespoke-route.md`'s own template heads
+   the file `BSP-<project-id>`, and the real BSP-tuscapas.md does), while `BSP-` on the filename is
+   only what puts the file in the glob. Left null the two agree, which is what every scenario
+   written before this parameter existed wanted -- and those ids are lowercase on purpose, so they
+   match no heading regex and register no anchor at all. */
+function fx_bsp( $root, $id, $scale, $ground, $density, $composition, $elevation, $accent = null, $chassis = null, $ornament = null, $comps = array( 'HERO' ), $heading = null ) {
+	$block = fx_pers( ( null === $heading ) ? $id : $heading, $scale, $ground, $density, $composition, $elevation, $accent, $chassis, $ornament );
 	if ( null !== $comps ) {
 		$block .= "## 2. Wireframe\n\n```\n";
 		foreach ( $comps as $c ) {
@@ -5623,6 +5630,79 @@ fx_bsp( $r160, 'client-beta', 'contained', 'paper', 'standard', 'centered', 'non
 list( , $out160 ) = fx_run_ok( $audit, $r160 );
 ok( array() === fx_lines_with( $out160, array( 'RT_BESPOKE_UNDECLARED' ) ), 'a complete manifest -- 8 axes and a declared wireframe -- never FAILs', $out160 );
 fx_rrmdir( $r160 );
+
+/* ---- A BSP-*.md is an ANCHOR a mockup may be stamped with ------------------------------------
+ *
+ * The gap this closes: `$axes_of` -- the map RT_MOCKUP_AXES_MISMATCH validates an `Anchor:` marker
+ * against -- was built from `glob('STY-*.md')` alone, so a bespoke project had no way to stamp its
+ * own anchor. Its two options were to name a `STY-*` it does not hold (the exact defect that row
+ * exists to catch) or to leave the marker off, which is RT_MOCKUP_ANCHOR_UNDECLARED. A route whose
+ * only conforming move is to break one of two rules is not an escape hatch.
+ *
+ * The bespoke anchor carries PERS-INSTITUTIONAL's own eight positions VERBATIM, which is what
+ * makes this scenario pull double duty. It is fx_mockup()'s default label set, so the mockup needs
+ * no hand-typed axis block; and it shares 8 of 8 with a real catalog entry, so if the merge ever
+ * reached RT_STYLE_TOO_SIMILAR's comparison the second assertion turns red immediately. That
+ * exclusion is `_bespoke-route.md`'s own stated contract ("a different glob prefix, so it never
+ * enters RT_STYLE_TOO_SIMILAR's own comparison") and nothing verified it before this scenario.
+ */
+echo "--- a mockup pointed at a BSP-*.md anchor whose axes it carries is coherent, and the bespoke entry never enters the catalog's distinctness comparison ---\n";
+$r160b = fx_tmp_root();
+fx_base( $r160b );
+fx_bsp( $r160b, 'client-gamma', 'contained', 'cool', 'standard', 'centered', 'soft-shadow', 'reserved', 'carded', 'illustration', array( 'HERO', 'FOOTER' ), 'BSP-GAMMA' );
+fx( $r160b, 'skills/html-mockup/assets/corporate-mockup.html', fx_mockup( array(), array(), array(), array(), array( 'BSP-GAMMA', 'cool' ) ) );
+list( $code160b, $out160b ) = fx_run_ok( $audit, $r160b );
+ok( array() === fx_lines_with( $out160b, array( 'RT_MOCKUP_AXES_MISMATCH' ) ), 'a bespoke declaration is a valid anchor: the mockup is not accused of pointing at something the catalog does not define', $out160b );
+ok( array() === fx_lines_with( $out160b, array( 'RT_STYLE_TOO_SIMILAR' ) ), 'and sharing 8 of 8 axes with a catalog entry costs nothing -- BSP-*.md stays out of the pairwise gate', $out160b );
+ok( 0 === $code160b, 'the whole tree is green: a bespoke project can stamp its own anchor without lying about it', $out160b );
+fx_rrmdir( $r160b );
+
+/* The anchor is COMPARED, not merely whitelisted. Without this the fix could be "any id found in
+   either directory listing passes", which would retire the row for every bespoke project instead
+   of extending it to them. One axis moved -- the bespoke entry says `strict-grid` while the mockup
+   still carries fx_mockup()'s `LP-CENTERED` marker -- and the row must name that axis and both
+   positions, exactly as r131 requires of a catalog anchor. */
+echo "--- and a mockup carrying axes its BSP-*.md anchor does not hold still FAILs, naming the axis ---\n";
+$r160c = fx_tmp_root();
+fx_base( $r160c );
+fx_bsp( $r160c, 'client-delta', 'contained', 'cool', 'standard', 'strict-grid', 'soft-shadow', 'reserved', 'carded', 'illustration', array( 'HERO', 'FOOTER' ), 'BSP-DELTA' );
+fx( $r160c, 'skills/html-mockup/assets/corporate-mockup.html', fx_mockup( array(), array(), array(), array(), array( 'BSP-DELTA', 'cool' ) ) );
+list( , $out160c ) = fx_run_ok( $audit, $r160c );
+ok( 'FAIL' === fx_row_level( $out160c, array( 'RT_MOCKUP_AXES_MISMATCH', 'corporate-mockup.html' ) ), 'a bespoke anchor is compared like any other, not waved through on the id alone', fx_row_level( $out160c, array( 'RT_MOCKUP_AXES_MISMATCH', 'corporate-mockup.html' ) ) );
+ok( array() !== fx_lines_with( $out160c, array( 'RT_MOCKUP_AXES_MISMATCH', 'composition', 'strict-grid' ) ), 'and names the axis with both positions, the one it carries and the one BSP-DELTA holds', $out160c );
+ok( array() !== fx_lines_with( $out160c, array( 'RT_MOCKUP_AXES_MISMATCH', '1 of 8' ) ), 'and only the one axis that moved is counted', $out160c );
+fx_rrmdir( $r160c );
+
+/* An axis position outside the vocabulary. `_bespoke-route.md` already states the rule -- the
+   route "buys freedom to COMBINE any position on any axis... not freedom to invent" one -- and
+   until the map fed the mockup gate nothing read it: RT_BESPOKE_UNDECLARED checked only that each
+   axis was ANSWERED, never that the answer existed. An unvalidated map is worse than no map here,
+   because the mockup gate would then compare a real :root against a typo and call it coherent.
+   RT_PERS_BAD_AXIS is reused rather than a fourth row id: its message shape is already exactly
+   this fact, and a bespoke declaration's axes line IS a catalog entry's, parsed by pers_axes(). */
+echo "--- style-catalog PR 6+: a BSP-*.md position no axis defines FAILs RT_PERS_BAD_AXIS, and registers no anchor ---\n";
+$r160d = fx_tmp_root();
+fx_base( $r160d );
+fx_bsp( $r160d, 'client-epsilon', 'contained', 'ultraviolet', 'standard', 'centered', 'soft-shadow', 'reserved', 'carded', 'illustration', array( 'HERO', 'FOOTER' ), 'BSP-EPSILON' );
+list( , $out160d ) = fx_run_ok( $audit, $r160d );
+ok( 'FAIL' === fx_row_level( $out160d, array( 'RT_PERS_BAD_AXIS', 'BSP-client-epsilon', 'ultraviolet' ) ), 'an invented ground position FAILs, naming the file, the axis and the position', fx_row_level( $out160d, array( 'RT_PERS_BAD_AXIS', 'BSP-client-epsilon', 'ultraviolet' ) ) );
+ok( array() === fx_lines_with( $out160d, array( 'RT_BESPOKE_UNDECLARED' ) ), 'and it is not ALSO called undeclared: the axis was answered, the answer is the defect', $out160d );
+fx_rrmdir( $r160d );
+
+/* Two namespaces merging into one map is how one silently overwrites the other. A BSP-*.md headed
+   with a catalog id would replace that entry in the mockup gate's lookup -- and since the pairwise
+   comparison has already run over the real entry by then, nothing else would ever notice. This is
+   the FILE-level collision RT_PERS_DUPLICATE_ID already exists for one level up, so it is the row
+   reused, and the FIRST claimant stays authoritative exactly as it does there. */
+echo "--- and a BSP-*.md heading that claims a catalog id FAILs RT_PERS_DUPLICATE_ID instead of replacing it ---\n";
+$r160e = fx_tmp_root();
+fx_base( $r160e );
+fx_bsp( $r160e, 'client-zeta', 'monumental', 'ink', 'compact', 'strict-grid', 'accent-glow', 'gradient', 'bare', 'none', array( 'HERO', 'FOOTER' ), 'PERS-INSTITUTIONAL' );
+fx( $r160e, 'skills/html-mockup/assets/corporate-mockup.html', fx_mockup() );
+list( , $out160e ) = fx_run_ok( $audit, $r160e );
+ok( 'FAIL' === fx_row_level( $out160e, array( 'RT_PERS_DUPLICATE_ID', 'BSP-client-zeta', 'PERS-INSTITUTIONAL' ) ), 'a bespoke file claiming a catalog id FAILs, naming both files', fx_row_level( $out160e, array( 'RT_PERS_DUPLICATE_ID', 'BSP-client-zeta', 'PERS-INSTITUTIONAL' ) ) );
+ok( array() === fx_lines_with( $out160e, array( 'RT_MOCKUP_AXES_MISMATCH' ) ), 'and the catalog entry it collided with is still the one the mockup gate compares against', $out160e );
+fx_rrmdir( $r160e );
 
 echo "--- promotion grants no exemption: a promoted STY-* sharing 3 of 8 axes with an existing entry FAILs RT_STYLE_TOO_SIMILAR, unmodified ---\n";
 /* No new mechanism: promotion means writing the bespoke build's 8-axis answers as an ORDINARY
