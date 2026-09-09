@@ -75,8 +75,14 @@
     /* ══ AXIS TOKENS — copied verbatim from design-system.md § Perceptual axes ══ */
     /* Anchor: STY-DIRECT. NOT a starting asset — this file and its sibling are the axis proof
        (same copy, two anchors), gated by RT_PROOF_NOT_DISTINCT and RT_PROOF_COPY_DIFFERS on
-       hardcoded paths. Its five axis labels must be the ones PERS-DIRECT holds:
-       RT_MOCKUP_AXES_MISMATCH reads them. */
+       hardcoded paths. Its eight axis labels must be the ones STY-DIRECT holds:
+       RT_MOCKUP_AXES_MISMATCH reads them — but only BECAUSE the marker above is here. This file
+       is deliberately outside RT_MOCKUP_ANCHOR_UNDECLARED's $anchored_required (that list is the
+       two generated chassis, the starting assets), so DELETING the marker silences the axis check
+       rather than failing: measured, the tree stays at 0 FAIL. Requiring it would mean requiring
+       every proof FIXTURE to declare a coherent anchor too, and that is the one thing they cannot
+       do — their axes are deliberately arbitrary, because arbitrary axes are what
+       RT_PROOF_NOT_DISTINCT exists to compare. Do not delete the marker. */
     --type-ratio: 1.618;  --display-lh: 0.82;  --fs-h1-max: 120;    /* scale: monumental */
     --sp-scale: 0.8;                                                /* density: compact */
     --c-bg: #0E1113; --c-bg-alt: #171B1E; --c-text: #F4F6F7;        /* ground: ink (17.5:1) */
