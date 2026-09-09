@@ -128,6 +128,11 @@ no native build.
   not be touched until the work is finished, or when a plugin has to be configured by hand rather
   than by script. Adds the transfer phase below, and splits qa-review into what is provable locally
   and what is provable on a production with no connector.
+  **The local site is not created by anything here.** It exists before this gate, made in LocalWP
+  from a Blueprint — that Blueprint is the golden image, and what belongs in it is
+  `elementor-core/references/migration.md`. If the answer is local and no site exists yet, say so
+  and stop: creating it is two clicks a human makes, and guessing a path is how a build writes into
+  the wrong WordPress.
 
 Ask which one, do not assume. The builder skills do not know or care: they write to whichever
 WordPress is in front of them.
