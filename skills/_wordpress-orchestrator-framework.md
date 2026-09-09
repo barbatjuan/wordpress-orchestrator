@@ -100,7 +100,7 @@ have reached it:
 | `woocommerce` | `knowledge.md` + `gotchas.md` |
 | `divi-core` | `gotchas.md` only — no knowledge file yet |
 | `elementor-theme-parts` | `gotchas.md` only — no knowledge file yet |
-| `ux-design-system` | `design-personalities.md`, `design-tokens.md`, `layout-patterns.md`, `motion.md` |
+| `ux-design-system` | `style-catalog/` (8 `STY-*`), `shipped-log.md`, `design-tokens.md`, `layout-patterns.md`, `motion.md` |
 | `web-templates` | `design-system.md`, `recommender.md`, `toggles.md`, `templates/` |
 | `html-mockup` | `mockup-guide.md` |
 | `qa-review` | `house-rules.md` — the most cross-referenced file in the framework |
