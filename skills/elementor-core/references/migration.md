@@ -23,15 +23,41 @@ through a build script is not a local WordPress you can do anything in.
 It packages a WordPress. It has no idea this framework was ever here. All three of these ship a
 site that looks perfect.
 
-**1. The sandbox must be gone BEFORE the export runs.** `es_sandbox_dir()` is
-`WP_CONTENT_DIR . '/novamira-sandbox'` — inside wp-content, so the export packages it with
-everything else and `es-builder.php` lands on the client's server reachable by URL. No plugin knows
-to leave it out.
+**1. The sandbox travels in the export unless something stops it.** `es_sandbox_dir()` is
+`WP_CONTENT_DIR . '/novamira-sandbox'` — inside wp-content, which All-in-One packages whole. So
+`es-builder.php` lands on the client's server, and measured on a live host it answers a direct
+request with an empty `200`: served, not absent.
 
-Ordering is the whole rule. `es_sandbox_purge()` then `es_sandbox_report()` returning empty,
-**immediately before the export** — a sandbox emptied and then used once more for one last fix is a
-sandbox that ships. qa-review row 33 carries the production probe, including why a 403 is not a
-pass and why an empty 200 is the trap.
+Two defences, and use both. They fail in different ways, which is the point.
+
+**The belt — a mu-plugin, so the exclusion is mechanical rather than remembered.** All-in-One
+exposes `ai1wm_exclude_content_from_export` for entries directly under wp-content:
+
+```php
+add_filter( 'ai1wm_exclude_content_from_export', function ( $paths ) {
+    $paths[] = 'novamira-sandbox';
+    return $paths;
+} );
+```
+
+Three details decide whether it works, and two of them fail silently. The path is **relative** to
+wp-content, so it is `novamira-sandbox` and not a full path. It carries **no trailing slash** —
+`novamira-sandbox/` is a different entry and simply never matches. And it belongs in
+`wp-content/mu-plugins/`, which cannot be deactivated by accident and survives a theme switch —
+and which travels in the export itself, so the site protects its own future exports.
+
+DOCUMENTED, NOT MEASURED: the filter name, the relative path and the trailing-slash trap come from
+All-in-One's own documentation, not from an export this framework has watched. Until one is
+inspected, treat this as the likely mechanism rather than a proven one, and say so.
+
+**The braces — purge before the export, and ordering is the whole rule.** `es_sandbox_purge()` then
+`es_sandbox_report()` returning empty, immediately before exporting: a sandbox emptied and then
+used once more for one last fix is a sandbox that ships. This is what covers the case where the
+filter was never installed, was installed with a trailing slash, or stopped matching after a plugin
+update — none of which announce themselves.
+
+qa-review row 33 carries the production probe, including why a 403 is not a pass and why an empty
+200 is the trap.
 
 **2. `blog_public` travels.** Zero is WordPress's "discourage search engines", which a local site is
 often built with, and it is carried into production verbatim: the site is delivered looking perfect
