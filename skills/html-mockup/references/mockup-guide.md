@@ -97,14 +97,25 @@ one inline `<style>`. No external anything.
   /* `overflow-wrap:anywhere`, not `break-word`: only `anywhere` shrinks a box's intrinsic
      min-content size, so a heading sized `fit-content` actually breaks its longest word instead of
      staying wider than its column. Measured on a proof mockup, `break-word` left 58px of
-     horizontal scroll at the 320px reflow width (WCAG 1.4.10) untouched. */
+     horizontal scroll at the 320px reflow width (WCAG 1.4.10) untouched.
+     SCOPED UNDER 1024, matching `_build-gallery.php:7145-7150`: unscoped it also breaks words at
+     widths where they FIT, and the proof pair shipped `subcontratamo / s` at 1280 that way. */
   body{font-family:var(--font-secondary);color:var(--c-text);background:var(--c-bg);
-       font-size:var(--fs-body);line-height:1.6;overflow-wrap:anywhere}
+       font-size:var(--fs-body);line-height:1.6}
+  @media(max-width:1023px){ body{overflow-wrap:anywhere} }
+  /* AND DISPLAY TYPE IS EXEMPT EVEN INSIDE THAT SCOPE — the half the scope alone does not fix.
+     Under 1024 the headline is at its LARGEST relative to its track, so `anywhere` chops it there:
+     see § "An overflow check cannot see a chopped word". The pair below travels together — the
+     exemption stops the chop, the guard stops the overflow the exemption would otherwise cause. */
+  h1,h2,h3{overflow-wrap:normal;word-break:normal}
   /* h1/h2 take the display leading the scale axis fixes; h3 stays 1.25 and body 1.6. A fixed 1.15
      for every heading was the other half of the defect above. Weights per design-system.md. */
   h1,h2,h3{font-family:var(--font-primary);text-wrap:balance}
   h1,h2{line-height:var(--display-lh);font-weight:700}
-  h1{font-size:var(--fs-h1)} h2{font-size:var(--fs-h2)}
+  /* `Ncqi` is the guard, and N is DERIVED from the longest word — never picked. Each block that
+     carries a heading declares `container-type:inline-size`, or `cqi` silently falls back to the
+     viewport and measures the wrong box. */
+  h1{font-size:min(var(--fs-h1),17cqi)} h2{font-size:min(var(--fs-h2),12cqi)}
   h3{font-size:var(--fs-h3);line-height:1.25;font-weight:600}
   .wrap{max-width:var(--content-width);margin-inline:auto;padding-inline:var(--pad-x-mobile)}
   /* Fluid, density-scaled, and no breakpoint by hand — that is the point of --sp-section. */
@@ -375,6 +386,64 @@ renders, which is the profile of every defect on this list.
 *Gate:* the classes an archetype introduces are listed and must be undefined in every byte of CSS
 emitted before its block. The list is hand-kept — a new class added without a line there is
 unchecked.
+
+### An overflow check cannot see a chopped word
+
+**A mid-word chop produces exactly ZERO overflow, because the chop is what prevents it.** So a
+sweep that measures `scrollWidth - clientWidth` at every width reports a perfectly clean page whose
+headline reads `PIEZA / S QUE / NO SE / REPIT / EN`. Measured on tuscapas at 320: an `h1` was
+chopped on all SEVEN pages while the overflow sweep returned 0 everywhere, and the reader found it
+in the render before the sweep did. **Two gates, not one** — the second is a `Range` per WORD,
+counting `getClientRects()`; more than one rectangle means that word was split. `qa-review`
+house-rules row 32(e) carries it.
+
+The cause is `overflow-wrap:anywhere`, which is genuinely required under 1024 and which display
+type cannot survive. **Scoping it under 1024 is not enough**, and that is the non-obvious half:
+under 1024 the headline is at its LARGEST relative to its track, so the scope leaves the chop
+exactly where it hurts. Display type is exempted, and then given a guard so it never NEEDS to break.
+
+**The guard is a container unit, and this is where the first two attempts died.**
+
+- `overflow-wrap:normal` alone trades a chopped word for an overflowing one.
+- `min(var(--fs-h1), 13vw)` still overflowed — `nosotros:+51`, `contacto:+11` — because **a
+  viewport unit measures the SCREEN and a heading lives in a GRID TRACK.** A title in 5 of 12
+  columns overflowed at 768 while the viewport had room to spare.
+- `min(var(--fs-h1), Ncqi)` works, and every block that carries a heading must declare
+  `container-type:inline-size`. Miss one and `cqi` silently falls back to the small viewport: the
+  close band was missed on the first pass and came back `home:+40`, because its `h2` measured
+  325px of min-content inside a 265px track and, unable to break, grew the `1fr` track to 325 and
+  took the page with it. Inline-size containment also stops a heading's min-content from sizing
+  its own track, which is the second thing it buys.
+
+**N IS DERIVED, NEVER PICKED.** Archivo Expanded 700 advances **0.757em per character**, measured
+in the browser (`PIEZAS QUE NO SE REPITEN` = 1090.1px at 60px over 24 characters). A word of N
+characters fits a track of width W at `W / (N × 0.757)`, so the coefficient is `100 / (N × 0.757)`
+percent of the container: **17cqi carries a 7-character word, 12cqi a 10-character one.** Measure
+the advance for the face actually in use — a condensed face gives a larger coefficient, a wide one
+a smaller.
+
+**What it costs, and say it out loud to the client.** A 6-of-12 track is 491px at 1280, so a
+`scale: monumental` headline lands at ~83px there and reaches the axis's full 120px only from
+~1920, where the track finally clears the 636px that 120px type needs. Measured across the range:
+74px at 1024 · 83 at 1280 · 89 at 1440 · 120 at 1920 and 2560. **Keeping a two-column hero and
+reaching the axis cap at every width are mutually exclusive**; the alternatives are a full-width
+title row, or a hero whose image sits behind the copy instead of beside it. That is a client
+decision, not a silent one.
+
+**`hyphens:auto` is not the escape hatch** — `_build-gallery.php:7692` already recorded that the
+headless renderer carries no Spanish dictionary, and it fails in the in-app browser too: with
+`lang="es"` set and `hyphens` computing `auto`, the break of "relacionada" rendered 92.9px, exactly
+the natural width of "relaciona" and not the 99.8px it would be with a hyphen drawn. Where a run's
+length is client data and cannot be guaranteed — a product name in a card — give the component its
+own container and its own `clamp()`, and keep `overflow-wrap:break-word` (which breaks only a word
+that cannot fit a line alone) rather than `anywhere` as the floor.
+
+**The corollary is a copy rule, and it belongs in the brief**: monumental display needs SHORT
+WORDS. A 10-character word cannot sit in a two-column hero at this scale, so the headline changes
+or the anchor does — never the guard.
+
+*Gate:* `qa-review` house-rules row 32(e), measured in a browser at every width. Nothing static can
+see it: the CSS is valid, the page does not overflow, and the defect is only in the render.
 
 ### `ch` measures the font of the element it is written on
 

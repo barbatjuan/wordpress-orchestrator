@@ -44,6 +44,16 @@ variant instead of adding a second color.
 - Hierarchy per section: eyebrow (`--fs-eyebrow`, uppercase, letter-spaced) → heading → paragraph.
   One `--fs-h1` per page.
 - The scale is fluid (`clamp()`), so sizes come from the token, never from a per-section override.
+- **A big scale position is a CONSTRAINT ON THE COPY, and it has to reach the brief.** `--fs-h1-max`
+  is a promise about a heading's size, not about the column it lands in: at `monumental` the cap is
+  120px, and 120px type needs about `0.757em × <characters>` of track — 636px for a 7-letter word in
+  Archivo Expanded. A hero holding its copy in 6 of 12 columns has 491px at 1280 and does not reach
+  that until ~1920. So at `monumental` and `editorial`, **headlines want short words**: a
+  10-character word cannot sit in a two-column hero at that scale, and the answer is to change the
+  headline or the layout — never to loosen the guard that keeps it from breaking mid-word. Tell
+  `wordpress-copywriter` the longest word each heading may carry, along with the scale position.
+  The measurements, the guard and what it costs at each width are in
+  `html-mockup/references/mockup-guide.md` § "An overflow check cannot see a chopped word".
 
 ## Spacing & radii roles
 - Section rhythm: the same padding tokens on every section, stepping up mobile → tablet → desktop.
