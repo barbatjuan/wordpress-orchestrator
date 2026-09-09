@@ -46,9 +46,27 @@ wp-content, so it is `novamira-sandbox` and not a full path. It carries **no tra
 `wp-content/mu-plugins/`, which cannot be deactivated by accident and survives a theme switch —
 and which travels in the export itself, so the site protects its own future exports.
 
-DOCUMENTED, NOT MEASURED: the filter name, the relative path and the trailing-slash trap come from
-All-in-One's own documentation, not from an export this framework has watched. Until one is
-inspected, treat this as the likely mechanism rather than a proven one, and say so.
+MEASURED, on All-in-One 7.x free, WordPress 7.1, PHP 8.2.29, by running the plugin's own iterator
+chain from `class-ai1wm-export-enumerate-content.php` and counting what it would package. With the
+sandbox holding `es-builder.php` and one file pasted in to debug something once:
+
+| Entry passed to the filter | Sandbox files packaged | |
+|---|---|---|
+| *(no filter)* | 2 | **both travel** |
+| `novamira-sandbox` | 0 | excluded |
+| `novamira-sandbox/` | 2 | silently not excluded |
+| `/novamira-sandbox` | 2 | silently not excluded |
+| `wp-content/novamira-sandbox` | 2 | silently not excluded |
+
+**Three of the four ways you would naturally write it are no-ops, and none of them complains.** The
+bare relative name is the only spelling that works, which is why the snippet above is worth copying
+rather than retyping.
+
+Two things this does NOT prove, and they matter: it measures what the ENUMERATOR yields, not the
+bytes of a finished `.wpress` — the free plugin refuses `wp ai1wm backup` with "This feature is
+available in Unlimited Extension", so the archive itself was never produced here. And the purge
+therefore stays as the arm that blocks: a filter is one line a plugin update or a careless edit can
+take away, while an empty directory cannot ship what it does not hold.
 
 **The braces — purge before the export, and ordering is the whole rule.** `es_sandbox_purge()` then
 `es_sandbox_report()` returning empty, immediately before exporting: a sandbox emptied and then
