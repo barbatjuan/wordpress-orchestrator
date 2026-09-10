@@ -2514,5 +2514,70 @@ $GLOBALS['es_font_said']     = false;
 $r = grab( 'es_audit_summary' );
 ok( has( $r['out'], es_t( 'font_head' ) ), 'es_audit_summary() lo dice: la linea que el operador tiene orden de leer antes de desplegar' );
 
+/* ---------------------------------------------------------------------------
+ * EL KIT GLOBAL: donde es_tokens() se convierte en el sitio.
+ *
+ * Hallazgo del primer build real (LocalWP `prueba1`, 2026-09-09). es_tokens() pinta SOLO donde un
+ * helper escribe un color explicito. El fondo de la pagina, un titular sin `title_color` y los
+ * enlaces heredan del KIT de Elementor — y nada en esta libreria lo escribia.
+ * MEDIDO en el sitio construido: el h1 salio `rgb(110,193,228)` — el azul de fabrica de Elementor —
+ * sobre un body BLANCO, con la escala tipografica perfectamente correcta encima. Cinco paginas con
+ * VEREDICTO LIMPIO sobre un sitio que no tenia ni uno de los colores resueltos.
+ * knowledge.md ya lo decia en una linea ("set global colors there so the whole site inherits"), y
+ * escribir la explicacion no es instalar el helper. Esta es la mitad que faltaba.
+ * ------------------------------------------------------------------------- */
+echo "--- el kit global lleva los tokens al sitio, y se relee ---\n";
+
+wp_fake_reset();
+$r = grab( 'es_kit_apply' );
+ok( 0 === $r['ret'], 'sin kit activo no se escribe nada y se devuelve 0' );
+ok( has( $r['out'], 'kit' ), 'y se DICE, en vez de devolver 0 en silencio' );
+
+wp_fake_reset();
+$GLOBALS['wp']['options']['elementor_active_kit'] = 5;
+$kit_id = es_kit_apply();
+ok( 5 === $kit_id, 'con kit activo se devuelve su id, que es la prueba de que la RELECTURA cuadro' );
+
+$ks = get_post_meta( 5, '_elementor_page_settings', true );
+ok( is_array( $ks ) && isset( $ks['system_colors'] ), 'se escriben los colores de sistema' );
+
+$por_id = array();
+foreach ( (array) $ks['system_colors'] as $c ) {
+	$por_id[ $c['_id'] ] = $c['color'];
+}
+ok(
+	array( 'primary', 'secondary', 'text', 'accent' ) === array_keys( $por_id ),
+	'los CUATRO ids de Elementor, en ese orden: cada widget resuelve Global Colors POR ID, nunca por titulo'
+);
+ok( es_t( 'text' ) === $por_id['primary'], 'primary es la tinta de titulares — el rol exacto que pintaba el azul de fabrica' );
+ok( es_t( 'accent' ) === $por_id['accent'], 'y accent es el acento resuelto' );
+ok( es_t( 'bg' ) === $ks['body_background_color'], 'el fondo de pagina sale del token ground, que es lo que faltaba entero' );
+ok( 'classic' === $ks['body_background_background'], 'con su tipo de fondo, o Elementor ignora el color' );
+
+/* Un kit real llega con ajustes que no son nuestros — un ancho de contenedor, una tipografia
+   global. Pisarlos seria cambiar el sitio por la espalda. */
+wp_fake_reset();
+$GLOBALS['wp']['options']['elementor_active_kit'] = 5;
+update_post_meta( 5, '_elementor_page_settings', array( 'container_width' => array( 'size' => 1140 ) ) );
+es_kit_apply();
+$ks = get_post_meta( 5, '_elementor_page_settings', true );
+ok( isset( $ks['container_width']['size'] ) && 1140 === $ks['container_width']['size'], 'un ajuste ajeno del kit sobrevive: esto FUSIONA, no reemplaza' );
+ok( isset( $ks['system_colors'] ), 'y los colores entran igual' );
+
+/* Y lo que escribe son los tokens del PROYECTO, no los defaults de este archivo. */
+wp_fake_reset();
+$GLOBALS['wp']['options']['elementor_active_kit'] = 5;
+es_tokens_reset();
+es_tokens( array( 'bg' => '#0E1113', 'accent' => '#FF3D8A' ) );
+es_kit_apply();
+$ks     = get_post_meta( 5, '_elementor_page_settings', true );
+$por_id = array();
+foreach ( (array) $ks['system_colors'] as $c ) {
+	$por_id[ $c['_id'] ] = $c['color'];
+}
+ok( '#0E1113' === $ks['body_background_color'], 'el override del proyecto llega al kit' );
+ok( '#FF3D8A' === $por_id['accent'], 'y el acento del proyecto tambien' );
+es_tokens_reset();
+
 echo "\n$pass OK / $fail FAIL\n";
 exit( $fail ? 1 : 0 );

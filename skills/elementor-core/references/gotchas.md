@@ -22,7 +22,12 @@ Every one of these cost real debugging time. Trust them.
 3. For every touched post id: `delete_post_meta(id,'_elementor_css')` +
    `delete_post_meta(id,'_elementor_element_cache')` + `@unlink(uploads/elementor/css/post-<id>.css)` +
    `\Elementor\Core\Files\CSS\Post::create(id)->update()`.
-4. Regenerate kit CSS: `\Elementor\Core\Files\CSS\Post::create(get_option('elementor_active_kit'))->update()`.
+4. **`es_kit_apply()` FIRST**, then regenerate kit CSS:
+   `\Elementor\Core\Files\CSS\Post::create(get_option('elementor_active_kit'))->update()`.
+   Regenerating before writing the kit compiles the OLD palette and the whole site keeps
+   Elementor's factory blue on white with every check green — see "The build's colours do not
+   reach the site until the KIT is written" below. Read what `es_kit_apply()` returns: `0` means
+   nothing landed.
 5. Regenerate Theme Builder conditions cache (see woocommerce skill).
 6. **Verify server-side** — fetch `post-<id>.css` / the front HTML and `substr_count` the
    expected selectors. The browser is often policy-blocked from the sandbox domain, so
@@ -95,6 +100,45 @@ a wrapper is the canonical thing that belongs on the widget.
 
 `object-fit` on the image widget is hyphenated (that is the control id) and Elementor only
 honours it while `height` has a value. Both confirmed on that build.
+
+## The build's colours do not reach the site until the KIT is written
+
+Found on the first real build (LocalWP `prueba1`), and it is the loudest kind of green-and-wrong:
+five pages, `VEREDICTO LIMPIO` on all five, the type scale exact to the pixel — `--fs-h1-max`
+reaching 120px with a 0.82 leading — and the `h1` rendering **`rgb(110,193,228)` on a WHITE body**.
+That blue is Elementor's factory default. Not one resolved colour was on the page.
+
+`es_tokens()` paints only where a helper writes a colour EXPLICITLY. The page ground, a heading
+with no `title_color`, and every link inherit from the Elementor kit instead — and a fresh kit's
+`_elementor_page_settings` is an empty array. `es_kit_apply()` is the missing step; call it once
+per build before `es_rebuild_css()`, then regenerate the kit CSS (deploy step 4).
+
+## `outline-light` is named for the SURFACE it sits on, not for the page's brightness
+
+Measured: the hero's ghost CTA rendered `rgb(14,17,19)` on a `#0E1113` ground — **1:1, invisible**,
+with a border at `rgba(14,17,19,.5)` that was invisible too. A call to action nobody can see, and
+no text-based check can see it either.
+
+The style takes `es_t('on_inverse')`, which is *the ink that goes ON the inverted surface*. On a
+light page the inverted surface is dark, so that ink is light and the style is correct. On an
+`ink` ground the inverted surface is LIGHT, so the same token resolves to near-black. **On a dark
+ground the ghost button is `outline`** (which takes `es_t('text')`); it measured 17.48:1.
+
+## Elementor enqueues its Google Fonts too late for `wp_enqueue_scripts`
+
+Two separate facts, and both bit on the same build.
+
+**The build itself leaks.** `es_tokens()`'s default `font_head`/`font_body` are `Space Grotesk`
+and `Manrope`; leave them and Elementor dutifully requests both from `fonts.googleapis.com`. A
+build that never chose a typeface still ships the GDPR problem `knowledge.md` § "Servir las
+familias tipograficas" describes.
+
+**And the obvious fix does not work.** Dequeuing by URL in `wp_enqueue_scripts` — even at
+`PHP_INT_MAX` — runs BEFORE Elementor registers its `elementor-gf-*` handles during the frontend
+render. Measured: 3 requests survived the dequeue, and `elementor_google_fonts = 0` did not stop
+them either. `add_filter( 'elementor/frontend/print_google_fonts', '__return_false' )` did: 0
+requests across every page. Keep a URL-matching dequeue on `wp_print_styles` as the net for a
+theme or plugin enqueuing its own.
 
 ## Sandbox executes every .php on EVERY request — and one fatal switches them all off
 Symptom: top-level build logic in the sandbox crashes the site ("error crítico"); later, uploads

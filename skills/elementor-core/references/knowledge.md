@@ -308,6 +308,15 @@ may not write `.php` outside the sandbox, and the sandbox is emptied at hand-off
 ## Global kit
 - Kit id = `get_option('elementor_active_kit')`. Set global colors/typography/buttons there so
   the whole site inherits. Regenerate kit CSS after cache clears.
+- **`es_kit_apply()` is what does it.** It carries `es_tokens()` into the kit — the four system
+  colours keyed by Elementor's own `_id`s, the body ground, and the link pair — MERGING into
+  whatever the kit already holds, and returns the kit id only after reading the write back.
+  This line said "set global colors there" for weeks and nothing did: measured on the first real
+  build, five pages reported `VEREDICTO LIMPIO` with the type scale exact to the pixel and the
+  `h1` painted `rgb(110,193,228)` — Elementor's factory blue — on a WHITE body. `es_tokens()`
+  paints only where a helper writes a colour explicitly; the ground, an unstyled heading and every
+  link inherit from the kit, and a fresh kit's `_elementor_page_settings` is empty. Call it once
+  per build, before `es_rebuild_css()`, and regenerate the kit CSS after.
 
 ## Control names that are easy to get wrong (introspect to confirm)
 - Archive products widget: `wc-archive-products` (NOT `archive-products`).

@@ -1,5 +1,32 @@
 # WooCommerce + Elementor Theme Builder — gotchas
 
+## Equal height: `align-items` does NOTHING on WooCommerce's product list
+
+`ul.products` ships as `display:block` with the `li.product` **floated**, so the framework's own
+equal-height recipe — `align-items:stretch` on the list, `display:flex` + `height:100%` on the
+item — is inert: a float has no cross axis to align on. Measured on a real archive, 407px beside
+393px, with every declaration present and reading correctly in DevTools.
+
+Make the list a real grid FIRST, and switch the float off: Woo also hard-codes a percentage
+`width` per `columns-N` class, so `float:none !important` and `width:auto !important` both belong
+in the fix. Then stretch, the column direction and `margin-top:auto` on the button do what they say.
+
+## In a grid, the clearfix `::before` is an ITEM — and it eats the first cell
+
+After converting `ul.products` to a grid, the first product still started at **x454 instead of
+x64**. WooCommerce and most themes add `ul.products::before/::after { content:"" }` to clear the
+floats, and a pseudo-element in a grid container is a grid item.
+
+Nine products laid out **2 + 3 + 3 + 1 across four rows — with every card the same height**, so
+the equal-height check passed and saw nothing. `ul.products::before, ::after { content:none }`.
+
+## Woo's own pages are created as DRAFTS, and two of them are legal
+
+`Refund and Returns Policy` (Woo) and `Privacy Policy` (WordPress core) are created with
+`post_status = draft`. They sit in the page list looking real, and every link to them 404s —
+including a consent checkbox pointing at the privacy page, which `wordpress-forms` says is worse
+than omitting the checkbox. Publish both, and request the URL rather than trusting the page exists.
+
 ## Leftover template hijack (looks "broken")
 A single-product page that renders blank/ugly is often a STALE Theme Builder template from
 a previous build overriding the loop — not a layout bug. Find product-type templates

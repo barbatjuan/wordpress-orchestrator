@@ -3365,6 +3365,82 @@ function es_font_system_faces() {
 }
 
 /**
+ * Carry the resolved tokens into the GLOBAL KIT, which is where they become the site.
+ *
+ * THE DEFECT THIS EXISTS FOR, measured on the first real build (LocalWP `prueba1`, 2026-09-09):
+ * five pages reported `VEREDICTO LIMPIO`, the type scale was exact to the pixel — `--fs-h1-max`
+ * reaching 120px with a 0.82 leading — and the `h1` rendered `rgb(110,193,228)` on a WHITE body.
+ * That blue is Elementor's factory default. Not one resolved colour was on the page.
+ *
+ * The cause is not a bug in `es_tokens()`; it is the SCOPE of it. This library paints only where
+ * a helper writes a colour explicitly — `es_btn()` writes `button_text_color`, `es_p()` writes
+ * `text_color`. The page ground, a heading with no `title_color`, and every link inherit from the
+ * Elementor KIT instead, and the kit's `_elementor_page_settings` on a fresh install is EMPTY.
+ * `references/knowledge.md` § "Global kit" has said "set global colors there so the whole site
+ * inherits" since the axes landed, and nothing did it — the same shape as the `var()` lesson in
+ * `mockup-guide.md`: writing the explanation is not installing the gate.
+ *
+ * MERGES, never replaces. A real kit arrives carrying settings that are not ours — a container
+ * width, a global typography, whatever a human set in Site Settings. Overwriting the array would
+ * change the site behind the operator's back to deliver a colour.
+ *
+ * The four ids are ELEMENTOR'S OWN and must not be renamed: every widget default resolves
+ * `Global Colors > Primary` by `_id`, not by the title beside it. A prettier title is free; a
+ * different id silently detaches every widget that was reading it.
+ *
+ * Returns the kit id, and it returns it only after READING THE WRITE BACK — `update_post_meta()`
+ * returns false both when it failed and when the value was already there, so its return value
+ * cannot tell "landed" from "did not". Zero means nothing was written, and it says why.
+ */
+function es_kit_apply() {
+	$kit = (int) get_option( 'elementor_active_kit' );
+	if ( ! $kit ) {
+		es_warn(
+			'no hay kit activo (`elementor_active_kit` vacio), asi que los colores globales NO se escribieron. '
+			. 'El sitio va a heredar los defaults de fabrica de Elementor: titulares azules sobre fondo blanco, '
+			. 'con la escala tipografica correcta encima y todos los chequeos en verde. Activa Elementor y repite.'
+		);
+		return 0;
+	}
+
+	$t        = es_tokens();
+	$settings = get_post_meta( $kit, '_elementor_page_settings', true );
+	if ( ! is_array( $settings ) ) {
+		$settings = array();
+	}
+
+	$settings['system_colors'] = array(
+		array( '_id' => 'primary',   'title' => 'Titulares', 'color' => $t['text'] ),
+		array( '_id' => 'secondary', 'title' => 'Chrome',    'color' => $t['muted'] ),
+		array( '_id' => 'text',      'title' => 'Cuerpo',    'color' => $t['text_soft'] ),
+		array( '_id' => 'accent',    'title' => 'Acento',    'color' => $t['accent'] ),
+	);
+
+	/* Both keys or neither: Elementor ignores `body_background_color` unless the background TYPE
+	   says there is one, so writing the colour alone is a value nobody reads. */
+	$settings['body_background_background'] = 'classic';
+	$settings['body_background_color']      = $t['bg'];
+
+	/* A link and a button never disagree about what "the accent" is. */
+	$settings['link_normal_color'] = $t['accent'];
+	$settings['link_hover_color']  = $t['accent_hover'];
+
+	update_post_meta( $kit, '_elementor_page_settings', $settings );
+
+	$back = get_post_meta( $kit, '_elementor_page_settings', true );
+	$ok   = is_array( $back )
+		&& isset( $back['body_background_color'] ) && $back['body_background_color'] === $t['bg']
+		&& isset( $back['system_colors'][0]['color'] ) && $back['system_colors'][0]['color'] === $t['text'];
+
+	if ( ! $ok ) {
+		es_warn( 'el kit ' . $kit . ' no conservo los colores globales al releerlo; el sitio sigue con lo que tuviera' );
+		return 0;
+	}
+
+	return $kit;
+}
+
+/**
  * Rebuild one post's Elementor stylesheet with a fresh cache-busting version.
  *
  * Elementor also stores the rendered markup in `_elementor_element_cache` for
