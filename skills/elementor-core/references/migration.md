@@ -62,11 +62,29 @@ sandbox holding `es-builder.php` and one file pasted in to debug something once:
 bare relative name is the only spelling that works, which is why the snippet above is worth copying
 rather than retyping.
 
-Two things this does NOT prove, and they matter: it measures what the ENUMERATOR yields, not the
-bytes of a finished `.wpress` — the free plugin refuses `wp ai1wm backup` with "This feature is
-available in Unlimited Extension", so the archive itself was never produced here. And the purge
-therefore stays as the arm that blocks: a filter is one line a plugin update or a careless edit can
-take away, while an empty directory cannot ship what it does not hold.
+**MEASURED AGAIN ON THE ARCHIVE ITSELF (2026-09-10), which is what the paragraph above could not
+do.** With the Unlimited Extension installed, `wp ai1wm backup` produces a real `.wpress`, and
+`wp ai1wm browse-backup` lists what is inside it. Two exports of the same site, minutes apart, the
+only change between them being the mu-plugin below:
+
+| Export | Bytes | Entries | `novamira-sandbox` |
+|---|---|---|---|
+| no filter | 249,742,684 | 10,709 | **`novamira-sandbox\es-builder.php`, 167.93 KB — present** |
+| filter installed | 249,572,128 | 10,709 | **absent** |
+
+Diffing the two listings: **exactly one path leaves and exactly one enters.** Out goes
+`novamira-sandbox\es-builder.php`; in comes `mu-plugins\novamira-exclude-sandbox.php`, which is
+the filter travelling in the export exactly as this section claims it does — so the copied site
+protects its own future exports. Nothing else moved.
+
+Two notes from running it. The **URL Extension blocks the CLI when it is out of date** — "Export
+failed: URL Extension is out of date" — and it is not needed for a file export; deactivate it.
+And the second export took 10.6s against the first one's 2m8s for the same entry count and the
+same size class: OS file cache, not a smaller archive.
+
+One thing this still does NOT prove: that the archive IMPORTS cleanly on a destination host.
+And the purge stays as the arm that blocks regardless — a filter is one line a plugin update or a
+careless edit can take away, while an empty directory cannot ship what it does not hold.
 
 **The braces — purge before the export, and ordering is the whole rule.** `es_sandbox_purge()` then
 `es_sandbox_report()` returning empty, immediately before exporting: a sandbox emptied and then
@@ -137,6 +155,14 @@ Two properties of the build itself, unchanged by any of this and guarded by
 
 ## Status
 
-The three traps above are specified and their rows exist. **None has been exercised against a real
-migration yet** — no site has gone from LocalWP to a production host through this checklist. Record
-the result here the first time it does, and say what broke rather than only that it worked.
+**Trap 1 is now exercised end to end on a real archive** (2026-09-10, LocalWP `prueba1`): the
+sandbox WAS inside the `.wpress` with no defence, and the mu-plugin filter took it out and nothing
+else — see the second measured table above. What broke on the way: the URL Extension refused the
+export until it was deactivated, which is worth knowing because the error names the extension and
+not the fix.
+
+**Traps 2 and 3 and the import half are still unexercised.** No site has gone from LocalWP to a
+production host through this checklist: nothing here has watched a `.wpress` land on a real server,
+so the permalink flush, the `blog_public` carry-over and the runtime comparison remain specified
+and unproven. Record the result here the first time one does, and say what broke rather than only
+that it worked.
