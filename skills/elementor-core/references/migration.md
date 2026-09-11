@@ -95,11 +95,35 @@ update — none of which announce themselves.
 qa-review row 33 carries the production probe, including why a 403 is not a pass and why an empty
 200 is the trap.
 
-**2. `blog_public` travels.** Zero is WordPress's "discourage search engines", which a local site is
-often built with, and it is carried into production verbatim: the site is delivered looking perfect
-and stays invisible for weeks. Set it before the export with `es_indexing_state()` reading it back,
-and confirm after over HTTP by reading a page's `<meta name="robots">`, which carries
+**2. EVERY VISIBILITY SWITCH TRAVELS, and they hide different things.** These are options, options
+are rows in the database, and the database is what a migration copies. Each one is set to a
+sensible value for a site under construction and to a catastrophic one for a site being handed
+over — and the site looks perfect either way, because what they hide is hidden from you too.
+
+**`blog_public`.** Zero is WordPress's "discourage search engines", which a local site is often
+built with, and it is carried into production verbatim: the site is delivered looking perfect and
+stays invisible for weeks. Set it before the export with `es_indexing_state()` reading it back, and
+confirm after over HTTP by reading a page's `<meta name="robots">`, which carries
 `noindex, nofollow` when the option is zero.
+
+**`woocommerce_coming_soon`, and this one was found the hard way** (2026-09-11, on the live host).
+WooCommerce has shipped Launch Your Store since 9.1: a fresh install starts at
+`woocommerce_coming_soon = yes` and only flips when a human finishes the onboarding wizard. A build
+script never finishes that wizard. So the store arrives at the destination behind WooCommerce's
+own placeholder.
+
+MEASURED on the destination, and the numbers are the reason this is worth a paragraph: the home
+page answered 200 with 28 Elementor elements and its real `<h1>`, `/nosotros/` 200 with 26,
+`/contacto/` 200 with 14, the custom 404 fired correctly — **twelve of twelve pages perfect** —
+while `/tienda/` and `/carrito/` answered **200 with zero Elementor elements and the `<h1>`
+"Great things are on the horizon"**, carrying `woocommerce-coming-soon` on the body class. With
+`woocommerce_store_pages_only = yes` the placeholder covers ONLY the store, so every page a person
+naturally clicks first is fine. A migration can be flawless and still hand over a shop nobody can
+buy from.
+
+Check both before exporting, and check them again over HTTP after. The HTTP arm is cheap and
+unambiguous: a `woocommerce-coming-soon` body class on any store URL is a FAIL, and it does not
+need a login to see.
 
 **Not `/robots.txt`.** Measured on a live site: with `blog_public` = 0 and Yoast active, robots.txt
 served `Disallow:` — allow everything — because Yoast filters it and replaces core's output, while
@@ -305,3 +329,33 @@ host). What the run proved, and what it did not:
 - **Layers 5 and 6 were discovered on the retry** (2026-09-11), which is why the connector table
   grew from four rows to six. Neither is visible until the layer above it is fixed, and layer 6 is
   correct security behaviour rather than a defect.
+
+**And then the whole ritual was run again, carrying everything** (2026-09-11, same pair of hosts,
+250,051,200-byte archive, 10,717 entries, `--exclude-tables=wp_users,wp_usermeta`). This is the run
+that turned the list above from advice into measurement.
+
+- **The keep-connector mu-plugin works, and the proof is clean.** `prueba1` has neither
+  `agency-mcp-bridge` nor `novamira` on disk, so the `active_plugins` row it exported cannot
+  possibly name them. The destination nevertheless registers `mcp` and `novamira/v1` in
+  `/wp-json/`, and `/wp-json/mcp/bridge` answers 401 rather than 404. Both plugin files are running
+  on a site whose plugin list never mentioned them. Layer one is closed by a file that travels
+  inside the archive — the same trick as the sandbox exclusion, now proven twice.
+- **Post ids survive, which is the property the whole design rests on.** 13 pages at ids 3–36 and
+  9 products at 37–45, contiguous and unshifted, with the kit still at `elementor-kit-5` on the
+  body class. `es_manifest_verify()` has nothing to drift against and `post-<id>.css` stays
+  correctly named.
+- **Pages render on the first request, with no rebuild step.** Twelve of twelve: home 200 with 28
+  Elementor elements, `/nosotros/` 26, `/contacto/` 14, the custom 404 firing on an unknown URL
+  with its own copy, `/inicio/` correctly 301 to the front page, the four legals and the thanks
+  page all 200. Elementor regenerates its CSS on first render exactly as this file claims.
+- **The destination keeps its own users.** Excluding `wp_users` and `wp_usermeta` means the login
+  that existed on the host before the import is the login that exists after it — the operator ran
+  the restore from wp-admin with their own account and never lost it. Without that exclusion the
+  source site's user table lands on top and the host's own administrator is gone.
+- **Trap 2 is now half proven, in the half nobody expected.** `blog_public` still went untested —
+  both sites carried 1 — but `woocommerce_coming_soon` travelled and hid the store behind
+  WooCommerce's placeholder while every other page rendered perfectly. That is the same disease,
+  found in a different option, which is why trap 2 above is now written about the class rather than
+  the one switch.
+- **Trap 3 (runtime skew) remains untested.** No version gap existed to make the fingerprint
+  comparison say anything.

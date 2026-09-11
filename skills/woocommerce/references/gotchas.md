@@ -27,6 +27,22 @@ the equal-height check passed and saw nothing. `ul.products::before, ::after { c
 including a consent checkbox pointing at the privacy page, which `wordpress-forms` says is worse
 than omitting the checkbox. Publish both, and request the URL rather than trusting the page exists.
 
+## A fresh install is in COMING SOON mode, and the wizard is the only thing that turns it off
+
+WooCommerce 9.1+ ships Launch Your Store: a new install sets `woocommerce_coming_soon = yes` and
+flips it only when a human finishes the onboarding wizard. A build script never finishes that
+wizard, so the switch stays on through the entire build and into the hand-off.
+
+Set `woocommerce_coming_soon` to `no` as part of store setup, alongside currency and locale. And
+check it over HTTP afterwards rather than trusting the write, because of how this hides: with
+`woocommerce_store_pages_only = yes` — also a default — the placeholder covers ONLY the store, so
+the home page, the about page and the contact form all render perfectly while `/tienda/` and
+`/carrito/` answer **200 with the heading "Great things are on the horizon"**. A status-code probe
+passes. A heading probe passes. The signal that does not lie is `woocommerce-coming-soon` on the
+`<body>` class. Measured on a live hand-off: twelve of twelve pages correct and the shop invisible.
+
+qa-review row 35 carries the check.
+
 ## Leftover template hijack (looks "broken")
 A single-product page that renders blank/ugly is often a STALE Theme Builder template from
 a previous build overriding the loop — not a layout bug. Find product-type templates
