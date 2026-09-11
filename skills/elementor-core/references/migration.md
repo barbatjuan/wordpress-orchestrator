@@ -111,17 +111,20 @@ controls the build wrote, so the page renders wrong while every other check stay
 `es_build_fingerprint()` records the PHP, WordPress, Elementor and Elementor Pro versions the build
 was verified against; row 34 compares them.
 
-**4. THE MIGRATION KILLS THE CONNECTOR, in four layers, and every one of them reports success.**
-Measured on a real import (grey-mule, 2026-09-11). This is the trap that bites hardest, because it
-takes the agency's access away at the exact moment the new site needs work — installing what the
-archive left out, verifying, fixing.
+**4. THE MIGRATION KILLS THE CONNECTOR, in SIX layers, and every one of them reports success.**
+Measured across two real imports (grey-mule, 2026-09-10 and 2026-09-11). This is the trap that
+bites hardest, because it takes the agency's access away at the exact moment the new site needs
+work — installing what the archive left out, verifying, fixing. Peeling one layer reveals the next,
+and each new layer only becomes visible once the one above it is fixed.
 
-| Layer | What travels | What the site answers |
-|---|---|---|
-| `active_plugins` | the SOURCE's list, which never had the connector in it | plugins deactivated; their FILES are still on disk |
-| the credential | the agent user and its token live in the DATABASE, and the database was replaced | `/wp-json/mcp/bridge` → **401**, not 404 |
-| the MCP route | the server registration is configuration, also in the database | `/wp-json/mcp/novamira` → **404**, while `/wp-json/novamira/v1/*` is registered and answers 403 |
-| build mode | `WP_ENVIRONMENT_TYPE` and `AMB_ALLOW_PHP_EXEC` live in `wp-config.php`, which this ritual EXCLUDES on purpose | typed writes and PHP execution are simply off |
+| # | Layer | Why it breaks | What it answers |
+|---|---|---|---|
+| 1 | `active_plugins` | the SOURCE's list arrives, and a local build never had the connector in it | plugins deactivated; their FILES untouched on disk |
+| 2 | the credential | the agent user and its token live in the DATABASE, which was replaced | `/wp-json/mcp/bridge` → **401**, not 404 |
+| 3 | the MCP route | the server registration is configuration, also in the database | `/wp-json/mcp/novamira` → **404**, while `/wp-json/novamira/v1/*` is registered and answers 403 |
+| 4 | build mode | `WP_ENVIRONMENT_TYPE` and `AMB_ALLOW_PHP_EXEC` live in `wp-config.php`, which this ritual EXCLUDES on purpose | the site reads as `production`, so typed writes and PHP execution are never registered |
+| 5 | the client's tool list | the capability tier is read ONCE, when the connector is added | the site advertises nine abilities and the client holds four; disabling and re-enabling the connector does not refresh it |
+| 6 | the domain lock | `novamira_is_enabled()` compares `novamira_ai_abilities_domain` against `wp_parse_url( home_url() )` — and a migration is, definitionally, moving a database to another domain | the upload endpoint answers **403 `novamira_disabled`** |
 
 **The layers fail in ascending order of disguise.** Reactivating the plugins fixes the first and
 looks like it fixed everything: the plugin page says Enabled, the endpoint resolves, the status
@@ -131,16 +134,96 @@ panel said connected, the client's connector list said `connected`, the call sai
 server can be reconnected"* — **three systems reporting three different things about one dead
 connection**, and the one tool that could have repaired it declined BECAUSE the status lied.
 
-The remedy is not a reconnect, it is a RE-PAIR: the destination mints a new credential against the
-database it actually has now, and that new URL is added to the client fresh. Removing the stale
-entry first is part of it — it carries the old pairing inside, which is what keeps every status
-green.
+Layer 5 is the same disease one level up, and it is easy to lose an hour in: turning build mode on
+flips the site to `staging` and the bridge starts advertising `amb/execute-php` immediately, while
+the client keeps serving the four read tools it cached at connect time. **Turn build mode on BEFORE
+adding the connector**, or remove and re-add it afterwards. Toggling it off and on within a session
+is not enough — measured.
+
+**Layer 6 is not a defect and must not be "fixed".** The domain lock is the connector's own
+security model working exactly as designed: it exists so that copying a database cannot carry the
+right to execute AI abilities onto another host. A migration trips it because a migration is that
+copy. Re-enabling the abilities is a deliberate per-domain decision a human makes in the plugin's
+own UI, and automating past it would empty the control of meaning. Document it; do not route
+around it.
+
+The remedy for 2 and 3 is not a reconnect, it is a RE-PAIR: the destination mints a new credential
+against the database it actually has now, and that new URL is added to the client fresh. Removing
+the stale entry first is part of it — it carries the old pairing inside, which is what keeps every
+status green.
 
 **Carry the connector as a mu-plugin and layer one disappears**, for exactly the reason the sandbox
-exclusion is a mu-plugin: `active_plugins` cannot deactivate what was never in it. Layers two,
-three and four are credentials and configuration, and those are re-paired by a human — plan for it
-rather than discover it. A migration that is otherwise perfect still hands back a site nobody can
-reach.
+exclusion is a mu-plugin: `active_plugins` cannot deactivate what was never in it. The file lives
+at `wp-content/mu-plugins/`, filters `option_active_plugins`, and **checks `file_exists` before
+adding each path** — the authoring site does not have those plugins installed, and naming a path
+WordPress cannot load would fatal every request. Everything below layer one is credentials,
+configuration and a deliberate human gate: plan for them rather than discover them. A migration
+that is otherwise perfect still hands back a site nobody can reach.
+
+Worth copying rather than retyping, for the same reason the sandbox filter is — here the failure
+mode is worse than silence. `wp-content/mu-plugins/novamira-keep-connector.php`:
+
+```php
+add_filter( 'option_active_plugins', function ( $plugins ) {
+    if ( ! is_array( $plugins ) ) {
+        return $plugins;
+    }
+    $keep = array(
+        'agency-mcp-bridge/agency-mcp-bridge.php',
+        'novamira/novamira.php',
+    );
+    foreach ( $keep as $plugin ) {
+        if ( in_array( $plugin, $plugins, true ) ) {
+            continue;
+        }
+        if ( ! file_exists( WP_PLUGIN_DIR . '/' . $plugin ) ) {
+            continue;
+        }
+        $plugins[] = $plugin;
+    }
+    return $plugins;
+} );
+```
+
+Drop the `file_exists` check and the authoring machine — which does not have these plugins
+installed — fatals on every request, including wp-admin. The check is what makes the file inert
+where the plugins are absent and active where they are present, which is the whole behaviour
+wanted from something that travels inside the archive.
+
+## Getting the archive to the host
+
+**Carry the plugins. The first real run excluded them and it was a mistake** — corrected here
+because this file gave the wrong advice and a reader would have repeated it.
+
+The reasoning that produced `--exclude-plugins` was: an archive cannot travel through a
+conversation, so make it small enough that it might. That premise was already dead when the flag
+was used. The constraint is not the archive's size, it is that **base64 through the context window
+is not a file transport at any size** — and there is a real one.
+
+MEASURED (2026-09-10, LocalWP → Hostinger): the FULL archive, ~250 MB with every plugin in it,
+reached the host in **57 s, about 4.3 MB/s**, posted to Novamira's `/novamira/v1/upload` with
+`novamira_sign_upload_payload()` and an `x-novamira-upload-token` header. The bytes go over HTTP
+from disk; they never enter the conversation. Nothing about that route cares whether the file is
+5 MB or 250 MB.
+
+So the trade the exclusion bought was never needed, and what it cost was severe: the destination
+arrives with `_elementor_data` in every page and **no Elementor to render it** — every URL answers
+200 and every body is empty. An excluded-plugins archive is not a migrated site, it is a database
+waiting for a second, manual, undocumented installation step. If you ever must exclude them,
+re-installing and re-licensing is part of the ritual, not an afterthought.
+
+**The bridge cannot do this, and that gap is worth naming.** The Agency MCP Bridge has no
+file-transport ability at all. `amb-media-upload` is not one: it targets the media library and
+its payload travels through the conversation, so the context window is its ceiling. `amb-execute-php`
+can WRITE a file the server already has, and can even stand up an ephemeral receiver — which is
+building a transport rather than using one, and leaves something on a client's disk that has to be
+deleted and verified gone. Use Novamira's upload endpoint.
+
+**And that endpoint is the first casualty of layer 6.** The abilities are enabled per domain, so
+the upload works on a fresh host once a human enables them there — and stops working on that same
+host the moment a database from another domain lands on it. The channel you would use for the NEXT
+migration is broken BY the previous one until a person re-enables it. Plan the re-enable as a step,
+not as a surprise.
 
 ## After the import
 
@@ -216,5 +299,9 @@ host). What the run proved, and what it did not:
 - **What broke, and it is worth more than what worked:** the archive was exported
   `--exclude-plugins` to get it from 238 MB to 5 MB, so the destination arrived with
   `_elementor_data` in the database and no Elementor to render it — every page 200 and every body
-  empty. That trade is legitimate for transport, but the plugin re-install is then part of the
-  ritual, not an afterthought.
+  empty. **That exclusion was a mistake, not a trade** — see "Getting the archive to the host": the
+  transport it was protecting had already been measured carrying the full 250 MB in 57 s, and the
+  flag was used out of habit rather than need.
+- **Layers 5 and 6 were discovered on the retry** (2026-09-11), which is why the connector table
+  grew from four rows to six. Neither is visible until the layer above it is fixed, and layer 6 is
+  correct security behaviour rather than a defect.
