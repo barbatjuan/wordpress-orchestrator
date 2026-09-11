@@ -18,9 +18,9 @@ the script generates. Plugin settings, WooCommerce configuration, an edit made i
 the media library, the menu — none of it is in the script. A local WordPress you can only edit
 through a build script is not a local WordPress you can do anything in.
 
-## The three things the migration plugin does not know
+## The four things the migration plugin does not know
 
-It packages a WordPress. It has no idea this framework was ever here. All three of these ship a
+It packages a WordPress. It has no idea this framework was ever here. All four of these ship a
 site that looks perfect.
 
 **1. The sandbox travels in the export unless something stops it.** `es_sandbox_dir()` is
@@ -111,12 +111,53 @@ controls the build wrote, so the page renders wrong while every other check stay
 `es_build_fingerprint()` records the PHP, WordPress, Elementor and Elementor Pro versions the build
 was verified against; row 34 compares them.
 
+**4. THE MIGRATION KILLS THE CONNECTOR, in four layers, and every one of them reports success.**
+Measured on a real import (grey-mule, 2026-09-11). This is the trap that bites hardest, because it
+takes the agency's access away at the exact moment the new site needs work — installing what the
+archive left out, verifying, fixing.
+
+| Layer | What travels | What the site answers |
+|---|---|---|
+| `active_plugins` | the SOURCE's list, which never had the connector in it | plugins deactivated; their FILES are still on disk |
+| the credential | the agent user and its token live in the DATABASE, and the database was replaced | `/wp-json/mcp/bridge` → **401**, not 404 |
+| the MCP route | the server registration is configuration, also in the database | `/wp-json/mcp/novamira` → **404**, while `/wp-json/novamira/v1/*` is registered and answers 403 |
+| build mode | `WP_ENVIRONMENT_TYPE` and `AMB_ALLOW_PHP_EXEC` live in `wp-config.php`, which this ritual EXCLUDES on purpose | typed writes and PHP execution are simply off |
+
+**The layers fail in ascending order of disguise.** Reactivating the plugins fixes the first and
+looks like it fixed everything: the plugin page says Enabled, the endpoint resolves, the status
+screen reports the pairing it inherited from the source site. Measured on the day: the WordPress
+panel said connected, the client's connector list said `connected`, the call said
+*"connection was invalidated"*, and the reconnect tool refused with *"is connected; only a failed
+server can be reconnected"* — **three systems reporting three different things about one dead
+connection**, and the one tool that could have repaired it declined BECAUSE the status lied.
+
+The remedy is not a reconnect, it is a RE-PAIR: the destination mints a new credential against the
+database it actually has now, and that new URL is added to the client fresh. Removing the stale
+entry first is part of it — it carries the old pairing inside, which is what keeps every status
+green.
+
+**Carry the connector as a mu-plugin and layer one disappears**, for exactly the reason the sandbox
+exclusion is a mu-plugin: `active_plugins` cannot deactivate what was never in it. Layers two,
+three and four are credentials and configuration, and those are re-paired by a human — plan for it
+rather than discover it. A migration that is otherwise perfect still hands back a site nobody can
+reach.
+
 ## After the import
 
-**Save Settings → Permalinks once.** The rewrite rules live in a file, not the database, so they
-were never in the export — and on nginx they never existed. Until that is done, every URL except
-the front page returns 404. It is the most likely production-only failure of a migration, and row
-25 is where it surfaces.
+**Save Settings → Permalinks once — and this paragraph used to overstate it.** The rewrite rules
+live in a file, not the database, so they were never in the export; on nginx they never existed.
+This file called that "the most likely production-only failure of a migration", and the first real
+migration did not reproduce it: **16 routes answered 200 with nobody having touched permalinks** —
+pages, the four legals, a WooCommerce product and three product categories, with a missing URL
+correctly 404. All-in-One runs `Ai1wm_Import_Permalinks` at priority 170 of its own import chain
+and flushes them itself.
+
+Two reasons that is not yet permission to drop the step. The source and destination carried the
+SAME `/%postname%/` structure, so nothing exercised a structure CHANGE; and the destination was
+nginx, where there is no `.htaccess` for the flush to have to write. Save them anyway — it costs
+one click and covers both untested cases — but report it as a precaution rather than as the
+failure this file used to predict. Row 25 still measures the outcome, which is the part that
+matters.
 
 ## What goes in the Blueprint
 
@@ -161,8 +202,19 @@ else — see the second measured table above. What broke on the way: the URL Ext
 export until it was deactivated, which is worth knowing because the error names the extension and
 not the fix.
 
-**Traps 2 and 3 and the import half are still unexercised.** No site has gone from LocalWP to a
-production host through this checklist: nothing here has watched a `.wpress` land on a real server,
-so the permalink flush, the `blog_public` carry-over and the runtime comparison remain specified
-and unproven. Record the result here the first time one does, and say what broke rather than only
-that it worked.
+**The import half is now exercised too** (2026-09-11, LocalWP `prueba1` → a real Hostinger staging
+host). What the run proved, and what it did not:
+
+- **Trap 1 closed end to end.** The sandbox is absent on the live host — `404`, with a random-name
+  calibration probe also `404`, so it is not a soft-404 — and `mu-plugins/novamira-exclude-sandbox.php`
+  is present, so the destination now protects its own future exports. Source disk → archive → host.
+- **Trap 4 was discovered BY the run**, and is the reason this list grew from three to four.
+- **The permalink paragraph was corrected rather than confirmed**, above.
+- **Trap 2 (`blog_public`) and trap 3 (runtime) remain unproven.** Both sites carried
+  `blog_public = 1`, so nothing tested the carry-over of a zero; and no version skew existed to
+  make the fingerprint comparison say anything.
+- **What broke, and it is worth more than what worked:** the archive was exported
+  `--exclude-plugins` to get it from 238 MB to 5 MB, so the destination arrived with
+  `_elementor_data` in the database and no Elementor to render it — every page 200 and every body
+  empty. That trade is legitimate for transport, but the plugin re-install is then part of the
+  ritual, not an afterthought.
