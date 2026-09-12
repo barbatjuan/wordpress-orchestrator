@@ -2424,12 +2424,16 @@ $r = grab( 'es_font_serving_check' );
 ok( 'sin-confirmar' === $r['ret'], 'el veredicto sigue siendo el mismo en la segunda llamada' );
 ok( '' === $r['out'], 'pero no se repite: una vez por build' );
 
-/* 3. Instaladas las dos, se calla. Un check que avisa siempre se apaga igual que
-      uno que aprueba siempre, solo que mas despacio. */
+/* 3. Instaladas las dos Y con los encolados a la vista, se calla. Un check que
+      avisa siempre se apaga igual que uno que aprueba siempre, solo que mas
+      despacio. El estilo encolado no es decoracion del fixture: sin UNA hoja
+      encolada o impresa no hay peticion del front que mirar, y dar el sitio por
+      limpio dejaria de ser honesto (escenario 7). */
 wp_fake_reset();
 $GLOBALS['wp']['post_types'] = array( 'post', 'page', 'elementor_font' );
 $GLOBALS['wp']['font_posts'] = array( 'elementor_font' => array( es_t( 'font_head' ), es_t( 'font_body' ) ) );
 $GLOBALS['es_font_said']     = false;
+wp_fake_style( 'tema-estilo', 'https://sitio.test/wp-content/themes/x/style.css', 'enqueued' );
 $r = grab( 'es_font_serving_check' );
 ok( 'alojada' === $r['ret'], 'con las dos familias instaladas el veredicto es alojada' );
 ok( '' === $r['out'], 'y se calla: un sitio correcto no tiene que oir nada' );
@@ -2453,41 +2457,128 @@ wp_fake_reset();
 $GLOBALS['wp']['post_types'] = array( 'post', 'page', 'bsf_custom_fonts' );
 $GLOBALS['wp']['font_posts'] = array( 'bsf_custom_fonts' => array( es_t( 'font_head' ), es_t( 'font_body' ) ) );
 $GLOBALS['es_font_said']     = false;
+wp_fake_style( 'tema-estilo', 'https://sitio.test/wp-content/themes/x/style.css', 'enqueued' );
 $r = grab( 'es_font_serving_check' );
 ok( 'alojada' === $r['ret'], 'otro plugin de fuentes con otro nombre de tipo tambien cuenta: el tipo se deriva de get_post_types()' );
 
-/* 6. El hallazgo legal. Encontrar el CDN de Google es una PRUEBA (al reves que
-      no encontrarlo, que no prueba nada), y gana al resto del veredicto. */
+/* 6. EL DEFECTO MEDIDO: una hoja REGISTRADA no prueba nada. WordPress core
+      registra `open-sans` apuntando a fonts.googleapis.com en TODAS las
+      instalaciones y no lo encola en ninguna, asi que leyendo `registered` este
+      check acusaba a todos los sitios del mundo. Medido en un Hostinger real:
+      open-sans registrado con enqueued false y done false, wp-editor-font
+      igual, elementor_google_fonts "0", CERO apariciones de googleapis o
+      gstatic en el HTML servido — y el aviso de RGPD impreso igual. Un aviso
+      que salta siempre se apaga igual que uno que aprueba siempre, y este
+      saltaba nombrando una exposicion legal, que es peor: entrena al operador a
+      no creerse la unica linea que tenia orden de leer. */
 wp_fake_reset();
 $GLOBALS['wp']['post_types'] = array( 'post', 'page', 'elementor_font' );
 $GLOBALS['wp']['font_posts'] = array( 'elementor_font' => array( es_t( 'font_head' ), es_t( 'font_body' ) ) );
 $GLOBALS['es_font_said']     = false;
-$GLOBALS['wp_styles']        = (object) array(
-	'registered' => array(
-		'tema-estilo'      => (object) array( 'src' => 'https://sitio.test/wp-content/themes/x/style.css' ),
-		'elementor-gfonts' => (object) array( 'src' => 'https://fonts.googleapis.com/css?family=Manrope' ),
-	),
-);
+wp_fake_core_styles();
+wp_fake_style( 'tema-estilo', 'https://sitio.test/wp-content/themes/x/style.css', 'enqueued' );
 $r = grab( 'es_font_serving_check' );
-ok( 'google' === $r['ret'], 'una hoja de estilo apuntando a fonts.googleapis.com es prueba, y gana aunque las familias esten instaladas' );
+ok( 'google' !== $r['ret'], 'lo que core registra y nadie encola NO es una prueba: el veredicto no es google' );
+ok( 'alojada' === $r['ret'], 'con las familias instaladas y los encolados vistos sin Google, el sitio esta limpio' );
+ok( '' === $r['out'], 'y no se le lee la cartilla de RGPD a un sitio que no le pide nada a Google' );
+
+/* 6b. El hallazgo legal, con la prueba que si lo es: la hoja ENCOLADA. Es una
+       prueba (al reves que no encontrarla, que no prueba nada) y gana al resto
+       del veredicto aunque las familias esten instaladas, porque el problema
+       que nombra no es tipografico sino legal. */
+wp_fake_reset();
+$GLOBALS['wp']['post_types'] = array( 'post', 'page', 'elementor_font' );
+$GLOBALS['wp']['font_posts'] = array( 'elementor_font' => array( es_t( 'font_head' ), es_t( 'font_body' ) ) );
+$GLOBALS['es_font_said']     = false;
+wp_fake_core_styles();
+wp_fake_style( 'tema-estilo', 'https://sitio.test/wp-content/themes/x/style.css', 'enqueued' );
+wp_fake_style( 'elementor-gfonts', 'https://fonts.googleapis.com/css?family=Manrope', 'enqueued' );
+$r = grab( 'es_font_serving_check' );
+ok( 'google' === $r['ret'], 'una hoja ENCOLADA apuntando a fonts.googleapis.com es prueba, y gana aunque las familias esten instaladas' );
 ok( has( $r['out'], 'elementor-gfonts' ), 'y nombra el estilo culpable, que es lo unico accionable' );
+ok( ! has( $r['out'], 'open-sans' ), 'y NO el de core, que esta registrado y no lo pide nadie: mandar a quitar ese encolado es mandar a buscar lo que no existe' );
 ok( has( $r['out'], 'IP' ), 'diciendo que lo que se filtra es la IP del visitante' );
 ok( has( $r['out'], 'sentencias' ), 'y que ya hay sentencias contra el titular de la web, no contra Google' );
 
-/* 7. Un registro de estilos SIN Google no convierte el veredicto en limpio: los
-      encolados del front no han corrido en una peticion de build, asi que su
-      ausencia no prueba nada. Este es el escenario que separa "no lo he visto"
-      de "no esta", y sin el la sonda de Google podria estar leyendo el registro
-      al reves sin que nada se enterase. */
+/* 6c. Impresa cuenta igual que encolada. Cuando los estilos ya se han impreso la
+       cola puede estar vaciada y `done` es lo unico que recuerda lo que salio:
+       un check que leyera SOLO `queue` se quedaria ciego justo donde la prueba
+       es mas fuerte, porque ahi ya esta en el HTML del visitante. */
+wp_fake_reset();
+$GLOBALS['wp']['post_types'] = array( 'post', 'page', 'elementor_font' );
+$GLOBALS['wp']['font_posts'] = array( 'elementor_font' => array( es_t( 'font_head' ), es_t( 'font_body' ) ) );
+$GLOBALS['es_font_said']     = false;
+wp_fake_core_styles();
+wp_fake_style( 'tema-gfonts', 'https://fonts.gstatic.com/s/manrope/v13/x.woff2', 'done' );
+$r = grab( 'es_font_serving_check' );
+ok( 'google' === $r['ret'], 'una hoja ya IMPRESA tambien es prueba: gstatic en done es una peticion que el visitante ya ha hecho' );
+ok( has( $r['out'], 'tema-gfonts' ), 'y nombra ese estilo' );
+
+/* 6d. UNA DEPENDENCIA ES UNA PETICION TAMBIEN, y es el agujero que deja leer
+       solo la cola. WordPress imprime las deps de un handle encolado SIN
+       meterlas nunca en `queue`: un tema que encola su hoja y arrastra detras
+       una de Google le pide la tipografia a Google en cada visita, y la cola no
+       la menciona. La cadena es de dos saltos a proposito — tema-estilo ->
+       tema-fuentes -> tema-gfonts — porque con un solo salto un recorrido que
+       no sea transitivo pasaria el test y el agujero seguiria abierto un nivel
+       mas abajo. Esto es un falso LIMPIO, que es la unica clase de fallo peor
+       que el falso positivo que este commit vino a quitar. */
+wp_fake_reset();
+$GLOBALS['wp']['post_types'] = array( 'post', 'page', 'elementor_font' );
+$GLOBALS['wp']['font_posts'] = array( 'elementor_font' => array( es_t( 'font_head' ), es_t( 'font_body' ) ) );
+$GLOBALS['es_font_said']     = false;
+wp_fake_core_styles();
+wp_fake_style( 'tema-gfonts', 'https://fonts.googleapis.com/css?family=Inter' );
+wp_fake_style( 'tema-fuentes', 'https://sitio.test/wp-content/themes/x/fuentes.css', 'registered', array( 'tema-gfonts' ) );
+wp_fake_style( 'tema-estilo', 'https://sitio.test/wp-content/themes/x/style.css', 'enqueued', array( 'tema-fuentes' ) );
+$r = grab( 'es_font_serving_check' );
+ok( 'google' === $r['ret'], 'una hoja de Google que entra como DEPENDENCIA de una encolada es una peticion del visitante igual' );
+ok( has( $r['out'], 'tema-gfonts' ), 'y nombra la hoja de Google, no la del tema que la arrastra: lo accionable es la que hay que quitar' );
+
+/* 6e. Un ciclo en las dependencias no cuelga el informe. WordPress no lo
+       produciria, pero un plugin con una lista escrita a mano si, y un informe
+       que se queda colgado es peor que uno equivocado: el build entero se para
+       en la linea que existe para avisar. Que este escenario TERMINE es la
+       assertion; el veredicto es lo de menos. */
+wp_fake_reset();
+$GLOBALS['wp']['post_types'] = array( 'post', 'page', 'elementor_font' );
+$GLOBALS['wp']['font_posts'] = array( 'elementor_font' => array( es_t( 'font_head' ), es_t( 'font_body' ) ) );
+$GLOBALS['es_font_said']     = false;
+wp_fake_style( 'a', 'https://sitio.test/a.css', 'enqueued', array( 'b' ) );
+wp_fake_style( 'b', 'https://sitio.test/b.css', 'registered', array( 'a' ) );
+$r = grab( 'es_font_serving_check' );
+ok( 'alojada' === $r['ret'], 'un ciclo de dependencias termina, y sin Google en el ciclo el sitio sigue limpio' );
+
+/* 7. LA OTRA MITAD, y es la que un cambio ingenuo rompe en silencio: en una
+      peticion de build no hay NADA encolado (medido: queue_size 0), asi que
+      leer solo `queue` haria que el check no salte nunca. No saltar es peor que
+      saltar siempre, porque es silencioso. Con las dos familias instaladas y
+      los encolados invisibles el veredicto honesto no es ni aprobado ni
+      suspenso: es "no lo he podido confirmar", igual que 'sin-wordpress' es "no
+      hay sitio al que preguntar". */
+wp_fake_reset();
+$GLOBALS['wp']['post_types'] = array( 'post', 'page', 'elementor_font' );
+$GLOBALS['wp']['font_posts'] = array( 'elementor_font' => array( es_t( 'font_head' ), es_t( 'font_body' ) ) );
+$GLOBALS['es_font_said']     = false;
+wp_fake_core_styles();
+$r = grab( 'es_font_serving_check' );
+ok( 'sin-confirmar' === $r['ret'], 'sin un solo encolado ni impreso no se puede saber que carga el front: eso no es un aprobado' );
+ok( has( $r['out'], 'googleapis' ), 'y el aviso dice que la pregunta abierta es si algo le pide la tipografia a Google' );
+ok( has( $r['out'], 'no lo he podido confirmar' ), 'en los terminos de siempre: un "no he podido", no un "no esta"' );
+ok( ! has( $r['out'], es_t( 'font_head' ) ), 'y NO acusa de que falte una familia que esta instalada: eso manda a revisar lo que ya funciona' );
+
+/* 7b. Un registro EJERCITADO y sin Google cierra la parte legal, pero no tapa
+       una familia que falta. Sin este escenario la sonda podria estar leyendo
+       la cola al reves sin que nada se enterase. */
 wp_fake_reset();
 $GLOBALS['wp']['post_types'] = array( 'post', 'page', 'elementor_font' );
 $GLOBALS['es_font_said']     = false;
-$GLOBALS['wp_styles']        = (object) array(
-	'registered' => array( 'tema-estilo' => (object) array( 'src' => 'https://sitio.test/wp-content/themes/x/style.css' ) ),
-);
+wp_fake_core_styles();
+wp_fake_style( 'tema-estilo', 'https://sitio.test/wp-content/themes/x/style.css', 'enqueued' );
 $r = grab( 'es_font_serving_check' );
-ok( 'sin-confirmar' === $r['ret'], 'un registro de estilos sin Google no confirma nada: la ausencia de prueba no es prueba de ausencia' );
-unset( $GLOBALS['wp_styles'] );
+ok( 'sin-confirmar' === $r['ret'], 'los encolados vistos y sin Google no instalan la familia que falta' );
+ok( has( $r['out'], es_t( 'font_head' ) ), 'y el aviso nombra la familia, que es lo que falta de verdad' );
+ok( ! has( $r['out'], 'sentencias' ), 'sin prueba de Google no se le lee la cartilla de RGPD a nadie' );
 
 /* 8. Una cara web-safe no necesita servirse. Sin esta salida el check avisaria
       de Georgia en cada build y el operador aprenderia a saltarselo. */

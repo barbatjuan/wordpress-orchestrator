@@ -95,6 +95,10 @@ function wp_fake_reset() {
 	   is about. Reset with the site, not beside it. */
 	$GLOBALS['es_preflight_slugs'] = array();
 	$GLOBALS['es_saved_pages']     = array();
+	/* The style registry is site state too, and it is the one a fixture is likeliest to forget: it
+	   is built by wp_fake_style() rather than declared here, so a leftover from the previous
+	   scenario would silently answer the next one's question about Google. */
+	unset( $GLOBALS['wp_styles'] );
 }
 
 /**
@@ -291,6 +295,68 @@ function update_option( $name, $value ) {
 
 	return true;
 }
+/**
+ * A style registry that can tell REGISTERED from ENQUEUED, because WordPress can.
+ *
+ * What this replaces was `(object) array( 'registered' => ... )` written inline in the suite, and
+ * for as long as it existed it made a real defect unreachable. `es_font_serving_check()` read
+ * `registered` and called a hit there PROOF that Google was serving the family; every fixture fed
+ * that stub a registry whose only Google entry was one a test had deliberately put there, so the
+ * probe looked exact. WordPress core REGISTERS `open-sans` pointing at `fonts.googleapis.com` on
+ * every installation and enqueues it nowhere — so on a real site the probe matched ALWAYS, and the
+ * RGPD warning about visitor IPs leaving the EU printed on sites that request nothing from Google.
+ * MEASURED on a live Hostinger site through the bridge: `open-sans` registered with `enqueued`
+ * false and `done` false, `wp-editor-font` the same, `elementor_google_fonts` = "0", ZERO
+ * occurrences of `googleapis` or `gstatic` in the rendered front end — and the full warning
+ * printed anyway. A stub with one array cannot express that state, so nothing could assert against
+ * it. Same disease as get_page_by_path() above: a double simpler than the thing it doubles hides
+ * exactly the bugs that live in the difference.
+ *
+ * The shapes are WP_Dependencies': `registered` maps handle => object carrying `->src`, while
+ * `queue` and `done` are flat lists of HANDLES with no src on them. A probe that expects to read a
+ * src straight out of `queue` finds nothing on a real site, so this fake may not hand it one.
+ *
+ * $state is 'registered' (the default: known to WordPress, asked for by nobody), 'enqueued' (in
+ * the queue for this request) or 'done' (already printed, which is where the queue has been
+ * drained and only `done` still remembers).
+ *
+ * $deps is the fourth shape and the one a probe forgets: WordPress prints the dependencies of an
+ * enqueued handle WITHOUT ever putting them in `queue`, so a theme's Google stylesheet pulled in
+ * behind the theme's own stylesheet is a request the visitor makes and the queue never mentions.
+ */
+function wp_fake_style( $handle, $src, $state = 'registered', array $deps = array() ) {
+	if ( ! isset( $GLOBALS['wp_styles'] ) ) {
+		$GLOBALS['wp_styles'] = (object) array(
+			'registered' => array(),
+			'queue'      => array(),
+			'done'       => array(),
+		);
+	}
+	$reg                        = $GLOBALS['wp_styles'];
+	$reg->registered[ $handle ] = (object) array(
+		'handle' => $handle,
+		'src'    => $src,
+		'deps'   => $deps,
+	);
+	if ( 'enqueued' === $state ) {
+		$reg->queue[] = $handle;
+	} elseif ( 'done' === $state ) {
+		$reg->done[] = $handle;
+	}
+}
+
+/**
+ * The two Google stylesheets core registers on EVERY installation and enqueues nowhere.
+ *
+ * Both handles and both URLs are the measured ones, not plausible ones: a fixture that invented a
+ * handle would still pass a probe reading `registered` and would prove nothing about the site
+ * every client actually has.
+ */
+function wp_fake_core_styles() {
+	wp_fake_style( 'open-sans', 'https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,300,400,600&subset=latin,latin-ext&display=fallback' );
+	wp_fake_style( 'wp-editor-font', 'https://fonts.googleapis.com/css?family=Noto+Serif:400,400i,700,700i' );
+}
+
 /**
  * Two callers, two meanings.
  *
