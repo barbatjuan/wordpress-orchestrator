@@ -42,7 +42,7 @@ yourself and stop until you get it.
   `fonts.googleapis.com` sends every visitor's IP to a third country before any banner appears —
   no consent, no legal basis, and EU courts have fined the site owner for it. The procedure is in
   `elementor-core/references/knowledge.md`.
-  (verifier: `es_font_serving_check()` warns from `es_audit_summary()`, naming the Google stylesheet when it finds one registered and saying it could not confirm when the registry is empty.)
+  (verifier: `es_font_serving_check()` warns from `es_audit_summary()`, naming the Google stylesheet when this request ENQUEUED one; a registration is not proof, since core registers `open-sans` against Google everywhere and enqueues it nowhere.)
 - **Show the overwrite preflight before writing.** Existing legal pages have the longest history
   and the least appetite for a silent rebuild.
   (verifier: `es_overwrite_preflight()` prints the slugs that would be overwritten, marking the front page and any page not currently built with the builder.)

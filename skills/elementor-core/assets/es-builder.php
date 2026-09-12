@@ -3193,14 +3193,23 @@ function es_front_page_check() {
  *     family as a post. The type name is DERIVED and never enumerated, because a constant copied
  *     from one plugin's source is wrong for the next one and wrong after any rename — and a probe
  *     that silently matches nothing reports a clean site.
- *   - Google's CDN. Read from `$GLOBALS['wp_styles']` DIRECTLY and never through `wp_styles()`,
- *     which instantiates the registry as a side effect; a report may not change the thing it
- *     reports on. Finding `fonts.googleapis.com` there is proof the family comes from Google.
+ *   - Google's CDN, and only as an ENQUEUE. Read from `$GLOBALS['wp_styles']` DIRECTLY and never
+ *     through `wp_styles()`, which instantiates the registry as a side effect; a report may not
+ *     change the thing it reports on. What counts is a handle this request put in `queue` or
+ *     already printed into `done`, with its src read back out of `registered`. A REGISTRATION is
+ *     not proof of anything: core registers `open-sans` against `fonts.googleapis.com` on every
+ *     installation and enqueues it nowhere, so the older probe — which scanned `registered` —
+ *     accused every site in the world, measured included (`open-sans` and `wp-editor-font`
+ *     registered, `enqueued` and `done` both false, `elementor_google_fonts` = "0", zero
+ *     `googleapis` in the served HTML, full RGPD warning printed).
  *
  * WHAT IT CANNOT SEE, said out loud instead of reported as clean: a build runs in a REST/CLI
- * request, where the front end's `wp_enqueue_scripts` never fires. So the style registry is mostly
- * EMPTY here, and an empty registry proves nothing at all. Absence of evidence is reported as
- * `sin-confirmar` and WARNS — it is not a pass. A check that always passes is worse than no check.
+ * request, where the front end's `wp_enqueue_scripts` never fires. So NOTHING is enqueued here
+ * (measured: `queue_size` 0) and the question "does this site ask Google for the font?" has no
+ * answer from inside a build. That is reported as `sin-confirmar` and WARNS — it is not a pass,
+ * and it is not a finding either. A check that always passes is worse than no check; a check that
+ * goes quiet because it was made stricter is worse still, because nobody notices. So `'alojada'`
+ * needs BOTH halves: the families installed AND a front end that was actually looked at.
  *
  * Values that are not families are skipped: a generic stack (`serif`, `system-ui`) or a web-safe
  * face needs no serving path, and warning about `Georgia` would teach the operator to scroll past.
@@ -3274,13 +3283,37 @@ function es_font_serving_check() {
 		}
 	}
 
-	/* PRESENCE proves Google is serving it. Absence proves nothing (see the docblock), so this only
-	   ever upgrades the verdict and never clears it. */
+	/* AN ENQUEUE IS THE PROOF; A REGISTRATION IS NOT, and that correction is why this block reads
+	   two lists instead of one. `registered` is what WordPress KNOWS ABOUT. `queue` and `done` are
+	   what THIS request actually asked the browser for. Core registers `open-sans` against
+	   fonts.googleapis.com on EVERY installation and enqueues it nowhere, so a scan of `registered`
+	   matched on every site in the world: measured on a live site, `open-sans` and `wp-editor-font`
+	   registered with `enqueued` and `done` both false, `elementor_google_fonts` = "0", zero
+	   occurrences of `googleapis` or `gstatic` in the served HTML — and the RGPD warning printed
+	   anyway. A warning that fires always dies the same death as a check that passes always, and
+	   this one fired while naming a legal exposure, which is worse: it teaches the operator not to
+	   believe the one line they were told to read. The handles live in `queue`/`done` and the src
+	   lives in `registered`, so the two lists are two halves of one fact. `done` counts as much as
+	   `queue`: once the styles have been printed the queue may be drained and `done` is all that
+	   still remembers what went out.
+
+	   `$mirado` is the other half of the same correction, and without it the fix would have moved
+	   the defect instead of removing it. A build runs in a REST/CLI request where the front end's
+	   enqueues never fire, so the queue here is EMPTY (measured: `queue_size` 0) and a probe reading
+	   it alone would never fire again on any site — silent, which is worse than loud and wrong. An
+	   unexercised registry is "I could not look", the same shape as `sin-wordpress`, and it may not
+	   be spent as a pass. Absence still proves nothing; only now the absence is named. */
 	$google = '';
+	$mirado = false;
 	$reg    = isset( $GLOBALS['wp_styles'] ) ? $GLOBALS['wp_styles'] : null;
-	if ( is_object( $reg ) && isset( $reg->registered ) && is_array( $reg->registered ) ) {
-		foreach ( $reg->registered as $mango => $hoja ) {
-			$src = ( is_object( $hoja ) && isset( $hoja->src ) ) ? (string) $hoja->src : '';
+	if ( is_object( $reg ) ) {
+		$cola    = ( isset( $reg->queue ) && is_array( $reg->queue ) ) ? array_values( $reg->queue ) : array();
+		$hechas  = ( isset( $reg->done ) && is_array( $reg->done ) ) ? array_values( $reg->done ) : array();
+		$fuentes = ( isset( $reg->registered ) && is_array( $reg->registered ) ) ? $reg->registered : array();
+		$mirado  = (bool) ( $cola || $hechas );
+		foreach ( array_merge( $cola, $hechas ) as $mango ) {
+			$hoja = isset( $fuentes[ (string) $mango ] ) ? $fuentes[ (string) $mango ] : null;
+			$src  = ( is_object( $hoja ) && isset( $hoja->src ) ) ? (string) $hoja->src : '';
 			if ( false !== stripos( $src, 'fonts.googleapis.com' ) || false !== stripos( $src, 'fonts.gstatic.com' ) ) {
 				$google = (string) $mango;
 				break;
@@ -3294,7 +3327,9 @@ function es_font_serving_check() {
 			$faltan[] = $nombre;
 		}
 	}
-	if ( ! $faltan && '' === $google ) {
+	/* Clean needs BOTH halves answered: the families installed, and a front end that was actually
+	   looked at. Installed families say what this site has; only the enqueues say what it sends. */
+	if ( ! $faltan && '' === $google && $mirado ) {
 		return 'alojada';
 	}
 
@@ -3302,14 +3337,30 @@ function es_font_serving_check() {
 	if ( ! $es_font_said ) {
 		$es_font_said = true;
 		if ( 'google' !== $veredicto ) {
+			/* Two arms because there are two ways to land here and they send the operator to two
+			   different places: a family nobody installed, and a front end nobody could see. Naming
+			   the wrong one is how a warning gets scrolled past — arm A sends them to Custom Fonts,
+			   arm B to the served HTML, and a run that hits both says both. */
+			$dice = '';
+			if ( $faltan ) {
+				$dice .= 'NO SE PUEDE CONFIRMAR QUE ESTE SITIO SIRVA ' . implode( ' NI ', $faltan ) . '. es_tokens() la escribe '
+					. 'en cada titular y cada parrafo de este build, y NADA en este framework la instala: si no esta, el '
+					. 'navegador cae al tipo de letra del sistema y el diseno aprobado no es el que ve el cliente. He mirado '
+					. 'los tipos de contenido de fuentes registrados (Custom Fonts de Elementor Pro y equivalentes) y ahi no '
+					. 'aparece. ';
+			}
+			if ( ! $mirado ) {
+				$dice .= 'NO SE VE QUE CARGA EL FRONT: en esta peticion no hay ni una hoja de estilo encolada ni impresa — un '
+					. 'build corre en REST/CLI y los encolados del front nunca se disparan — asi que desde aqui no se puede '
+					. 'saber si algo le pide la tipografia al CDN de Google, que es una exposicion legal aparte. Que una hoja '
+					. 'este REGISTRADA no vale como prueba: WordPress registra "open-sans" contra fonts.googleapis.com en TODAS '
+					. 'las instalaciones y no lo encola en ninguna. Lo prueba el HTML servido: abre la portada y busca '
+					. '"googleapis" y "gstatic". ';
+			}
 			es_warn(
-				'NO SE PUEDE CONFIRMAR QUE ESTE SITIO SIRVA ' . implode( ' NI ', $faltan ) . '. es_tokens() la escribe en cada '
-				. 'titular y cada parrafo de este build, y NADA en este framework la instala: si no esta, el navegador cae al '
-				. 'tipo de letra del sistema y el diseno aprobado no es el que ve el cliente. He mirado los tipos de contenido '
-				. 'de fuentes registrados (Custom Fonts de Elementor Pro y equivalentes) y el registro de estilos; desde un '
-				. 'build NO se ven los encolados del front, asi que esto es "no lo he podido confirmar", no "no esta". '
-				. 'Confirmalo y, si falta, subela AUTOALOJADA — nunca desde el CDN de Google. El procedimiento esta en '
-				. 'elementor-core/references/knowledge.md, "Servir las familias tipograficas".'
+				$dice . 'Esto es un "no lo he podido confirmar", no un "no esta". Si falta, subela AUTOALOJADA — nunca desde '
+				. 'el CDN de Google. El procedimiento esta en elementor-core/references/knowledge.md, "Servir las familias '
+				. 'tipograficas".'
 			);
 		} else {
 			es_warn(

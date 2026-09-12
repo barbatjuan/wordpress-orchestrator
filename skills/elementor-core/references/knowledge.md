@@ -235,11 +235,17 @@ is for.
   deploying rather than repeated on every page. It asks WordPress which registered post types have
   "font" in the name and reads their published titles — derived, never a post-type constant copied
   out of one plugin — and reads `$GLOBALS['wp_styles']` directly (never `wp_styles()`, which
-  instantiates the registry: a report may not change what it reports on) for a `fonts.googleapis.com`
-  source. **`'sin-confirmar'` is not a pass and warns.** A build runs in a REST/CLI request where
-  the front end's enqueues never fire, so an empty style registry proves nothing; the warning says
-  what it inspected and that it could not confirm, instead of reporting a clean site. Generic and
-  web-safe faces are skipped. The once-per-build latch is `$es_font_said`, a global rather than a
+  instantiates the registry: a report may not change what it reports on) for a Google source among
+  the handles this request ENQUEUED (`queue`) or already printed (`done`). **A registration is not
+  proof:** core registers `open-sans` against `fonts.googleapis.com` on every installation and
+  enqueues it nowhere, so the older probe — a scan of `registered` — accused every site in the
+  world, and printed the RGPD warning at sites whose served HTML contains no `googleapis` at all.
+  **`'sin-confirmar'` is not a pass and warns.** A build runs in a REST/CLI request where the front
+  end's enqueues never fire, so nothing is enqueued here and that question has no answer from
+  inside a build: `'alojada'` needs BOTH the families installed AND a front end that was actually
+  looked at, and the warning names which half it could not see instead of reporting a clean site —
+  a check made stricter until it goes quiet is worse than one that was loud and wrong, because
+  nobody notices. Generic and web-safe faces are skipped. The once-per-build latch is `$es_font_said`, a global rather than a
   `static`, because a static cannot be reset and half the behaviour would be untestable.
 
 ### Servir las familias tipograficas
