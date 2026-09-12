@@ -34,3 +34,10 @@ _ins*.php
 
 # Local CodeGraph index; fully derived, machine-local
 .codegraph/
+
+# Blind-judge corpus: screenshots of DELIVERED CLIENT sites. corpus.md says so itself --
+# "client work does not belong in this repository" -- but nothing enforced it, and this repo
+# is public. The captures live on disk beside corpus.md for Judge A to read; they are never
+# committed. corpus.md (the index) IS tracked; the frames are not.
+/skills/blind-judges/references/corpus/*.jpg
+/skills/blind-judges/references/corpus/*.png
