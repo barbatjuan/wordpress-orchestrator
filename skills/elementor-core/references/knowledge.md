@@ -247,6 +247,17 @@ is for.
   a check made stricter until it goes quiet is worse than one that was loud and wrong, because
   nobody notices. Generic and web-safe faces are skipped. The once-per-build latch is `$es_font_said`, a global rather than a
   `static`, because a static cannot be reset and half the behaviour would be untestable.
+- `es_front_font_probe( $url = '' )` → `'sin-http'` | `'google'` | `'limpio'` | `'sin-confirmar'`.
+  The OTHER END of the same question, and an **entry point**: nothing in the asset calls it,
+  `qa-review` does (its Hard Rules name it). It fetches the served HTML — the only place the answer
+  lives — and is the only thing that can honestly clear the build's permanent `'sin-confirmar'`.
+  Separate from `es_font_serving_check()` rather than a branch of it because that one is a report
+  and a report may not change what it reports on; this makes an HTTP request. **It demands a 200
+  AND a closed document before it will say `'limpio'`:** a 401, a 500, an empty body and a holding
+  page all contain zero occurrences of `googleapis`, so "I did not find it" is worth nothing until
+  the bytes are known to be the page's. Both needles — `fonts.googleapis.com` is the stylesheet,
+  `fonts.gstatic.com` the font file a bad self-hosting job still pulls from the same third country.
+  `'limpio'` is a statement about THE URL FETCHED, not about the site, which is why `$url` exists.
 
 ### Servir las familias tipograficas
 
