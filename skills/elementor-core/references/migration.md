@@ -114,9 +114,10 @@ own placeholder.
 
 MEASURED on the destination, and the numbers are the reason this is worth a paragraph: the home
 page answered 200 with 28 Elementor elements and its real `<h1>`, `/nosotros/` 200 with 26,
-`/contacto/` 200 with 14, the custom 404 fired correctly — **twelve of twelve pages perfect** —
-while `/tienda/` and `/carrito/` answered **200 with zero Elementor elements and the `<h1>`
-"Great things are on the horizon"**, carrying `woocommerce-coming-soon` on the body class. With
+`/contacto/` 200 with 14, the custom 404 fired correctly — **ten of the twelve URLs probed
+rendered their own content** — while `/tienda/` and `/carrito/`, the other two, answered **200 with
+zero Elementor elements and the `<h1>` "Great things are on the horizon"**, carrying
+`woocommerce-coming-soon` on the body class. With
 `woocommerce_store_pages_only = yes` the placeholder covers ONLY the store, so every page a person
 naturally clicks first is fine. A migration can be flawless and still hand over a shop nobody can
 buy from.
@@ -324,9 +325,12 @@ host). What the run proved, and what it did not:
   is present, so the destination now protects its own future exports. Source disk → archive → host.
 - **Trap 4 was discovered BY the run**, and is the reason this list grew from three to four.
 - **The permalink paragraph was corrected rather than confirmed**, above.
-- **Trap 2 (`blog_public`) and trap 3 (runtime) remain unproven.** Both sites carried
-  `blog_public = 1`, so nothing tested the carry-over of a zero; and no version skew existed to
-  make the fingerprint comparison say anything.
+- **Trap 2 (`blog_public`) and trap 3 (runtime) looked unproven, and one of those readings was
+  simply wrong.** `blog_public` genuinely went untested: both sites carried 1, so nothing exercised
+  the carry-over of a zero. But "no version skew existed" was not a measurement — nobody had read
+  the destination's PHP. The second run did, on the SAME pair of hosts, and found 8.2.29 against
+  8.3.33. The skew had been there the whole time. See the second run below, and note the shape of
+  the mistake: an unmeasured value reported as a finding rather than as a gap.
 - **What broke, and it is worth more than what worked:** the archive was exported
   `--exclude-plugins` to get it from 238 MB to 5 MB, so the destination arrived with
   `_elementor_data` in the database and no Elementor to render it — every page 200 and every body
@@ -378,10 +382,13 @@ that turned the list above from advice into measurement.
   9 products at 37–45, contiguous and unshifted, with the kit still at `elementor-kit-5` on the
   body class. `es_manifest_verify()` has nothing to drift against and `post-<id>.css` stays
   correctly named.
-- **Pages render on the first request, with no rebuild step.** Twelve of twelve: home 200 with 28
-  Elementor elements, `/nosotros/` 26, `/contacto/` 14, the custom 404 firing on an unknown URL
-  with its own copy, `/inicio/` correctly 301 to the front page, the four legals and the thanks
-  page all 200. Elementor regenerates its CSS on first render exactly as this file claims.
+- **Pages render on the first request, with no rebuild step.** Ten of the twelve URLs probed, out
+  of 13 published: home 200 with 28 Elementor elements, `/nosotros/` 26, `/contacto/` 14, the custom
+  404 firing on an unknown URL with its own copy, `/inicio/` correctly 301 to the front page, the
+  four legals and the thanks page all 200. Elementor regenerates its CSS on first render exactly as
+  this file claims. The two that did NOT render their own content are `/tienda/` and `/carrito/`,
+  and they are trap 2's doing rather than the migration's — see the coming-soon paragraph above.
+  `/finalizar-compra/` was never probed, so it is a gap rather than a pass.
 - **The destination keeps its own users.** Excluding `wp_users` and `wp_usermeta` means the login
   that existed on the host before the import is the login that exists after it — the operator ran
   the restore from wp-admin with their own account and never lost it. Without that exclusion the

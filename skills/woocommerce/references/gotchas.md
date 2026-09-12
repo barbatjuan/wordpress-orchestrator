@@ -39,7 +39,7 @@ check it over HTTP afterwards rather than trusting the write, because of how thi
 the home page, the about page and the contact form all render perfectly while `/tienda/` and
 `/carrito/` answer **200 with the heading "Great things are on the horizon"**. A status-code probe
 passes. A heading probe passes. The signal that does not lie is `woocommerce-coming-soon` on the
-`<body>` class. Measured on a live hand-off: twelve of twelve pages correct and the shop invisible.
+`<body>` class. Measured on a live hand-off: ten of the twelve URLs probed rendered their own content, and the two that did not were the shop.
 
 qa-review row 35 carries the check.
 
