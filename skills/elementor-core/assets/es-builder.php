@@ -3533,6 +3533,107 @@ function es_font_system_faces() {
 }
 
 /**
+ * What does the front end ACTUALLY send to a visitor? The one question a build cannot answer.
+ *
+ * `es_font_serving_check()` reads the style registry, and from a build that registry has nothing
+ * enqueued in it, so its honest verdict there is `'sin-confirmar'` FOREVER. A warning nobody can
+ * ever clear gets scrolled past exactly like a check that always passes, only slower. This is the
+ * other end of it: it reads the SERVED HTML, which is where the answer lives, and it is the only
+ * thing in this framework that can honestly clear that "no lo he podido confirmar".
+ *
+ * A SEPARATE FUNCTION AND NOT A BRANCH OF THAT ONE, on purpose. That one is a report, and a report
+ * may not change the thing it reports on; this makes an HTTP request. It belongs to `qa-review`,
+ * the phase whose whole job is fetching what the site serves, and it is never called from a build
+ * — nothing in this asset calls it, which is what makes it an ENTRY POINT rather than dead weight.
+ *
+ * THE FALSE CLEAN IS THE WHOLE DIFFICULTY, and it is the same asymmetry the registry check has.
+ * A 401, a 500, a redirect to a holding page and an empty body all contain zero occurrences of
+ * `googleapis` — so "I did not find it" is worth nothing until the bytes are known to be the
+ * page's. It therefore demands a 200 AND a body that closes like a document, and anything short of
+ * that is `'sin-confirmar'`, never `'limpio'`. What it still cannot rule out is a 200 that is a
+ * real-looking maintenance page, which is why `'limpio'` is a statement about THE URL IT FETCHED
+ * and not about the site: `$url` exists so `qa-review` can walk the pages it built instead of
+ * absolving all of them from the root.
+ *
+ * Both needles, because they are two requests: `fonts.googleapis.com` is the stylesheet, and
+ * `fonts.gstatic.com` is the font file a bad self-hosting job or a stray `preconnect` still pulls
+ * from the same third country.
+ *
+ * WHAT IT STILL CANNOT SEE, said here rather than left to be found: a font pulled in by JAVASCRIPT
+ * at runtime leaves no Google URL in the served HTML, so this answers `'limpio'` for a page that
+ * does ask Google the moment the browser runs the script. A server-side fetch cannot see what the
+ * browser requests AFTERWARDS, and no amount of string-matching fixes that. The check that does see
+ * it is `qa-review`'s house-rule row 21 — a fresh browser context listing the real outbound
+ * requests. This function is the cheap pass that runs everywhere, not the last word.
+ *
+ * No once-per-build latch, unlike `es_font_serving_check()`: that one fires by itself from the
+ * audit summary on every page, this one is called deliberately, per URL, by somebody who is
+ * standing there waiting for the answer.
+ *
+ * Returns `'sin-http'` (no WordPress HTTP API here to call — nothing to ask, the same fact as
+ * `'sin-wordpress'`), `'google'` (the served page asks Google: proof, and it WARNS), `'limpio'`
+ * (a real page at that URL with zero requests to Google) or `'sin-confirmar'` (the request failed,
+ * or answered with something that is not the page).
+ */
+function es_front_font_probe( $url = '' ) {
+	if ( ! function_exists( 'wp_remote_get' ) || ! function_exists( 'home_url' ) ) {
+		return 'sin-http';
+	}
+
+	$url = ( '' !== trim( (string) $url ) ) ? trim( (string) $url ) : (string) home_url( '/' );
+	$res = wp_remote_get(
+		$url,
+		array(
+			'timeout'     => 15,
+			'redirection' => 3,
+		)
+	);
+
+	if ( function_exists( 'is_wp_error' ) && is_wp_error( $res ) ) {
+		$por = method_exists( $res, 'get_error_message' ) ? (string) $res->get_error_message() : '';
+		es_warn(
+			'NO SE HA PODIDO LEER ' . $url . ', asi que sigue sin saberse si este sitio le pide la tipografia al CDN de '
+			. 'Google: la peticion fallo (' . $por . '). Una peticion que falla NO es un sitio limpio. Miralo desde fuera '
+			. '(el HTML servido, buscando "googleapis" y "gstatic") antes de dar el sitio por bueno.'
+		);
+
+		return 'sin-confirmar';
+	}
+
+	$codigo = function_exists( 'wp_remote_retrieve_response_code' ) ? (int) wp_remote_retrieve_response_code( $res ) : 0;
+	$cuerpo = function_exists( 'wp_remote_retrieve_body' ) ? (string) wp_remote_retrieve_body( $res ) : '';
+
+	/* 200 Y documento cerrado, LAS DOS. Un 401 no contiene "googleapis" y un 500 con una pagina de
+	   error tampoco, asi que sin las dos condiciones esta funcion aprobaria un sitio detras de un
+	   candado por no haber encontrado lo que no podia ver. */
+	if ( 200 !== $codigo || false === stripos( $cuerpo, '</html>' ) ) {
+		es_warn(
+			'LO QUE CONTESTO ' . $url . ' NO ES LA PAGINA (codigo ' . $codigo . ', ' . strlen( $cuerpo ) . ' bytes, sin '
+			. 'documento cerrado), asi que no cuenta como haber mirado. Un 401, un 500 o una pagina de mantenimiento '
+			. 'tampoco contienen "googleapis": si esto se leyera como limpio, el sitio quedaria aprobado por lo que no se '
+			. 'ha podido ver. Arregla el acceso y vuelve a pasarla.'
+		);
+
+		return 'sin-confirmar';
+	}
+
+	if ( false !== stripos( $cuerpo, 'fonts.googleapis.com' ) || false !== stripos( $cuerpo, 'fonts.gstatic.com' ) ) {
+		es_warn(
+			'EL HTML QUE SIRVE ' . $url . ' PIDE TIPOGRAFIA AL CDN DE GOOGLE. Esto ya no es una sospecha leida del registro '
+			. 'de estilos: son los bytes que recibe el navegador del visitante. Eso manda la IP de cada visitante a un tercer '
+			. 'pais en cuanto abre la pagina, sin consentimiento y sin base legal, y ya hay sentencias en la UE condenando al '
+			. 'titular de la web — no al de Google. Los clientes de este framework son espanoles. Descarga la familia, subela '
+			. 'AUTOALOJADA y quita el encolado. El procedimiento esta en elementor-core/references/knowledge.md, "Servir las '
+			. 'familias tipograficas".'
+		);
+
+		return 'google';
+	}
+
+	return 'limpio';
+}
+
+/**
  * Carry the resolved tokens into the GLOBAL KIT, which is where they become the site.
  *
  * THE DEFECT THIS EXISTS FOR, measured on the first real build (LocalWP `prueba1`, 2026-09-09):

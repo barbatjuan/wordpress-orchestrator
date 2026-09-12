@@ -2693,6 +2693,170 @@ $r = grab( 'es_audit_summary' );
 ok( has( $r['out'], es_t( 'font_head' ) ), 'es_audit_summary() lo dice: la linea que el operador tiene orden de leer antes de desplegar' );
 
 /* ---------------------------------------------------------------------------
+ * EL OTRO EXTREMO: leer lo que el front SIRVE de verdad.
+ *
+ * es_font_serving_check() lee el registro de estilos, y desde un build ese
+ * registro no tiene nada encolado — asi que su veredicto honesto ahi es
+ * 'sin-confirmar' PARA SIEMPRE, y un aviso que nadie puede limpiar nunca se
+ * acaba saltando igual que uno que aprueba siempre. es_front_font_probe() es la
+ * otra punta: lee el HTML SERVIDO, que es donde vive la respuesta, y es lo unico
+ * que puede limpiar honestamente ese "no lo he podido confirmar".
+ *
+ * LAS DECLARACIONES VAN AQUI DENTRO, NO ARRIBA, por la misma razon que
+ * get_post_types(): la API HTTP de WordPress no existe en este arbol, y
+ * declararla en la cabecera pondria un home_url() debajo de TODO lo de arriba
+ * — incluido es-theme-parts.example.php, que lo llama en tres sitios. Dentro de
+ * un bloque la declaracion NO se iza: se define cuando la ejecucion llega aqui,
+ * y todo lo anterior corre en el mundo sin HTTP, que es el mundo de un build.
+ * ------------------------------------------------------------------------- */
+echo "--- lo que el front sirve de verdad ---\n";
+
+/* A. Sin API HTTP no hay nada a lo que llamar. No es "no encontre Google": es
+      "no hay sitio al que preguntar", el mismo hecho que 'sin-wordpress' y por
+      eso el mismo tipo de respuesta. Este escenario tiene que ir ANTES de las
+      declaraciones o deja de poder existir. */
+$r = grab( 'es_front_font_probe' );
+ok( 'sin-http' === $r['ret'], 'sin la API HTTP de WordPress el veredicto es sin-http, no un hallazgo inventado' );
+ok( '' === $r['out'], 'y no dice nada: no hay nada que contar de una peticion que no se puede hacer' );
+
+if ( ! function_exists( 'home_url' ) ) {
+	function home_url( $path = '/' ) {
+		return 'https://sitio.test' . $path;
+	}
+	/* El doble devuelve EXACTAMENTE lo que la de verdad devuelve: un array con
+	   response.code y body, o un WP_Error. Un doble que devolviese siempre el
+	   cuerpo esconderia justo el fallo que este bloque existe para cazar — que
+	   un 401 tampoco contiene "googleapis" y se leeria como limpio. */
+	function wp_remote_get( $url, $args = array() ) {
+		$GLOBALS['wp']['http_pedidas'][] = $url;
+		$m = isset( $GLOBALS['wp']['http'] ) ? $GLOBALS['wp']['http'] : array();
+		if ( isset( $m[ $url ] ) ) {
+			return $m[ $url ];
+		}
+		return new WP_Error( 'http_request_failed', 'nadie contesto en ' . $url );
+	}
+	function wp_remote_retrieve_response_code( $res ) {
+		return ( is_array( $res ) && isset( $res['response']['code'] ) ) ? $res['response']['code'] : '';
+	}
+	function wp_remote_retrieve_body( $res ) {
+		return ( is_array( $res ) && isset( $res['body'] ) ) ? $res['body'] : '';
+	}
+}
+
+/** Una respuesta HTTP con la forma de las de verdad. */
+function respuesta( $codigo, $cuerpo ) {
+	return array(
+		'response' => array( 'code' => $codigo ),
+		'body'     => $cuerpo,
+	);
+}
+/** Una pagina servida creible: lo que importa es que se cierre como un documento. */
+function pagina( $extra = '' ) {
+	return "<!DOCTYPE html>\n<html lang=\"es\">\n<head>\n<title>x</title>\n" . $extra
+		. "\n</head>\n<body><h1>hola</h1></body>\n</html>\n";
+}
+
+/* B. La peticion falla. Un WP_Error no es un sitio limpio: es un sitio que no
+      contesto, y el aviso tiene que decir cual y por que. */
+wp_fake_reset();
+$r = grab( 'es_front_font_probe' );
+ok( 'sin-confirmar' === $r['ret'], 'una peticion que falla no confirma nada' );
+ok( has( $r['out'], 'https://sitio.test/' ), 'y el aviso dice a que URL fue' );
+ok( has( $r['out'], 'nadie contesto' ), 'y arrastra el mensaje del error, que es lo unico que dice por que' );
+
+/* C. EL FALSO LIMPIO, que es la dificultad entera de esta funcion: un 401, un
+      500 o una pagina de mantenimiento tampoco contienen "googleapis". "No lo
+      encontre" no vale nada hasta saber que los bytes mirados eran los de la
+      pagina. Sin este escenario la funcion aprobaria un sitio detras de un
+      candado. */
+wp_fake_reset();
+$GLOBALS['wp']['http'] = array( 'https://sitio.test/' => respuesta( 401, 'Authorization Required' ) );
+$r = grab( 'es_front_font_probe' );
+ok( 'sin-confirmar' === $r['ret'], 'un 401 no es un sitio sin Google: es un sitio que no se ha visto' );
+ok( has( $r['out'], '401' ), 'y el aviso dice el codigo, que es lo que manda a mirar la causa' );
+
+wp_fake_reset();
+$GLOBALS['wp']['http'] = array( 'https://sitio.test/' => respuesta( 500, pagina() ) );
+$r = grab( 'es_front_font_probe' );
+ok( 'sin-confirmar' === $r['ret'], 'un 500 con cuerpo de pagina tampoco: el codigo manda sobre la forma' );
+
+/* D. Un 200 cuyo cuerpo no es un documento — vacio, JSON, un trozo de cache a
+      medias — es la misma trampa con otra cara. */
+wp_fake_reset();
+$GLOBALS['wp']['http'] = array( 'https://sitio.test/' => respuesta( 200, '' ) );
+$r = grab( 'es_front_font_probe' );
+ok( 'sin-confirmar' === $r['ret'], 'un 200 con el cuerpo vacio no es la pagina' );
+
+wp_fake_reset();
+$GLOBALS['wp']['http'] = array( 'https://sitio.test/' => respuesta( 200, '{"error":"nope"}' ) );
+$r = grab( 'es_front_font_probe' );
+ok( 'sin-confirmar' === $r['ret'], 'ni un 200 que devuelve JSON: sin documento cerrado no se ha mirado una pagina' );
+
+/* E. El hallazgo, y aqui la prueba es del todo: esta en los bytes que recibe el
+      visitante. No hay registro que interpretar ni encolado que deducir. */
+wp_fake_reset();
+$GLOBALS['wp']['http'] = array(
+	'https://sitio.test/' => respuesta( 200, pagina( '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter&display=swap">' ) ),
+);
+$r = grab( 'es_front_font_probe' );
+ok( 'google' === $r['ret'], 'googleapis en el HTML servido es la prueba definitiva: eso lo pide el navegador del visitante' );
+ok( has( $r['out'], 'IP' ), 'y el aviso dice que lo que se filtra es la IP' );
+ok( has( $r['out'], 'sentencias' ), 'y que hay sentencias contra el titular de la web' );
+
+/* F. gstatic sin googleapis: es el caso del @font-face autoalojado mal, o de un
+      preconnect. Son DOS agujas y buscar solo una deja pasar la mitad. */
+wp_fake_reset();
+$GLOBALS['wp']['http'] = array(
+	'https://sitio.test/' => respuesta( 200, pagina( '<link rel="preload" as="font" href="https://fonts.gstatic.com/s/inter/v13/x.woff2" crossorigin>' ) ),
+);
+$r = grab( 'es_front_font_probe' );
+ok( 'google' === $r['ret'], 'gstatic tambien: el fichero de la fuente sale del mismo tercer pais que la hoja' );
+
+/* G. Y EL ESTADO LIMPIO, que es la razon de que esta funcion exista: es lo unico
+      en todo el framework que puede decir honestamente que este sitio no le pide
+      nada a Google. Se calla, porque un sitio correcto no tiene que oir nada. */
+wp_fake_reset();
+$GLOBALS['wp']['http'] = array(
+	'https://sitio.test/' => respuesta( 200, pagina( '<link rel="stylesheet" href="https://sitio.test/wp-content/themes/x/fuentes.css">' ) ),
+);
+$r = grab( 'es_front_font_probe' );
+ok( 'limpio' === $r['ret'], 'una pagina de verdad con cero peticiones a Google es lo unico que limpia el sin-confirmar del build' );
+ok( '' === $r['out'], 'y no avisa de nada' );
+
+/* H. La URL se puede pedir, y es lo que hace util la sonda: 'limpio' habla SOLO
+      de la URL mirada, asi que qa-review tiene que poder recorrer las paginas
+      construidas y no solo la raiz. */
+wp_fake_reset();
+$GLOBALS['wp']['http'] = array(
+	'https://sitio.test/'         => respuesta( 200, pagina() ),
+	'https://sitio.test/contacto/' => respuesta( 200, pagina( '<link href="https://fonts.googleapis.com/css?family=Manrope" rel="stylesheet">' ) ),
+);
+$r = grab(
+	function () {
+		return es_front_font_probe( 'https://sitio.test/contacto/' );
+	}
+);
+ok( 'google' === $r['ret'], 'con una URL explicita mira ESA pagina: la raiz limpia no absuelve a las demas' );
+ok( in_array( 'https://sitio.test/contacto/', $GLOBALS['wp']['http_pedidas'], true ), 'y la peticion fue a esa URL, no a home_url()' );
+
+/* I. EL LIMITE CONOCIDO, escrito como assertion para que nadie lo descubra como
+      bug ni asuma que esta cubierto. Una fuente que carga JAVASCRIPT en tiempo
+      de ejecucion no deja la URL de Google en el HTML servido, asi que esta
+      sonda dice 'limpio' de una pagina que si le pide la fuente a Google en
+      cuanto el navegador ejecuta el script. No es un fallo arreglable aqui: un
+      fetch del servidor no puede ver lo que el navegador pide DESPUES. Lo que si
+      lo ve es la fila 21 de house-rules.md, que abre la pagina en un contexto
+      limpio y lista las peticiones salientes de verdad. Escrito en el docblock y
+      en la fila; aqui queda clavado para que un cambio futuro no lo borre sin
+      enterarse. */
+wp_fake_reset();
+$GLOBALS['wp']['http'] = array(
+	'https://sitio.test/' => respuesta( 200, pagina( '<script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script><script>WebFont.load({google:{families:["Inter:400,700"]}});</script>' ) ),
+);
+$r = grab( 'es_front_font_probe' );
+ok( 'limpio' === $r['ret'], 'LIMITE: una fuente cargada por JS no esta en el HTML servido y esta sonda la da por limpia — lo mira la fila 21, no esta' );
+
+/* ---------------------------------------------------------------------------
  * EL KIT GLOBAL: donde es_tokens() se convierte en el sitio.
  *
  * Hallazgo del primer build real (LocalWP `prueba1`, 2026-09-09). es_tokens() pinta SOLO donde un
