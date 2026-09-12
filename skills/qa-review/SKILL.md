@@ -1,6 +1,6 @@
 ---
 name: qa-review
-description: "Trigger: verify, QA, review before handoff, did it work, check the build, responsive check, accessibility check. Verify a NovaMira build against intent before the orchestrator reports done."
+description: "Trigger: verify, QA, review before handoff, did it work, check the build, responsive check, accessibility check. Verify a WordPress Orchestrator build against intent before the orchestrator reports done."
 license: Apache-2.0
 metadata:
   author: "juan"

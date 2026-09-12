@@ -1,6 +1,6 @@
 ---
 name: wordpress-seo
-description: "Trigger: SEO, meta title, meta description, H1/H2 hierarchy, schema, structured data, sitemap, Open Graph, alt text. On-page SEO for a NovaMira-built WordPress site."
+description: "Trigger: SEO, meta title, meta description, H1/H2 hierarchy, schema, structured data, sitemap, Open Graph, alt text. On-page SEO for a WordPress Orchestrator-built WordPress site."
 license: Apache-2.0
 metadata:
   author: "juan"

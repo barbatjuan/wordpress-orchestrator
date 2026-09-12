@@ -77,8 +77,8 @@ the gate). Only `elementor-core` and `woocommerce` currently have both a
 ### 1. Clone
 
 ```bash
-git clone https://github.com/barbatjuan/novamira-web-framework.git
-cd novamira-web-framework
+git clone https://github.com/barbatjuan/wordpress-orchestrator.git
+cd wordpress-orchestrator
 ```
 
 ### 2. Install the skills and agents

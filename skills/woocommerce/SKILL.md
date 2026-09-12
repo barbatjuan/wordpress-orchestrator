@@ -1,6 +1,6 @@
 ---
 name: woocommerce
-description: "Trigger: WooCommerce, shop page, product page, side cart, mini cart, checkout, my account, product archive, add to cart. Build premium WooCommerce storefront pieces via NovaMira with native widgets."
+description: "Trigger: WooCommerce, shop page, product page, side cart, mini cart, checkout, my account, product archive, add to cart. Build premium WooCommerce storefront pieces via WordPress Orchestrator with native widgets."
 license: Apache-2.0
 metadata:
   author: "juan"

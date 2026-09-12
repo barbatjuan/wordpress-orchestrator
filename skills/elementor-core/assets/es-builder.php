@@ -1,6 +1,6 @@
 <?php
 /**
- * Elementor page builder helpers (NovaMira raw-PHP).
+ * Elementor page builder helpers (WordPress Orchestrator raw-PHP).
  * Native Elementor / Elementor Pro widgets only. No custom CSS, no third-party widgets.
  */
 if ( ! defined( 'ABSPATH' ) ) {
@@ -1144,7 +1144,7 @@ function es_eyebrow( $text, $color = null ) {
  * Section heading, ON the scale axis.
  *
  * This used to emit `title`, `header_size` and `_margin` and NOTHING else, which meant every
- * heading on every NovaMira site inherited whatever size the active theme happened to have.
+ * heading on every WordPress Orchestrator site inherited whatever size the active theme happened to have.
  * Measured before the fix: `es_h('T','h1')` differed between PERS-EDITORIAL and PERS-DIRECT only in
  * `_margin.bottom`, the largest heading the whole build could emit was a CTA banner h2, and
  * `display_lh` —— a token that exists to carry the scale axis —— had exactly one reader in the tree.
@@ -1753,8 +1753,8 @@ function es_container_earns_its_place( array $s, array $ctx = array() ) {
  * docblock above already explains nobody travels.
  */
 function es_warn( $msg ) {
-	error_log( 'NovaMira: ' . str_replace( "\n", ' | ', $msg ) );
-	echo 'NovaMira AVISO: ' . $msg . "\n";
+	error_log( 'WordPress Orchestrator: ' . str_replace( "\n", ' | ', $msg ) );
+	echo 'WordPress Orchestrator AVISO: ' . $msg . "\n";
 }
 
 /**
@@ -1772,7 +1772,7 @@ function es_container_report( array $elements, $label = '' ) {
 
 	$a   = es_container_audit( $elements );
 	$msg = sprintf(
-		'NovaMira contenedores%s: %d contenedores / %d widgets, profundidad max %d',
+		'WordPress Orchestrator contenedores%s: %d contenedores / %d widgets, profundidad max %d',
 		$label ? ' [' . $label . ']' : '',
 		$a['containers'],
 		$a['widgets'],
@@ -1893,7 +1893,7 @@ function es_audit_summary() {
 
 /** One writer for the three verdicts ABOUT a tree, so no branch forgets the silence rule or the log. */
 function es_audit_verdict( $rest, $code ) {
-	$line = 'NovaMira auditoria VEREDICTO ' . $rest;
+	$line = 'WordPress Orchestrator auditoria VEREDICTO ' . $rest;
 	error_log( $line );
 	if ( ! defined( 'ES_AUDIT_SILENT' ) ) {
 		echo $line . "\n";
@@ -3116,7 +3116,7 @@ function es_overwrite_preflight( array $slugs ) {
 		$over++;
 	}
 
-	$out = 'NovaMira preflight de escritura: ' . count( $rows ) . ' slugs — ' . $over . ' se pisan, ' . $make . ' se crean';
+	$out = 'WordPress Orchestrator preflight de escritura: ' . count( $rows ) . ' slugs — ' . $over . ' se pisan, ' . $make . ' se crean';
 	foreach ( $rows as $row ) {
 		if ( 'create' === $row['action'] ) {
 			$out .= "\n  CREA       " . $row['slug'];

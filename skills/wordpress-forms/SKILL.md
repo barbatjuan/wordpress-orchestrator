@@ -1,6 +1,6 @@
 ---
 name: wordpress-forms
-description: "Trigger: formulario, contact form, form plugin, lead form, contacto, form submission, recipient, consentimiento, RGPD checkbox, Elementor Forms, WPForms, Contact Form 7. Build contact/lead forms on a NovaMira site and PROVE one message arrives."
+description: "Trigger: formulario, contact form, form plugin, lead form, contacto, form submission, recipient, consentimiento, RGPD checkbox, Elementor Forms, WPForms, Contact Form 7. Build contact/lead forms on a WordPress Orchestrator site and PROVE one message arrives."
 license: Apache-2.0
 metadata:
   author: "juan"

@@ -2047,7 +2047,7 @@ $CONTENT = array(
 		'footer'       => array(
 			'tag'   => 'Clínica Arbea · Calle Postas 32, 01004 Vitoria-Gasteiz · 945 00 00 00 · Reg. sanitario 01-C21-0000',
 			'links' => array( 'Tratamientos', 'Equipo', 'Privacidad' ),
-			'legal' => 'Clínica Arbea SL · Maqueta interna NovaMira, no publicada.',
+			'legal' => 'Clínica Arbea SL · Maqueta interna WordPress Orchestrator, no publicada.',
 		),
 	),
 
@@ -2174,7 +2174,7 @@ $CONTENT = array(
 		'footer'       => array(
 			'tag'   => 'Lumière · Alameda Urquijo 24, 48011 Bilbao · 944 00 00 00 · Martes a sábado',
 			'links' => array( 'Servicios', 'Nosotros', 'Privacidad' ),
-			'legal' => 'Lumière Estética SL · Maqueta interna NovaMira, no publicada.',
+			'legal' => 'Lumière Estética SL · Maqueta interna WordPress Orchestrator, no publicada.',
 		),
 	),
 
@@ -2277,7 +2277,7 @@ $CONTENT = array(
 		'footer'       => array(
 			'tag'   => 'Alinea · Carrer de Colón 44, 46004 València · 96 000 00 00 · Reg. sanitario 46-C21-0000',
 			'links' => array( 'El plan', 'Precios', 'Privacidad' ),
-			'legal' => 'Alinea Ortodoncia SL · Maqueta interna NovaMira, no publicada.',
+			'legal' => 'Alinea Ortodoncia SL · Maqueta interna WordPress Orchestrator, no publicada.',
 		),
 	),
 
@@ -2352,7 +2352,7 @@ $CONTENT = array(
 		'footer'       => array(
 			'tag'   => 'Urgencia Dental · Alameda de Urquijo 68, 48013 Bilbao · 944 00 00 00 · Reg. sanitario 48-C21-0000',
 			'links' => array( 'Qué hacemos', 'Cómo llegar', 'Privacidad' ),
-			'legal' => 'Urgencia Dental Bilbao SL · Maqueta interna NovaMira, no publicada.',
+			'legal' => 'Urgencia Dental Bilbao SL · Maqueta interna WordPress Orchestrator, no publicada.',
 		),
 	),
 
@@ -2568,7 +2568,7 @@ $CONTENT = array(
 			'small'   => 'Vamos, lo vemos y le damos un rango con los comparables de su calle delante. Sin compromiso de encargo.',
 		),
 		'footer'   => array(
-			'tag'   => 'Maqueta interna NovaMira · arquetipo TPL-C-13, sin marca asignada',
+			'tag'   => 'Maqueta interna WordPress Orchestrator · arquetipo TPL-C-13, sin marca asignada',
 			'links' => array( 'Comprar', 'Alquilar', 'Vender', 'Privacidad' ),
 			'legal' => 'Agente inmobiliario · nº de registro donde la comunidad lo exija. Maqueta interna, no publicada.',
 		),
@@ -2765,7 +2765,7 @@ $CONTENT = array(
 		'footer'       => array(
 			'tag'   => 'Motor Aranda · Polígono Landaben, calle E nave 14, 31012 Pamplona · 948 00 00 00',
 			'links' => array( 'Stock', 'Financiación', 'Privacidad' ),
-			'legal' => 'Motor Aranda SL · Maqueta interna NovaMira, no publicada.',
+			'legal' => 'Motor Aranda SL · Maqueta interna WordPress Orchestrator, no publicada.',
 		),
 	),
 
@@ -2868,7 +2868,7 @@ $CONTENT = array(
 		'footer'       => array(
 			'tag'   => 'Auria · Concesión oficial · Avenida de Burgos 120, 28050 Madrid · 91 000 00 00',
 			'links' => array( 'El modelo', 'Versiones', 'Privacidad' ),
-			'legal' => 'Auria Motor SA · Maqueta interna NovaMira, no publicada.',
+			'legal' => 'Auria Motor SA · Maqueta interna WordPress Orchestrator, no publicada.',
 		),
 	),
 
@@ -2994,7 +2994,7 @@ $CONTENT = array(
 		'footer'       => array(
 			'tag'   => 'Taller Bergara · Polígono Azitain pabellón 6, 20600 Eibar · 943 00 00 00',
 			'links' => array( 'Tarifa', 'Cita', 'Privacidad' ),
-			'legal' => 'Taller Bergara SL · Maqueta interna NovaMira, no publicada.',
+			'legal' => 'Taller Bergara SL · Maqueta interna WordPress Orchestrator, no publicada.',
 		),
 	),
 
@@ -3119,7 +3119,7 @@ $CONTENT = array(
 		'footer'       => array(
 			'tag'   => 'Casa Terrazza · Carrer de Pujades 118, 08005 Barcelona · 93 000 00 00',
 			'links' => array( 'Carta', 'Reservas', 'Privacidad' ),
-			'legal' => 'Casa Terrazza SL · Maqueta interna NovaMira, no publicada.',
+			'legal' => 'Casa Terrazza SL · Maqueta interna WordPress Orchestrator, no publicada.',
 		),
 	),
 
@@ -3351,7 +3351,7 @@ $CONTENT = array(
 		'footer'   => array(
 			'tag'   => 'Cantería Piedra Valdés · Alcarràs, Lleida · desde 1978',
 			'links' => array( 'Aviso legal', 'Privacidad', 'Acreditaciones' ),
-			'legal' => 'Piedra Valdés SL · B-25000000 · Maqueta interna NovaMira, no publicada.',
+			'legal' => 'Piedra Valdés SL · B-25000000 · Maqueta interna WordPress Orchestrator, no publicada.',
 		),
 	),
 
@@ -3427,7 +3427,7 @@ $CONTENT = array(
 		'footer'   => array(
 			'tag'   => 'Piedra Valdés · obra 1978—2026',
 			'links' => array( 'Obra', 'Estudio', 'Contacto' ),
-			'legal' => 'Piedra Valdés SL · Alcarràs, Lleida · Maqueta interna NovaMira, no publicada.',
+			'legal' => 'Piedra Valdés SL · Alcarràs, Lleida · Maqueta interna WordPress Orchestrator, no publicada.',
 		),
 	),
 
@@ -3510,7 +3510,7 @@ $CONTENT = array(
 		'footer'   => array(
 			'tag'   => 'Piedra Valdés · cantera y taller · Alcarràs, Lleida',
 			'links' => array( 'Envíos', 'Devoluciones', 'Privacidad' ),
-			'legal' => 'Piedra Valdés SL · Maqueta interna NovaMira, no publicada.',
+			'legal' => 'Piedra Valdés SL · Maqueta interna WordPress Orchestrator, no publicada.',
 		),
 	),
 
@@ -3601,7 +3601,7 @@ $CONTENT = array(
 		'footer'   => array(
 			'tag'   => 'Piedra Valdés · Alcarràs, Lleida',
 			'links' => array( 'Condiciones de la oferta', 'Privacidad' ),
-			'legal' => 'Oferta válida hasta el 30/09. Maqueta interna NovaMira, no publicada.',
+			'legal' => 'Oferta válida hasta el 30/09. Maqueta interna WordPress Orchestrator, no publicada.',
 		),
 	),
 
@@ -3677,7 +3677,7 @@ $CONTENT = array(
 		'footer'   => array(
 			'tag'   => 'Piedra Valdés · liquidación de bancada · Alcarràs, Lleida',
 			'links' => array( 'Condiciones', 'Envíos', 'Devoluciones' ),
-			'legal' => 'Precios con IVA. Oferta hasta el 30/09 o fin de existencias. Maqueta interna NovaMira.',
+			'legal' => 'Precios con IVA. Oferta hasta el 30/09 o fin de existencias. Maqueta interna WordPress Orchestrator.',
 		),
 	),
 
@@ -3758,7 +3758,7 @@ $CONTENT = array(
 		'footer'   => array(
 			'tag'   => 'Piedra Valdés · Ctra. de la Cantera 4, 25180 Alcarràs, Lleida · 973 00 00 00',
 			'links' => array( 'Cómo llegar', 'Horarios', 'Privacidad' ),
-			'legal' => 'Piedra Valdés SL · Maqueta interna NovaMira, no publicada.',
+			'legal' => 'Piedra Valdés SL · Maqueta interna WordPress Orchestrator, no publicada.',
 		),
 	),
 
@@ -3850,7 +3850,7 @@ $CONTENT = array(
 		'footer'   => array(
 			'tag'   => 'Piedra Valdés · colección 2026 · Alcarràs, Lleida',
 			'links' => array( 'Envíos', 'Devoluciones', 'Privacidad' ),
-			'legal' => 'Piedra Valdés SL · Maqueta interna NovaMira, no publicada.',
+			'legal' => 'Piedra Valdés SL · Maqueta interna WordPress Orchestrator, no publicada.',
 		),
 	),
 
@@ -3940,7 +3940,7 @@ $CONTENT = array(
 		'footer'   => array(
 			'tag'   => 'Piedra Valdés · catálogo y suministro · Alcarràs, Lleida',
 			'links' => array( 'Formatos', 'Envíos', 'Profesionales' ),
-			'legal' => 'Precios sin IVA para cuenta profesional. Maqueta interna NovaMira.',
+			'legal' => 'Precios sin IVA para cuenta profesional. Maqueta interna WordPress Orchestrator.',
 		),
 	),
 
@@ -14594,7 +14594,7 @@ function pad( $s, $n ) {
  */
 function handoff_text( $C, $A, $rows, $tgl_rows ) {
 	$L   = array();
-	$L[] = 'NovaMira · precarga de galería — ' . $C['tpl'] . ' × ' . $A['id'];
+	$L[] = 'WordPress Orchestrator · precarga de galería — ' . $C['tpl'] . ' × ' . $A['id'];
 	$L[] = '';
 	$L[] = pad( 'tipo de sitio', 13 ) . ' : ' . $C['site'] . ' (' . $C['site_es'] . ')';
 	$L[] = pad( 'arquetipo', 13 ) . ' : ' . $C['tpl'] . ' — ' . $C['tpl_name'];
@@ -16208,7 +16208,7 @@ $script = "<script>\n"
 // ── the page ───────────────────────────────────────────────────────────────────────────────────
 
 $head = '<!--
-  NovaMira · GALERÍA DE PLANTILLAS — GENERADA, no escrita a mano.
+  WordPress Orchestrator · GALERÍA DE PLANTILLAS — GENERADA, no escrita a mano.
   ══════════════════════════════════════════════════════════════════════════════════════════════
   Regenerar:  php skills/html-mockup/assets/gallery/_build-gallery.php
   Fuente:     assets/gallery/_build-gallery.php  ·  imágenes en assets/gallery/img/
@@ -16224,7 +16224,7 @@ $head = '<!--
 
   Herramienta interna. No se publica de cara a cliente, y el flujo con cliente no cambia.
 -->
-<title>Galería de plantillas NovaMira</title>
+<title>Galería de plantillas WordPress Orchestrator</title>
 <!-- Sin esta línea el layout viewport cae al ancho de reserva de 980px y NINGUNA de las media
      queries mobile-first llega a dispararse en un teléfono real: la página se maqueta a 980 y se
      escala al 33% en un 320. MEDIDO en este documento — a 320 de ancho de dispositivo,
@@ -16296,7 +16296,7 @@ $built_line .= ' ' . ( 1 === $n_brands ? 'Una es una marca propia' : $n_brands .
 	. ' — negocio, fondo, acento, tipografía y fotografías suyas; el resto comparten la marca de la casa.';
 
 $intro = '<header class="gal-head"><div class="gal-wrap">'
-	. '<span class="eyebrow">NovaMira · uso interno</span>'
+	. '<span class="eyebrow">WordPress Orchestrator · uso interno</span>'
 	. '<h1>Galería de plantillas</h1>'
 	. '<p>Cada tarjeta es una <b>plantilla</b>. El <code>TPL-*</code> decide qué secciones existen y '
 	. 'en qué orden; la <b>marca</b> decide el fondo, el acento, la tipografía y las fotos; y el '
@@ -16443,7 +16443,7 @@ $ink_svg = '<svg class="ink-defs" width="0" height="0" aria-hidden="true" focusa
 
 // ── the chrome: OUTSIDE every `.page`, so it survives each switch (html-mockup SKILL.md) ───────
 $top = '<div class="gal-top"><div class="gal-wrap">'
-	. '<span class="mark">NovaMira · Galería</span>'
+	. '<span class="mark">WordPress Orchestrator · Galería</span>'
 	. '<span class="here" id="gal-here"></span>'
 	. '<a class="backlink" href="#index" id="gal-back" hidden>← Todas las plantillas</a>'
 	. '</div></div>';

@@ -1,4 +1,4 @@
-# NovaMira + Elementor (raw PHP) — hard-won gotchas
+# WordPress Orchestrator + Elementor (raw PHP) — hard-won gotchas
 
 Every one of these cost real debugging time. Trust them.
 

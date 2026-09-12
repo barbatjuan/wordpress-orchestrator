@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Lighthouse gate for a NovaMira build — the METHOD behind the rules that had none.
+ * Lighthouse gate for a WordPress Orchestrator build — the METHOD behind the rules that had none.
  *
  * Run:  node lighthouse-audit.mjs <url> [more urls…] [--desktop] [--json=out.json]
  *
@@ -67,7 +67,7 @@ function safeUrl( u ) {
 		throw new RefusedUrl( `only http/https: ${ u }` );
 	}
 	if ( /["'`$&|<>^%\\\s]/.test( u ) ) {
-		/* Known limit: this also rejects a legitimate two-parameter query (`?a=1&b=2`). NovaMira
+		/* Known limit: this also rejects a legitimate two-parameter query (`?a=1&b=2`). WordPress Orchestrator
 		   page URLs are clean paths and the cache-bust is a single `?v=`, so it has not bitten;
 		   if it ever does, the fix is to resolve lighthouse's entry file and spawn it with
 		   process.execPath so no shell is involved at all — not to loosen this test. */

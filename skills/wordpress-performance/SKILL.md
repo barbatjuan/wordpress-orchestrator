@@ -1,6 +1,6 @@
 ---
 name: wordpress-performance
-description: "Trigger: performance, lazy load, image optimization, Core Web Vitals, LCP, CLS, page speed, reduce CSS/JS. Tune a NovaMira-built WordPress site for speed without breaking the design."
+description: "Trigger: performance, lazy load, image optimization, Core Web Vitals, LCP, CLS, page speed, reduce CSS/JS. Tune a WordPress Orchestrator-built WordPress site for speed without breaking the design."
 license: Apache-2.0
 metadata:
   author: "juan"

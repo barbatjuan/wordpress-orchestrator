@@ -11,7 +11,7 @@
  * the corpus. So the geometry is frozen HERE, once, and the judges never touch a browser.
  *
  * The second reason is blindness, and it is the load-bearing one. A judge that can drive a browser
- * can read the DOM, and a NovaMira mockup declares its own axis positions in `:root` comments —
+ * can read the DOM, and a WordPress Orchestrator mockup declares its own axis positions in `:root` comments —
  * which is how proof_axis_signature() reads them. A judge that opens the stylesheet is reading the
  * answer. Separating capture from judging is what lets the judge agents run with Read as their
  * ONLY tool: they receive image paths and have no mechanism to reach the source.

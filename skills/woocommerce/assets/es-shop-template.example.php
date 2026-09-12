@@ -18,7 +18,7 @@ foreach ( array( 'es-builder.php', 'es-theme-parts.php' ) as $es_dep ) {
 		/* Both channels on purpose: es_warn() lives in es-builder.php, which is exactly the
 		   file that may be missing here, and error_log() alone is not "loudly" — the sandbox
 		   returns STDOUT, so a log-only warning is a build that silently does nothing. */
-		$es_msg = 'NovaMira: ' . basename( __FILE__ ) . ' requires ' . $es_dep . ' in novamira-sandbox/. Upload it first. NOTHING WAS BUILT.';
+		$es_msg = 'WordPress Orchestrator: ' . basename( __FILE__ ) . ' requires ' . $es_dep . ' in novamira-sandbox/. Upload it first. NOTHING WAS BUILT.';
 		error_log( $es_msg );
 		echo $es_msg . "\n";
 		return;

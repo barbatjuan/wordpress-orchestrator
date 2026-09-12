@@ -1,6 +1,6 @@
 ---
 name: wordpress-legal
-description: "Trigger: aviso legal, política de privacidad, política de cookies, términos y condiciones, RGPD, GDPR, banner de cookies, consentimiento, legal pages, privacy policy, cookie banner, imprint. Build a NovaMira site's legal pages from the client's REAL identity data, and a consent banner that actually blocks."
+description: "Trigger: aviso legal, política de privacidad, política de cookies, términos y condiciones, RGPD, GDPR, banner de cookies, consentimiento, legal pages, privacy policy, cookie banner, imprint. Build a WordPress Orchestrator site's legal pages from the client's REAL identity data, and a consent banner that actually blocks."
 license: Apache-2.0
 metadata:
   author: "juan"

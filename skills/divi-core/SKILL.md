@@ -1,6 +1,6 @@
 ---
 name: divi-core
-description: "Trigger: Divi builder, Divi theme, Divi via PHP, build Divi page, Divi theme builder, et_pb. Generate and deploy Divi layouts via NovaMira. SCAFFOLD — validate each step and record gotchas as you learn them."
+description: "Trigger: Divi builder, Divi theme, Divi via PHP, build Divi page, Divi theme builder, et_pb. Generate and deploy Divi layouts via WordPress Orchestrator. SCAFFOLD — validate each step and record gotchas as you learn them."
 license: Apache-2.0
 metadata:
   author: "juan"

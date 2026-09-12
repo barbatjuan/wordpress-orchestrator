@@ -79,13 +79,13 @@ if ( $loud ) {
 	echo "=== hijo --loud: SIN ES_AUDIT_SILENT ===\n";
 
 	$r = grab( function () use ( $limpia ) { return es_container_report( $limpia, 'p' ); } );
-	ok( false !== strpos( $r['out'], 'NovaMira contenedores' ), 'sin la constante, el reporte por pagina SI se imprime' );
+	ok( false !== strpos( $r['out'], 'WordPress Orchestrator contenedores' ), 'sin la constante, el reporte por pagina SI se imprime' );
 
 	$r = grab( 'es_audit_summary' );
 	ok( false !== strpos( $r['out'], 'VEREDICTO' ), 'sin la constante, el veredicto SI se imprime' );
 
 	$r = grab( function () { es_warn( 'algo se rompio' ); return null; } );
-	ok( false !== strpos( $r['out'], 'NovaMira AVISO: algo se rompio' ), 'y el aviso tambien' );
+	ok( false !== strpos( $r['out'], 'WordPress Orchestrator AVISO: algo se rompio' ), 'y el aviso tambien' );
 
 	echo "\nHIJO-LOUD $pass OK / $fail FAIL\n";
 	exit( $fail ? 1 : 0 );
@@ -96,7 +96,7 @@ echo "=== padre: CON ES_AUDIT_SILENT ===\n";
 echo "--- la constante silencia el REPORTE, nunca un aviso ---\n";
 $r = grab( function () { es_warn( 'este template NO va a aparecer en el front' ); return null; } );
 ok( '' !== $r['out'], 'es_warn() llega a stdout aunque el reporte este silenciado' );
-ok( false !== strpos( $r['out'], 'NovaMira AVISO: este template NO va a aparecer en el front' ), 'con el mensaje entero, no un resumen' );
+ok( false !== strpos( $r['out'], 'WordPress Orchestrator AVISO: este template NO va a aparecer en el front' ), 'con el mensaje entero, no un resumen' );
 
 $r = grab( function () use ( $limpia ) { return es_container_report( $limpia, 'p' ); } );
 ok( '' === $r['out'], 'el reporte por pagina SI se silencia' );

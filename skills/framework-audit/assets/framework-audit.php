@@ -3596,7 +3596,7 @@ foreach ( $mockup_assets as $gal_path ) {
  * These two ask the same question one hop later, of the file that actually writes the site.
  * `elementor-core/SKILL.md` step 2 USED to tell the operator to "swap its palette/type constants",
  * and there were no constants of any kind in es-builder.php to swap — 51 colour literals, 9 font
- * strings and 5 shadows typed inline between the helpers instead. So every NovaMira site shipped
+ * strings and 5 shadows typed inline between the helpers instead. So every WordPress Orchestrator site shipped
  * the same green on the same white whatever the axis dialogue resolved, with every other row in
  * this audit green. That step now says "override es_tokens() — the one edit point" (67dcb45),
  * which is a real mechanism; the sentence above is history, quoted as history, because a comment

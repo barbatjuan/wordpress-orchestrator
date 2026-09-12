@@ -1,6 +1,6 @@
 ---
 name: elementor-core
-description: "Trigger: Elementor via PHP, NovaMira, es-builder, _elementor_data, deploy Elementor page, sandbox php. Header, footer and Theme Builder templates are `elementor-theme-parts`, not this skill. Generate Elementor layouts as raw-PHP JSON and deploy them reliably. Battle-tested."
+description: "Trigger: Elementor via PHP, WordPress Orchestrator, es-builder, _elementor_data, deploy Elementor page, sandbox php. Header, footer and Theme Builder templates are `elementor-theme-parts`, not this skill. Generate Elementor layouts as raw-PHP JSON and deploy them reliably. Battle-tested."
 license: Apache-2.0
 metadata:
   author: "juan"

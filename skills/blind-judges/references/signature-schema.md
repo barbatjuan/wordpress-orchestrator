@@ -7,7 +7,7 @@ here is the reasoning behind their shape — including the parts that must never
 
 Both agents carry `Read` as their only tool. No shell, no search, no browser, no way to open a file
 they were not handed. That is what makes the blindness real rather than requested: earlier versions
-asked a judge not to read the source, which is an honour system, and a NovaMira mockup declares its
+asked a judge not to read the source, which is an honour system, and a WordPress Orchestrator mockup declares its
 own axis positions in `:root` comments — exactly how `proof_axis_signature()` reads them. A judge
 with a shell is a judge reading the answer.
 
@@ -54,7 +54,7 @@ behind it.
 ## What calibration measured
 
 Run on 2026-08-28 against the repo's own falsification pair, plus a third page that was one of them
-with the client and copy swapped and the design untouched — the real NovaMira failure mode.
+with the client and copy swapped and the design untouched — the real WordPress Orchestrator failure mode.
 
 - Judge A grouped the two same-design pages together and separated the third. Correct in both
   directions, with concrete tells: the same hatch panel starting at the same x, the same hairline
