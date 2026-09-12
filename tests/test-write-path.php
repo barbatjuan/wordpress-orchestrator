@@ -1745,6 +1745,29 @@ $r = grab(
 );
 ok( '' === $r['ret'], 'un valor que no es hex no se convierte en un color plausible al oscurecerlo' );
 ok( has( $r['out'], 'azul' ), 'y lo dice en voz alta nombrando el valor que no supo leer' );
+/* Y el que ELIGE la direccion tiene que avisar UNA vez, no dos. Construye dos
+   candidatos con es_shade() y es_mix(), y los dos avisan por su cuenta: si no
+   leyera el valor antes con es_lum() —— el unico que devuelve null callado, y su
+   docblock dice que existe para esto —— una sola errata de tecleo saldria por
+   pantalla dos veces nombrando lo mismo. */
+$r = grab(
+	function () {
+		return es_hover_of( 'azul', 0.815, '#FFFFFF' );
+	}
+);
+ok( '' === $r['ret'], 'un valor que no es hex tampoco se convierte en un hover plausible' );
+ok( 1 === substr_count( $r['out'], 'azul' ), 'y lo avisa UNA sola vez, no una por cada candidato que iba a construir' );
+/* El otro lado del mismo guardado: cuando lo ilegible es el SUELO, quien avisa
+   es la pasada de mezclas que lo leyo antes. Aqui se cae al oscurecido de
+   siempre —— la mitad de la tabla que seguia siendo correcta —— en vez de dejar
+   el estado sin pintar por un fondo que ya tiene quien lo denuncie. */
+$r = grab(
+	function () {
+		return es_hover_of( '#0FA968', 0.815, 'azul' );
+	}
+);
+ok( '#0C8A55' === $r['ret'], 'con un fondo ilegible sigue oscureciendo, que es lo que hacia antes de saber medir' );
+ok( '' === $r['out'], 'y se calla: el aviso por ese fondo lo da la pasada de mezclas, que lo lee primero' );
 es_tokens( array( 'accent' => '#123456' ) );
 
 /* ...y quien tenga un halo que NO es su acento tiene que poder decirlo. */
@@ -2071,6 +2094,70 @@ foreach ( $suelos as $posicion => $celdas ) {
 	$r = wcag_ratio( es_t( 'border' ), $fondo );
 	ok( $r >= 1.05 && $r <= 2.5, 'ground `' . $posicion . '`: el filete sigue siendo un filete sobre su propio fondo —— ' . $r . ':1' );
 }
+
+/* ---------------------------------------------------------------------------
+ * El estado HOVER sigue al ground, y lo que se afirma es el SIGNO.
+ *
+ * Los cuatro neutros que este eje arreglo —— muted, text_soft, border,
+ * surface_inverse —— pasaron a mezclarse HACIA el ground. `accent_hover` y
+ * `border_hover` se quedaron con una sombra ABSOLUTA (0.815 y 0.935, oscurecer
+ * y punto) y son los dos supervivientes de esa misma clase de fallo.
+ *
+ * Oscurecer sube el contraste sobre una pagina clara y lo BAJA sobre una
+ * oscura. Medido sobre el build, reposo contra hover, cada uno contra su propio
+ * `bg`:
+ *
+ *   paper    #FFFFFF  3.05 -> 4.39  +1.34   el hover AVANZA
+ *   ink      #0E1113  5.67 -> 3.95  -1.72   el hover RETROCEDE
+ *   ink-warm #171008  5.64 -> 3.92  -1.72   idem
+ *   ink-cool #0B0F1C  5.72 -> 3.98  -1.74   idem
+ *
+ * (acento #FF3D8A en las filas oscuras.) Un hover que retrocede se lee como
+ * DESACTIVADO: es un fallo de affordance, no de accesibilidad —— 3.95:1 sigue
+ * pasando AA-large, asi que ninguna fila de qa-review lo caza y por eso llevaba
+ * aqui sin verse. El build real de tuscapas lo parcheo a mano a #FF4D93
+ * (5.67 -> 6.08, ACLARANDO), que es la prueba de que un humano ya se lo comio.
+ *
+ * Se afirma el SIGNO y no un hex a proposito, y es la misma razon por la que
+ * arriba se afirma el contraste y no "el valor se ha movido": un hex clavado se
+ * cumple con un color que sigue retrocediendo, y el signo no.
+ *
+ * DOS acentos, no uno. El verde de la casa solo prueba su propio caso; el rosa
+ * es el que se midio en un sitio vivo. Si la direccion se eligiera por el color
+ * en vez de por el suelo, uno de los dos lo diria.
+ * ------------------------------------------------------------------------- */
+echo "--- el hover AVANZA sobre su propio fondo, en las nueve posiciones ---\n";
+
+foreach ( $suelos as $posicion => $celdas ) {
+	foreach ( array( '#0FA968', '#FF3D8A' ) as $acento ) {
+		es_tokens(
+			array(
+				'bg'     => $celdas['bg'],
+				'bg_alt' => $celdas['bg_alt'],
+				'text'   => $celdas['text'],
+				'accent' => $acento,
+			)
+		);
+		$fondo   = es_t( 'bg' );
+		$reposo  = wcag_ratio( es_t( 'accent' ), $fondo );
+		$encima  = wcag_ratio( es_t( 'accent_hover' ), $fondo );
+		ok(
+			$encima > $reposo,
+			'ground `' . $posicion . '`, acento ' . $acento . ': el hover (' . es_t( 'accent_hover' )
+				. ') se separa MAS del fondo que el reposo —— ' . $reposo . ':1 -> ' . $encima . ':1'
+		);
+		/* El filete hace el mismo trabajo con su hint: a 6.5% no tiene que
+		   gritar, pero tiene que firmarse, no borrarse. */
+		$reposo_f = wcag_ratio( es_t( 'border' ), $fondo );
+		$encima_f = wcag_ratio( es_t( 'border_hover' ), $fondo );
+		ok(
+			$encima_f > $reposo_f,
+			'ground `' . $posicion . '`, acento ' . $acento . ': el filete al pasar por encima ('
+				. es_t( 'border_hover' ) . ') se firma en vez de borrarse —— ' . $reposo_f . ':1 -> ' . $encima_f . ':1'
+		);
+	}
+}
+es_tokens( $es_defaults );
 
 /* La afirmacion es del CONTRASTE, no del cambio, y esto es lo que lo demuestra:
    un `muted` que se ha movido de su valor por defecto pero sigue sin leerse

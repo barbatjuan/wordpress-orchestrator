@@ -356,9 +356,81 @@ function es_ink_on( $clave, array $t, array $receta ) {
 }
 
 /**
+ * The hover of a colour: the same colour moved AWAY from the page it sits on.
+ *
+ * es_shade() darkens unconditionally, and that was right on exactly half the
+ * ground table. Darkening raises a colour's contrast against a light page and
+ * LOWERS it against a dark one, so on the three dark positions the hover
+ * receded instead of advancing -- measured on the build, accent against each
+ * ground's own `bg`:
+ *
+ *   paper    #FFFFFF  3.05 -> 4.39   +1.34   advances
+ *   ink      #0E1113  5.67 -> 3.95   -1.72   RECEDES
+ *   ink-warm #171008  5.64 -> 3.92   -1.72   RECEDES
+ *   ink-cool #0B0F1C  5.72 -> 3.98   -1.74   RECEDES
+ *
+ * A hover that recedes reads as DISABLED. It is an affordance defect and not an
+ * accessibility one -- 3.95:1 still clears AA-large's 3.0, so no qa-review row
+ * caught it, which is why it survived. The real tuscapas build overrode the
+ * token to #FF4D93 by hand (5.67 -> 6.08, LIGHTENING), so a human had already
+ * hit this and worked around it silently.
+ *
+ * These two were the last survivors of the class es_token_mixes() fixed for
+ * `muted`, `text_soft`, `border` and `surface_inverse`: a value sampled off a
+ * white page and then applied to every ground. Those were fixed by blending
+ * toward the ground, and this one CANNOT be -- the 0.815 factor reproduces the
+ * hand-picked #0C8A55 exactly because multiplying every channel is
+ * interpolation toward pure BLACK, and #0FA968 mixed toward `paper`'s own
+ * `text` (#15181A) moves red 15 -> 21 when the target needs 12. So what gets
+ * derived here is the DIRECTION, not the distance: the magnitude stays the
+ * fitted factor, and the ground picks the sign.
+ *
+ * The direction is MEASURED rather than branched on a luminance threshold, for
+ * the same reason es_ink_on() measures: a threshold is a number somebody picked
+ * and a client's ground is whatever their brand is. Both candidates are built
+ * and the one further from the page wins, so the rule states itself -- "the
+ * hover is the one that advances" -- instead of encoding a proxy for it.
+ *
+ * The two poles are pure black (es_shade's multiplication) and pure white (the
+ * mix below), and they are the sRGB cube's own ends rather than colours anybody
+ * chose: shade and tint, the ordinary pair. That is also why the light pole is
+ * not `bg` -- mixing a colour toward the page moves it TOWARD the page, which
+ * is the defect, not the fix.
+ *
+ * TIES go to the darkened candidate, which is what keeps the framework's own
+ * `#0C8A55` byte-identical and, more generally, keeps a ground with no headroom
+ * left resolving the same way on every machine -- the same reason es_ink_on()
+ * resolves ties to the first candidate listed.
+ */
+function es_hover_of( $hex, $factor, $fondo ) {
+	/* Read ONCE, here, with the reader that stays quiet on purpose. Building
+	   both candidates first would put the same unreadable value through
+	   es_shade() AND es_mix() and warn twice about one typo -- the exact
+	   double-fire es_lum() returns null to avoid. */
+	if ( null === es_lum( $hex ) ) {
+		es_warn( 'es_hover_of() no sabe leer "' . $hex . '" como color hex, asi que el estado hover que lo usa se queda SIN pintar. Escribe el token como #RGB o #RRGGBB.' );
+		return '';
+	}
+	$oscuro = es_shade( $hex, $factor );
+	/* The mirror of es_shade(): it multiplies the channel, this multiplies the
+	   headroom left above it, so the two move the same 18.5% in opposite
+	   directions. Written as a mix rather than as a fifth hex parser -- es_lum()'s
+	   docblock already names four copies of that parse as a standing finding. */
+	$claro = es_mix( $hex, '#FFFFFF', 1 - $factor );
+	if ( null === es_lum( $fondo ) ) {
+		/* The ground itself is unreadable. es_token_mixes() runs BEFORE this pass
+		   and reads the same `bg`, so es_mix() has already warned naming the value;
+		   a second warning would name it twice. Fall back to the old unconditional
+		   darkening rather than to nothing: half the table is still right. */
+		return $oscuro;
+	}
+	return es_contrast( $claro, $fondo ) > es_contrast( $oscuro, $fondo ) ? $claro : $oscuro;
+}
+
+/**
  * Tokens that are the readable ink ON another token: array( surface, candidate... ).
  *
- * Same table shape, and for the same reason, as es_token_mixes() / es_token_shades()
+ * Same table shape, and for the same reason, as es_token_mixes() / es_token_hovers()
  * / es_token_recipes(): the key list, the derivation and the unknown-key guard
  * read ONE table and cannot drift apart.
  *
@@ -430,24 +502,33 @@ function es_token_mixes() {
 }
 
 /**
- * Tokens that are another token's colour, darkened.
+ * Tokens that are another token's colour moved away from the page: the HOVER states.
  *
  * array( source token, factor ). Same table shape as es_token_recipes() and for
  * the same reason: the key list, the derivation and the unknown-key guard read
  * ONE table and cannot drift apart.
  *
+ * Named for the ROLE and not for the mechanism, which is the rule the token
+ * block below states in its own words. It was `es_token_shades()` while the
+ * mechanism was "darken", and the name stopped being true the moment
+ * es_hover_of() started lightening on dark grounds -- a table called `shades`
+ * that returns a tint is the same drift as a token called `green` on a navy
+ * brand. Both keys were always hovers; now the function says so.
+ *
  * The two factors are different on purpose, because the two jobs are. Pressing
- * a button has to be FELT, so the accent drops ~18%; a hairline nudging on
- * hover is a hint, so the border drops ~6.5%. One factor for both would either
+ * a button has to be FELT, so the accent moves ~18%; a hairline nudging on
+ * hover is a hint, so the border moves ~6.5%. One factor for both would either
  * make the border look broken or make the button look asleep.
  */
-function es_token_shades() {
+function es_token_hovers() {
 	return array(
 		/* 0.815 is not a fitted curiosity: it is the factor at which the
 		   framework's own accent reproduces its hand-picked hover #0C8A55
 		   exactly, so making this derived costs zero emitted bytes on the
 		   default brand while every other brand finally gets a hover of its
-		   OWN colour. */
+		   OWN colour. It is also why the DISTANCE could not become a blend
+		   toward the ground the way the neutrals did -- es_hover_of()'s
+		   docblock has that arithmetic. */
 		'accent_hover' => array( 'accent', 0.815 ),
 		'border_hover' => array( 'border', 0.935 ),
 	);
@@ -583,7 +664,7 @@ function es_tokens( array $override = array(), $reset = false ) {
 			   WCAG 1.4.11 gap -- reported, still open, and not silently papered
 			   over by a range assertion that says nothing about it. */
 			'border'             => null, /* derived: text 89% toward bg */
-			'border_hover'       => null, /* derived: border darkened 6.5% */
+			'border_hover'       => null, /* derived: border moved 6.5% away from the page */
 			/* Two MORE hairlines, arriving from the sibling assets, and named
 			   honestly as what they are: the same drift this block already
 			   collapsed once, living in three files nobody was comparing. They
@@ -599,7 +680,7 @@ function es_tokens( array $override = array(), $reset = false ) {
 			/* accent -- derives from the BRAND, never from the anchor.
 			   design-tokens.md is explicit that accent is not an axis. */
 			'accent'             => '#0FA968',
-			'accent_hover'       => null, /* derived: accent darkened 18.5% */
+			'accent_hover'       => null, /* derived: accent moved 18.5% away from the page */
 			'accent_wash'        => null, /* derived: accent at 0.10 -- the faint tint an outline control fills with */
 			/* scrim over the CTA banner photo, so the copy stays legible */
 			'scrim_from'         => null, /* derived: surface_inverse at 0.92 */
@@ -678,13 +759,16 @@ function es_tokens( array $override = array(), $reset = false ) {
 				$t[ $clave ] = es_mix( $t[ $receta[0] ], $t[ $receta[1] ], $receta[2] );
 			}
 		}
-		/* Shades run BEFORE the veils: a shade produces a hex, a veil consumes
-		   one, so this order is what lets a future glow be built on a hover. */
-		foreach ( es_token_shades() as $clave => $receta ) {
+		/* Hovers run BEFORE the veils: a hover produces a hex, a veil consumes
+		   one, so this order is what lets a future glow be built on a hover.
+		   They run AFTER the mixes for a second reason now: es_hover_of() reads
+		   `bg` to decide which way is away from the page, and on a brand that
+		   overrode `bg` the mixes are what settled the rest of the ground. */
+		foreach ( es_token_hovers() as $clave => $receta ) {
 			/* Same escape hatch as the veils below: a brand whose hover is not
-			   a darker version of its accent must be able to say so. */
+			   its own accent moved away from the page must be able to say so. */
 			if ( ! array_key_exists( $clave, $override ) ) {
-				$t[ $clave ] = es_shade( $t[ $receta[0] ], $receta[1] );
+				$t[ $clave ] = es_hover_of( $t[ $receta[0] ], $receta[1], $t['bg'] );
 			}
 		}
 		/* Contrasts run AFTER the mixes and the shades and BEFORE the veils, and
@@ -1426,15 +1510,25 @@ function es_feature_card( $icon, $title, $text, array $extra = array() ) {
        accent -- so the default primary button label went from white at 3.05:1,
        a WCAG AA failure, to near-black at 5.86:1. What that fixes is the REST
        state, and the state it does not fix is the one right next to it: the
-       primary button hovers to `accent_hover`, which is the accent darkened
-       18.5%, and darkening a fill LOWERS its contrast against a dark label.
-       Measured with the derived label on the four documented grounds --
-       paper 4.06:1, warm 3.82, cool 3.92, ink 4.32 -- all four below AA. It was
-       below AA before this change too (white on #0C8A55 is 4.39:1), so this is a
-       pre-existing gap that moved rather than one that opened, and the honest
-       fix is not another on-colour: it is that `accent_hover` darkens
-       unconditionally, when a button whose label is dark needs its hover to go
-       LIGHTER. That is the shade table's decision, not this one's. REPORTED. */
+       primary button hovers to `accent_hover`, which was the accent darkened
+       18.5% on every ground, and darkening a fill LOWERS its contrast against a
+       dark label. Measured with the derived label -- paper 4.06:1, warm 3.82,
+       cool 3.92, ink 4.32 -- all four below AA. It was below AA before that
+       change too (white on #0C8A55 is 4.39:1), so it was a pre-existing gap
+       that moved rather than one that opened, and the honest fix named here was
+       that `accent_hover` darkens unconditionally when a button whose label is
+       dark needs its hover to go LIGHTER -- the shade table's decision, not
+       this one's.
+       PARTLY CLOSED. es_hover_of() now picks the direction by measuring against
+       the page, so the DARK grounds are fixed as a side effect: ink went 4.32 ->
+       7.63, ink-warm 4.29 -> 7.59, ink-cool 4.35 -> 7.69, because a lighter fill
+       under a near-black label is exactly what that label needed. The three
+       LIGHT grounds are unchanged and still below AA (paper 4.06, warm 3.82,
+       cool 3.92), and now the reason is stated rather than guessed: on a light
+       ground the derived label is dark AND the hover correctly darkens, so the
+       affordance and the label pull opposite ways. Closing that one really does
+       need a second on-colour for the hover state, or an accent with more room.
+       STILL REPORTED, and narrower than it was. */
 
 /**
  * Audit the container tree before it is written.

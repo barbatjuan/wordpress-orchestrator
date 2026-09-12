@@ -422,12 +422,33 @@ colours live there: `#008899` measures 4.23 / 4.22, `#1177EE` measures 4.16 / 4.
 the better of the two and **warns naming both measurements**; the way out is to move the accent or
 to set `on_accent` by hand, and both are decisions somebody has to make rather than defaults.
 
-**Open, not closed:** the primary button hovers to `accent_hover`, the accent darkened 18.5%, and
-darkening a fill *lowers* its contrast against a dark label. With the derived label that hover
-measures **4.06:1 on `paper`, 3.82 warm, 3.92 cool, 4.32 ink** — all four below AA. It was below AA
-before this token was derived too (white on `#0C8A55` is 4.39:1), so it is a pre-existing gap that
-moved rather than one that opened. The fix is not a second on-colour: it is that `accent_hover`
-darkens unconditionally, when a button whose label is dark needs its hover to go *lighter*.
+**The hover moves AWAY from the page, and the ground picks which way.** `accent_hover` is the accent
+shifted 18.5% and `border_hover` the hairline shifted 6.5% — *away from* `--c-bg`, not
+unconditionally darker. Darkening raises contrast on a light page and lowers it on a dark one, so
+while the shift was absolute the hover **receded** on all three dark positions and read as
+*disabled*. Measured against each ground's own `--c-bg`, accent `#FF3D8A`:
+
+| Position | `--c-bg` | rest | `accent_hover` before | `accent_hover` now |
+|---|---|---|---|---|
+| `paper` | `#FFFFFF` | 3.34:1 | `#D03270` 4.80:1 | `#D03270` 4.80:1 — unchanged |
+| `ink` | `#0E1113` | 5.67:1 | `#D03270` 3.95:1 — receded | `#FF61A0` 6.74:1 |
+| `ink-warm` | `#171008` | 5.64:1 | `#D03270` 3.92:1 — receded | `#FF61A0` 6.70:1 |
+| `ink-cool` | `#0B0F1C` | 5.72:1 | `#D03270` 3.98:1 — receded | `#FF61A0` 6.79:1 |
+
+**This was an affordance defect, not an accessibility one** — 3.95:1 still clears AA-large's 3:1, so
+no `qa-review` row caught it and it survived until somebody measured the *sign*. The direction is
+measured per build rather than read off a luminance threshold, so a brand ground nobody has
+documented gets it right too; the magnitude is still the fitted factor, because `0.815` is what
+reproduces the house `#0C8A55` exactly on `paper`.
+
+**Still open on the light grounds:** the *label* on the hovered fill. With the derived `on_accent`
+the hover measures **4.06:1 on `paper`, 3.82 warm, 3.92 cool** — below AA, unchanged, and now for a
+stated reason: on a light ground the label is dark *and* the hover correctly darkens, so the
+affordance and the label pull opposite ways. It was below AA before this token was derived at all
+(white on `#0C8A55` is 4.39:1), so it is a pre-existing gap, and it is narrower than it was — the
+dark grounds fixed themselves here (`ink` 4.32 → 7.63) because a lighter fill is what a near-black
+label wanted. Closing the rest needs a second on-colour for the hover state, or an accent with more
+room.
 
 #### The accent is spent by ROLE, and the whitelist is a list of roles
 
