@@ -361,6 +361,19 @@ that turned the list above from advice into measurement.
   first post-import request was served by the filter or by a human clicking Activate is not
   something `active_plugins` can be asked afterwards. **Measure it during the import window or not
   at all.**
+- **CONFIRMED the next day by the only witness who could settle it.** Asked directly whether they
+  had activated anything by hand in wp-admin after the restore, the operator answered no. With the
+  archive proving the import did not carry the plugins and nobody having clicked Activate, the
+  filter is what served them — and some later write, not a human, baked the injected entries into
+  the table. Layer one is closed by the mu-plugin, and this is the sentence that earns the claim.
+- **LAYER ONE DOES NOT ONLY HIT YOUR CONNECTOR, and that is the part nobody plans for.** The
+  source's `active_plugins` replaces the destination's, so EVERY plugin the destination had and the
+  source did not is switched off. Measured on the host a day later: `Hostinger Tools` — the hosting
+  company's own management plugin, installed and running before the import — sat installed and
+  INACTIVE, and had done for a day without anyone noticing. It is not in the mu-plugin's keep list
+  because nobody thinks of the host's own tooling as theirs to protect. **After any import, diff
+  `get_plugins()` against the STORED `active_plugins` and read what fell out of the list.** One
+  query, and it is the only thing that sees this.
 - **Post ids survive, which is the property the whole design rests on.** 13 pages at ids 3–36 and
   9 products at 37–45, contiguous and unshifted, with the kit still at `elementor-kit-5` on the
   body class. `es_manifest_verify()` has nothing to drift against and `post-<id>.css` stays
