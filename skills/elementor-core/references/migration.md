@@ -148,7 +148,7 @@ and each new layer only becomes visible once the one above it is fixed.
 | 3 | the MCP route | the server registration is configuration, also in the database | `/wp-json/mcp/novamira` → **404**, while `/wp-json/novamira/v1/*` is registered and answers 403 |
 | 4 | build mode | `WP_ENVIRONMENT_TYPE` and `AMB_ALLOW_PHP_EXEC` live in `wp-config.php`, which this ritual EXCLUDES on purpose | the site reads as `production`, so typed writes and PHP execution are never registered |
 | 5 | the client's tool list | the capability tier is read ONCE, when the connector is added | the site advertises nine abilities and the client holds four; disabling and re-enabling the connector does not refresh it |
-| 6 | the domain lock | `novamira_is_enabled()` compares `novamira_ai_abilities_domain` against `wp_parse_url( home_url() )` — and a migration is, definitionally, moving a database to another domain | the upload endpoint answers **403 `novamira_disabled`** |
+| 6 | the domain lock | the enable flag is an OPTION, so the source's answer to "are abilities on here" overwrites the destination's | the upload endpoint answers **403 `novamira_disabled`** |
 
 **The layers fail in ascending order of disguise.** Reactivating the plugins fixes the first and
 looks like it fixed everything: the plugin page says Enabled, the endpoint resolves, the status
@@ -164,12 +164,20 @@ the client keeps serving the four read tools it cached at connect time. **Turn b
 adding the connector**, or remove and re-add it afterwards. Toggling it off and on within a session
 is not enough — measured.
 
-**Layer 6 is not a defect and must not be "fixed".** The domain lock is the connector's own
-security model working exactly as designed: it exists so that copying a database cannot carry the
-right to execute AI abilities onto another host. A migration trips it because a migration is that
-copy. Re-enabling the abilities is a deliberate per-domain decision a human makes in the plugin's
-own UI, and automating past it would empty the control of meaning. Document it; do not route
-around it.
+**Layer 6 is not a defect and must not be "fixed".** `novamira_is_enabled()` decides from
+`novamira_ai_abilities_domain`, and that is an option — a row in the table the import replaces.
+The security model is working exactly as designed: copying a database must not carry the right to
+execute AI abilities onto another host. A migration trips it because a migration is that copy.
+Re-enabling is a deliberate per-domain decision a human makes in the plugin's own UI, and
+automating past it would empty the control of meaning. Document it; do not route around it.
+
+**Measured, and not the shape the phrase "domain lock" suggests.** On the destination the option
+read `false` — ABSENT, not set to some other domain. A local build never turns the abilities on,
+so what the archive carries is the ABSENCE of the flag, and it overwrites a destination where a
+human had switched it on. The 403 therefore means "never enabled here", not "enabled somewhere
+else", and the direction matters: **a host that was working stops working, and nothing in the
+archive looks wrong.** The remedy is the same either way — a person re-enables it — but expect to
+find nothing rather than to find a stale value.
 
 The remedy for 2 and 3 is not a reconnect, it is a RE-PAIR: the destination mints a new credential
 against the database it actually has now, and that new URL is added to the client fresh. Removing
@@ -243,11 +251,10 @@ can WRITE a file the server already has, and can even stand up an ephemeral rece
 building a transport rather than using one, and leaves something on a client's disk that has to be
 deleted and verified gone. Use Novamira's upload endpoint.
 
-**And that endpoint is the first casualty of layer 6.** The abilities are enabled per domain, so
-the upload works on a fresh host once a human enables them there — and stops working on that same
-host the moment a database from another domain lands on it. The channel you would use for the NEXT
-migration is broken BY the previous one until a person re-enables it. Plan the re-enable as a step,
-not as a surprise.
+**And that endpoint is the first casualty of layer 6.** A human enables the abilities on the host,
+the upload works — and then the next import replaces the option that said so, because a local
+source has never had them on. The channel you would use for the NEXT migration is switched off BY
+the previous one. Plan the re-enable as a step, not as a surprise.
 
 ## After the import
 
@@ -334,12 +341,26 @@ host). What the run proved, and what it did not:
 250,051,200-byte archive, 10,717 entries, `--exclude-tables=wp_users,wp_usermeta`). This is the run
 that turned the list above from advice into measurement.
 
-- **The keep-connector mu-plugin works, and the proof is clean.** `prueba1` has neither
-  `agency-mcp-bridge` nor `novamira` on disk, so the `active_plugins` row it exported cannot
-  possibly name them. The destination nevertheless registers `mcp` and `novamira/v1` in
-  `/wp-json/`, and `/wp-json/mcp/bridge` answers 401 rather than 404. Both plugin files are running
-  on a site whose plugin list never mentioned them. Layer one is closed by a file that travels
-  inside the archive — the same trick as the sandbox exclusion, now proven twice.
+- **The keep-connector mu-plugin travelled and is loaded, and the export really did lack the
+  plugins** — but read the next bullet before calling that a proof of anything. `prueba1` has
+  neither `agency-mcp-bridge` nor `novamira` on disk, and grepping the `.wpress` itself confirms
+  it: the string `agency-mcp-bridge` occurs in that archive exactly twice, both times inside the
+  mu-plugin's own source, and never in an `active_plugins` value. The destination registers `mcp`
+  and `novamira/v1` in `/wp-json/`, `/wp-json/mcp/bridge` answers 401 rather than 404, and
+  `novamira-keep-connector.php` is present in `WPMU_PLUGIN_DIR`.
+- **`get_option( 'active_plugins' )` CANNOT verify this, and reading it back is how you fool
+  yourself.** `get_option()` applies the `option_{$name}` filter, which is the very filter the
+  mu-plugin installs — so the value it returns names the connector whether the database does or
+  not. Read `wp_options` through `$wpdb` if you want the stored value. Measured on the destination
+  a day later: the table itself now lists both plugins, even though the archive proves the import
+  did not carry them. **The injected entries get baked in by the next write**, because activating
+  or deactivating any plugin in wp-admin builds the new list from the FILTERED value and saves
+  that. So the mu-plugin becomes redundant after the first visit to the plugins screen — and the
+  evidence that it ever did anything disappears at the same moment. What stays established is
+  narrower than it looks: the archive lacked them, the file travels, the file loads. Whether the
+  first post-import request was served by the filter or by a human clicking Activate is not
+  something `active_plugins` can be asked afterwards. **Measure it during the import window or not
+  at all.**
 - **Post ids survive, which is the property the whole design rests on.** 13 pages at ids 3–36 and
   9 products at 37–45, contiguous and unshifted, with the kit still at `elementor-kit-5` on the
   body class. `es_manifest_verify()` has nothing to drift against and `post-<id>.css` stays
@@ -357,5 +378,11 @@ that turned the list above from advice into measurement.
   WooCommerce's placeholder while every other page rendered perfectly. That is the same disease,
   found in a different option, which is why trap 2 above is now written about the class rather than
   the one switch.
-- **Trap 3 (runtime skew) remains untested.** No version gap existed to make the fingerprint
-  comparison say anything.
+- **Trap 3 finally had something to compare, in the harmless direction.** The plugin FILES travel
+  inside the archive, so WordPress 7.1, Elementor 4.2.4 and WooCommerce 11.1.0 are identical on
+  both sides by construction — a carried migration cannot produce plugin skew, which is worth
+  knowing because it means the fingerprint's plugin half only ever fires on an
+  `--exclude-plugins` run or a hand-installed destination. **PHP is the half that does move**: the
+  local build ran 8.2.29 and the host runs 8.3.33. That is the destination being NEWER, which row
+  34 files as a note rather than a FAIL. The FAIL direction — a destination running something
+  older than QA — is still untested.
