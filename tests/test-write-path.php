@@ -2514,6 +2514,41 @@ $r = grab( 'es_font_serving_check' );
 ok( 'google' === $r['ret'], 'una hoja ya IMPRESA tambien es prueba: gstatic en done es una peticion que el visitante ya ha hecho' );
 ok( has( $r['out'], 'tema-gfonts' ), 'y nombra ese estilo' );
 
+/* 6d. UNA DEPENDENCIA ES UNA PETICION TAMBIEN, y es el agujero que deja leer
+       solo la cola. WordPress imprime las deps de un handle encolado SIN
+       meterlas nunca en `queue`: un tema que encola su hoja y arrastra detras
+       una de Google le pide la tipografia a Google en cada visita, y la cola no
+       la menciona. La cadena es de dos saltos a proposito — tema-estilo ->
+       tema-fuentes -> tema-gfonts — porque con un solo salto un recorrido que
+       no sea transitivo pasaria el test y el agujero seguiria abierto un nivel
+       mas abajo. Esto es un falso LIMPIO, que es la unica clase de fallo peor
+       que el falso positivo que este commit vino a quitar. */
+wp_fake_reset();
+$GLOBALS['wp']['post_types'] = array( 'post', 'page', 'elementor_font' );
+$GLOBALS['wp']['font_posts'] = array( 'elementor_font' => array( es_t( 'font_head' ), es_t( 'font_body' ) ) );
+$GLOBALS['es_font_said']     = false;
+wp_fake_core_styles();
+wp_fake_style( 'tema-gfonts', 'https://fonts.googleapis.com/css?family=Inter' );
+wp_fake_style( 'tema-fuentes', 'https://sitio.test/wp-content/themes/x/fuentes.css', 'registered', array( 'tema-gfonts' ) );
+wp_fake_style( 'tema-estilo', 'https://sitio.test/wp-content/themes/x/style.css', 'enqueued', array( 'tema-fuentes' ) );
+$r = grab( 'es_font_serving_check' );
+ok( 'google' === $r['ret'], 'una hoja de Google que entra como DEPENDENCIA de una encolada es una peticion del visitante igual' );
+ok( has( $r['out'], 'tema-gfonts' ), 'y nombra la hoja de Google, no la del tema que la arrastra: lo accionable es la que hay que quitar' );
+
+/* 6e. Un ciclo en las dependencias no cuelga el informe. WordPress no lo
+       produciria, pero un plugin con una lista escrita a mano si, y un informe
+       que se queda colgado es peor que uno equivocado: el build entero se para
+       en la linea que existe para avisar. Que este escenario TERMINE es la
+       assertion; el veredicto es lo de menos. */
+wp_fake_reset();
+$GLOBALS['wp']['post_types'] = array( 'post', 'page', 'elementor_font' );
+$GLOBALS['wp']['font_posts'] = array( 'elementor_font' => array( es_t( 'font_head' ), es_t( 'font_body' ) ) );
+$GLOBALS['es_font_said']     = false;
+wp_fake_style( 'a', 'https://sitio.test/a.css', 'enqueued', array( 'b' ) );
+wp_fake_style( 'b', 'https://sitio.test/b.css', 'registered', array( 'a' ) );
+$r = grab( 'es_font_serving_check' );
+ok( 'alojada' === $r['ret'], 'un ciclo de dependencias termina, y sin Google en el ciclo el sitio sigue limpio' );
+
 /* 7. LA OTRA MITAD, y es la que un cambio ingenuo rompe en silencio: en una
       peticion de build no hay NADA encolado (medido: queue_size 0), asi que
       leer solo `queue` haria que el check no salte nunca. No saltar es peor que

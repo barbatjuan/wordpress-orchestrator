@@ -3196,7 +3196,9 @@ function es_front_page_check() {
  *   - Google's CDN, and only as an ENQUEUE. Read from `$GLOBALS['wp_styles']` DIRECTLY and never
  *     through `wp_styles()`, which instantiates the registry as a side effect; a report may not
  *     change the thing it reports on. What counts is a handle this request put in `queue` or
- *     already printed into `done`, with its src read back out of `registered`. A REGISTRATION is
+ *     already printed into `done` — plus, transitively, their `deps`, which WordPress prints
+ *     without ever queueing, so a Google stylesheet dragged in behind a theme's own is a request
+ *     the queue alone never mentions — with the src read back out of `registered`. A REGISTRATION is
  *     not proof of anything: core registers `open-sans` against `fonts.googleapis.com` on every
  *     installation and enqueues it nowhere, so the older probe — which scanned `registered` —
  *     accused every site in the world, measured included (`open-sans` and `wp-editor-font`
@@ -3311,12 +3313,33 @@ function es_font_serving_check() {
 		$hechas  = ( isset( $reg->done ) && is_array( $reg->done ) ) ? array_values( $reg->done ) : array();
 		$fuentes = ( isset( $reg->registered ) && is_array( $reg->registered ) ) ? $reg->registered : array();
 		$mirado  = (bool) ( $cola || $hechas );
-		foreach ( array_merge( $cola, $hechas ) as $mango ) {
-			$hoja = isset( $fuentes[ (string) $mango ] ) ? $fuentes[ (string) $mango ] : null;
-			$src  = ( is_object( $hoja ) && isset( $hoja->src ) ) ? (string) $hoja->src : '';
+
+		/* A DEPENDENCY IS A REQUEST TOO, and stopping at the queue would have left the hole open one
+		   level down. WordPress prints the deps of an enqueued handle without ever putting them in
+		   `queue`, so a theme that enqueues its own stylesheet and drags a Google one behind it asks
+		   Google for the font on every visit while the queue never mentions it — a false CLEAN,
+		   which is the one class of failure worse than the false positive this probe used to be.
+		   Walked transitively, because a dep of a dep is the same request. `$vistos` is what makes
+		   a cycle terminate: WordPress would not build one, but a plugin with a hand-written deps
+		   list can, and a report that hangs stops the build on the very line that exists to warn. */
+		$pendientes = array_merge( $cola, $hechas );
+		$vistos     = array();
+		while ( $pendientes ) {
+			$mango = (string) array_shift( $pendientes );
+			if ( isset( $vistos[ $mango ] ) ) {
+				continue;
+			}
+			$vistos[ $mango ] = true;
+			$hoja             = isset( $fuentes[ $mango ] ) ? $fuentes[ $mango ] : null;
+			$src              = ( is_object( $hoja ) && isset( $hoja->src ) ) ? (string) $hoja->src : '';
 			if ( false !== stripos( $src, 'fonts.googleapis.com' ) || false !== stripos( $src, 'fonts.gstatic.com' ) ) {
-				$google = (string) $mango;
+				$google = $mango;
 				break;
+			}
+			if ( is_object( $hoja ) && isset( $hoja->deps ) && is_array( $hoja->deps ) ) {
+				foreach ( $hoja->deps as $dep ) {
+					$pendientes[] = $dep;
+				}
 			}
 		}
 	}

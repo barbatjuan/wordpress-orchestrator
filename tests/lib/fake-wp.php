@@ -319,8 +319,12 @@ function update_option( $name, $value ) {
  * $state is 'registered' (the default: known to WordPress, asked for by nobody), 'enqueued' (in
  * the queue for this request) or 'done' (already printed, which is where the queue has been
  * drained and only `done` still remembers).
+ *
+ * $deps is the fourth shape and the one a probe forgets: WordPress prints the dependencies of an
+ * enqueued handle WITHOUT ever putting them in `queue`, so a theme's Google stylesheet pulled in
+ * behind the theme's own stylesheet is a request the visitor makes and the queue never mentions.
  */
-function wp_fake_style( $handle, $src, $state = 'registered' ) {
+function wp_fake_style( $handle, $src, $state = 'registered', array $deps = array() ) {
 	if ( ! isset( $GLOBALS['wp_styles'] ) ) {
 		$GLOBALS['wp_styles'] = (object) array(
 			'registered' => array(),
@@ -332,6 +336,7 @@ function wp_fake_style( $handle, $src, $state = 'registered' ) {
 	$reg->registered[ $handle ] = (object) array(
 		'handle' => $handle,
 		'src'    => $src,
+		'deps'   => $deps,
 	);
 	if ( 'enqueued' === $state ) {
 		$reg->queue[] = $handle;
