@@ -95,11 +95,36 @@ update — none of which announce themselves.
 qa-review row 33 carries the production probe, including why a 403 is not a pass and why an empty
 200 is the trap.
 
-**2. `blog_public` travels.** Zero is WordPress's "discourage search engines", which a local site is
-often built with, and it is carried into production verbatim: the site is delivered looking perfect
-and stays invisible for weeks. Set it before the export with `es_indexing_state()` reading it back,
-and confirm after over HTTP by reading a page's `<meta name="robots">`, which carries
+**2. EVERY VISIBILITY SWITCH TRAVELS, and they hide different things.** These are options, options
+are rows in the database, and the database is what a migration copies. Each one is set to a
+sensible value for a site under construction and to a catastrophic one for a site being handed
+over — and the site looks perfect either way, because what they hide is hidden from you too.
+
+**`blog_public`.** Zero is WordPress's "discourage search engines", which a local site is often
+built with, and it is carried into production verbatim: the site is delivered looking perfect and
+stays invisible for weeks. Set it before the export with `es_indexing_state()` reading it back, and
+confirm after over HTTP by reading a page's `<meta name="robots">`, which carries
 `noindex, nofollow` when the option is zero.
+
+**`woocommerce_coming_soon`, and this one was found the hard way** (2026-09-11, on the live host).
+WooCommerce has shipped Launch Your Store since 9.1: a fresh install starts at
+`woocommerce_coming_soon = yes` and only flips when a human finishes the onboarding wizard. A build
+script never finishes that wizard. So the store arrives at the destination behind WooCommerce's
+own placeholder.
+
+MEASURED on the destination, and the numbers are the reason this is worth a paragraph: the home
+page answered 200 with 28 Elementor elements and its real `<h1>`, `/nosotros/` 200 with 26,
+`/contacto/` 200 with 14, the custom 404 fired correctly — **ten of the twelve URLs probed
+rendered their own content** — while `/tienda/` and `/carrito/`, the other two, answered **200 with
+zero Elementor elements and the `<h1>` "Great things are on the horizon"**, carrying
+`woocommerce-coming-soon` on the body class. With
+`woocommerce_store_pages_only = yes` the placeholder covers ONLY the store, so every page a person
+naturally clicks first is fine. A migration can be flawless and still hand over a shop nobody can
+buy from.
+
+Check both before exporting, and check them again over HTTP after. The HTTP arm is cheap and
+unambiguous: a `woocommerce-coming-soon` body class on any store URL is a FAIL, and it does not
+need a login to see.
 
 **Not `/robots.txt`.** Measured on a live site: with `blog_public` = 0 and Yoast active, robots.txt
 served `Disallow:` — allow everything — because Yoast filters it and replaces core's output, while
@@ -111,17 +136,20 @@ controls the build wrote, so the page renders wrong while every other check stay
 `es_build_fingerprint()` records the PHP, WordPress, Elementor and Elementor Pro versions the build
 was verified against; row 34 compares them.
 
-**4. THE MIGRATION KILLS THE CONNECTOR, in four layers, and every one of them reports success.**
-Measured on a real import (grey-mule, 2026-09-11). This is the trap that bites hardest, because it
-takes the agency's access away at the exact moment the new site needs work — installing what the
-archive left out, verifying, fixing.
+**4. THE MIGRATION KILLS THE CONNECTOR, in SIX layers, and every one of them reports success.**
+Measured across two real imports (grey-mule, 2026-09-10 and 2026-09-11). This is the trap that
+bites hardest, because it takes the agency's access away at the exact moment the new site needs
+work — installing what the archive left out, verifying, fixing. Peeling one layer reveals the next,
+and each new layer only becomes visible once the one above it is fixed.
 
-| Layer | What travels | What the site answers |
-|---|---|---|
-| `active_plugins` | the SOURCE's list, which never had the connector in it | plugins deactivated; their FILES are still on disk |
-| the credential | the agent user and its token live in the DATABASE, and the database was replaced | `/wp-json/mcp/bridge` → **401**, not 404 |
-| the MCP route | the server registration is configuration, also in the database | `/wp-json/mcp/novamira` → **404**, while `/wp-json/novamira/v1/*` is registered and answers 403 |
-| build mode | `WP_ENVIRONMENT_TYPE` and `AMB_ALLOW_PHP_EXEC` live in `wp-config.php`, which this ritual EXCLUDES on purpose | typed writes and PHP execution are simply off |
+| # | Layer | Why it breaks | What it answers |
+|---|---|---|---|
+| 1 | `active_plugins` | the SOURCE's list arrives, and a local build never had the connector in it | plugins deactivated; their FILES untouched on disk |
+| 2 | the credential | the agent user and its token live in the DATABASE, which was replaced | `/wp-json/mcp/bridge` → **401**, not 404 |
+| 3 | the MCP route | the server registration is configuration, also in the database | `/wp-json/mcp/novamira` → **404**, while `/wp-json/novamira/v1/*` is registered and answers 403 |
+| 4 | build mode | `WP_ENVIRONMENT_TYPE` and `AMB_ALLOW_PHP_EXEC` live in `wp-config.php`, which this ritual EXCLUDES on purpose | the site reads as `production`, so typed writes and PHP execution are never registered |
+| 5 | the client's tool list | the capability tier is read ONCE, when the connector is added | the site advertises nine abilities and the client holds four; disabling and re-enabling the connector does not refresh it |
+| 6 | the domain lock | the enable flag is an OPTION, so the source's answer to "are abilities on here" overwrites the destination's | the upload endpoint answers **403 `novamira_disabled`** |
 
 **The layers fail in ascending order of disguise.** Reactivating the plugins fixes the first and
 looks like it fixed everything: the plugin page says Enabled, the endpoint resolves, the status
@@ -131,16 +159,103 @@ panel said connected, the client's connector list said `connected`, the call sai
 server can be reconnected"* — **three systems reporting three different things about one dead
 connection**, and the one tool that could have repaired it declined BECAUSE the status lied.
 
-The remedy is not a reconnect, it is a RE-PAIR: the destination mints a new credential against the
-database it actually has now, and that new URL is added to the client fresh. Removing the stale
-entry first is part of it — it carries the old pairing inside, which is what keeps every status
-green.
+Layer 5 is the same disease one level up, and it is easy to lose an hour in: turning build mode on
+flips the site to `staging` and the bridge starts advertising `amb/execute-php` immediately, while
+the client keeps serving the four read tools it cached at connect time. **Turn build mode on BEFORE
+adding the connector**, or remove and re-add it afterwards. Toggling it off and on within a session
+is not enough — measured.
+
+**Layer 6 is not a defect and must not be "fixed".** `novamira_is_enabled()` decides from
+`novamira_ai_abilities_domain`, and that is an option — a row in the table the import replaces.
+The security model is working exactly as designed: copying a database must not carry the right to
+execute AI abilities onto another host. A migration trips it because a migration is that copy.
+Re-enabling is a deliberate per-domain decision a human makes in the plugin's own UI, and
+automating past it would empty the control of meaning. Document it; do not route around it.
+
+**Measured, and not the shape the phrase "domain lock" suggests.** On the destination the option
+read `false` — ABSENT, not set to some other domain. A local build never turns the abilities on,
+so what the archive carries is the ABSENCE of the flag, and it overwrites a destination where a
+human had switched it on. The 403 therefore means "never enabled here", not "enabled somewhere
+else", and the direction matters: **a host that was working stops working, and nothing in the
+archive looks wrong.** The remedy is the same either way — a person re-enables it — but expect to
+find nothing rather than to find a stale value.
+
+The remedy for 2 and 3 is not a reconnect, it is a RE-PAIR: the destination mints a new credential
+against the database it actually has now, and that new URL is added to the client fresh. Removing
+the stale entry first is part of it — it carries the old pairing inside, which is what keeps every
+status green.
 
 **Carry the connector as a mu-plugin and layer one disappears**, for exactly the reason the sandbox
-exclusion is a mu-plugin: `active_plugins` cannot deactivate what was never in it. Layers two,
-three and four are credentials and configuration, and those are re-paired by a human — plan for it
-rather than discover it. A migration that is otherwise perfect still hands back a site nobody can
-reach.
+exclusion is a mu-plugin: `active_plugins` cannot deactivate what was never in it. The file lives
+at `wp-content/mu-plugins/`, filters `option_active_plugins`, and **checks `file_exists` before
+adding each path** — the authoring site does not have those plugins installed, and naming a path
+WordPress cannot load would fatal every request. Everything below layer one is credentials,
+configuration and a deliberate human gate: plan for them rather than discover them. A migration
+that is otherwise perfect still hands back a site nobody can reach.
+
+Worth copying rather than retyping, for the same reason the sandbox filter is — here the failure
+mode is worse than silence. `wp-content/mu-plugins/novamira-keep-connector.php`:
+
+```php
+add_filter( 'option_active_plugins', function ( $plugins ) {
+    if ( ! is_array( $plugins ) ) {
+        return $plugins;
+    }
+    $keep = array(
+        'agency-mcp-bridge/agency-mcp-bridge.php',
+        'novamira/novamira.php',
+    );
+    foreach ( $keep as $plugin ) {
+        if ( in_array( $plugin, $plugins, true ) ) {
+            continue;
+        }
+        if ( ! file_exists( WP_PLUGIN_DIR . '/' . $plugin ) ) {
+            continue;
+        }
+        $plugins[] = $plugin;
+    }
+    return $plugins;
+} );
+```
+
+Drop the `file_exists` check and the authoring machine — which does not have these plugins
+installed — fatals on every request, including wp-admin. The check is what makes the file inert
+where the plugins are absent and active where they are present, which is the whole behaviour
+wanted from something that travels inside the archive.
+
+## Getting the archive to the host
+
+**Carry the plugins. The first real run excluded them and it was a mistake** — corrected here
+because this file gave the wrong advice and a reader would have repeated it.
+
+The reasoning that produced `--exclude-plugins` was: an archive cannot travel through a
+conversation, so make it small enough that it might. That premise was already dead when the flag
+was used. The constraint is not the archive's size, it is that **base64 through the context window
+is not a file transport at any size** — and there is a real one.
+
+MEASURED (2026-09-10, LocalWP → Hostinger): the FULL archive, ~250 MB with every plugin in it,
+reached the host in **57 s, about 4.3 MB/s**, posted to Novamira's `/novamira/v1/upload` with
+`novamira_sign_upload_payload()` and an `x-novamira-upload-token` header. The bytes go over HTTP
+from disk; they never enter the conversation. Nothing about that route cares whether the file is
+5 MB or 250 MB.
+
+So the trade the exclusion bought was never needed, and what it cost was severe: the destination
+arrives with `_elementor_data` in every page and **no Elementor to render it** — every URL answers
+200 and every body is empty. An excluded-plugins archive is not a migrated site, it is a database
+waiting for a second, manual, undocumented installation step. If you ever must exclude them,
+re-installing and re-licensing is part of the ritual, not an afterthought.
+
+**The bridge cannot do this, and that gap is worth naming.** The Agency MCP Bridge has no
+file-transport ability at all. `amb-media-upload` is not one: it targets the media library and
+its payload travels through the conversation, so the context window is its ceiling. `amb-execute-php`
+can WRITE a file the server already has, and can even stand up an ephemeral receiver — which is
+building a transport rather than using one, and leaves something on a client's disk that has to be
+deleted and verified gone. Use Novamira's upload endpoint.
+
+**And that endpoint is the first casualty of layer 6.** A human enables the abilities on the host,
+the upload works — and then the next import replaces the option that said so, because a local
+source has never had them on. The channel you would use for the NEXT migration is switched off BY
+the previous one. Plan the re-enable as a step, not as a surprise.
 
 ## After the import
 
@@ -210,11 +325,84 @@ host). What the run proved, and what it did not:
   is present, so the destination now protects its own future exports. Source disk → archive → host.
 - **Trap 4 was discovered BY the run**, and is the reason this list grew from three to four.
 - **The permalink paragraph was corrected rather than confirmed**, above.
-- **Trap 2 (`blog_public`) and trap 3 (runtime) remain unproven.** Both sites carried
-  `blog_public = 1`, so nothing tested the carry-over of a zero; and no version skew existed to
-  make the fingerprint comparison say anything.
+- **Trap 2 (`blog_public`) and trap 3 (runtime) looked unproven, and one of those readings was
+  simply wrong.** `blog_public` genuinely went untested: both sites carried 1, so nothing exercised
+  the carry-over of a zero. But "no version skew existed" was not a measurement — nobody had read
+  the destination's PHP. The second run did, on the SAME pair of hosts, and found 8.2.29 against
+  8.3.33. The skew had been there the whole time. See the second run below, and note the shape of
+  the mistake: an unmeasured value reported as a finding rather than as a gap.
 - **What broke, and it is worth more than what worked:** the archive was exported
   `--exclude-plugins` to get it from 238 MB to 5 MB, so the destination arrived with
   `_elementor_data` in the database and no Elementor to render it — every page 200 and every body
-  empty. That trade is legitimate for transport, but the plugin re-install is then part of the
-  ritual, not an afterthought.
+  empty. **That exclusion was a mistake, not a trade** — see "Getting the archive to the host": the
+  transport it was protecting had already been measured carrying the full 250 MB in 57 s, and the
+  flag was used out of habit rather than need.
+- **Layers 5 and 6 were discovered on the retry** (2026-09-11), which is why the connector table
+  grew from four rows to six. Neither is visible until the layer above it is fixed, and layer 6 is
+  correct security behaviour rather than a defect.
+
+**And then the whole ritual was run again, carrying everything** (2026-09-11, same pair of hosts,
+250,051,200-byte archive, 10,717 entries, `--exclude-tables=wp_users,wp_usermeta`). This is the run
+that turned the list above from advice into measurement.
+
+- **The keep-connector mu-plugin travelled and is loaded, and the export really did lack the
+  plugins** — but read the next bullet before calling that a proof of anything. `prueba1` has
+  neither `agency-mcp-bridge` nor `novamira` on disk, and grepping the `.wpress` itself confirms
+  it: the string `agency-mcp-bridge` occurs in that archive exactly twice, both times inside the
+  mu-plugin's own source, and never in an `active_plugins` value. The destination registers `mcp`
+  and `novamira/v1` in `/wp-json/`, `/wp-json/mcp/bridge` answers 401 rather than 404, and
+  `novamira-keep-connector.php` is present in `WPMU_PLUGIN_DIR`.
+- **`get_option( 'active_plugins' )` CANNOT verify this, and reading it back is how you fool
+  yourself.** `get_option()` applies the `option_{$name}` filter, which is the very filter the
+  mu-plugin installs — so the value it returns names the connector whether the database does or
+  not. Read `wp_options` through `$wpdb` if you want the stored value. Measured on the destination
+  a day later: the table itself now lists both plugins, even though the archive proves the import
+  did not carry them. **The injected entries get baked in by the next write**, because activating
+  or deactivating any plugin in wp-admin builds the new list from the FILTERED value and saves
+  that. So the mu-plugin becomes redundant after the first visit to the plugins screen — and the
+  evidence that it ever did anything disappears at the same moment. What stays established is
+  narrower than it looks: the archive lacked them, the file travels, the file loads. Whether the
+  first post-import request was served by the filter or by a human clicking Activate is not
+  something `active_plugins` can be asked afterwards. **Measure it during the import window or not
+  at all.**
+- **CONFIRMED the next day by the only witness who could settle it.** Asked directly whether they
+  had activated anything by hand in wp-admin after the restore, the operator answered no. With the
+  archive proving the import did not carry the plugins and nobody having clicked Activate, the
+  filter is what served them — and some later write, not a human, baked the injected entries into
+  the table. Layer one is closed by the mu-plugin, and this is the sentence that earns the claim.
+- **LAYER ONE DOES NOT ONLY HIT YOUR CONNECTOR, and that is the part nobody plans for.** The
+  source's `active_plugins` replaces the destination's, so EVERY plugin the destination had and the
+  source did not is switched off. Measured on the host a day later: `Hostinger Tools` — the hosting
+  company's own management plugin, installed and running before the import — sat installed and
+  INACTIVE, and had done for a day without anyone noticing. It is not in the mu-plugin's keep list
+  because nobody thinks of the host's own tooling as theirs to protect. **After any import, diff
+  `get_plugins()` against the STORED `active_plugins` and read what fell out of the list.** One
+  query, and it is the only thing that sees this.
+- **Post ids survive, which is the property the whole design rests on.** 13 pages at ids 3–36 and
+  9 products at 37–45, contiguous and unshifted, with the kit still at `elementor-kit-5` on the
+  body class. `es_manifest_verify()` has nothing to drift against and `post-<id>.css` stays
+  correctly named.
+- **Pages render on the first request, with no rebuild step.** Ten of the twelve URLs probed, out
+  of 13 published: home 200 with 28 Elementor elements, `/nosotros/` 26, `/contacto/` 14, the custom
+  404 firing on an unknown URL with its own copy, `/inicio/` correctly 301 to the front page, the
+  four legals and the thanks page all 200. Elementor regenerates its CSS on first render exactly as
+  this file claims. The two that did NOT render their own content are `/tienda/` and `/carrito/`,
+  and they are trap 2's doing rather than the migration's — see the coming-soon paragraph above.
+  `/finalizar-compra/` was never probed, so it is a gap rather than a pass.
+- **The destination keeps its own users.** Excluding `wp_users` and `wp_usermeta` means the login
+  that existed on the host before the import is the login that exists after it — the operator ran
+  the restore from wp-admin with their own account and never lost it. Without that exclusion the
+  source site's user table lands on top and the host's own administrator is gone.
+- **Trap 2 is now half proven, in the half nobody expected.** `blog_public` still went untested —
+  both sites carried 1 — but `woocommerce_coming_soon` travelled and hid the store behind
+  WooCommerce's placeholder while every other page rendered perfectly. That is the same disease,
+  found in a different option, which is why trap 2 above is now written about the class rather than
+  the one switch.
+- **Trap 3 finally had something to compare, in the harmless direction.** The plugin FILES travel
+  inside the archive, so WordPress 7.1, Elementor 4.2.4 and WooCommerce 11.1.0 are identical on
+  both sides by construction — a carried migration cannot produce plugin skew, which is worth
+  knowing because it means the fingerprint's plugin half only ever fires on an
+  `--exclude-plugins` run or a hand-installed destination. **PHP is the half that does move**: the
+  local build ran 8.2.29 and the host runs 8.3.33. That is the destination being NEWER, which row
+  34 files as a note rather than a FAIL. The FAIL direction — a destination running something
+  older than QA — is still untested.
