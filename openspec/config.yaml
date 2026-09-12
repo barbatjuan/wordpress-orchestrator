@@ -5,20 +5,23 @@ context: |
   Tech stack: PHP 8.2.33 CLI, no framework/composer. Static PHP+HTML+CSS+webp
   assets consumed by Claude Code as a skills framework for building WordPress
   sites (Elementor/Divi) via NovaMira connector MCP tools.
-  Architecture: agents/ (2 orchestrator/subagent markdown files) route to
-  skills/ (15 LLM-first SKILL.md contracts + references/ + assets/). No
-  runtime app code — the "product" is the instruction contracts themselves.
+  Architecture: agents/ (4 markdown files: wordpress-orchestrator router +
+  wordpress-copywriter, blind-judge-a, blind-judge-b, all explicit-delegation
+  only) route to skills/ (16 LLM-first SKILL.md contracts + references/ +
+  assets/). No runtime app code — the "product" is the instruction contracts
+  themselves. Product identity is WordPress Orchestrator (commit 9d2c917);
+  NovaMira remains only the real MCP connector name.
   Testing: plain `php <file>.php` scripts under tests/, no PHPUnit/Composer.
   Style: CONTRIBUTING.md is the authoring rulebook — SKILL.md word budget
   (~500 aim / 600 hard ceiling, §2) and mandatory `(verifier: ...)` /
   `(no verifier: ...)` markers on every Hard Rule in write-capable skills (§3).
 
 strict_tdd: true
-strict_tdd_source: "CLAUDE.md marker 'Strict TDD Mode: enabled', corroborated by a working test runner (php tests/*.php, 1164 OK / 0 FAIL) and the framework's own audit gate."
+strict_tdd_source: "CLAUDE.md marker 'Strict TDD Mode: enabled', corroborated by a working test runner (php tests/*.php, 1521 OK / 0 FAIL) and the framework's own audit gate."
 
 testing:
   test_runner:
-    command: "php skills/framework-audit/assets/framework-audit.php && php tests/test-container-hygiene.php && php tests/test-framework-audit.php && php tests/test-audit-signals.php && php tests/test-write-path.php"
+    command: "php skills/framework-audit/assets/framework-audit.php && php tests/test-container-hygiene.php && php tests/test-framework-audit.php && php tests/test-audit-signals.php && php tests/test-write-path.php && php tests/test-replay.php"
     source: "CONTRIBUTING.md '## Testing a change' — the documented full offline chain, verified by direct execution"
     framework: "none (plain PHP CLI scripts, custom OK/FAIL harness printed per file)"
   test_layers:
@@ -33,10 +36,10 @@ testing:
     type_checker: ""     # PHP is untyped/no static analyzer configured (no phpstan/psalm found)
     formatter: ""        # no phpcs/php-cs-fixer configured
   measured_state:
-    tests_total: "1164 OK / 0 FAIL (635 test-framework-audit.php, 426 test-write-path.php, 81 test-container-hygiene.php, 22 test-audit-signals.php)"
-    audit_total: "0 FAIL / 4 WARN / 0 JUDGE across 15 skills + 2 agents"
-    audit_warn_detail: "4 pre-existing SKILL.md word-budget WARNs (elementor-core 588w, html-mockup 582w, web-templates 559w, woocommerce 597w) — all under the 600 hard ceiling"
-    measured_on: "2026-08-24"
+    tests_total: "1521 OK / 0 FAIL (797 test-framework-audit.php, 610 test-write-path.php, 81 test-container-hygiene.php, 22 test-audit-signals.php, 11 test-replay.php)"
+    audit_total: "0 FAIL / 4 WARN / 0 JUDGE across 16 skills + 4 agents"
+    audit_warn_detail: "4 pre-existing SKILL.md word-budget WARNs (elementor-core 592w, html-mockup 580w, web-templates 559w, woocommerce 597w) — all under the 600 hard ceiling"
+    measured_on: "2026-09-13"
 
 rules:
   proposal:
@@ -51,16 +54,16 @@ rules:
   tasks:
     - Group by phase, use hierarchical numbering
     - Keep tasks completable in one session
-    - Respect the 400-line review budget (review_budget_lines: 400) — flag chained/stacked PRs if a slice risks exceeding it
+    - Respect the 800-line review budget (review_budget_lines: 800, this session's cached preflight value) — flag chained/stacked PRs if a slice risks exceeding it
   apply:
     guidelines:
       - Follow existing SKILL.md/CONTRIBUTING.md conventions; never edit an existing SKILL.md, agent file, or test file as part of this cycle unless a task explicitly says so
       - "Any new/changed Hard Rule in a write-capable skill MUST carry a `(verifier: ...)` or `(no verifier: ...)` marker per CONTRIBUTING.md §3"
       - Any new test file added under tests/ MUST also be added to the CONTRIBUTING.md '## Testing a change' `&&` chain, or the audit FAILs it as untracked
     tdd: true
-    test_command: "php skills/framework-audit/assets/framework-audit.php && php tests/test-container-hygiene.php && php tests/test-framework-audit.php && php tests/test-audit-signals.php && php tests/test-write-path.php"
+    test_command: "php skills/framework-audit/assets/framework-audit.php && php tests/test-container-hygiene.php && php tests/test-framework-audit.php && php tests/test-audit-signals.php && php tests/test-write-path.php && php tests/test-replay.php"
   verify:
-    test_command: "php skills/framework-audit/assets/framework-audit.php && php tests/test-container-hygiene.php && php tests/test-framework-audit.php && php tests/test-audit-signals.php && php tests/test-write-path.php"
+    test_command: "php skills/framework-audit/assets/framework-audit.php && php tests/test-container-hygiene.php && php tests/test-framework-audit.php && php tests/test-audit-signals.php && php tests/test-write-path.php && php tests/test-replay.php"
     build_command: ""
     coverage_threshold: 0
   archive:
