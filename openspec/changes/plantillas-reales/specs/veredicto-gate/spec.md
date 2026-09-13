@@ -86,7 +86,7 @@ distinctness (mechanical half: `plantilla-library`'s `RT_PLANTILLA_PAR_IGUAL`).
 - GIVEN a Plantilla's hash changes but `_biblioteca.md`'s `huella` is not
   recomputed
 - WHEN `framework-audit.php` runs
-- THEN `RT_BIBLIOTECA_VEREDICTO_OBSOLETO` FAILs
+- THEN `RT_BIBLIOTECA_OBSOLETA` FAILs
 
 ### Requirement: The Sweep Checks the Measured Baseline Defect Classes
 
