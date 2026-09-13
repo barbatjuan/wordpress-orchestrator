@@ -2232,10 +2232,26 @@ function ink_probe_run( $php_body, $driver ) {
 	return array( 'out' => implode( "\n", $out ), 'code' => $code );
 }
 
-/* Las funciones puras de la tinta, extraidas del $bg_src ya leido para la deriva de $GROUND mas
-   arriba -- ni un segundo file_get_contents ni una copia retipeada de su formula. */
-$ink_fn_names = array( 'srgb_lum_rgb', 'srgb_lum', 'css_mix', 'fail', 'ink_tint', 'ink_quant_bound', 'ink_ends', 'ink_of' );
-$ink_fn_body  = '';
+/* `srgb_lum`/`srgb_lum_rgb`/`css_mix`/`ink_tint`/`ink_quant_bound`/`ink_ends` moved to
+   `herramientas/color.php` (openspec/changes/plantillas-reales PR 1a) -- one contrast/ink engine,
+   not a text-extracted copy of it. The probe now REQUIREs the real file directly, which is
+   strictly more faithful than the text-extraction this comment used to describe: it is the exact
+   bytes that ship, not a regex's idea of them. `fail()` and `ink_of()` stay gallery-specific and
+   are still pulled from $bg_src exactly as before. Because the moved functions now throw
+   `NmHerramientaEntorno`/`NmHerramientaMedida` instead of calling `fail()` directly (they are also
+   a dual-mode CLI now, see color.php's own header), the probe re-installs the SAME
+   exception-to-fail() bridge `_build-gallery.php` itself installs, so this probe's exit-code and
+   message contract stays exactly what it was before the extraction. */
+$color_ruta = dirname( __DIR__ ) . '/skills/html-mockup/assets/herramientas/color.php';
+ok( is_file( $color_ruta ), 'herramientas/color.php existe para que el probe de tinta lo requiera' );
+$ink_fn_names = array( 'fail', 'ink_of' );
+$ink_fn_body  = "require_once " . var_export( $color_ruta, true ) . ";\n"
+	. "set_exception_handler( function ( \$e ) {\n"
+	. "\tif ( \$e instanceof NmHerramientaEntorno || \$e instanceof NmHerramientaMedida ) {\n"
+	. "\t\tfail( \$e->getMessage() );\n"
+	. "\t}\n"
+	. "\tthrow \$e;\n"
+	. "} );\n";
 foreach ( $ink_fn_names as $ink_fn_name ) {
 	$ink_fn_one = ink_fn_src( $bg_src, $ink_fn_name );
 	ok( '' !== $ink_fn_one, "_build-gallery.php todavia define \`$ink_fn_name()\` para que el probe de tinta lo extraiga" );

@@ -102,26 +102,26 @@ design.md scope is fully satisfied; work resumes at PR 0b.
 
 ## PR 1a — `.gitattributes` + `herramientas/{color,scrim,huella}.php`
 
-- [ ] 1a.1 Create `tests/test-herramientas.php`; add it to `CONTRIBUTING.md`'s `&&` chain in the same
+- [x] 1a.1 Create `tests/test-herramientas.php`; add it to `CONTRIBUTING.md`'s `&&` chain in the same
       PR (or `RT_GATE_LINE_UNREGISTERED` FAILs).
-- [ ] 1a.2 RED: `huella.php` fixture — same tree written once CRLF, once LF → digest must match; a
+- [x] 1a.2 RED: `huella.php` fixture — same tree written once CRLF, once LF → digest must match; a
       `.woff2` with a `\r\n` byte pair must hash unchanged (binary, never normalised).
-- [ ] 1a.3 GREEN: extract `huella.php` from `_gallery-fingerprint.php`'s pattern (`path=>sha256`,
+- [x] 1a.3 GREEN: extract `huella.php` from `_gallery-fingerprint.php`'s pattern (`path=>sha256`,
       relative to `skills/`, missing input = `absent`, `ksort`, digest over `"<path> <hash>\n"`),
       LF-normalise `.md .html .json .css .js .svg .txt` only; dual-mode CLI `--plantilla <slug>
       --biblioteca --comprobar`.
-- [ ] 1a.4 Create `.gitattributes`: `eol=lf` for the text extension set under `plantillas/**`,
+- [x] 1a.4 Create `.gitattributes`: `eol=lf` for the text extension set under `plantillas/**`,
       `binary` for `.webp .woff2 .png .jpg .avif`. RED/GREEN: a CRLF-committed fixture normalises to
       the same huella as its LF twin (spec `plantilla-library` "Fingerprint is platform-stable").
-- [ ] 1a.5 RED: `color.php` — a hex pair <4.5:1 → `--contraste` exits 1 naming the ratio; ≥4.5:1 →
+- [x] 1a.5 RED: `color.php` — a hex pair <4.5:1 → `--contraste` exits 1 naming the ratio; ≥4.5:1 →
       exits 0.
-- [ ] 1a.6 GREEN: extract `color.php` (`srgb_lum/contrast/ratio_str/css_mix/ink_tint/ink_ends/
+- [x] 1a.6 GREEN: extract `color.php` (`srgb_lum/contrast/ratio_str/css_mix/ink_tint/ink_ends/
       ink_curve` + accent gate) from `_build-gallery.php:200-222,942-1116`; `--contraste <hex> <hex>`
       and `--maqueta <slug>` (4.5:1 text / 3:1 UI on every `:root` pair).
-- [ ] 1a.7 RED (threat matrix): GD extension absent → `scrim.php --peor-pixel` exits **2**, never 0.
-- [ ] 1a.8 GREEN: extract `scrim.php` (`worst_pixel/ink_mean/ink_pixel`) from
+- [x] 1a.7 RED (threat matrix): GD extension absent → `scrim.php --peor-pixel` exits **2**, never 0.
+- [x] 1a.8 GREEN: extract `scrim.php` (`worst_pixel/ink_mean/ink_pixel`) from
       `_build-gallery.php:1545-1700`; `--peor-pixel <img> <x> <y> <w> <h>`.
-- [ ] 1a.9 Verify uniform exit contract across all three: 0 pass / 1 measured failure / 2
+- [x] 1a.9 Verify uniform exit contract across all three: 0 pass / 1 measured failure / 2
       usage-or-environment, never 0 for "could not measure."
 - Verification: `php skills/html-mockup/assets/gallery/_build-gallery.php` (rebuild — generator still
   present, or `RT_GALLERY_STALE` fires) `&&` `php skills/framework-audit/assets/framework-audit.php
@@ -221,6 +221,13 @@ design.md scope is fully satisfied; work resumes at PR 0b.
       job, except `RT_ENFOQUE_SIN_PLANTILLA`/`RT_ENFOQUE_REPETIDO_RECIENTE`, which stay WARN forever).
 - Verification: same full chain as 1a/1c; if the diff nears 800 lines, split by id family (see
   Review Workload Forecast) before opening the PR.
+
+- [ ] 1d.25 **Hole opened by PR 1a, found while applying it.** `RT_HELPER_UNROUTABLE` globs
+      `assets/*.php` one level deep only, so every function inside `assets/herramientas/*.php` is
+      structurally invisible to it: a dead helper in the new toolbox would never be reported. RED:
+      a fixture with an uncalled, unnamed function under `assets/herramientas/` must WARN and does
+      not. GREEN: widen the walk to `assets/**/*.php`. Do it in this slice, not later — the toolbox
+      grows in PR 1e and every file added before the fix is unguarded.
 
 ## PR 1e — Remaining toolbox
 

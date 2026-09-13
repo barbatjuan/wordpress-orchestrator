@@ -554,3 +554,14 @@ now FAILs even though the label agrees with the anchor, because `--fs-h1-max` di
 `contained`'s own row in `design-system.md` § "Perceptual axes — token values". Copy the numbers
 from that table and never derive one — the `:root` comment has said so since the axes landed, and
 this is the half of it that used to have no gate.
+
+## Herramientas compartidas — extracción en curso (PR 1a)
+
+The colour/contrast maths and the fingerprint this generator used to own alone now live under
+`../assets/herramientas/` (`color.php`, `scrim.php`, `huella.php`), dual-mode: each file is a
+plain PHP library `_build-gallery.php` (and, from a later PR, `framework-audit.php`) `require`s,
+and each is its own CLI when run directly. `_build-gallery.php` keeps working unmodified at every
+call site — only the failure signal changed, from an immediate `exit()` to a typed exception this
+file catches and hands back to its own `fail()`. The full per-function inventory (`## Herramientas`,
+naming every public function by name so `RT_HELPER_UNROUTABLE` never has to guess) lands once all
+seven tools exist, later in this same PR chain.
