@@ -391,7 +391,7 @@ unchecked.
 
 **A mid-word chop produces exactly ZERO overflow, because the chop is what prevents it.** So a
 sweep that measures `scrollWidth - clientWidth` at every width reports a perfectly clean page whose
-headline reads `PIEZA / S QUE / NO SE / REPIT / EN`. Measured on tuscapas at 320: an `h1` was
+headline reads `PIEZA / S QUE / NO SE / REPIT / EN`. Measured on BSP-VITRINA at 320: an `h1` was
 chopped on all SEVEN pages while the overflow sweep returned 0 everywhere, and the reader found it
 in the render before the sweep did. **Two gates, not one** — the second is a `Range` per WORD,
 counting `getClientRects()`; more than one rectangle means that word was split. `qa-review`

@@ -371,7 +371,7 @@ function es_ink_on( $clave, array $t, array $receta ) {
  *
  * A hover that recedes reads as DISABLED. It is an affordance defect and not an
  * accessibility one -- 3.95:1 still clears AA-large's 3.0, so no qa-review row
- * caught it, which is why it survived. The real tuscapas build overrode the
+ * caught it, which is why it survived. The real BSP-VITRINA build overrode the
  * token to #FF4D93 by hand (5.67 -> 6.08, LIGHTENING), so a human had already
  * hit this and worked around it silently.
  *

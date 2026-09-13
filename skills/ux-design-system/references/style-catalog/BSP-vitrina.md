@@ -1,7 +1,12 @@
-# `BSP-TUSCAPAS` — Bespoke declaration
+# `BSP-VITRINA` — Bespoke declaration
 
-`tuscapas.es` — 3D-printed anime and gaming figures, numbered runs. Site type `ecommerce`,
+A small workshop selling collectible resin pieces in numbered runs. Site type `ecommerce`,
 archetype `TPL-E-01` (Visual Brand). Route `bespoke`.
+
+**Anonymised.** This declaration records a REAL bespoke resolution, kept because it is the only
+worked example of the route, but the client's identity, domain and exact niche are not in this
+repository: the repository is public and the work is theirs. `VITRINA` is a pseudonym taken from
+the brief's own metaphor, and every measurement below is the real one.
 
 **Axes:** scale `monumental` · ground `ink` · density `generous` · composition `strict-grid` ·
 elevation `accent-glow` · accent `polychrome` · chassis `soft-carded` · ornament `none`

@@ -411,9 +411,9 @@ of the deployed-only orphan and behind a `diff -rq` verification with other sess
 
 ## Open Questions
 
-- [ ] Client material already in a public Apache-2.0 repo (`BSP-tuscapas.md`,
+- [ ] Client material already in a public Apache-2.0 repo (`BSP-vitrina.md`,
       `corpus/2026-09-12-arborea-*.jpg`) — anonymise, move out of tree, or accept. **Blocks the
-      amputation PR**, because that PR is where `BSP-tuscapas.md` would otherwise simply be deleted
+      amputation PR**, because that PR is where `BSP-vitrina.md` would otherwise simply be deleted
       and the question would disappear unanswered. User, before Phase 2.
 - [ ] Whether `colour-and-tone-system` retires or survives as a floors-only capability once
       `color.php`/`scrim.php` are its only host. `sdd-spec` decides; the tool contract above works

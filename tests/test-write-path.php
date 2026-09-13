@@ -2115,7 +2115,7 @@ foreach ( $suelos as $posicion => $celdas ) {
  * (acento #FF3D8A en las filas oscuras.) Un hover que retrocede se lee como
  * DESACTIVADO: es un fallo de affordance, no de accesibilidad —— 3.95:1 sigue
  * pasando AA-large, asi que ninguna fila de qa-review lo caza y por eso llevaba
- * aqui sin verse. El build real de tuscapas lo parcheo a mano a #FF4D93
+ * aqui sin verse. El build real de BSP-VITRINA lo parcheo a mano a #FF4D93
  * (5.67 -> 6.08, ACLARANDO), que es la prueba de que un humano ya se lo comio.
  *
  * Se afirma el SIGNO y no un hex a proposito, y es la misma razon por la que

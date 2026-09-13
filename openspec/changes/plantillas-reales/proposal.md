@@ -116,7 +116,7 @@ Redeploy to `~/.claude` only after the merges marked below.
 | `skills/html-mockup/assets/{gallery/**,chassis/*,proof-*.html,_axis-proof-content.md}` | Removed | ~17k of 18.2k generator lines, the strips, the chassis, the axis proofs |
 | `skills/html-mockup/assets/herramientas/*.php` | New | `color`, `scrim`, `huella`, `veredicto`, `comprobar-maqueta`, `empaquetar`, `indice` |
 | `skills/html-mockup/SKILL.md`, `references/mockup-guide.md` | Modified | Derivation contract: artboard desktop + mobile → responsive CSS, one artifact, fonts embedded |
-| `skills/ux-design-system/references/style-catalog/**` | Removed | 8 `STY-*`, `BSP-tuscapas.md`, `_bespoke-route.md`, `_backlog.md` |
+| `skills/ux-design-system/references/style-catalog/**` | Removed | 8 `STY-*`, `BSP-vitrina.md`, `_bespoke-route.md`, `_backlog.md` |
 | `skills/ux-design-system/SKILL.md`, `design-tokens.md`, `layout-patterns.md`, `motion.md`, `shipped-log.md` | Modified | Enfoque as vocabulary; tokens expressed in Elementor Site Settings, never CSS |
 | `skills/framework-audit/assets/framework-audit.php` | Modified | 25 rules + `nm_axes()`/`axis_matches()` out; ~20 `RT_*` Spanish-noun rules in; `points_at_dir()` recursive |
 | `tests/test-framework-audit.php` | Modified | ~250 assertions out, ~120 in; `fx_plantilla/fx_enfoque/fx_veredicto/fx_biblioteca/fx_indice` |
@@ -130,7 +130,7 @@ Redeploy to `~/.claude` only after the merges marked below.
 
 | # | Decision | Owner / when |
 |---|---|---|
-| 1 | Client material in a public Apache-2.0 repo (`BSP-tuscapas.md`, `corpus/2026-09-12-arborea-*.jpg`): anonymise, move out of tree (the audit stops reading it), or accept | User, before Phase 2. History rewrite is excluded by repo rule |
+| 1 | Client material in a public Apache-2.0 repo (`BSP-vitrina.md`, `corpus/2026-09-12-arborea-*.jpg`): anonymise, move out of tree (the audit stops reading it), or accept | User, before Phase 2. History rewrite is excluded by repo rule |
 | 2 | Approve the `delao` Canvas as it stands, or retouch before deriving the Maqueta | User, Phase 1 |
 | 3 | Delete the stale pilot branch (tip `ef4d80a`) and its worktree after harvest | User, Phase 0 |
 | 4 | Sectors for Plantillas 8–10 | User, Phase 4 |
