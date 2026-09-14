@@ -1,0 +1,590 @@
+{
+  "actualizado": "2026-09-14",
+  "terminado_es": "El orquestador elige cada plantilla por objetivo, deriva la maqueta de un cliente desde su lienzo, pasa la puerta visual y construye en Elementor sólo con elementos nativos. Todo mergeado en main, desplegado en ~/.claude y probado de punta a punta en un WordPress de pruebas.",
+  "paginas": {
+    "corporate": [
+      "inicio",
+      "listado o servicios",
+      "detalle",
+      "nosotros",
+      "contacto",
+      "gracias",
+      "aviso legal",
+      "privacidad",
+      "cookies",
+      "404"
+    ],
+    "ecommerce": [
+      "portada",
+      "categoría",
+      "ficha de producto",
+      "carro",
+      "pago",
+      "pedido recibido",
+      "mi cuenta",
+      "la marca",
+      "contacto",
+      "condiciones de venta y envíos",
+      "aviso legal",
+      "privacidad",
+      "cookies",
+      "404"
+    ]
+  },
+  "fuera": "Corte (se pisa con MARZO), Bajura (con BARRO), y Obra Viva, Alinea Norte, Cuadra 12 y Taller de Oficios, que no tienen diseño. Pueden entrar en una tanda siguiente.",
+  "pasos": [
+    "lienzo",
+    "maqueta",
+    "fotos",
+    "ficha",
+    "medido",
+    "veredicto"
+  ],
+  "plantillas": [
+    {
+      "slug": "delao",
+      "nombre": "Inmobiliaria de la O",
+      "tipo": "corporate",
+      "sector": "inmobiliaria",
+      "estado": {
+        "lienzo": [
+          "parcial",
+          "5 de 10"
+        ],
+        "maqueta": [
+          "en-curso",
+          "añadiendo gracias, legal y 404"
+        ],
+        "fotos": [
+          "hecho",
+          "12"
+        ],
+        "ficha": [
+          "parcial",
+          "faltan 5 páginas"
+        ],
+        "medido": [
+          "parcial",
+          "5 de 10"
+        ],
+        "veredicto": [
+          "pendiente",
+          ""
+        ]
+      }
+    },
+    {
+      "slug": "lumiere",
+      "nombre": "Lumière",
+      "tipo": "corporate",
+      "sector": "estética",
+      "estado": {
+        "lienzo": [
+          "en-curso",
+          "5 páginas de contenido"
+        ],
+        "maqueta": [
+          "pendiente",
+          ""
+        ],
+        "fotos": [
+          "parcial",
+          "a revisar"
+        ],
+        "ficha": [
+          "pendiente",
+          ""
+        ],
+        "medido": [
+          "pendiente",
+          ""
+        ],
+        "veredicto": [
+          "pendiente",
+          ""
+        ]
+      }
+    },
+    {
+      "slug": "terrazza",
+      "nombre": "Terrazza",
+      "tipo": "corporate",
+      "sector": "restaurante",
+      "estado": {
+        "lienzo": [
+          "parcial",
+          "portada a rehacer"
+        ],
+        "maqueta": [
+          "pendiente",
+          ""
+        ],
+        "fotos": [
+          "parcial",
+          "a revisar"
+        ],
+        "ficha": [
+          "pendiente",
+          ""
+        ],
+        "medido": [
+          "pendiente",
+          ""
+        ],
+        "veredicto": [
+          "pendiente",
+          ""
+        ]
+      }
+    },
+    {
+      "slug": "aranda",
+      "nombre": "Aranda",
+      "tipo": "corporate",
+      "sector": "coches de ocasión",
+      "estado": {
+        "lienzo": [
+          "parcial",
+          "portada a rehacer"
+        ],
+        "maqueta": [
+          "pendiente",
+          ""
+        ],
+        "fotos": [
+          "parcial",
+          "a revisar"
+        ],
+        "ficha": [
+          "pendiente",
+          ""
+        ],
+        "medido": [
+          "pendiente",
+          ""
+        ],
+        "veredicto": [
+          "pendiente",
+          ""
+        ]
+      }
+    },
+    {
+      "slug": "albaran",
+      "nombre": "Albarán & Soro",
+      "tipo": "corporate",
+      "sector": "abogados",
+      "estado": {
+        "lienzo": [
+          "pendiente",
+          "nueva"
+        ],
+        "maqueta": [
+          "pendiente",
+          ""
+        ],
+        "fotos": [
+          "parcial",
+          "primeras hechas"
+        ],
+        "ficha": [
+          "pendiente",
+          ""
+        ],
+        "medido": [
+          "pendiente",
+          ""
+        ],
+        "veredicto": [
+          "pendiente",
+          ""
+        ]
+      }
+    },
+    {
+      "slug": "marzo",
+      "nombre": "MARZO",
+      "tipo": "ecommerce",
+      "sector": "moda",
+      "estado": {
+        "lienzo": [
+          "parcial",
+          "2 de 14"
+        ],
+        "maqueta": [
+          "pendiente",
+          ""
+        ],
+        "fotos": [
+          "parcial",
+          "9"
+        ],
+        "ficha": [
+          "parcial",
+          "2 páginas"
+        ],
+        "medido": [
+          "parcial",
+          "2 de 14"
+        ],
+        "veredicto": [
+          "pendiente",
+          ""
+        ]
+      }
+    },
+    {
+      "slug": "barro",
+      "nombre": "BARRO",
+      "tipo": "ecommerce",
+      "sector": "cerámica y taller",
+      "estado": {
+        "lienzo": [
+          "parcial",
+          "2 de 14"
+        ],
+        "maqueta": [
+          "pendiente",
+          ""
+        ],
+        "fotos": [
+          "parcial",
+          "10"
+        ],
+        "ficha": [
+          "parcial",
+          "2 páginas"
+        ],
+        "medido": [
+          "parcial",
+          "2 de 14"
+        ],
+        "veredicto": [
+          "pendiente",
+          ""
+        ]
+      }
+    },
+    {
+      "slug": "cadencia",
+      "nombre": "CADENCIA",
+      "tipo": "ecommerce",
+      "sector": "deportiva",
+      "estado": {
+        "lienzo": [
+          "parcial",
+          "2 de 14"
+        ],
+        "maqueta": [
+          "pendiente",
+          ""
+        ],
+        "fotos": [
+          "parcial",
+          "8"
+        ],
+        "ficha": [
+          "parcial",
+          "2 páginas"
+        ],
+        "medido": [
+          "parcial",
+          "2 de 14"
+        ],
+        "veredicto": [
+          "pendiente",
+          ""
+        ]
+      }
+    },
+    {
+      "slug": "escuadra",
+      "nombre": "ESCUADRA",
+      "tipo": "ecommerce",
+      "sector": "hogar",
+      "estado": {
+        "lienzo": [
+          "parcial",
+          "2 de 14"
+        ],
+        "maqueta": [
+          "pendiente",
+          ""
+        ],
+        "fotos": [
+          "parcial",
+          "16"
+        ],
+        "ficha": [
+          "parcial",
+          "2 páginas"
+        ],
+        "medido": [
+          "parcial",
+          "2 de 14"
+        ],
+        "veredicto": [
+          "pendiente",
+          ""
+        ]
+      }
+    },
+    {
+      "slug": "tueste",
+      "nombre": "Tueste",
+      "tipo": "ecommerce",
+      "sector": "café por suscripción",
+      "estado": {
+        "lienzo": [
+          "parcial",
+          "portada a rehacer"
+        ],
+        "maqueta": [
+          "pendiente",
+          ""
+        ],
+        "fotos": [
+          "parcial",
+          "a revisar"
+        ],
+        "ficha": [
+          "pendiente",
+          ""
+        ],
+        "medido": [
+          "pendiente",
+          ""
+        ],
+        "veredicto": [
+          "pendiente",
+          ""
+        ]
+      }
+    }
+  ],
+  "bloques": [
+    {
+      "id": "A",
+      "titulo": "El contrato que lee el orquestador",
+      "tareas": [
+        {
+          "id": "A1",
+          "t": "glosario.md: Plantilla, Objetivo, Enfoque, Veredicto, Mapeo nativo, Ruta a medida",
+          "s": "en-curso"
+        },
+        {
+          "id": "A2",
+          "t": "enfoques.md: los ocho enfoques en español y qué plantilla encarna cada uno",
+          "s": "en-curso"
+        },
+        {
+          "id": "A3",
+          "t": "recomendador.md: objetivo del cliente → plantilla, con la ruta a medida cuando ninguna encaja",
+          "s": "en-curso"
+        },
+        {
+          "id": "A4",
+          "t": "paginas-obligatorias.md: los dos juegos de páginas, corporate y ecommerce",
+          "s": "en-curso"
+        },
+        {
+          "id": "A5",
+          "t": "Formato de veredicto y veredicto.php, que sella y comprueba la huella de cada plantilla",
+          "s": "pendiente"
+        },
+        {
+          "id": "A6",
+          "t": "vocabulario-nativo.md generado leyendo los widgets de un Elementor real, no escrito de memoria",
+          "s": "bloqueado",
+          "n": "Necesito un WordPress de pruebas con Elementor Pro y WooCommerce"
+        }
+      ]
+    },
+    {
+      "id": "B",
+      "titulo": "Tipografías",
+      "tareas": [
+        {
+          "id": "B1",
+          "t": "Incrustar las siete familias que no son de la casa, con procedencia y licencia OFL",
+          "s": "hecho",
+          "n": "Commit 5c80841: 10 woff2 (491.776 bytes) con su licencia OFL verificada tres veces, y el registro ampliado a varias caras por familia. Cadena 1.602 OK"
+        }
+      ]
+    },
+    {
+      "id": "C",
+      "titulo": "Las diez plantillas",
+      "tareas": [
+        {
+          "id": "C1",
+          "t": "Rediseñar al nivel de las tiendas las cuatro portadas que calificaste «más o menos»: Lumière, Terrazza, Aranda y Tueste",
+          "s": "en-curso",
+          "n": "Lumière va primero como piloto; las otras tres después de revisarlo"
+        },
+        {
+          "id": "C2",
+          "t": "Diseñar Albarán & Soro desde cero",
+          "s": "pendiente"
+        },
+        {
+          "id": "C3",
+          "t": "Lienzo de todas las páginas de contenido de las diez",
+          "s": "en-curso",
+          "n": "delao y Lumière en marcha"
+        },
+        {
+          "id": "C4",
+          "t": "Maqueta de cada una con todas sus páginas, dos puntos de ruptura y fuentes incrustadas",
+          "s": "pendiente"
+        },
+        {
+          "id": "C5",
+          "t": "Fotos de las páginas nuevas, comprobadas a ojo contra su nombre, con su manifiesto",
+          "s": "pendiente"
+        },
+        {
+          "id": "C6",
+          "t": "Ficha de cada una con todas sus páginas y su mapeo nativo",
+          "s": "pendiente"
+        },
+        {
+          "id": "C7",
+          "t": "Geometría y contraste medidos en todas las páginas a 430, 768 y 1280",
+          "s": "pendiente"
+        },
+        {
+          "id": "C8",
+          "t": "Veredicto sellado de cada una: juez ciego y barrido visual de todas las páginas",
+          "s": "pendiente"
+        }
+      ]
+    },
+    {
+      "id": "D",
+      "titulo": "Skills y orquestador",
+      "tareas": [
+        {
+          "id": "D1",
+          "t": "web-templates elige por objetivo desde la biblioteca, no desde el catálogo viejo",
+          "s": "pendiente"
+        },
+        {
+          "id": "D2",
+          "t": "html-mockup deriva la maqueta de un cliente desde el lienzo de su plantilla",
+          "s": "pendiente"
+        },
+        {
+          "id": "D3",
+          "t": "ux-design-system usa el enfoque como vocabulario y lleva los tokens a los ajustes globales de Elementor",
+          "s": "pendiente"
+        },
+        {
+          "id": "D4",
+          "t": "blind-judges escribe el veredicto de plantilla y el de biblioteca",
+          "s": "pendiente"
+        },
+        {
+          "id": "D5",
+          "t": "qa-review cuenta widgets HTML y CSS a medida contra el techo de la ficha",
+          "s": "pendiente"
+        },
+        {
+          "id": "D6",
+          "t": "woocommerce construye las páginas de tienda desde la plantilla",
+          "s": "pendiente"
+        },
+        {
+          "id": "D7",
+          "t": "wordpress-orchestrator enruta: objetivo → plantilla → lienzo → maqueta → veredicto → build nativo",
+          "s": "pendiente"
+        }
+      ]
+    },
+    {
+      "id": "E",
+      "titulo": "Auditoría y tests",
+      "tareas": [
+        {
+          "id": "E1",
+          "t": "Reglas con su fixture: ficha completa, índice igual a las carpetas, páginas presentes, veredicto vigente",
+          "s": "pendiente"
+        },
+        {
+          "id": "E2",
+          "t": "Cadena completa en verde",
+          "s": "pendiente"
+        }
+      ]
+    },
+    {
+      "id": "F",
+      "titulo": "Retirar lo viejo",
+      "tareas": [
+        {
+          "id": "F1",
+          "t": "Borrar el catálogo TPL (50 documentos), el generador de 17.884 líneas, galería, chasis, estilos y toggles, con sus reglas y tests",
+          "s": "pendiente"
+        },
+        {
+          "id": "F2",
+          "t": "install --clean, para que la copia desplegada no siga ofreciendo lo borrado",
+          "s": "pendiente"
+        }
+      ]
+    },
+    {
+      "id": "G",
+      "titulo": "Juicio de conjunto",
+      "tareas": [
+        {
+          "id": "G1",
+          "t": "Juez de reconocimiento sobre las diez portadas: ningún grupo hecho «por la misma mano»",
+          "s": "pendiente"
+        },
+        {
+          "id": "G2",
+          "t": "Veredicto de la biblioteca sellado",
+          "s": "pendiente"
+        }
+      ]
+    },
+    {
+      "id": "H",
+      "titulo": "Entrega",
+      "tareas": [
+        {
+          "id": "H1",
+          "t": "Subir la rama a GitHub y abrir el PR",
+          "s": "necesita-ok",
+          "n": "Te lo pido cuando A–G estén hechos"
+        },
+        {
+          "id": "H2",
+          "t": "Merge a main",
+          "s": "necesita-ok",
+          "n": "Te lo pido con el PR en verde"
+        },
+        {
+          "id": "H3",
+          "t": "Desplegar en ~/.claude y comprobar byte a byte contra main",
+          "s": "pendiente"
+        },
+        {
+          "id": "H4",
+          "t": "Prueba de punta a punta: el orquestador construye una plantilla en Elementor y qa-review cuenta 0 widgets HTML y 0 CSS a medida",
+          "s": "bloqueado",
+          "n": "El mismo WordPress de pruebas que A6"
+        }
+      ]
+    }
+  ],
+  "ya_hecho": [
+    "Herramientas de color, velo y huella extraídas del generador, con 53 tests",
+    "Validador de geometría con sus cinco bugs corregidos",
+    "Catálogo de defectos de derivación",
+    "Lienzos publicados de delao, MARZO, BARRO, CADENCIA y ESCUADRA",
+    "Maqueta de delao con cinco páginas",
+    "Tres commits locales en feat/plantillas-reales, cadena en 1.569 OK"
+  ]
+}
