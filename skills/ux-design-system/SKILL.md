@@ -1,67 +1,66 @@
 ---
 name: ux-design-system
-description: "Trigger: premium web design, hero, layout, cards, hover effects, responsive, microinteractions, design tokens, spacing, palette. Builder-agnostic visual language for premium WordPress sites (Elementor or Divi)."
+description: "Trigger: premium web design, enfoque, marca del cliente, hero, layout, cards, hover effects, responsive, microinteractions, design tokens, colores globales, spacing, palette. Builder-agnostic visual language: the Plantilla's Enfoque as vocabulary, the client's brand applied inside it, and tokens that land in Elementor's global Site Settings (Elementor or Divi)."
 license: Apache-2.0
 metadata:
   author: "juan"
-  version: "1.2"
+  version: "2.0"
 ---
 
 # UX Design System
 
-The visual language, independent of the page builder: HOW it looks and feels.
-`elementor-core` / `divi-core` translate these into builder data.
+The visual language, independent of the builder. A client's look starts from the Plantilla
+`web-templates` chose and its **Enfoque**; this skill places the client's brand inside it and
+resolves the tokens the lienzo, the maqueta and the build share.
 
 ## Activation Contract
-Run after `web-templates`, before `html-mockup`. Never hand straight to builder-core:
-the mockup approval gate sits between this skill and any WordPress write.
+After `web-templates`, before Claude Design (the design skill) and `html-mockup`. Never straight
+to builder-core.
 
 ## The Design Space
-- **Eight axes** (`references/design-tokens.md`): scale, ground, density, composition,
-  elevation, accent, chassis, ornament — a spectrum of values, never an adjective.
-- **Eight styles** (`references/style-catalog/`): full positions on all eight axes plus a
-  toggle precharge. Land on the closest.
+- **Enfoque** (`web-templates/references/enfoques.md`): eight axes, a type pair and an image
+  direction. Words to reason with, never a token engine.
+- **The client's brand**: logo, colours, type pair, photography, placed in the Enfoque's roles.
+- Legacy, not offered to new clients, removal pending: `references/style-catalog/`.
 
 ## Hard Rules
-- Every typography/color/motion choice traces to a brand signal, client reference, or resolved
-  axis — never "the docs example." Unjustified, ask one more question.
-- One accent color — ONLY CTAs, action icons, important links; neutrals carry the rest.
-- Motion is calm: hovers use `cubic-bezier(.22,1,.36,1)`, ~.35–.7s, small moves
-  (`translateY(-4…-6px)`, `scale(1.045)`), soft shadow, never a hard snap; the anchor tunes
-  duration/distance within this range.
-- Consistent spacing rhythm and padding across the site; audit margins as a pass.
-- Two button families only: solid accent + ghost/outline, each with a legible hover (no
-  white-on-white ghost). Buttons centre their label on BOTH axes — `inline-flex` +
-  `align-items:center` + `justify-content:center`; `text-align:center` alone pins it to the
-  top of any stretched button.
-- Cards share ONE language site-wide — one card recipe per anchor, never reinvented per section.
-- Mobile-first: centered hero on small screens, real breakpoints, full-width CTAs, equal-height product cards.
+- **The Enfoque comes from the Plantilla**, never re-picked from a catalogue. References that pull
+  it elsewhere go back to `web-templates`, never a repaint.
+  (no verifier: which Enfoque a lienzo took is read by the reviewer against the ficha and the decision record)
+- **The brand changes the skin, not the ADN**: colours, logo, photographs and type pair, each in
+  the role the ficha gives it.
+  (no verifier: an ADN is read by eye against the ficha at client approval)
+- **Tokens land in Elementor's global Site Settings — global colours and global fonts — never in
+  custom CSS.** A token with no slot is a design change, noted in the ficha's Mapeo nativo.
+  (verifier: `qa-review` house-rule row 37 counts the custom CSS the build carries against the ficha's ceiling)
+- **Every colour pair is measured**: 4.5:1 text, 3:1 interface. A failing accent gets a darker
+  variant, never a second colour.
+  (no verifier: no rule measures a client palette; `html-mockup/assets/herramientas/color.php` is run by whoever resolves it)
+- One accent — ONLY CTAs, action icons, important links; neutrals carry the rest.
+- Motion is calm: `cubic-bezier(.22,1,.36,1)`, ~.35–.7s, small moves, never a snap.
+- Two button families: solid accent + ghost, each with a legible hover, label centred on both axes.
+- ONE card recipe site-wide; one spacing rhythm, audited as a pass.
 
 ## Execution Steps
-1. Resolve the EIGHT AXES with 3–5 questions in business terms, never "which style do you
-   want". Precharge each from the industry `web-templates` reported, or from the spec of a strip
-   picked in `html-mockup/assets/gallery/index.html`, which precharges archetype and all eight;
-   the client confirms or overrides. One answer usually moves several axes: "material catalogue
-   or gallery of finished work?" moves ground, composition and density at once. **Every axis must
-   end resolved**: ask explicitly for any the answers did not reach — an axis nobody sets, or one
-   inherited from a card and never questioned, falls to the same value on every project, which is
-   how sites end up identical.
-2. Ask `TGL-IMAGERY` and `TGL-MOTION-INTENSITY` (`web-templates/references/toggles.md`),
-   precharged from the anchor's Imagery/Motion intensity; the client confirms or overrides.
-3. Read `references/design-tokens.md`: fix palette, type pair, spacing scale, radii from the
-   resolved axes.
-4. Read `references/motion.md`: hover timings and premium card recipe, tuned by elevation and
-   density.
-5. Read `references/layout-patterns.md` for the section blueprints and responsive rules.
-6. Hand the resolved axes + tokens + pattern list to **`html-mockup`** for approval — builder-core
-   receives it only afterward.
+1. **Read the Plantilla**: its ficha and its Enfoque in `enfoques.md` — the eight axes as the
+   Plantilla resolves them are the start. Ruta a medida: the axes declared in the decision record.
+2. **References against the axes** (reuse recomendador step 4). An axis pulled away from the ficha
+   is one question to the user; ADN axes do not move.
+3. **Brand into roles**: palette from the logo (`references/design-tokens.md`), type pair, and a
+   photo brief from the Plantilla's manifiesto (rol and framing per image).
+4. **Measure** every pair (`color.php --contraste`).
+5. **Recent deliveries**: a repeat of the Enfoque in the last five rows of
+   `references/shipped-log.md` goes to the user.
+6. **Map to Site Settings**; list what has no slot.
+7. **Hand over** to Claude Design for the client's lienzo, then `html-mockup`.
 
 ## Output Contract
-Return a short spec: resolved axis positions, palette + roles, type pair, spacing/radii, motion
-timings, sections/patterns, per-breakpoint notes — no builder-specific code.
+Enfoque with its axes, what the brand changed, palette with roles and measured ratios, type pair,
+the Site Settings mapping, tokens without a slot, what to avoid, the recent-delivery check. No
+builder code.
 
 ## References
-- `references/style-catalog/` — eight styles, positions on all eight axes.
-- `references/design-tokens.md` — palette roles, type, spacing, radii, eight axes.
-- `references/motion.md` — hover timings, premium card recipe, glass, button system.
-- `references/layout-patterns.md` — section blueprints + responsive rules.
+- `references/design-tokens.md` — palette and type roles, Site Settings.
+- `references/motion.md` — hover timings, card recipe, button system.
+- `references/layout-patterns.md` — grid tracks, disclosure lists, responsive rules.
+- `references/shipped-log.md` — the delivery ledger.
