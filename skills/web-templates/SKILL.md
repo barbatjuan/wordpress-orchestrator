@@ -69,6 +69,7 @@ tokens, and per-breakpoint notes. No visual or builder-specific code.
 - `references/design-system.md` — shared tokens (type, color, spacing, buttons, containers, radii).
 - `references/recommender.md` — CAPA 2: analysis, reference intake, signal→template map, page set.
 - `references/toggles.md` — CAPA 3: modular toggle catalog.
+- `references/plantillas/_indice.md` — la biblioteca de plantillas reales, y el punto de partida de un proyecto.
 - `references/templates/ecommerce/` — TPL-E-01..09. See its `_README.md`.
 - `references/templates/corporate/` — TPL-C-01..14, two families. See its `_README.md`.
 - `references/templates/pages/` — inner-page archetypes. See `pages/_README.md`.

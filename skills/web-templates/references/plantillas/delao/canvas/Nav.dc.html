@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=Libre+Caslon+Display&display=swap" rel="stylesheet">
+<style>
+a{color:#17181A;text-decoration:none}
+a:hover{color:#8A7B5C}
+</style>
+</helmet>
+<header style="position:sticky;top:0;z-index:50;background:rgba(246,244,240,.94);backdrop-filter:saturate(140%) blur(8px);border-bottom:1px solid rgba(23,24,26,.12)">
+  <div style="max-width:1440px;margin:0 auto;padding:0 40px;height:78px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:32px">
+    <a href="#inicio" style="display:flex;flex-direction:column;gap:3px;justify-self:start">
+      <span style="font:400 19px/1 'Libre Caslon Display',Georgia,serif;letter-spacing:.01em;color:#17181A">Inmobiliaria de la O</span>
+      <span style="font:500 8.5px/1 'Archivo',sans-serif;letter-spacing:.28em;text-transform:uppercase;color:#8A7B5C">Villas &amp; áticos de autor</span>
+    </a>
+    <nav style="display:flex;gap:36px;align-items:center;justify-self:center">
+      <a href="#propiedades" style="font:500 10.5px/1 'Archivo',sans-serif;letter-spacing:.2em;text-transform:uppercase;padding-bottom:3px;border-bottom:1px solid transparent" style-hover="border-bottom-color:#8A7B5C">Propiedades</a>
+      <a href="#nosotros" style="font:500 10.5px/1 'Archivo',sans-serif;letter-spacing:.2em;text-transform:uppercase;padding-bottom:3px;border-bottom:1px solid transparent" style-hover="border-bottom-color:#8A7B5C">Nosotros</a>
+      <a href="#contacto" style="font:500 10.5px/1 'Archivo',sans-serif;letter-spacing:.2em;text-transform:uppercase;padding-bottom:3px;border-bottom:1px solid transparent" style-hover="border-bottom-color:#8A7B5C">Contacto</a>
+    </nav>
+    <div style="display:flex;align-items:center;gap:24px;justify-self:end">
+      <a href="tel:+34952000000" style="font:400 12.5px/1 'Archivo',sans-serif;letter-spacing:.06em;color:rgba(23,24,26,.62);white-space:nowrap">+34 952 00 00 00</a>
+      <a href="#contacto" style="font:500 10.5px/1 'Archivo',sans-serif;letter-spacing:.2em;text-transform:uppercase;color:#F6F4F0;background:#17181A;padding:13px 22px" style-hover="background:#8A7B5C;color:#fff">Valorar mi casa</a>
+    </div>
+  </div>
+</header>
+</x-dc>
+</body>
+</html>
