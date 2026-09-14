@@ -267,29 +267,29 @@
   },
   {
    "slug": "terrazza",
-   "nombre": "terrazza",
-   "tipo": "?",
-   "sector": "",
+   "nombre": "Casa Terrazza",
+   "tipo": "corporate",
+   "sector": "restauración, asador y arrocería con carta corta y brasa de encina",
    "estado": {
     "lienzo": [
-     "parcial",
-     "1 láminas"
+     "hecho",
+     "5 láminas"
     ],
     "maqueta": [
-     "pendiente",
-     "sin maqueta"
+     "parcial",
+     "9 de 10 páginas"
     ],
     "fotos": [
      "hecho",
      "7 con manifiesto"
     ],
     "ficha": [
-     "pendiente",
-     "sin ficha"
+     "hecho",
+     "10 páginas"
     ],
     "medido": [
-     "pendiente",
-     "sin maqueta que medir"
+     "hecho",
+     "desborde 0 a 430/768/1280, contraste medido"
     ],
     "veredicto": [
      "pendiente",
@@ -299,29 +299,29 @@
   },
   {
    "slug": "bajura",
-   "nombre": "bajura",
-   "tipo": "?",
-   "sector": "",
+   "nombre": "BAJURA",
+   "tipo": "ecommerce",
+   "sector": "pescadería online — pescado y marisco fresco de la subasta diaria de una lonja de bajura",
    "estado": {
     "lienzo": [
-     "parcial",
-     "1 láminas"
+     "hecho",
+     "5 láminas"
     ],
     "maqueta": [
-     "pendiente",
-     "sin maqueta"
+     "hecho",
+     "14 de 14 páginas"
     ],
     "fotos": [
      "hecho",
      "7 con manifiesto"
     ],
     "ficha": [
-     "pendiente",
-     "sin ficha"
+     "hecho",
+     "14 páginas"
     ],
     "medido": [
-     "pendiente",
-     "sin maqueta que medir"
+     "hecho",
+     "desborde 0 a 430/768/1280, contraste medido"
     ],
     "veredicto": [
      "pendiente",
@@ -331,29 +331,29 @@
   },
   {
    "slug": "corte",
-   "nombre": "corte",
-   "tipo": "?",
-   "sector": "",
+   "nombre": "CORTE NUEVE",
+   "tipo": "ecommerce",
+   "sector": "sastrería vaquera a medida — pantalones y prendas en denim, sarga y chambray, tallados por centímetros publicados",
    "estado": {
     "lienzo": [
-     "parcial",
-     "1 láminas"
+     "hecho",
+     "5 láminas"
     ],
     "maqueta": [
-     "pendiente",
-     "sin maqueta"
+     "hecho",
+     "14 de 14 páginas"
     ],
     "fotos": [
      "hecho",
      "9 con manifiesto"
     ],
     "ficha": [
-     "pendiente",
-     "sin ficha"
+     "hecho",
+     "14 páginas"
     ],
     "medido": [
-     "pendiente",
-     "sin maqueta que medir"
+     "hecho",
+     "desborde 0 a 430/768/1280, contraste medido"
     ],
     "veredicto": [
      "pendiente",
@@ -363,29 +363,29 @@
   },
   {
    "slug": "tueste",
-   "nombre": "tueste",
-   "tipo": "?",
-   "sector": "",
+   "nombre": "Tueste Norte",
+   "tipo": "ecommerce",
+   "sector": "tostadero de café por suscripción",
    "estado": {
     "lienzo": [
-     "parcial",
-     "1 láminas"
+     "hecho",
+     "5 láminas"
     ],
     "maqueta": [
-     "pendiente",
-     "sin maqueta"
+     "hecho",
+     "14 de 14 páginas"
     ],
     "fotos": [
      "hecho",
      "5 con manifiesto"
     ],
     "ficha": [
-     "pendiente",
-     "sin ficha"
+     "hecho",
+     "14 páginas"
     ],
     "medido": [
-     "pendiente",
-     "sin maqueta que medir"
+     "hecho",
+     "desborde 0 a 430/768/1280, contraste medido"
     ],
     "veredicto": [
      "pendiente",
@@ -474,32 +474,32 @@
     {
      "id": "C3",
      "t": "Lienzo completo de cada plantilla: las paginas de contenido necesitan lamina propia",
-     "s": "parcial",
-     "n": "Siete con sus cinco laminas (delao lleva siete). Terrazza, Bajura, Corte y Tueste siguen con solo su portada; dos de ellas se estan escribiendo ahora"
+     "s": "hecho",
+     "n": "Las once con su lienzo completo. Altos MEDIDOS con alto-contenido.mjs en todos"
     },
     {
      "id": "C4",
      "t": "Maqueta de cada plantilla con todas sus paginas, dos puntos de ruptura y fuentes incrustadas",
-     "s": "parcial",
-     "n": "Siete maquetas completas: delao, aranda y lumiere con 10 paginas; marzo, barro, cadencia y escuadra con 14. Faltan cuatro"
+     "s": "hecho",
+     "n": "Las once con su maqueta: delao, aranda, lumiere y terrazza con 10 paginas; las siete tiendas con 14. Cero enlaces muertos, cero URL remota, empaquetan a un fichero"
     },
     {
      "id": "C5",
      "t": "Fotos con su manifiesto: origen, sesion, licencia y el alt que la imagen lleva en el diseno",
-     "s": "parcial",
-     "n": "48 fotos de las seis marcas nuevas recuperadas con su procedencia del propio repo. Siguen fuera las 20 huerfanas de BARRO, sin origen recuperable"
+     "s": "hecho",
+     "n": "Manifiesto con procedencia en las once. Las 20 huerfanas de BARRO siguen fuera, sin seguir, y NO se usan en ninguna maqueta"
     },
     {
      "id": "C6",
      "t": "Ficha de cada plantilla con todas sus paginas y su mapeo nativo",
-     "s": "parcial",
-     "n": "Siete fichas al dia con paleta MEDIDA y margen declarado. Faltan cuatro"
+     "s": "hecho",
+     "n": "Once fichas con paleta MEDIDA, margen declarado y mapeo nativo honesto sobre lo que WooCommerce no hace"
     },
     {
      "id": "C7",
      "t": "Geometria y contraste medidos en todas las paginas a 430, 768 y 1280",
-     "s": "parcial",
-     "n": "258 medidas de desborde (86 paginas x 3 anchos) y contraste medido en las siete completas. Faltan las cuatro que no tienen maqueta"
+     "s": "hecho",
+     "n": "Desborde a 430/768/1280 en las 130 paginas: 0. Contraste: color.php sale en 0 en las once tras arreglar su emparejado on-X"
     },
     {
      "id": "C8",
@@ -564,8 +564,8 @@
     {
      "id": "D9",
      "t": "Tipografías globales en los ajustes del sitio de Elementor: hoy sólo se escriben los colores globales",
-     "s": "pendiente",
-     "n": "Se reanuda por tandas: el límite de sesión se agotó con ocho agentes en paralelo"
+     "s": "hecho",
+     "n": "es_kit_apply escribe system_typography desde font_head/font_body. Solo la familia es global. Commit 682a8f9"
     },
     {
      "id": "D10",
@@ -614,7 +614,7 @@
      "id": "G1",
      "t": "Juez de reconocimiento sobre las cinco portadas: ningún grupo hecho «por la misma mano»",
      "s": "pendiente",
-     "n": "Sobre once portadas, no cinco. Tres emparejan Fraunces con Inter Tight y tres estan sobre suelo oscuro: ahi es donde puede agrupar"
+     "n": "Riesgo real: materia y tecnologico tienen tres plantillas cada uno; vitrina, institucional y brutalista ninguna. Dos tiendas de ropa comparten materia"
     },
     {
      "id": "G2",
