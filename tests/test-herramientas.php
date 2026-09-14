@@ -2,7 +2,8 @@
 /**
  * Behavioural assertions for the shared toolbox: `color.php`, `scrim.php`, `huella.php`
  * (`skills/html-mockup/assets/herramientas/`), lifted from `_build-gallery.php`
- * (`openspec/changes/plantillas-reales`, PR 1a).
+ * (`openspec/changes/plantillas-reales`, PR 1a), and `veredicto.php`, which seals a Plantilla's
+ * veredicto against huella.php's fingerprint (PR 1e).
  *
  * Run:  php tests/test-herramientas.php     (exit 0 = green)
  *
@@ -377,6 +378,266 @@ ok( 1 === $caras_de( $fr ), 'fonts: a single-face family still emits exactly one
 ok( false !== strpos( $fr, "font-family:'Fraunces';font-style:normal;font-weight:400 700;font-display:swap;" ), 'fonts: the single-face output keeps the exact shape it had before multi-face support' );
 $ax = nm_font_faces( array( 'Archivo Expanded' ) );
 ok( false !== strpos( $ax, 'font-stretch:125%;' ), 'fonts: font-stretch still reaches the emitted face' );
+
+// ═══════════════════════════════════════════ veredicto.php ═══════════════════════════════════════
+/* ---------------------------------------------------------------------------------------------
+   THE VEREDICTO IS SEALED AGAINST THE BYTES IT JUDGED. `veredicto.php --sellar` stamps huella.php's
+   fingerprint into `plantillas/<slug>/veredicto.md`; `--comprobar` says whether that stamp still
+   answers for the bytes on disk. The failure this tool exists to prevent is sealing a Plantilla
+   nobody finished judging, so every refusal case below is asserted as its own scenario. Every
+   fixture is a synthetic tree in the temp directory; the live library is never touched.
+
+   A RED run must fail ASSERTIONS, not abort the suite: the file is required only when it exists,
+   every in-process call is behind `function_exists()`, and every CLI exit-1 assertion also demands
+   its reason keyword — PHP itself exits 1 on a missing script, which would otherwise read as a
+   measured failure. */
+
+$veredicto_file = NM_HERRAMIENTAS_DIR . '/veredicto.php';
+if ( is_file( $veredicto_file ) ) {
+	require_once $veredicto_file;
+}
+$veredicto_lib = function_exists( 'veredicto_sellar' ) && function_exists( 'veredicto_comprobar' ) && function_exists( 'veredicto_biblioteca' );
+ok( $veredicto_lib, 'veredicto: veredicto.php defines veredicto_sellar(), veredicto_comprobar() and veredicto_biblioteca()' );
+
+/** A veredicto.md body. `cabecera` entries set to null are omitted; `filas` is page => three cells;
+ *  `hallazgos` null omits the whole section. No hash/fecha by default: that is what sealing adds. */
+function nm_veredicto_md( array $o = array() ) {
+	$cabecera = array( 'juez_b' => 'profesional', 'autojuzgado' => 'sí', 'vistas' => '2', 'saltadas' => '0' );
+	if ( isset( $o['cabecera'] ) ) {
+		$cabecera = array_merge( $cabecera, $o['cabecera'] );
+	}
+	$filas = isset( $o['filas'] ) ? $o['filas'] : array(
+		'inicio'   => array( '✓', '✓', '✓' ),
+		'contacto' => array( '✓', '✓', '✓' ),
+	);
+	$hallazgos = array_key_exists( 'hallazgos', $o ) ? $o['hallazgos'] : 'ninguno';
+
+	$md = "---\n";
+	foreach ( $cabecera as $k => $v ) {
+		if ( null !== $v ) {
+			$md .= "$k: $v\n";
+		}
+	}
+	$md .= "---\n\n# Veredicto de prueba\n\n## Barrido\n\n| Página | 430 | 768 | 1280 |\n|---|---|---|---|\n";
+	foreach ( $filas as $pagina => $celdas ) {
+		$md .= '| ' . $pagina . ' | ' . implode( ' | ', $celdas ) . " |\n";
+	}
+	if ( null !== $hallazgos ) {
+		$md .= "\n## Hallazgos\n\n" . $hallazgos . "\n";
+	}
+	return $md;
+}
+
+/** A complete synthetic Plantilla under `<root>/skills/…/plantillas/<slug>/`: every input huella.php
+ *  covers, plus veredicto.md when one is given. Returns the Plantilla folder. */
+function nm_veredicto_plantilla( $root, $slug, $veredicto_md = null ) {
+	$base = $root . '/skills/web-templates/references/plantillas/' . $slug;
+	nm_write( "$base/ficha.md", "---\nslug: $slug\npaginas: [inicio, contacto]\n---\n\n# Ficha de prueba\n" );
+	nm_write( "$base/manifiesto-imagenes.md", "| Slug | Rol |\n|---|---|\n| $slug-hero | hero |\n" );
+	nm_write( "$base/canvas/Inicio.dc.html", "<div>lienzo</div>\n" );
+	nm_write( "$base/maqueta/index.html", "<!doctype html>\n<title>$slug</title>\n<section id=\"inicio\">hola</section>\n" );
+	nm_write( "$base/img/$slug-hero.webp", "RIFF0000WEBPVP8 fake image bytes" );
+	if ( null !== $veredicto_md ) {
+		nm_write( "$base/veredicto.md", $veredicto_md );
+	}
+	return $base;
+}
+
+/** One header field of a veredicto.md on disk, or null when the file or the field is absent. */
+function nm_veredicto_campo( $base, $key ) {
+	$t = @file_get_contents( "$base/veredicto.md" );
+	if ( false === $t ) {
+		return null;
+	}
+	return preg_match( '/^' . preg_quote( $key, '/' ) . ':[ \t]*(.*?)[ \t]*$/m', $t, $m ) ? $m[1] : null;
+}
+
+/** Flip ONE byte — the last one that is not a line ending — so the change is a single byte. */
+function nm_flip_byte( $path ) {
+	$b = file_get_contents( $path );
+	for ( $i = strlen( $b ) - 1; $i >= 0; $i-- ) {
+		if ( "\n" !== $b[ $i ] && "\r" !== $b[ $i ] ) {
+			$b[ $i ] = chr( ord( $b[ $i ] ) ^ 0x01 );
+			break;
+		}
+	}
+	file_put_contents( $path, $b );
+}
+
+function nm_veredicto_cli( $args, $root ) {
+	return run_cli( 'veredicto.php', $args . ' --root=' . escapeshellarg( $root ) );
+}
+
+echo "=== veredicto.php --sellar: a complete, professional veredicto is sealed with huella's own fingerprint ===\n";
+$v_root = nm_tmpdir( 'veredicto-sellar' );
+$v_base = nm_veredicto_plantilla( $v_root, 'foo', nm_veredicto_md() );
+$r      = nm_veredicto_cli( '--sellar foo', $v_root );
+ok( 0 === $r['code'], "veredicto: --sellar on a complete, professional veredicto exits 0: {$r['out']}" );
+ok( 'sha256:' . huella_plantilla( $v_root . '/skills', 'foo' ) === nm_veredicto_campo( $v_base, 'hash' ), 'veredicto: the sealed hash: is exactly huella_plantilla() over the same tree — one fingerprint definition, not two' );
+ok( date( 'Y-m-d' ) === nm_veredicto_campo( $v_base, 'fecha' ), "veredicto: the sealed fecha: is today's date" );
+$v_text = (string) @file_get_contents( "$v_base/veredicto.md" );
+ok(
+	null !== nm_veredicto_campo( $v_base, 'hash' ) && nm_veredicto_md() === preg_replace( '/^(hash|fecha):.*\n/m', '', $v_text ),
+	'veredicto: sealing adds exactly the hash: and fecha: lines — strip those two and the judged file comes back byte for byte'
+);
+
+echo "--- veredicto.php --comprobar: passes right after sealing, and resealing unchanged bytes is idempotent ---\n";
+$r = nm_veredicto_cli( '--comprobar foo', $v_root );
+ok( 0 === $r['code'] && false !== strpos( $r['out'], 'vigente' ), "veredicto: --comprobar right after sealing exits 0 and says vigente: {$r['out']}" );
+$v_hash = nm_veredicto_campo( $v_base, 'hash' );
+$r      = nm_veredicto_cli( '--sellar foo', $v_root );
+ok( 0 === $r['code'] && null !== $v_hash && $v_hash === nm_veredicto_campo( $v_base, 'hash' ), 'veredicto: resealing unchanged bytes writes the same hash' );
+
+echo "--- veredicto.php --comprobar: one changed byte in any covered input makes the veredicto stale ---\n";
+foreach ( array( 'maqueta/index.html', 'img/foo-hero.webp', 'ficha.md', 'manifiesto-imagenes.md', 'canvas/Inicio.dc.html' ) as $covered ) {
+	nm_veredicto_cli( '--sellar foo', $v_root );
+	$before = nm_veredicto_cli( '--comprobar foo', $v_root );
+	nm_flip_byte( "$v_base/$covered" );
+	$r = nm_veredicto_cli( '--comprobar foo', $v_root );
+	ok( 0 === $before['code'] && 1 === $r['code'] && false !== strpos( $r['out'], 'caducado' ), "veredicto: one byte changed in $covered after sealing exits 1 with a caducado reason: {$r['out']}" );
+}
+$r = nm_veredicto_cli( '--sellar foo', $v_root );
+$r = nm_veredicto_cli( '--comprobar foo', $v_root );
+ok( 0 === $r['code'], "veredicto: a stale veredicto is current again once --sellar reseals it: {$r['out']}" );
+
+echo "--- veredicto.php --comprobar: CRLF against LF in a text file does not make the veredicto stale ---\n";
+foreach ( array( 'maqueta/index.html', 'ficha.md' ) as $texto ) {
+	$lf = file_get_contents( "$v_base/$texto" );
+	file_put_contents( "$v_base/$texto", str_replace( "\n", "\r\n", str_replace( "\r\n", "\n", $lf ) ) );
+	$r = nm_veredicto_cli( '--comprobar foo', $v_root );
+	ok( 0 === $r['code'], "veredicto: $texto rewritten with CRLF line endings still matches the LF-sealed hash: {$r['out']}" );
+}
+
+echo "--- veredicto.php --sellar: refuses every incomplete veredicto, and writes nothing ---\n";
+$incompletos = array(
+	'juez_b missing'                                   => nm_veredicto_md( array( 'cabecera' => array( 'juez_b' => null ) ) ),
+	'a barrido cell left empty'                        => nm_veredicto_md( array( 'filas' => array( 'inicio' => array( '✓', '', '✓' ), 'contacto' => array( '✓', '✓', '✓' ) ) ) ),
+	'vistas missing'                                   => nm_veredicto_md( array( 'cabecera' => array( 'vistas' => null ) ) ),
+	'saltadas missing'                                 => nm_veredicto_md( array( 'cabecera' => array( 'saltadas' => null ) ) ),
+	'autojuzgado missing'                              => nm_veredicto_md( array( 'cabecera' => array( 'autojuzgado' => null ) ) ),
+	'a page in ficha paginas: with no barrido row'     => nm_veredicto_md( array( 'cabecera' => array( 'vistas' => '1' ), 'filas' => array( 'inicio' => array( '✓', '✓', '✓' ) ) ) ),
+	'vistas + saltadas not matching the swept rows'    => nm_veredicto_md( array( 'cabecera' => array( 'vistas' => '7' ) ) ),
+	'no ## Hallazgos section'                          => nm_veredicto_md( array( 'hallazgos' => null ) ),
+	'a cell citing a finding ## Hallazgos never lists' => nm_veredicto_md( array( 'filas' => array( 'inicio' => array( 'H1', '✓', '✓' ), 'contacto' => array( '✓', '✓', '✓' ) ) ) ),
+);
+foreach ( $incompletos as $caso => $md ) {
+	$i_root = nm_tmpdir( 'veredicto-incompleto' );
+	$i_base = nm_veredicto_plantilla( $i_root, 'foo', $md );
+	$r      = nm_veredicto_cli( '--sellar foo', $i_root );
+	ok( 1 === $r['code'] && false !== strpos( $r['out'], 'incompleto' ), "veredicto: --sellar refuses $caso — exit 1, incompleto: {$r['out']}" );
+	ok( $md === file_get_contents( "$i_base/veredicto.md" ), "veredicto: refusing $caso leaves veredicto.md byte-for-byte untouched" );
+}
+
+$np_root = nm_tmpdir( 'veredicto-no-profesional' );
+$np_md   = nm_veredicto_md( array( 'cabecera' => array( 'juez_b' => 'no-profesional' ) ) );
+$np_base = nm_veredicto_plantilla( $np_root, 'foo', $np_md );
+$r       = nm_veredicto_cli( '--sellar foo', $np_root );
+ok( 1 === $r['code'] && false !== strpos( $r['out'], 'no-profesional' ), "veredicto: --sellar refuses juez_b: no-profesional — exit 1: {$r['out']}" );
+ok( $np_md === file_get_contents( "$np_base/veredicto.md" ), 'veredicto: refusing a no-profesional veredicto writes no hash' );
+
+$ab_root = nm_tmpdir( 'veredicto-ausente' );
+nm_veredicto_plantilla( $ab_root, 'foo' );
+$r = nm_veredicto_cli( '--sellar foo', $ab_root );
+ok( 1 === $r['code'] && false !== strpos( $r['out'], 'ausente' ), "veredicto: --sellar with no veredicto.md at all exits 1, ausente — there is nothing judged to seal: {$r['out']}" );
+
+echo "--- veredicto.php --comprobar: absent, unsealed, incomplete, not professional, partial ---\n";
+$r = nm_veredicto_cli( '--comprobar foo', $ab_root );
+ok( 1 === $r['code'] && false !== strpos( $r['out'], 'ausente' ), "veredicto: --comprobar with no veredicto.md exits 1, ausente: {$r['out']}" );
+
+$us_root = nm_tmpdir( 'veredicto-sin-sellar' );
+nm_veredicto_plantilla( $us_root, 'foo', nm_veredicto_md() );
+$r = nm_veredicto_cli( '--comprobar foo', $us_root );
+ok( 1 === $r['code'] && false !== strpos( $r['out'], 'sin sellar' ), "veredicto: a complete veredicto that was never sealed exits 1, sin sellar: {$r['out']}" );
+
+$ic_root = nm_tmpdir( 'veredicto-comprobar-incompleto' );
+$ic_base = nm_veredicto_plantilla( $ic_root, 'foo', nm_veredicto_md() );
+nm_veredicto_cli( '--sellar foo', $ic_root );
+file_put_contents( "$ic_base/veredicto.md", preg_replace( '/^juez_b:.*\n/m', '', file_get_contents( "$ic_base/veredicto.md" ) ) );
+$r = nm_veredicto_cli( '--comprobar foo', $ic_root );
+ok( 1 === $r['code'] && false !== strpos( $r['out'], 'incompleto' ), "veredicto: a sealed veredicto whose juez_b was removed afterwards exits 1, incompleto — a matching hash does not excuse a missing judge: {$r['out']}" );
+
+$cn_root = nm_tmpdir( 'veredicto-comprobar-no-profesional' );
+$cn_base = nm_veredicto_plantilla( $cn_root, 'foo', nm_veredicto_md() );
+nm_veredicto_cli( '--sellar foo', $cn_root );
+file_put_contents( "$cn_base/veredicto.md", str_replace( 'juez_b: profesional', 'juez_b: no-profesional', file_get_contents( "$cn_base/veredicto.md" ) ) );
+$r = nm_veredicto_cli( '--comprobar foo', $cn_root );
+ok( 1 === $r['code'] && false !== strpos( $r['out'], 'no-profesional' ), "veredicto: a sealed veredicto edited to juez_b: no-profesional exits 1: {$r['out']}" );
+
+$pa_root = nm_tmpdir( 'veredicto-parcial' );
+nm_veredicto_plantilla( $pa_root, 'foo', nm_veredicto_md( array(
+	'cabecera' => array( 'vistas' => '1', 'saltadas' => '1' ),
+	'filas'    => array( 'inicio' => array( '✓', '✓', '✓' ), 'contacto' => array( '✓', 'no-disponible', '✓' ) ),
+) ) );
+$r_seal = nm_veredicto_cli( '--sellar foo', $pa_root );
+$r      = nm_veredicto_cli( '--comprobar foo', $pa_root );
+ok( 0 === $r_seal['code'], "veredicto: a PARCIAL sweep can be sealed — the veredicto records what was seen: {$r_seal['out']}" );
+ok( 1 === $r['code'] && false !== strpos( $r['out'], 'PARCIAL' ), "veredicto: but --comprobar never reads a PARCIAL sweep as current — exit 1: {$r['out']}" );
+
+$ha_root = nm_tmpdir( 'veredicto-hallazgo' );
+nm_veredicto_plantilla( $ha_root, 'foo', nm_veredicto_md( array(
+	'filas'     => array( 'inicio' => array( 'H1', '✓', '✓' ), 'contacto' => array( '✓', '✓', '✓' ) ),
+	'hallazgos' => '- H1 · inicio · rejilla de servicios · 430 · esperado: 1 columna · observado: 2 columnas',
+) ) );
+$r_seal = nm_veredicto_cli( '--sellar foo', $ha_root );
+$r      = nm_veredicto_cli( '--comprobar foo', $ha_root );
+ok( 0 === $r_seal['code'] && 1 === $r['code'] && false !== strpos( $r['out'], 'H1' ), "veredicto: a sealed barrido with an open finding exits 1 on --comprobar and names it: {$r['out']}" );
+
+echo "--- veredicto.php library: typed exceptions, never exit() ---\n";
+if ( ! $veredicto_lib ) {
+	ok( false, 'veredicto: library functions unavailable, the in-process half cannot run' );
+} else {
+	$lx_root = nm_tmpdir( 'veredicto-lib' );
+	nm_veredicto_plantilla( $lx_root, 'foo', nm_veredicto_md( array( 'cabecera' => array( 'juez_b' => null ) ) ) );
+	try {
+		veredicto_sellar( $lx_root, 'foo' );
+		ok( false, 'veredicto: veredicto_sellar() on an incomplete veredicto must throw, not return' );
+	} catch ( NmHerramientaMedida $e ) {
+		ok( false !== strpos( $e->getMessage(), 'juez_b' ), 'veredicto: an incomplete veredicto throws NmHerramientaMedida naming the gap: ' . $e->getMessage() );
+	} catch ( Exception $e ) {
+		ok( false, 'veredicto: wrong exception type for an incomplete veredicto: ' . get_class( $e ) );
+	}
+	try {
+		veredicto_sellar( $lx_root, 'no-existe' );
+		ok( false, 'veredicto: veredicto_sellar() on a Plantilla that does not exist must throw' );
+	} catch ( NmHerramientaEntorno $e ) {
+		ok( true, 'veredicto: a missing Plantilla folder throws NmHerramientaEntorno — usage, not a verdict: ' . $e->getMessage() );
+	} catch ( Exception $e ) {
+		ok( false, 'veredicto: wrong exception type for a missing Plantilla: ' . get_class( $e ) );
+	}
+	$res = veredicto_comprobar( $v_root, 'foo' );
+	ok( is_array( $res ) && true === $res['ok'] && array() === $res['motivos'], 'veredicto: veredicto_comprobar() returns ok with no reasons for a current veredicto' );
+	nm_flip_byte( "$v_base/maqueta/index.html" );
+	$res = veredicto_comprobar( $v_root, 'foo' );
+	ok( is_array( $res ) && false === $res['ok'] && count( $res['motivos'] ) > 0, 'veredicto: and not ok, with its reasons listed, once a covered byte changes' );
+}
+
+echo "--- veredicto.php --biblioteca: every Plantilla folder, _-prefixed folders skipped ---\n";
+$b_root = nm_tmpdir( 'veredicto-biblioteca' );
+nm_veredicto_plantilla( $b_root, 'aaa', nm_veredicto_md() );
+$b_bbb = nm_veredicto_plantilla( $b_root, 'bbb', nm_veredicto_md() );
+@mkdir( $b_root . '/skills/web-templates/references/plantillas/_capturas', 0777, true );
+nm_veredicto_cli( '--sellar aaa', $b_root );
+nm_veredicto_cli( '--sellar bbb', $b_root );
+$r = nm_veredicto_cli( '--biblioteca', $b_root );
+ok( 0 === $r['code'] && 1 === preg_match( '/^OK\s+aaa\b/m', $r['out'] ) && 1 === preg_match( '/^OK\s+bbb\b/m', $r['out'] ), "veredicto: --biblioteca with both Plantillas current exits 0, one line each: {$r['out']}" );
+ok( 0 === $r['code'] && false === strpos( $r['out'], '_capturas' ), 'veredicto: --biblioteca skips a folder whose name starts with _ — it is not a Plantilla, so it cannot fail as one' );
+nm_flip_byte( "$b_bbb/maqueta/index.html" );
+$r = nm_veredicto_cli( '--biblioteca', $b_root );
+ok( 1 === $r['code'] && 1 === preg_match( '/^OK\s+aaa\b/m', $r['out'] ) && 1 === preg_match( '/^FAIL\s+bbb\b.*caducado/m', $r['out'] ), "veredicto: --biblioteca with one of two Plantillas stale exits 1 and names the stale one: {$r['out']}" );
+
+echo "--- veredicto.php: usage errors exit 2, never 0 or 1 ---\n";
+$usos = array(
+	'no arguments'                              => run_cli( 'veredicto.php', '' ),
+	'--sellar with no slug'                     => nm_veredicto_cli( '--sellar', $v_root ),
+	'--comprobar with no slug'                  => nm_veredicto_cli( '--comprobar', $v_root ),
+	'an unknown flag'                           => nm_veredicto_cli( '--aprobar foo', $v_root ),
+	'a slug with no Plantilla folder'           => nm_veredicto_cli( '--comprobar no-existe', $v_root ),
+	'a slug that is a path (even one resolving to a real Plantilla)' => nm_veredicto_cli( '--sellar ../plantillas/foo', $v_root ),
+	'--biblioteca on a root with no plantillas' => nm_veredicto_cli( '--biblioteca', nm_tmpdir( 'veredicto-vacio' ) ),
+);
+foreach ( $usos as $caso => $r ) {
+	ok( 2 === $r['code'], "veredicto: $caso exits 2: {$r['out']}" );
+}
 
 echo "\n$pass OK / $fail FAIL\n";
 exit( $fail ? 1 : 0 );
