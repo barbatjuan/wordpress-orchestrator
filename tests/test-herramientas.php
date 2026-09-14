@@ -170,6 +170,56 @@ ok( 1 === $r['code'], "a text/bg pair below 4.5:1 exits 1: {$r['out']}" );
 $r = run_cli( 'color.php', '--maqueta ' . escapeshellarg( $maqueta_dir . '/no-such-file.html' ) );
 ok( 2 === $r['code'], 'a missing Maqueta file is a usage/environment error, exit 2' );
 
+echo "--- color.php --maqueta: an --c-on-X token is text ON --c-X, not on the page ground ---\n";
+/* Four Plantillas tripped the same false failure. A token named `--c-on-accent` is the text painted
+   ON the accent — a button label, a selected chip — and every one of BAJURA's seven uses sits on
+   `--c-accent` or `--c-accent-hover`. But its name contains «accent», so the role matcher called it
+   TEXT and crossed it with every ground: dark text on the dark page, 1,00:1, because on BAJURA
+   `--c-on-accent` and `--c-bg` are literally the same hex. The gate failed a pair no CSS forms, and
+   the two ways out were renaming a correct token or leaving the gate red. The convention is the fix:
+   `--c-on-X` is measured against `--c-X` and its hover, and never against the ground. */
+nm_write(
+	$maqueta_dir . '/on-accent.html',
+	'<html><head><style>:root{--c-bg:#0F1714;--c-text:#E9F1EC;--c-accent:#FF8A3D;--c-accent-hover:#FFA466;--c-on-accent:#0F1714;}</style></head></html>'
+);
+$r = run_cli( 'color.php', '--maqueta ' . escapeshellarg( $maqueta_dir . '/on-accent.html' ) );
+ok( 0 === $r['code'], "--c-on-accent equal to --c-bg is NOT a failure: it never sits on the ground: {$r['out']}" );
+ok( 1 === preg_match( '/--c-on-accent sobre --c-accent\b/', $r['out'] ), "it is measured against --c-accent, the colour it actually sits on: {$r['out']}" );
+ok( 1 === preg_match( '/--c-on-accent sobre --c-accent-hover/', $r['out'] ), "and against the hover it also sits on: {$r['out']}" );
+ok( 0 === preg_match( '/--c-on-accent sobre --c-bg/', $r['out'] ), "and never against the ground, which is the pair that was never formed: {$r['out']}" );
+
+/* And the convention must not become a way to hide a real failure: a light label on a light accent
+   still fails, measured against the accent it sits on. */
+nm_write(
+	$maqueta_dir . '/on-accent-bad.html',
+	'<html><head><style>:root{--c-bg:#0F1714;--c-text:#E9F1EC;--c-accent:#FFD9BF;--c-on-accent:#FFFFFF;}</style></head></html>'
+);
+$r = run_cli( 'color.php', '--maqueta ' . escapeshellarg( $maqueta_dir . '/on-accent-bad.html' ) );
+ok( 1 === $r['code'] && 1 === preg_match( '/FAIL\s+--c-on-accent sobre --c-accent\b/', $r['out'] ), "white text on a pale accent still exits 1, named against the accent: {$r['out']}" );
+
+/* The convention comes in two spellings, and delao uses the second: its light `--c-on-inverse` sits
+   on `--c-surface-inverse`, a near-black band, and there is no `--c-inverse` at all. The first
+   version of this rule only looked for `--c-X`, found nothing, fell back to the grounds and measured
+   light text on the light page: 1,00:1, a failure it had just invented on a Plantilla that passed the
+   day before. Caught by running the change over the real library, not over these fixtures. */
+nm_write(
+	$maqueta_dir . '/on-surface.html',
+	'<html><head><style>:root{--c-bg:#F6F4F0;--c-bg-alt:#EFEBE4;--c-text:#17181A;--c-surface-inverse:#17181A;--c-on-inverse:#F6F4F0;}</style></head></html>'
+);
+$r = run_cli( 'color.php', '--maqueta ' . escapeshellarg( $maqueta_dir . '/on-surface.html' ) );
+ok( 0 === $r['code'], "--c-on-inverse is measured on --c-surface-inverse, not on the light ground: {$r['out']}" );
+ok( 1 === preg_match( '/--c-on-inverse sobre --c-surface-inverse/', $r['out'] ), "and the pair is named against that surface: {$r['out']}" );
+ok( 0 === preg_match( '/--c-on-inverse sobre --c-bg/', $r['out'] ), "never against the ground: {$r['out']}" );
+
+/* An --c-on-X with neither --c-X nor --c-surface-X declared has nothing to be ON: fall back to the
+   grounds rather than silently measuring nothing. */
+nm_write(
+	$maqueta_dir . '/on-orphan.html',
+	'<html><head><style>:root{--c-bg:#FFFFFF;--c-text:#111111;--c-on-panel:#EEEEEE;}</style></head></html>'
+);
+$r = run_cli( 'color.php', '--maqueta ' . escapeshellarg( $maqueta_dir . '/on-orphan.html' ) );
+ok( 1 === preg_match( '/--c-on-panel sobre --c-bg/', $r['out'] ), "an --c-on-X whose --c-X is not declared is still measured, against the grounds: {$r['out']}" );
+
 // ═══════════════════════════════════════════ scrim.php ═══════════════════════════════════════════
 
 echo "=== scrim.php: GD/WebP absent exits 2, never 0 (threat matrix) ===\n";

@@ -314,7 +314,9 @@ function color_root_pairs( $html ) {
 	$bgs    = array();
 	$fgs    = array();
 	foreach ( $tokens as $name => $hex ) {
-		$role = color_token_role( $name );
+		/* `--c-on-X` is the text painted ON `--c-X`: a button label, a selected chip. It is TEXT
+		   whatever else its name contains, and it is checked below against the colour it sits on. */
+		$role = ( 1 === preg_match( '/^--c-on-/', $name ) ) ? 'text' : color_token_role( $name );
 		if ( 'bg' === $role ) {
 			$bgs[ $name ] = $hex;
 		} elseif ( null !== $role ) {
@@ -326,7 +328,36 @@ function color_root_pairs( $html ) {
 	}
 	$rows = array();
 	foreach ( $fgs as $fg_name => $fg ) {
-		foreach ( $bgs as $bg_name => $bg_hex ) {
+		/* WHICH backgrounds a foreground is measured on. Every ground, by default: body text can land
+		   on any of them. But an `--c-on-X` never sits on the ground — it sits on `--c-X` and on
+		   `--c-X-hover` — and crossing it with the ground measures a pair no CSS forms. Four
+		   Plantillas hit that: on BAJURA `--c-on-accent` and `--c-bg` are the same hex, so the gate
+		   read 1,00:1 and failed a label that measures 7,77:1 on the accent it is printed on. The
+		   choice was renaming a correct token or leaving the gate red; the convention was the fix.
+
+		   The convention has two spellings, and both are looked for: `--c-X` (BAJURA's
+		   `--c-accent`) and `--c-surface-X` (delao's `--c-surface-inverse`, the band its
+		   `--c-on-inverse` sits on). The first version knew only the first, fell back to the grounds
+		   on delao and invented a 1,00:1 failure on a Plantilla that had passed the day before.
+		   With neither declared there is nothing to be on, so it falls back to the grounds rather
+		   than measuring nothing. */
+		$on = $bgs;
+		if ( 1 === preg_match( '/^--c-on-(.+)$/', $fg_name, $m ) ) {
+			$sobre = null;
+			foreach ( array( '--c-' . $m[1], '--c-surface-' . $m[1] ) as $candidato ) {
+				if ( isset( $tokens[ $candidato ] ) ) {
+					$sobre = $candidato;
+					break;
+				}
+			}
+			if ( null !== $sobre ) {
+				$on = array( $sobre => $tokens[ $sobre ] );
+				if ( isset( $tokens[ $sobre . '-hover' ] ) ) {
+					$on[ $sobre . '-hover' ] = $tokens[ $sobre . '-hover' ];
+				}
+			}
+		}
+		foreach ( $on as $bg_name => $bg_hex ) {
 			$ratio  = contrast( $fg['hex'], $bg_hex );
 			$rows[] = array(
 				'fg'    => $fg_name,
