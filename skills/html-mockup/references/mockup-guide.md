@@ -565,3 +565,37 @@ call site — only the failure signal changed, from an immediate `exit()` to a t
 file catches and hands back to its own `fail()`. The full per-function inventory (`## Herramientas`,
 naming every public function by name so `RT_HELPER_UNROUTABLE` never has to guess) lands once all
 seven tools exist, later in this same PR chain.
+
+## Medir la geometría antes de mirarla
+
+`../assets/herramientas/medir-geometria.mjs` conduce Chrome headless por CDP sobre una maqueta o un
+artboard y devuelve cinco números por página: el carril izquierdo y cuántos elementos aterrizan en
+él, el margen expresado como FRACCIÓN del ancho a tres anchos (base, ×1,33, ×1,78) para ver si la
+curva aguanta, la medida de lectura en caracteres, todo lo que llega al cristal sin ser media, y el
+desbordamiento. Sale con 1 si hay tinta o un control tocando el cristal, o si algo desborda.
+
+El margen se mide como fracción y no en píxeles a propósito: 64px es un margen distinto a 1440 que a
+768, y el defecto que buscamos —«no hay casi márgenes»— es una fracción, no una distancia. El
+estándar de la casa es `clamp(1140px, 85vw, 100vw)`, o sea 7,5% por lado por encima de la rodilla.
+
+Dos advertencias pagadas:
+
+- **Mide la TINTA, no la caja.** Un `<p>` con relleno horizontal tiene caja de ancho completo y
+  texto metido hacia dentro; informar de la caja llama amputación a un párrafo correctamente
+  sangrado. La herramienta recorre los nodos de texto y toma un `Range` por nodo.
+- **Una herramienta nueva está equivocada hasta que un caso de control diga lo contrario.** De los
+  cinco defectos que ésta reportó la primera vez, tres eran bugs suyos. Y cuando la medición
+  discrepa del código, la medición es una hipótesis sobre el RENDER: se resuelve MIRANDO la página,
+  nunca ajustando la herramienta hasta que coincida con la fuente.
+
+Hoy no la invoca ninguna regla de auditoría ni ningún test: la ejecuta quien deriva la maqueta,
+antes de gastar un barrido. Dicho así y no disfrazado de puerta.
+
+## Defectos de derivación
+
+Antes de pedir un barrido o un juez sobre una maqueta derivada de un canvas, recórrela contra
+`defectos-de-derivacion.md`. Es la lista de lo que sale mal al convertir artboards en una página
+responsive: controles que un `appearance:none` deja en cero, descendentes que caen dentro de la
+banda siguiente, cabeceras pegajosas translúcidas, rejillas entintadas que pintan su propio
+relleno, bandas de filtro que se comen media pantalla de móvil, y teléfonos de relleno. Ninguno
+dispara una regla, ninguno desborda, ninguno falla contraste — por eso están escritos.
