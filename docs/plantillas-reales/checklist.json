@@ -282,31 +282,32 @@
     {
      "id": "C3",
      "t": "Lienzo de las páginas de contenido nuevas de las cuatro tiendas: categoría, la marca y contacto",
-     "s": "en-curso",
-     "n": "MARZO: Categoria, LaMarca y Contacto escritas, altos MEDIDOS (2287/3402/1819). Faltan BARRO, CADENCIA y ESCUADRA"
+     "s": "hecho",
+     "n": "Las cuatro tiendas con sus tres laminas nuevas (categoria, la marca, contacto). Altos MEDIDOS con alto-contenido.mjs, nunca tecleados"
     },
     {
      "id": "C4",
      "t": "Maqueta de cada plantilla con todas sus páginas, dos puntos de ruptura y fuentes incrustadas",
-     "s": "en-curso",
-     "n": "MARZO: 14 paginas en un fichero, 1024 y 767, fuentes incrustadas, 60 enlaces internos y 0 muertos. Faltan las otras tres"
+     "s": "hecho",
+     "n": "Las cuatro con 14 paginas en un fichero, 1024 y 767, fuentes incrustadas, cero URL remota. Enlaces internos: marzo 60, barro 75, escuadra 117, cadencia 70. CERO muertos en las cuatro"
     },
     {
      "id": "C5",
      "t": "Fotos de las páginas nuevas, comprobadas a ojo contra su nombre, con su manifiesto",
-     "s": "pendiente",
-     "n": "Las 20 fotos nuevas de BARRO no tienen procedencia recuperable ni verificacion a ojo: NO se usan. Cada tienda se construye con las fotos que ya estan en su manifiesto"
+     "s": "hecho",
+     "n": "Cada tienda construida con las fotos que ya estaban en su manifiesto. Las 20 huerfanas de BARRO quedan fuera: sin procedencia recuperable, repo publico"
     },
     {
      "id": "C6",
      "t": "Ficha de cada plantilla con todas sus páginas y su mapeo nativo",
-     "s": "en-curso",
-     "n": "MARZO al dia: paginas reales, mapeo nativo, que se dibuja y que se deriva, sin veredicto declarado"
+     "s": "hecho",
+     "n": "Las cuatro fichas al dia: 14 paginas, mapeo nativo, que se dibuja y que se deriva, y ninguna declara veredicto"
     },
     {
      "id": "C7",
      "t": "Geometría y contraste medidos en todas las páginas a 430, 768 y 1280",
-     "s": "pendiente"
+     "s": "parcial",
+     "n": "Contraste MEDIDO en las cinco y en verde, incluidos los siete colores derivados de delao (4,90 a 7,97:1). Falta la geometria a 430, 768 y 1280"
     },
     {
      "id": "C8",
