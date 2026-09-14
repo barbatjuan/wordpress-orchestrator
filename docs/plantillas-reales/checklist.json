@@ -45,27 +45,27 @@
    "slug": "delao",
    "nombre": "Inmobiliaria de la O",
    "tipo": "corporate",
-   "sector": "inmobiliaria",
+   "sector": "inmobiliaria residencial de alto valor",
    "estado": {
     "lienzo": [
      "hecho",
-     "5 artboards + 5 derivadas del sistema"
+     "7 láminas"
     ],
     "maqueta": [
      "hecho",
-     "10 de 10 · f7cf68d"
+     "10 de 10 páginas"
     ],
     "fotos": [
      "hecho",
-     "12"
+     "12 con manifiesto"
     ],
     "ficha": [
      "hecho",
      "10 páginas"
     ],
     "medido": [
-     "parcial",
-     "10 a 1440, 5 a 430"
+     "hecho",
+     "desborde 0 a 430/768/1280, contraste medido"
     ],
     "veredicto": [
      "pendiente",
@@ -77,27 +77,27 @@
    "slug": "marzo",
    "nombre": "MARZO",
    "tipo": "ecommerce",
-   "sector": "moda",
+   "sector": "moda de fibra natural, prendas de telar con tirada corta",
    "estado": {
     "lienzo": [
-     "pendiente",
-     "se cortó por el límite de sesión"
+     "hecho",
+     "5 láminas"
     ],
     "maqueta": [
-     "pendiente",
-     ""
+     "hecho",
+     "14 de 14 páginas"
     ],
     "fotos": [
-     "parcial",
-     "9"
+     "hecho",
+     "9 con manifiesto"
     ],
     "ficha": [
-     "parcial",
-     "2 páginas"
+     "hecho",
+     "14 páginas"
     ],
     "medido": [
-     "parcial",
-     "2 de 14"
+     "hecho",
+     "desborde 0 a 430/768/1280, contraste medido"
     ],
     "veredicto": [
      "pendiente",
@@ -109,27 +109,27 @@
    "slug": "barro",
    "nombre": "BARRO",
    "tipo": "ecommerce",
-   "sector": "cerámica y taller",
+   "sector": "cerámica, textil y madera de talleres pequeños, piezas irrepetibles",
    "estado": {
     "lienzo": [
-     "pendiente",
-     "se cortó por el límite de sesión"
+     "hecho",
+     "5 láminas"
     ],
     "maqueta": [
-     "pendiente",
-     ""
+     "hecho",
+     "14 de 14 páginas"
     ],
     "fotos": [
      "parcial",
-     "30: 20 nuevas sin comprobar a ojo"
+     "30 fotos, 10 filas"
     ],
     "ficha": [
-     "parcial",
-     "2 páginas"
+     "hecho",
+     "14 páginas"
     ],
     "medido": [
-     "parcial",
-     "2 de 14"
+     "hecho",
+     "desborde 0 a 430/768/1280, contraste medido"
     ],
     "veredicto": [
      "pendiente",
@@ -141,27 +141,27 @@
    "slug": "cadencia",
    "nombre": "CADENCIA",
    "tipo": "ecommerce",
-   "sector": "deportiva",
+   "sector": "ropa técnica para entrenar al aire libre en frío",
    "estado": {
     "lienzo": [
-     "pendiente",
-     "se cortó por el límite de sesión"
+     "hecho",
+     "5 láminas"
     ],
     "maqueta": [
-     "pendiente",
-     ""
+     "hecho",
+     "14 de 14 páginas"
     ],
     "fotos": [
-     "parcial",
-     "8"
+     "hecho",
+     "8 con manifiesto"
     ],
     "ficha": [
-     "parcial",
-     "2 páginas"
+     "hecho",
+     "14 páginas"
     ],
     "medido": [
-     "parcial",
-     "2 de 14"
+     "hecho",
+     "desborde 0 a 430/768/1280, contraste medido"
     ],
     "veredicto": [
      "pendiente",
@@ -173,27 +173,219 @@
    "slug": "escuadra",
    "nombre": "ESCUADRA",
    "tipo": "ecommerce",
-   "sector": "hogar",
+   "sector": "tienda de hogar de surtido amplio — muebles, cocina, textil, baño, iluminación, almacenaje",
    "estado": {
     "lienzo": [
+     "hecho",
+     "5 láminas"
+    ],
+    "maqueta": [
+     "hecho",
+     "14 de 14 páginas"
+    ],
+    "fotos": [
+     "hecho",
+     "16 con manifiesto"
+    ],
+    "ficha": [
+     "hecho",
+     "14 páginas"
+    ],
+    "medido": [
+     "hecho",
+     "desborde 0 a 430/768/1280, contraste medido"
+    ],
+    "veredicto": [
      "pendiente",
-     "se cortó por el límite de sesión"
+     ""
+    ]
+   }
+  },
+  {
+   "slug": "aranda",
+   "nombre": "Motor Aranda",
+   "tipo": "corporate",
+   "sector": "compraventa de vehículos de ocasión, concesionario multimarca",
+   "estado": {
+    "lienzo": [
+     "hecho",
+     "5 láminas"
+    ],
+    "maqueta": [
+     "hecho",
+     "10 de 10 páginas"
+    ],
+    "fotos": [
+     "hecho",
+     "10 con manifiesto"
+    ],
+    "ficha": [
+     "hecho",
+     "10 páginas"
+    ],
+    "medido": [
+     "hecho",
+     "desborde 0 a 430/768/1280, contraste medido"
+    ],
+    "veredicto": [
+     "pendiente",
+     ""
+    ]
+   }
+  },
+  {
+   "slug": "lumiere",
+   "nombre": "Lumière",
+   "tipo": "corporate",
+   "sector": "estética y belleza, estudio urbano con cabinas propias",
+   "estado": {
+    "lienzo": [
+     "hecho",
+     "5 láminas"
+    ],
+    "maqueta": [
+     "hecho",
+     "10 de 10 páginas"
+    ],
+    "fotos": [
+     "hecho",
+     "10 con manifiesto"
+    ],
+    "ficha": [
+     "hecho",
+     "10 páginas"
+    ],
+    "medido": [
+     "hecho",
+     "desborde 0 a 430/768/1280, contraste medido"
+    ],
+    "veredicto": [
+     "pendiente",
+     ""
+    ]
+   }
+  },
+  {
+   "slug": "terrazza",
+   "nombre": "terrazza",
+   "tipo": "?",
+   "sector": "",
+   "estado": {
+    "lienzo": [
+     "parcial",
+     "1 láminas"
     ],
     "maqueta": [
      "pendiente",
-     ""
+     "sin maqueta"
     ],
     "fotos": [
-     "parcial",
-     "16"
+     "hecho",
+     "7 con manifiesto"
     ],
     "ficha": [
-     "parcial",
-     "2 páginas"
+     "pendiente",
+     "sin ficha"
     ],
     "medido": [
+     "pendiente",
+     "sin maqueta que medir"
+    ],
+    "veredicto": [
+     "pendiente",
+     ""
+    ]
+   }
+  },
+  {
+   "slug": "bajura",
+   "nombre": "bajura",
+   "tipo": "?",
+   "sector": "",
+   "estado": {
+    "lienzo": [
      "parcial",
-     "2 de 14"
+     "1 láminas"
+    ],
+    "maqueta": [
+     "pendiente",
+     "sin maqueta"
+    ],
+    "fotos": [
+     "hecho",
+     "7 con manifiesto"
+    ],
+    "ficha": [
+     "pendiente",
+     "sin ficha"
+    ],
+    "medido": [
+     "pendiente",
+     "sin maqueta que medir"
+    ],
+    "veredicto": [
+     "pendiente",
+     ""
+    ]
+   }
+  },
+  {
+   "slug": "corte",
+   "nombre": "corte",
+   "tipo": "?",
+   "sector": "",
+   "estado": {
+    "lienzo": [
+     "parcial",
+     "1 láminas"
+    ],
+    "maqueta": [
+     "pendiente",
+     "sin maqueta"
+    ],
+    "fotos": [
+     "hecho",
+     "9 con manifiesto"
+    ],
+    "ficha": [
+     "pendiente",
+     "sin ficha"
+    ],
+    "medido": [
+     "pendiente",
+     "sin maqueta que medir"
+    ],
+    "veredicto": [
+     "pendiente",
+     ""
+    ]
+   }
+  },
+  {
+   "slug": "tueste",
+   "nombre": "tueste",
+   "tipo": "?",
+   "sector": "",
+   "estado": {
+    "lienzo": [
+     "parcial",
+     "1 láminas"
+    ],
+    "maqueta": [
+     "pendiente",
+     "sin maqueta"
+    ],
+    "fotos": [
+     "hecho",
+     "5 con manifiesto"
+    ],
+    "ficha": [
+     "pendiente",
+     "sin ficha"
+    ],
+    "medido": [
+     "pendiente",
+     "sin maqueta que medir"
     ],
     "veredicto": [
      "pendiente",
@@ -277,43 +469,43 @@
   },
   {
    "id": "C",
-   "titulo": "Las cinco plantillas",
+   "titulo": "Las once plantillas",
    "tareas": [
     {
      "id": "C3",
-     "t": "Lienzo de las páginas de contenido nuevas de las cuatro tiendas: categoría, la marca y contacto",
-     "s": "hecho",
-     "n": "Las cuatro tiendas con sus tres laminas nuevas (categoria, la marca, contacto). Altos MEDIDOS con alto-contenido.mjs, nunca tecleados"
+     "t": "Lienzo completo de cada plantilla: las paginas de contenido necesitan lamina propia",
+     "s": "parcial",
+     "n": "Siete con sus cinco laminas (delao lleva siete). Terrazza, Bajura, Corte y Tueste siguen con solo su portada; dos de ellas se estan escribiendo ahora"
     },
     {
      "id": "C4",
-     "t": "Maqueta de cada plantilla con todas sus páginas, dos puntos de ruptura y fuentes incrustadas",
-     "s": "hecho",
-     "n": "Las cuatro con 14 paginas en un fichero, 1024 y 767, fuentes incrustadas, cero URL remota. Enlaces internos: marzo 60, barro 75, escuadra 117, cadencia 70. CERO muertos en las cuatro"
+     "t": "Maqueta de cada plantilla con todas sus paginas, dos puntos de ruptura y fuentes incrustadas",
+     "s": "parcial",
+     "n": "Siete maquetas completas: delao, aranda y lumiere con 10 paginas; marzo, barro, cadencia y escuadra con 14. Faltan cuatro"
     },
     {
      "id": "C5",
-     "t": "Fotos de las páginas nuevas, comprobadas a ojo contra su nombre, con su manifiesto",
-     "s": "hecho",
-     "n": "Cada tienda construida con las fotos que ya estaban en su manifiesto. Las 20 huerfanas de BARRO quedan fuera: sin procedencia recuperable, repo publico"
+     "t": "Fotos con su manifiesto: origen, sesion, licencia y el alt que la imagen lleva en el diseno",
+     "s": "parcial",
+     "n": "48 fotos de las seis marcas nuevas recuperadas con su procedencia del propio repo. Siguen fuera las 20 huerfanas de BARRO, sin origen recuperable"
     },
     {
      "id": "C6",
-     "t": "Ficha de cada plantilla con todas sus páginas y su mapeo nativo",
-     "s": "hecho",
-     "n": "Las cuatro fichas al dia: 14 paginas, mapeo nativo, que se dibuja y que se deriva, y ninguna declara veredicto"
+     "t": "Ficha de cada plantilla con todas sus paginas y su mapeo nativo",
+     "s": "parcial",
+     "n": "Siete fichas al dia con paleta MEDIDA y margen declarado. Faltan cuatro"
     },
     {
      "id": "C7",
-     "t": "Geometría y contraste medidos en todas las páginas a 430, 768 y 1280",
-     "s": "hecho",
-     "n": "198 medidas (66 paginas x 3 anchos) de scrollWidth contra clientWidth, sin una sola captura: 2 desbordes encontrados en las fichas de MARZO (91px) y BARRO (2px), los dos arreglados y re-medidos a cero. Contraste medido y en verde en las cinco"
+     "t": "Geometria y contraste medidos en todas las paginas a 430, 768 y 1280",
+     "s": "parcial",
+     "n": "258 medidas de desborde (86 paginas x 3 anchos) y contraste medido en las siete completas. Faltan las cuatro que no tienen maqueta"
     },
     {
      "id": "C8",
-     "t": "Veredicto sellado de las cinco: juez ciego y barrido visual de todas las páginas",
+     "t": "Veredicto sellado de las once: juez ciego y barrido visual de todas las paginas",
      "s": "pendiente",
-     "n": "Es lo unico que queda para que una plantilla se pueda ofrecer: juez ciego B por plantilla y juez A de conjunto. Necesita ojos, no medidas"
+     "n": "Once plantillas sin veredicto. Es lo unico que impide ofrecer cualquiera de ellas a un cliente"
     }
    ]
   },
@@ -421,7 +613,8 @@
     {
      "id": "G1",
      "t": "Juez de reconocimiento sobre las cinco portadas: ningún grupo hecho «por la misma mano»",
-     "s": "pendiente"
+     "s": "pendiente",
+     "n": "Sobre once portadas, no cinco. Tres emparejan Fraunces con Inter Tight y tres estan sobre suelo oscuro: ahi es donde puede agrupar"
     },
     {
      "id": "G2",
