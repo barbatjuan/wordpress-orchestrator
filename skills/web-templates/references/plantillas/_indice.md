@@ -8,16 +8,21 @@ sin veredicto vigente, la plantilla no se ofrece a un cliente.
 | `delao` · Inmobiliaria de la O | `cartera-curada` | `editorial` | corporate | inicio · propiedades · ficha · nosotros · contacto | pendiente de firma |
 | `marzo` · MARZO | `tienda-talla` | `materia` | ecommerce | portada · categoría · ficha de producto · carro · pago · pedido recibido · mi cuenta · la marca · contacto · condiciones de venta y envíos · aviso legal · privacidad · cookies · 404 | sin veredicto |
 | `barro` · BARRO | `tienda-lote` | `lujo-oscuro` | ecommerce | portada · categoría · ficha de producto · carro · pago · pedido recibido · mi cuenta · la marca · contacto · condiciones de venta y envíos · aviso legal · privacidad · cookies · 404 | sin veredicto |
-| `cadencia` · CADENCIA | `equipo-por-uso` ⚑ | `tecnologico` | ecommerce | portada · categoría · ficha de producto · carro · pago · pedido recibido · mi cuenta · la marca · contacto · condiciones de venta y envíos · aviso legal · privacidad · cookies · 404 | sin veredicto |
-| `escuadra` · ESCUADRA | `catalogo-amplio` ⚑ | `directo` | ecommerce | portada · categoría · ficha de producto · carro · pago · pedido recibido · mi cuenta · la marca · contacto · condiciones de venta y envíos · aviso legal · privacidad · cookies · 404 | sin veredicto |
+| `cadencia` · CADENCIA | `equipo-por-uso` | `tecnologico` | ecommerce | portada · categoría · ficha de producto · carro · pago · pedido recibido · mi cuenta · la marca · contacto · condiciones de venta y envíos · aviso legal · privacidad · cookies · 404 | sin veredicto |
+| `escuadra` · ESCUADRA | `catalogo-amplio` | `directo` | ecommerce | portada · categoría · ficha de producto · carro · pago · pedido recibido · mi cuenta · la marca · contacto · condiciones de venta y envíos · aviso legal · privacidad · cookies · 404 | sin veredicto |
+| `aranda` · Aranda Ocasión | `stock-ocasion` | `tecnologico` | corporate | portada | sin veredicto · sin maqueta |
+| `lumiere` · Lumière | `ritual-bono` | `materia` | corporate | portada | sin veredicto · sin maqueta |
+| `terrazza` · Casa Terrazza | `reservar-mesa` | `lujo-oscuro` | corporate | portada | sin veredicto · sin maqueta |
+| `bajura` · Bajura | `subasta-diaria` | `brutalista` | ecommerce | portada | sin veredicto · sin maqueta |
+| `corte` · Corte | `prenda-a-medida` | `vitrina` | ecommerce | portada | sin veredicto · sin maqueta |
+| `tueste` · Tueste | `suscripcion` | `institucional` | ecommerce | portada | sin veredicto · sin maqueta |
 
-⚑ Objetivo nuevo, que todavía no existe en ningún recomendador. Se da de alta cuando exista
-`recomendador.md`, o la plantilla se reasigna a un objetivo que ya exista.
-
-**Las cuatro tiendas tienen ya su juego completo de 14 páginas** derivado en `maqueta/index.html`, con
-cinco láminas dibujadas y nueve páginas de sistema derivadas del mismo sistema. A las cuatro les falta
-sólo el veredicto, y a `delao` firmar el suyo. Hasta tenerlo, ninguna se ofrece a un cliente: una
-maqueta que nadie ha mirado es una carpeta de ficheros que pasa los tests.
+**Cinco plantillas tienen su juego completo de páginas** derivado en `maqueta/index.html` — `delao`
+con diez y `marzo`, `barro`, `cadencia` y `escuadra` con catorce — y a las cinco les falta sólo el
+veredicto. **Las seis últimas acaban de entrar y sólo tienen su portada**: el lienzo «seis portadas»
+las dibujó de una en una, así que les faltan las láminas de las páginas de contenido, la maqueta y la
+ficha. Hasta tener maqueta y veredicto, ninguna se ofrece a un cliente: una maqueta que nadie ha
+mirado es una carpeta de ficheros que pasa los tests.
 
 ## Qué contiene cada plantilla
 
@@ -79,3 +84,39 @@ Una carpeta por slug, y dentro siempre lo mismo:
   `Contacto`, `canvas.json` y su `MANIFIESTO.md`
 - `references/plantillas/escuadra/maqueta/` — `index.html`
 - `references/plantillas/escuadra/img/` — dieciséis `.webp`
+
+## aranda
+
+- `references/plantillas/aranda/manifiesto-imagenes.md`
+- `references/plantillas/aranda/canvas/` — `Aranda`
+- `references/plantillas/aranda/img/` — diez `.webp`
+
+## lumiere
+
+- `references/plantillas/lumiere/manifiesto-imagenes.md`
+- `references/plantillas/lumiere/canvas/` — `Lumiere`
+- `references/plantillas/lumiere/img/` — diez `.webp`
+
+## terrazza
+
+- `references/plantillas/terrazza/manifiesto-imagenes.md`
+- `references/plantillas/terrazza/canvas/` — `Terrazza`
+- `references/plantillas/terrazza/img/` — siete `.webp`
+
+## bajura
+
+- `references/plantillas/bajura/manifiesto-imagenes.md`
+- `references/plantillas/bajura/canvas/` — `Bajura`
+- `references/plantillas/bajura/img/` — siete `.webp`
+
+## corte
+
+- `references/plantillas/corte/manifiesto-imagenes.md`
+- `references/plantillas/corte/canvas/` — `Corte`
+- `references/plantillas/corte/img/` — nueve `.webp`
+
+## tueste
+
+- `references/plantillas/tueste/manifiesto-imagenes.md`
+- `references/plantillas/tueste/canvas/` — `Tueste`
+- `references/plantillas/tueste/img/` — cinco `.webp`

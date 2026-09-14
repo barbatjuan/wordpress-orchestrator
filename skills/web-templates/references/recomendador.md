@@ -37,6 +37,8 @@ distintos.
 | `equipo-por-uso` | Vender conjuntos pensados para un uso medible —duración, temperatura, intensidad—; se compra la sesión, no la prenda suelta | Ropa técnica, montaña, ciclismo, remo; «equipo para», «kit»; cifras de prueba reales; precio de conjunto distinto de la suma |
 | `catalogo-amplio` | Vender un surtido ancho por departamentos con precio y medida visibles; navegar por categoría y comparar es la intención principal | Cientos o miles de referencias, varios departamentos; «desde», medidas, montaje, envío por bultos; grandes superficies, hogar de precio medio, material de oficina |
 | `suscripcion` | Vender una entrega que se repite y no termina, con cuota y cadencia elegibles; la compra suelta es secundaria | Café, pienso, cosmética de reposición, vino, cajas de temporada; «cada dos o cuatro semanas», «pausa cuando quieras» |
+| `subasta-diaria` | Vender un género que cambia cada día y se acaba: qué hay hoy, a qué hora cierra y cuánto queda. Mañana el catálogo es otro, así que el sitio se organiza por la hora, no por la categoría | Lonja, pescado, marisco, mercado, producto fresco de temporada; «lo de hoy», «cierra a las», hora de corte y de reparto; el género no se repone, se renueva |
+| `prenda-a-medida` | Vender una prenda que no tiene talla de percha: el visitante da sus medidas y el sitio le dice cuál le corresponde antes de que compre | Sastrería, camisería, calzado de horma; «dinos tres medidas», horma, patrón, prueba; la devolución por talla es justo el coste que el sitio existe para evitar |
 
 ### De cualquier tipo
 
@@ -52,15 +54,17 @@ propio Objetivo.
 | Objetivo | Plantilla | Tipo | Enfoque | Estado |
 |---|---|---|---|---|
 | `cartera-curada` | `delao` | corporate | `editorial` | en la biblioteca |
-| `stock-ocasion` | sin plantilla | — | — | ruta a medida |
-| `ritual-bono` | sin plantilla | — | — | ruta a medida |
-| `reservar-mesa` | sin plantilla | — | — | ruta a medida |
+| `stock-ocasion` | `aranda` | corporate | `tecnologico` | en la biblioteca |
+| `ritual-bono` | `lumiere` | corporate | `materia` | en la biblioteca |
+| `reservar-mesa` | `terrazza` | corporate | `lujo-oscuro` | en la biblioteca |
 | `servicios-captacion` | sin plantilla | — | — | ruta a medida |
 | `tienda-talla` | `marzo` | ecommerce | `materia` | en la biblioteca |
 | `tienda-lote` | `barro` | ecommerce | `lujo-oscuro` | en la biblioteca |
 | `equipo-por-uso` | `cadencia` | ecommerce | `tecnologico` | en la biblioteca |
 | `catalogo-amplio` | `escuadra` | ecommerce | `directo` | en la biblioteca |
-| `suscripcion` | sin plantilla | — | — | ruta a medida |
+| `suscripcion` | `tueste` | ecommerce | `institucional` | en la biblioteca |
+| `subasta-diaria` | `bajura` | ecommerce | `brutalista` | en la biblioteca |
+| `prenda-a-medida` | `corte` | ecommerce | `vitrina` | en la biblioteca |
 | `plan-fases` | sin plantilla | — | — | ruta a medida |
 | `pedir-cita` | sin plantilla | — | — | ruta a medida |
 | `urgencia-hoy` | sin plantilla | — | — | ruta a medida |
