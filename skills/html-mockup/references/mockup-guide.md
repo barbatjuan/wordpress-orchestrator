@@ -97,6 +97,16 @@ El margen se mide como fracción y no en píxeles a propósito: 64px es un marge
 768, y el defecto que buscamos —«no hay casi márgenes»— es una fracción, no una distancia. El
 estándar de la casa es `clamp(1140px, 85vw, 100vw)`, o sea 7,5% por lado por encima de la rodilla.
 
+**Es un valor por defecto, no una ley, y la plantilla manda.** El margen es una decisión de
+composición: `tecnologico` respira menos que `editorial`, y un `brutalista` que dejara 7,5% dejaría
+de serlo. Once plantillas con el mismo margen son once plantillas que un juez de reconocimiento
+agrupa como hechas por la misma mano, que es justo lo que la biblioteca existe para evitar. Así que
+una plantilla puede llevar el suyo con dos condiciones: que su **ficha lo declare como fracción y
+diga por qué**, y que la maqueta lo exprese como fracción, no en píxeles, para que aguante entre los
+dos puntos de ruptura. Quien decide si un margen estrecho es enfoque o descuido es el barrido, que
+mide la fracción a tres anchos y avisa de lo que llega al cristal: un margen declarado que el barrido
+no señala es una decisión; uno que no está en la ficha es una deriva.
+
 Dos advertencias pagadas:
 
 - **Mide la TINTA, no la caja.** Un `<p>` con relleno horizontal tiene caja de ancho completo y
