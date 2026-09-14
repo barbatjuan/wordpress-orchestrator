@@ -64,7 +64,7 @@ propio Objetivo.
 | `catalogo-amplio` | `escuadra` | ecommerce | `directo` | en la biblioteca |
 | `suscripcion` | `tueste` | ecommerce | `editorial` | en la biblioteca |
 | `subasta-diaria` | `bajura` | ecommerce | `brutalista` | en la biblioteca |
-| `prenda-a-medida` | `corte` | ecommerce | `vitrina` | en la biblioteca |
+| `prenda-a-medida` | `corte` | ecommerce | `materia` | en la biblioteca |
 | `plan-fases` | sin plantilla | — | — | ruta a medida |
 | `pedir-cita` | sin plantilla | — | — | ruta a medida |
 | `urgencia-hoy` | sin plantilla | — | — | ruta a medida |

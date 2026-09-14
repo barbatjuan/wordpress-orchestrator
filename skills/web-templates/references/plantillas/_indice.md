@@ -14,19 +14,18 @@ sin veredicto vigente, la plantilla no se ofrece a un cliente.
 | `lumiere` · Lumière | `ritual-bono` | `materia` | corporate | inicio · rituales · ritual · nosotros · contacto · gracias · aviso legal · privacidad · cookies · 404 | sin veredicto |
 | `terrazza` · Casa Terrazza | `reservar-mesa` | `lujo-oscuro` | corporate | inicio · carta · plato · nosotros · contacto · gracias · aviso legal · privacidad · cookies · 404 | sin veredicto |
 | `bajura` · Bajura | `subasta-diaria` | `brutalista` | ecommerce | portada | sin veredicto · sin maqueta |
-| `corte` · Corte | `prenda-a-medida` | `vitrina` | ecommerce | portada | sin veredicto · sin maqueta |
+| `corte` · Corte Nueve | `prenda-a-medida` | `materia` | ecommerce | portada · categoría · ficha de producto · carro · pago · pedido recibido · mi cuenta · la marca · contacto · condiciones de venta y envíos · aviso legal · privacidad · cookies · 404 | sin veredicto |
 | `tueste` · Tueste Norte | `suscripcion` | `editorial` | ecommerce | portada · categoría · ficha de producto · carro · pago · pedido recibido · mi cuenta · la marca · contacto · condiciones de venta y envíos · aviso legal · privacidad · cookies · 404 | sin veredicto |
 
-**Nueve plantillas tienen su juego completo de páginas** derivado en `maqueta/index.html` — `delao`,
-`aranda`, `lumiere` y `terrazza` con diez, y `marzo`, `barro`, `cadencia`, `escuadra` y `tueste` con
-catorce — y a las nueve les falta sólo el veredicto. **Dos siguen siendo sólo su portada**: `bajura` y
-`corte` vienen del lienzo «seis portadas», que dibujó una lámina por marca, así que les faltan las
-páginas de contenido, la maqueta y la ficha. Hasta tener maqueta y veredicto, ninguna se ofrece a un
+**Diez plantillas tienen su juego completo de páginas** derivado en `maqueta/index.html` — `delao`,
+`aranda`, `lumiere` y `terrazza` con diez, y `marzo`, `barro`, `cadencia`, `escuadra`, `tueste` y
+`corte` con catorce — y a las diez les falta sólo el veredicto. **Una sigue siendo sólo su portada**:
+`bajura`, del lienzo «seis portadas», que dibujó una lámina por marca. Hasta tener maqueta y veredicto, ninguna se ofrece a un
 cliente: una maqueta que nadie ha mirado es una carpeta de ficheros que pasa los tests.
 
 **El margen de página no es el mismo en todas, y es a propósito.** `delao`, `marzo`, `barro`,
 `cadencia` y `escuadra` usan el 7,5&nbsp;% del estándar de la casa; `lumiere` usa 6,667&nbsp;%,
-`aranda` 5&nbsp;%, `terrazza` 3,333&nbsp;% y `tueste` 10&nbsp;%, medidos en sus lienzos y declarados en sus fichas con su
+`aranda` 5&nbsp;%, `corte` 6,667&nbsp;%, `terrazza` 3,333&nbsp;% y `tueste` 10&nbsp;%, medidos en sus lienzos y declarados en sus fichas con su
 razón. Once plantillas con el
 mismo margen serían once plantillas hechas por la misma mano.
 
@@ -126,8 +125,11 @@ Una carpeta por slug, y dentro siempre lo mismo:
 
 ## corte
 
+- `references/plantillas/corte/ficha.md`
 - `references/plantillas/corte/manifiesto-imagenes.md`
-- `references/plantillas/corte/canvas/` — `Corte`
+- `references/plantillas/corte/canvas/` — `Corte`, `Categoria`, `Ficha`, `LaMarca`, `Contacto`,
+  `canvas.json` y su `MANIFIESTO.md`
+- `references/plantillas/corte/maqueta/` — `index.html`
 - `references/plantillas/corte/img/` — nueve `.webp`
 
 ## tueste
