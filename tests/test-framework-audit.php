@@ -3756,7 +3756,7 @@ fx_rrmdir( $r112 );
 
 /* ---------------------------------------------------------------------------
    style-catalog PR 4a (tasks.md 4a.1) — the font-budget constraint the whole catalog is locked
-   to: `skills/html-mockup/assets/fonts/_fonts.php:63-69` embeds exactly 7 faces (Fraunces,
+   to: `skills/html-mockup/assets/fonts/_fonts.php` embedded exactly 7 faces at the time (Fraunces,
    Instrument Serif, Inter Tight, DM Sans, Source Sans 3, Archivo, Archivo Expanded), which is WHY
    the catalog ships 8 entries in v1 instead of the 12 first proposed. `RT_MOCKUP_FONT_NOT_EMBEDDED`
    above is the mechanism that would catch a `STY-*.md` naming a family outside that list once it

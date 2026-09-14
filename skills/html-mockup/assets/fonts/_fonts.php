@@ -33,7 +33,7 @@
  * asking for the default `normal` (100%) gets clamped into the face's declared range, so a face
  * declaring `125%` renders at 125% without every rule having to say so.
  *
- * LICENCE. All six families are SIL Open Font License 1.1, verified per family rather than
+ * LICENCE. Every family registered below is SIL Open Font License 1.1, verified per family rather than
  * assumed — see `_fonts.md`, which carries the evidence, the source URL, the sha256 and the
  * copyright line for each. OFL permits redistribution only with the licence text accompanying
  * the fonts, so each family's `OFL.txt` is committed beside its woff2 in this directory. This
@@ -57,16 +57,58 @@
  * the font holds would silently suppress the browser's synthetic bold and hide the fact that a
  * mockup is asking for a weight nobody drew — which is exactly what Instrument Serif, a
  * single-weight display serif, is here to make visible.
+ *
+ * ONE FAMILY, SEVERAL FACES. An entry is either one face (`file`, `weight`, `stretch`) or a
+ * `faces` list of them, each with its own `style`. The plural form exists because the four shop
+ * Plantillas set Bodoni Moda and Newsreader in italic as well as roman, and IBM Plex Mono arrives
+ * as two static files. Registering only the roman would have the browser synthesise the italic by
+ * slanting it — a different drawing from the one designed — and would leave the second Plex
+ * weight with nowhere to go, since the key is the CSS family name and cannot repeat.
  */
 function nm_font_registry() {
 	return array(
-		'Fraunces'         => array( 'file' => 'fraunces-latin.woff2',         'weight' => '400 700', 'stretch' => null ),
-		'Instrument Serif' => array( 'file' => 'instrument-serif-latin.woff2', 'weight' => '400',     'stretch' => null ),
-		'Inter Tight'      => array( 'file' => 'inter-tight-latin.woff2',      'weight' => '400 700', 'stretch' => null ),
-		'DM Sans'          => array( 'file' => 'dm-sans-latin.woff2',          'weight' => '400 700', 'stretch' => null ),
-		'Source Sans 3'    => array( 'file' => 'source-sans-3-latin.woff2',    'weight' => '400 700', 'stretch' => null ),
-		'Archivo'          => array( 'file' => 'archivo-latin.woff2',          'weight' => '400 700', 'stretch' => '100%' ),
-		'Archivo Expanded' => array( 'file' => 'archivo-expanded-latin.woff2', 'weight' => '400 700', 'stretch' => '125%' ),
+		'Fraunces'          => array( 'file' => 'fraunces-latin.woff2',          'weight' => '400 700', 'stretch' => null ),
+		'Instrument Serif'  => array( 'file' => 'instrument-serif-latin.woff2',  'weight' => '400',     'stretch' => null ),
+		'Inter Tight'       => array( 'file' => 'inter-tight-latin.woff2',       'weight' => '400 700', 'stretch' => null ),
+		'DM Sans'           => array( 'file' => 'dm-sans-latin.woff2',           'weight' => '400 700', 'stretch' => null ),
+		'Source Sans 3'     => array( 'file' => 'source-sans-3-latin.woff2',     'weight' => '400 700', 'stretch' => null ),
+		'Archivo'           => array( 'file' => 'archivo-latin.woff2',           'weight' => '400 700', 'stretch' => '100%' ),
+		'Archivo Expanded'  => array( 'file' => 'archivo-expanded-latin.woff2',  'weight' => '400 700', 'stretch' => '125%' ),
+		'Jost'              => array( 'file' => 'jost-latin.woff2',              'weight' => '300 500', 'stretch' => null ),
+		'Schibsted Grotesk' => array( 'file' => 'schibsted-grotesk-latin.woff2', 'weight' => '400 500', 'stretch' => null ),
+		'Instrument Sans'   => array( 'file' => 'instrument-sans-latin.woff2',   'weight' => '400 600', 'stretch' => null ),
+		'Martian Mono'      => array( 'file' => 'martian-mono-latin.woff2',      'weight' => '400 500', 'stretch' => null ),
+		'Bodoni Moda'       => array( 'faces' => array(
+			array( 'file' => 'bodoni-moda-latin.woff2',        'weight' => '400', 'style' => 'normal', 'stretch' => null ),
+			array( 'file' => 'bodoni-moda-italic-latin.woff2', 'weight' => '400', 'style' => 'italic', 'stretch' => null ),
+		) ),
+		'Newsreader'        => array( 'faces' => array(
+			array( 'file' => 'newsreader-latin.woff2',        'weight' => '200 500', 'style' => 'normal', 'stretch' => null ),
+			array( 'file' => 'newsreader-italic-latin.woff2', 'weight' => '200 500', 'style' => 'italic', 'stretch' => null ),
+		) ),
+		'IBM Plex Mono'     => array( 'faces' => array(
+			array( 'file' => 'ibm-plex-mono-400-latin.woff2', 'weight' => '400', 'style' => 'normal', 'stretch' => null ),
+			array( 'file' => 'ibm-plex-mono-500-latin.woff2', 'weight' => '500', 'style' => 'normal', 'stretch' => null ),
+		) ),
+	);
+}
+
+/**
+ * A registry entry as the list of faces it stands for, whichever of the two shapes it was written
+ * in. A single-face entry becomes a one-item list with `style` normal, so every caller iterates one
+ * shape and the seven original entries did not have to be rewritten.
+ */
+function nm_font_entry_faces( array $entry ) {
+	if ( isset( $entry['faces'] ) ) {
+		return $entry['faces'];
+	}
+	return array(
+		array(
+			'file'    => $entry['file'],
+			'weight'  => $entry['weight'],
+			'style'   => 'normal',
+			'stretch' => $entry['stretch'],
+		),
 	);
 }
 
@@ -87,21 +129,22 @@ function nm_font_faces( array $families ) {
 			fwrite( STDERR, "_fonts.php: FAIL — no font registered for `$fam`\n" );
 			exit( 1 );
 		}
-		$f    = $reg[ $fam ];
-		$path = __DIR__ . '/' . $f['file'];
-		if ( ! is_file( $path ) ) {
-			fwrite( STDERR, "_fonts.php: FAIL — `$fam` names {$f['file']}, which is not in " . __DIR__ . "\n" );
-			exit( 1 );
+		foreach ( nm_font_entry_faces( $reg[ $fam ] ) as $f ) {
+			$path = __DIR__ . '/' . $f['file'];
+			if ( ! is_file( $path ) ) {
+				fwrite( STDERR, "_fonts.php: FAIL — `$fam` names {$f['file']}, which is not in " . __DIR__ . "\n" );
+				exit( 1 );
+			}
+			$bytes = file_get_contents( $path );
+			if ( "wOF2" !== substr( $bytes, 0, 4 ) ) {
+				fwrite( STDERR, "_fonts.php: FAIL — {$f['file']} is not a woff2 (bad magic) — a TTF renames itself to nothing\n" );
+				exit( 1 );
+			}
+			$out[] = "@font-face{font-family:'" . $fam . "';font-style:" . $f['style'] . ';font-weight:' . $f['weight'] . ';'
+				. ( null === $f['stretch'] ? '' : 'font-stretch:' . $f['stretch'] . ';' )
+				. 'font-display:swap;src:url(data:font/woff2;base64,'
+				. base64_encode( $bytes ) . ") format('woff2')}";
 		}
-		$bytes = file_get_contents( $path );
-		if ( "wOF2" !== substr( $bytes, 0, 4 ) ) {
-			fwrite( STDERR, "_fonts.php: FAIL — {$f['file']} is not a woff2 (bad magic) — a TTF renames itself to nothing\n" );
-			exit( 1 );
-		}
-		$out[] = "@font-face{font-family:'" . $fam . "';font-style:normal;font-weight:" . $f['weight'] . ';'
-			. ( null === $f['stretch'] ? '' : 'font-stretch:' . $f['stretch'] . ';' )
-			. 'font-display:swap;src:url(data:font/woff2;base64,'
-			. base64_encode( $bytes ) . ") format('woff2')}";
 	}
 	return array() === $out ? '' : implode( "\n", $out );
 }
@@ -115,7 +158,9 @@ function nm_font_bytes( array $families ) {
 	$raw = 0;
 	foreach ( $families as $fam ) {
 		if ( isset( $reg[ $fam ] ) ) {
-			$raw += filesize( __DIR__ . '/' . $reg[ $fam ]['file'] );
+			foreach ( nm_font_entry_faces( $reg[ $fam ] ) as $f ) {
+				$raw += filesize( __DIR__ . '/' . $f['file'] );
+			}
 		}
 	}
 	return array( 'raw' => $raw, 'b64' => (int) ( ceil( $raw / 3 ) * 4 ) );

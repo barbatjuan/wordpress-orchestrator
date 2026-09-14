@@ -323,5 +323,60 @@ foreach ( $measured_fail as $label => $r ) {
 	ok( 1 === $r['code'], "$label: a genuine measured failure is exit 1, never 0: {$r['out']}" );
 }
 
+/* ---------------------------------------------------------------------------------------------
+   THE FONT REGISTRY CARRIES MORE THAN ONE FACE PER FAMILY. The four shop Plantillas ask for
+   faces the original registry could not express: Bodoni Moda and Newsreader are set in italic as
+   well as roman, and IBM Plex Mono ships as two static files, 400 and 500. The registry keyed one
+   file per CSS family name and always wrote `font-style:normal`, so an italic would have been
+   served as a synthesised slant of the roman and the second Plex weight could not be registered
+   at all. These assertions pin the multi-face shape and prove the single-face entries did not
+   move. Registry membership is checked before calling nm_font_faces(), because that function
+   exit()s on an unknown family and would end this suite instead of failing one assertion. */
+require_once dirname( __DIR__ ) . '/skills/html-mockup/assets/fonts/_fonts.php';
+
+$reg       = nm_font_registry();
+$nuevas    = array( 'Bodoni Moda', 'Jost', 'Newsreader', 'Schibsted Grotesk', 'IBM Plex Mono', 'Instrument Sans', 'Martian Mono' );
+$fonts_dir = dirname( __DIR__ ) . '/skills/html-mockup/assets/fonts';
+$caras_de  = function ( $css ) {
+	return preg_match_all( '/@font-face\{/', $css );
+};
+
+foreach ( $nuevas as $fam ) {
+	ok( isset( $reg[ $fam ] ), "fonts: `$fam` is registered" );
+}
+
+if ( ! function_exists( 'nm_font_entry_faces' ) ) {
+	ok( false, 'fonts: nm_font_entry_faces() exists, normalising a registry entry into its list of faces' );
+} else {
+	$archivos = array();
+	foreach ( $reg as $fam => $entry ) {
+		foreach ( nm_font_entry_faces( $entry ) as $face ) {
+			$archivos[] = $face['file'];
+			$bytes      = @file_get_contents( $fonts_dir . '/' . $face['file'] );
+			ok( false !== $bytes && 'wOF2' === substr( $bytes, 0, 4 ), "fonts: `$fam` {$face['style']} {$face['weight']} names {$face['file']}, a real woff2 on disk" );
+		}
+	}
+	ok( count( $archivos ) === count( array_unique( $archivos ) ), 'fonts: no woff2 file is registered twice' );
+}
+
+if ( isset( $reg['Newsreader'] ) ) {
+	$css = nm_font_faces( array( 'Newsreader' ) );
+	ok( 2 === $caras_de( $css ), 'fonts: Newsreader emits two faces, roman and italic' );
+	ok( false !== strpos( $css, 'font-style:normal' ) && false !== strpos( $css, 'font-style:italic' ), 'fonts: one face is font-style:normal and the other font-style:italic, never a synthesised slant' );
+}
+if ( isset( $reg['IBM Plex Mono'] ) ) {
+	$css = nm_font_faces( array( 'IBM Plex Mono' ) );
+	ok( 2 === $caras_de( $css ), 'fonts: IBM Plex Mono emits two faces, one per static weight file' );
+	ok( false !== strpos( $css, 'font-weight:400;' ) && false !== strpos( $css, 'font-weight:500;' ), 'fonts: the two Plex faces declare 400 and 500, the weights their files actually hold' );
+	$b = nm_font_bytes( array( 'IBM Plex Mono' ) );
+	ok( $b['raw'] === filesize( $fonts_dir . '/ibm-plex-mono-400-latin.woff2' ) + filesize( $fonts_dir . '/ibm-plex-mono-500-latin.woff2' ), 'fonts: nm_font_bytes counts every face of a family, not only the first file' );
+}
+
+$fr = nm_font_faces( array( 'Fraunces' ) );
+ok( 1 === $caras_de( $fr ), 'fonts: a single-face family still emits exactly one face' );
+ok( false !== strpos( $fr, "font-family:'Fraunces';font-style:normal;font-weight:400 700;font-display:swap;" ), 'fonts: the single-face output keeps the exact shape it had before multi-face support' );
+$ax = nm_font_faces( array( 'Archivo Expanded' ) );
+ok( false !== strpos( $ax, 'font-stretch:125%;' ), 'fonts: font-stretch still reaches the emitted face' );
+
 echo "\n$pass OK / $fail FAIL\n";
 exit( $fail ? 1 : 0 );

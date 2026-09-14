@@ -78,12 +78,12 @@ width measurement detects none of this. That mockup now asks for the 400 it has.
 
 ## Licence — verified per family, not assumed
 
-All six families are **SIL Open Font License 1.1**. That was checked rather than
+All fourteen families are **SIL Open Font License 1.1**. That was checked rather than
 believed, through three independent signals per family:
 
 1. the family's directory in `google/fonts` upstream is `ofl/` — that repository
    segregates by licence, so the path *is* a claim (`apache/` and `ufl/` exist and
-   neither holds any of these six);
+   neither holds any of these);
 2. its `METADATA.pb` there declares `license: "OFL"`;
 3. the committed `OFL.txt` carries the literal header
    `SIL OPEN FONT LICENSE Version 1.1`.
@@ -92,13 +92,14 @@ OFL permits redistribution **only with the licence text accompanying the fonts**
 so each family's `OFL.txt` is committed in this directory beside its `woff2`.
 This repository is public under Apache-2.0 and its `LICENSE` hands every reader
 the right to redistribute what it contains — a right we can only grant over what
-we actually hold. This is the same reasoning that kept Envato kits out of here.
+we actually hold. It is the same reasoning that keeps commercial theme kits out of here.
 
 **The files are Google's own subsets, byte-for-byte as served, and are not
 re-subset here.** That is deliberate: Source Sans 3 carries the Reserved Font Name
 *'Source'*, and OFL §3 restricts an RFN in **modified** versions. Redistributing
 an unmodified file under its original name is what OFL §2 permits outright, so
-not touching the bytes is what keeps that clause satisfied. If anyone ever
+not touching the bytes is what keeps that clause satisfied. IBM Plex Mono is the
+same case: its notice reserves the name *'Plex'*, and it is shipped unmodified. If anyone ever
 re-subsets these, that analysis has to be redone before the result is committed.
 
 ## The set
@@ -118,9 +119,22 @@ assumed.
 | Source Sans 3 | `source-sans-3-latin.woff2` | `wght 400..700` | 400 700 | SIL OFL 1.1 | `7a19a7027e125257` | 28,740 |
 | Archivo | `archivo-latin.woff2` | `wdth 100` (pinned), `wght 400..700` | 400 700 | SIL OFL 1.1 | `8f704806dbedeaae` | 34,928 |
 | Archivo Expanded | `archivo-expanded-latin.woff2` | `wdth 125` (pinned), `wght 400..700` | 400 700 | SIL OFL 1.1 | `8ac503c4c5897b58` | 34,708 |
+| Bodoni Moda | `bodoni-moda-latin.woff2` | `opsz 6..96`, `wght 400` | 400 | SIL OFL 1.1 | `2bd498670e726062` | 26,688 |
+| Bodoni Moda *italic* | `bodoni-moda-italic-latin.woff2` | `opsz 6..96`, `wght 400` | 400 | SIL OFL 1.1 | `2ad6213c0ab5438a` | 29,644 |
+| Jost | `jost-latin.woff2` | `wght 300..500` | 300 500 | SIL OFL 1.1 | `7726a5cd6f3c0e87` | 26,576 |
+| Newsreader | `newsreader-latin.woff2` | `opsz 6..72`, `wght 200..500` | 200 500 | SIL OFL 1.1 | `6e4f2958c3a7c4a8` | 132,000 |
+| Newsreader *italic* | `newsreader-italic-latin.woff2` | `opsz 6..72`, `wght 200..500` | 200 500 | SIL OFL 1.1 | `5dfcd10d24af8c82` | 146,872 |
+| Schibsted Grotesk | `schibsted-grotesk-latin.woff2` | `wght 400..500` | 400 500 | SIL OFL 1.1 | `4c8b93f431d462c6` | 46,752 |
+| IBM Plex Mono 400 | `ibm-plex-mono-400-latin.woff2` | none (static) | 400 | SIL OFL 1.1 | `08949f728dc52d52` | 14,708 |
+| IBM Plex Mono 500 | `ibm-plex-mono-500-latin.woff2` | none (static) | 500 | SIL OFL 1.1 | `01d285447409c8a5` | 14,888 |
+| Instrument Sans | `instrument-sans-latin.woff2` | `wght 400..600` | 400 600 | SIL OFL 1.1 | `2ee17598a98d8a59` | 30,092 |
+| Martian Mono | `martian-mono-latin.woff2` | `wght 400..500` | 400 500 | SIL OFL 1.1 | `d0be3a78a854bcea` | 23,556 |
 
-**294,308 bytes raw / 392,412 base64** for the whole set. No single file pays all
-of it: each mockup embeds only the families it names.
+**786,084 bytes raw / 1,048,112 base64** for the whole set: the first seven
+families are 294,308 bytes, the seven added for the shop Plantillas 491,776. No single
+file pays all of it: each page embeds only the families it names. Newsreader alone is 278,872
+bytes for roman and italic, because both carry the optical-size axis; a Plantilla that
+uses it should embed only the styles it actually sets.
 
 ### Copyright notices, as required by OFL §1
 
@@ -132,6 +146,13 @@ of it: each mockup embeds only the families it names.
 | DM Sans | `dmsans-OFL.txt` | Copyright 2014 The DM Sans Project Authors (https://github.com/googlefonts/dm-fonts) |
 | Source Sans 3 | `sourcesans3-OFL.txt` | Copyright 2010-2020 Adobe (http://www.adobe.com/), with Reserved Font Name 'Source'. All Rights Reserved. Source is a trademark of Adobe in the United States and/or other countries. |
 | Archivo · Archivo Expanded | `archivo-OFL.txt` | Copyright 2020 The Archivo Project Authors (https://github.com/Omnibus-Type/Archivo) |
+| Bodoni Moda | `bodonimoda-OFL.txt` | Copyright 2020 The Bodoni Moda Project Authors (https://github.com/indestructible-type/Bodoni) |
+| Jost | `jost-OFL.txt` | Copyright 2020 The Jost Project Authors (https://github.com/indestructible-type) |
+| Newsreader | `newsreader-OFL.txt` | Copyright 2020 The Newsreader Project Authors (http://github.com/productiontype/Newsreader) |
+| Schibsted Grotesk | `schibstedgrotesk-OFL.txt` | Copyright 2023 The Schibsted-Grotesk Project Authors (https://github.com/schibsted/schibsted-grotesk) |
+| IBM Plex Mono | `ibmplexmono-OFL.txt` | Copyright © 2017 IBM Corp. with Reserved Font Name "Plex" |
+| Instrument Sans | `instrumentsans-OFL.txt` | Copyright 2022 The Instrument Sans Project Authors (https://github.com/Instrument/instrument-sans) |
+| Martian Mono | `martianmono-OFL.txt` | Copyright 2021 The Martian Mono Project Authors (https://github.com/evilmartians/mono) |
 
 Archivo and Archivo Expanded share one notice because they are one family.
 
@@ -150,8 +171,28 @@ was actually shipped.
 | `source-sans-3-latin.woff2` | https://fonts.gstatic.com/s/sourcesans3/v19/nwpStKy2OAdR1K-IwhWudF-R3w8aZQ.woff2 |
 | `archivo-latin.woff2` | https://fonts.gstatic.com/s/archivo/v25/k3kPo8UDI-1M0wlSV9XAw6lQkqWY8Q82sLydOxI.woff2 |
 | `archivo-expanded-latin.woff2` | https://fonts.gstatic.com/s/archivo/v25/k3kPo8UDI-1M0wlSV9XAw6lQkqWY8Q8EsLydOxI.woff2 |
+| `bodoni-moda-latin.woff2` | https://fonts.gstatic.com/s/bodonimoda/v28/aFTH7PxzY382XsXX63LUYL6GYFksw-NIrKp-rPr1KOxQ.woff2 |
+| `bodoni-moda-italic-latin.woff2` | https://fonts.gstatic.com/s/bodonimoda/v28/aFTB7PxzY382XsXX63LUYJSPUqb0qojSAq1rZLktbNxSXgM.woff2 |
+| `jost-latin.woff2` | https://fonts.gstatic.com/s/jost/v20/92zatBhPNqw73oTd4g.woff2 |
+| `newsreader-latin.woff2` | https://fonts.gstatic.com/s/newsreader/v26/cY9AfjOCX1hbuyalUrK4397yjA.woff2 |
+| `newsreader-italic-latin.woff2` | https://fonts.gstatic.com/s/newsreader/v26/cY9CfjOCX1hbuyalUrK439vCjohC.woff2 |
+| `schibsted-grotesk-latin.woff2` | https://fonts.gstatic.com/s/schibstedgrotesk/v7/Jqz55SSPQuCQF3t8uOwiUL-taUTtap9Gayo.woff2 |
+| `ibm-plex-mono-400-latin.woff2` | https://fonts.gstatic.com/s/ibmplexmono/v20/-F63fjptAgt5VM-kVkqdyU8n1i8q1w.woff2 |
+| `ibm-plex-mono-500-latin.woff2` | https://fonts.gstatic.com/s/ibmplexmono/v20/-F6qfjptAgt5VM-kVkqdyU8n3twJwlBFgg.woff2 |
+| `instrument-sans-latin.woff2` | https://fonts.gstatic.com/s/instrumentsans/v4/pxiTypc9vsFDm051Uf6KVwgkfoSxQ0GsQv8ToedPibnr0SZe1Q.woff2 |
+| `martian-mono-latin.woff2` | https://fonts.gstatic.com/s/martianmono/v6/2V0PKIcADoYhV6w87xrTKjs4CYElh_VS9YA4TlTnaTq9wQ.woff2 |
 
 Licence texts came from `raw.githubusercontent.com/google/fonts/main/ofl/<dir>/OFL.txt`.
+
+## Why some families are several files
+
+The registry key is the CSS family name a page writes, so one key cannot repeat. Three of the
+seven families added for the shop Plantillas need more than one file under that one name:
+Bodoni Moda and Newsreader are set in **italic** as well as roman, and IBM Plex Mono is two
+**static** weights, 400 and 500. Such an entry carries a `faces` list, each face with its own
+`style` and `weight`, and `_fonts.php` emits one `@font-face` per face. Registering only the
+roman would make the browser **synthesise** the italic by slanting the upright drawing — a
+different letter from the designed one, and as silent as the synthetic bold above.
 
 ## How the bytes reach a page
 
