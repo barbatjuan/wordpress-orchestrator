@@ -7,18 +7,18 @@ sin veredicto vigente, la plantilla no se ofrece a un cliente.
 |---|---|---|---|---|---|
 | `delao` · Inmobiliaria de la O | `cartera-curada` | `editorial` | corporate | inicio · propiedades · ficha · nosotros · contacto | pendiente de firma |
 | `marzo` · MARZO | `tienda-talla` | `materia` | ecommerce | portada · categoría · ficha de producto · carro · pago · pedido recibido · mi cuenta · la marca · contacto · condiciones de venta y envíos · aviso legal · privacidad · cookies · 404 | sin veredicto |
-| `barro` · BARRO | `tienda-lote` | `lujo-oscuro` | ecommerce | portada · ficha | sin veredicto · sin maqueta |
+| `barro` · BARRO | `tienda-lote` | `lujo-oscuro` | ecommerce | portada · categoría · ficha de producto · carro · pago · pedido recibido · mi cuenta · la marca · contacto · condiciones de venta y envíos · aviso legal · privacidad · cookies · 404 | sin veredicto |
 | `cadencia` · CADENCIA | `equipo-por-uso` ⚑ | `tecnologico` | ecommerce | portada · ficha | sin veredicto · sin maqueta |
 | `escuadra` · ESCUADRA | `catalogo-amplio` ⚑ | `directo` | ecommerce | portada · ficha | sin veredicto · sin maqueta |
 
 ⚑ Objetivo nuevo, que todavía no existe en ningún recomendador. Se da de alta cuando exista
 `recomendador.md`, o la plantilla se reasigna a un objetivo que ya exista.
 
-**Tres de las cuatro tiendas son todavía lienzo y fotografías, no plantillas completas.** `barro`,
-`cadencia` y `escuadra` tienen ficha, manifiesto de imágenes y canvas; les falta la maqueta derivada
-y el veredicto. `marzo` ya tiene su juego completo de 14 páginas derivado en `maqueta/index.html`;
-le falta sólo el veredicto. Hasta tener las dos, ninguna de las cuatro se ofrece a un cliente, igual
-que `delao` hasta que firme el suyo.
+**Dos de las cuatro tiendas son todavía lienzo y fotografías, no plantillas completas.** `cadencia`
+y `escuadra` tienen ficha, manifiesto de imágenes y canvas; les falta la maqueta derivada y el
+veredicto. `marzo` y `barro` ya tienen su juego completo de 14 páginas derivado en `maqueta/index.html`;
+a las dos les falta sólo el veredicto. Hasta tener las dos cosas, ninguna de las cuatro se ofrece a
+un cliente, igual que `delao` hasta que firme el suyo.
 
 ## Qué contiene cada plantilla
 
@@ -57,8 +57,11 @@ Una carpeta por slug, y dentro siempre lo mismo:
 
 - `references/plantillas/barro/ficha.md`
 - `references/plantillas/barro/manifiesto-imagenes.md`
-- `references/plantillas/barro/canvas/` — `Barro`, `BarroPieza`, `canvas.json` y su `MANIFIESTO.md`
-- `references/plantillas/barro/img/` — diez `.webp`
+- `references/plantillas/barro/canvas/` — `Barro`, `BarroPieza`, `Categoria`, `LaMarca`, `Contacto`,
+  `canvas.json` y su `MANIFIESTO.md`
+- `references/plantillas/barro/maqueta/` — `index.html`
+- `references/plantillas/barro/img/` — treinta `.webp`, de los que sólo diez están en el manifiesto y
+  se usan; los otros veinte son huérfanos sin procedencia recuperable y no se tocan
 
 ## cadencia
 

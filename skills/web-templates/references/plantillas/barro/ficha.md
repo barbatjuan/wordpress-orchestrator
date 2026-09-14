@@ -5,7 +5,7 @@ tipo: ecommerce
 sector: cerámica, textil y madera de talleres pequeños, piezas irrepetibles
 objetivo: tienda-lote
 enfoque: lujo-oscuro
-paginas: [portada, ficha]
+paginas: [portada, categoria, ficha, carro, pago, pedido-recibido, mi-cuenta, la-marca, contacto, condiciones-venta-envios, aviso-legal, privacidad, cookies, 404]
 fuentes: [newsreader, schibsted-grotesk]
 canvas_url: https://claude.ai/code/artifact/c52ec5bb-d146-464e-bc81-f32a1aa069f2
 variantes: {}
@@ -87,16 +87,57 @@ WooCommerce, sin widget HTML y sin CSS a medida.
 
 ## Páginas
 
-Portada y ficha. Carro, pago y cuenta, nativas de WooCommerce. Más aviso legal, privacidad, cookies,
-términos y 404.
+Las 14 de ecommerce (`paginas-obligatorias.md`), completas. Cinco llevan artboard propio en
+`canvas/`, porque su composición es trabajo de diseño: **portada** (`Barro.dc.html`), **categoría**
+(`Categoria.dc.html`, la mesa: diez piezas de cuatro talleres, taller antes que objeto), **ficha de
+producto** (`BarroPieza.dc.html`, el Cuenco hondo), **la marca** (`LaMarca.dc.html`, los cinco
+talleres y por qué el lote es corto) y **contacto** (`Contacto.dc.html`, formulario más los datos del
+taller de Bailén). Las nueve restantes son derivadas directamente en `maqueta/index.html` a partir
+del sistema — cabecera, pie, tipo, color, tablas y formularios — sin lámina propia: **carro**,
+**pago**, **pedido recibido**, **mi cuenta**, **condiciones de venta y envíos**, **aviso legal**,
+**privacidad**, **cookies** y **404**.
+
+**La categoría dibuja diez piezas y las treinta y una del catálogo llevan a la misma ficha.** Sólo
+el Cuenco hondo (Marta Sedano) tiene lámina de detalle, y las diez filas de la categoría —y las tres
+tarjetas del estante de portada— llevan a ella, como las doce filas del registro de `marzo` llevan a
+su único abrigo y las dieciocho tarjetas de `delao` a su única ficha. La maqueta demuestra que el
+tipo de página existe y se alcanza desde el listado y desde el estante; en el sitio del cliente cada
+pieza tiene la suya, generada por la plantilla de producto único de WooCommerce.
 
 ## Procedencia y decisiones abiertas
 
-Canvas en `canvas/`. Sin maqueta todavía.
+El diseño sigue siendo el canvas de `canvas/`, la autoridad — todo cambio empieza ahí y baja después a
+la maqueta, nunca al revés. `maqueta/index.html` ya existe: un único fichero autocontenido, con los dos
+puntos de ruptura que Elementor expresa, 1024 y 767, y el margen de página en fracción (7,5%) en vez de
+píxel fijo para que aguante entre los dos.
 
-**Tipografías resueltas.** Newsreader y Schibsted Grotesk ya están en
-`html-mockup/assets/fonts/`, con su `OFL.txt` y dadas de alta en `_fonts.php`. La maqueta las embebe
-por ruta relativa, como el resto de la biblioteca.
+**Qué se tradujo y qué se construyó a partir de los tokens.** Los cinco artboards se tradujeron
+sección por sección —mismo orden, mismo texto, mismos tokens— a una escala tipográfica fluida entre
+375 y 1440px en vez de los píxeles fijos del lienzo a 1440, porque una maqueta de cliente tiene que
+sostenerse en cualquier ancho intermedio y el canvas sólo dibuja uno. Las nueve páginas de sistema no
+tienen lámina que traducir: se construyeron con los mismos tokens de color, la misma pareja
+tipográfica y los mismos componentes (fila de categoría, listas de definición, rejilla de ficha
+técnica, formulario) que ya usaban las cinco dibujadas, para que el carro o el aviso legal no se
+sientan de otra plantilla. El listado de portada y de la categoría se corrigió respecto al primer
+borrador del canvas: dos de las tres tarjetas del estante enlazaban a la propia portada en vez de a
+la ficha — el mismo defecto que `paginas-obligatorias.md` existe para cerrar — y la maqueta ya sale
+con las tres, y las diez filas de la categoría, apuntando a `#ficha`.
 
-**Sin veredicto.** Geometría medida: 108px = 7,5%, cero raíles por dentro, cero tinta al cristal, cero
-desborde. Falta la mitad de jueces.
+**Tipografías resueltas.** Newsreader y Schibsted Grotesk ya están en `html-mockup/assets/fonts/`, con
+su `OFL.txt` y dadas de alta en `_fonts.php` — Newsreader con sus dos caras, redonda y cursiva. La
+maqueta las embebe como `data:` woff2 entre los marcadores `NM-FONTS`, igual que el resto de la
+biblioteca, leídas de los `.woff2` reales, no tecleadas.
+
+**Veinte ficheros de `img/` quedan fuera de esta plantilla.** `img/` guarda treinta `.webp`, pero el
+manifiesto sólo cubre diez: los que ya llevaban las dos láminas originales. Los otros veinte
+(`barro-alfar-agost`, `barro-almacen`, `barro-botijo`… la lista completa en el propio directorio) los
+generó un proceso que se interrumpió a mitad de tirada; no se puede recuperar su origen ni su sesión,
+y este repositorio es público, así que no se usan en ningún artboard ni en la maqueta. Siguen donde
+estaban — no se han movido, renombrado ni borrado — porque decidir qué hacer con ellos no es una
+decisión de este encargo.
+
+**Sin veredicto todavía.** La geometría de origen está medida —108px = 7,5% de margen, cero raíles
+por dentro, cero tinta al cristal, cero desborde— y ahora hay una maqueta completa de 14 páginas sobre
+la que correr un barrido, pero no ha corrido: falta `blind-judges` (juez A contra la biblioteca, juez B
+sobre esta maqueta) y `visual-verification` a 430, 768 y 1280 en cada página. Sin las dos, esta
+plantilla no se ofrece a un cliente — lo dice `_indice.md`, que la sigue marcando «sin veredicto».

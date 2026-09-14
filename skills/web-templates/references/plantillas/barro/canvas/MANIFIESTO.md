@@ -7,10 +7,15 @@ baja después a la maqueta, nunca al revés.
 |---|---|---|
 | `Barro.dc.html` | portada | 1440 × 4675 |
 | `BarroPieza.dc.html` | ficha del cuenco hondo | 1440 × 4840 |
+| `Categoria.dc.html` | categoría · Mesa | 1440 × 2827 |
+| `LaMarca.dc.html` | la marca | 1440 × 3342 |
+| `Contacto.dc.html` | contacto | 1440 × 2104 |
 
-`canvas.json` coloca los dos artboards y guarda su alto. **El alto está medido, no tecleado**: sale del
+`canvas.json` coloca los cinco artboards y guarda su alto. **El alto está medido, no tecleado**: sale del
 alto real del contenido a 1440, porque un alto que sobra enseña papel y uno que falta corta la última
-línea.
+línea. Medido con `alto-contenido.mjs`: las tres láminas nuevas dan 2827 / 3342 / 2104, y las dos que
+ya existían re-miden 4667 y 4832 — 8px por debajo de lo declarado en ambas, una cola de papel pequeña
+que no se ha tocado porque esas dos láminas no forman parte de este encargo.
 
 ## De dónde sale
 
