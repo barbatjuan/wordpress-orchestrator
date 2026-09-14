@@ -2937,5 +2937,68 @@ ok( '#0E1113' === $ks['body_background_color'], 'el override del proyecto llega 
 ok( '#FF3D8A' === $por_id['accent'], 'y el acento del proyecto tambien' );
 es_tokens_reset();
 
+/* -------------------------------------------------------------------------
+ * Las TIPOGRAFIAS globales, que era la otra mitad del mismo agujero.
+ *
+ * `es_kit_apply()` escribia los colores globales y dejaba las familias fuera, y
+ * `design-tokens.md` lo decia en su propia tabla: «Global font primary / text — No helper yet: the
+ * builder writes the family per widget». Y asi era: `es_t( 'font_head' )` y `es_t( 'font_body' )`
+ * aparecen widget a widget en este mismo fichero. Una familia por widget es lo contrario del techo
+ * nativo: cada encabezado lleva su propio ajuste en vez de heredar el del sitio, y cambiar la fuente
+ * de la marca pasa de ser un campo a ser doscientos.
+ *
+ * El par ya existe como token —`font_head` y `font_body`, que es lo que la ficha de cada Plantilla
+ * declara en `fuentes:`—, asi que esto no inventa una clave nueva: lleva la que hay al sitio donde
+ * Elementor la lee una sola vez.
+ * ------------------------------------------------------------------------- */
+echo "--- el kit global tambien lleva el par tipografico ---\n";
+
+wp_fake_reset();
+$GLOBALS['wp']['options']['elementor_active_kit'] = 5;
+es_tokens_reset();
+es_tokens( array( 'font_head' => 'Instrument Serif', 'font_body' => 'Archivo' ) );
+es_kit_apply();
+$ks = get_post_meta( 5, '_elementor_page_settings', true );
+ok( is_array( $ks ) && isset( $ks['system_typography'] ), 'se escribe system_typography, no solo los colores' );
+
+$tipo = array();
+foreach ( (array) $ks['system_typography'] as $f ) {
+	$tipo[ $f['_id'] ] = $f;
+}
+ok(
+	array( 'primary', 'secondary', 'text', 'accent' ) === array_keys( $tipo ),
+	'los CUATRO ids de Elementor, en su orden: un widget resuelve Global Fonts POR ID igual que los colores'
+);
+ok(
+	'custom' === $tipo['primary']['typography_typography'],
+	'cada entrada se marca `custom`, o Elementor no lee la familia que lleva al lado'
+);
+ok( 'Instrument Serif' === $tipo['primary']['typography_font_family'], 'primary es la familia de display, que es la que pinta los titulares' );
+ok( 'Archivo' === $tipo['text']['typography_font_family'], 'text es la familia de cuerpo' );
+ok( 'Archivo' === $tipo['secondary']['typography_font_family'], 'secondary tambien es cuerpo: el chrome no cambia de familia, cambia de peso' );
+ok( 'Archivo' === $tipo['accent']['typography_font_family'], 'y accent tampoco es una tercera familia' );
+
+/* Un kit ajeno sigue sobreviviendo, tambien con tipografias de por medio. */
+wp_fake_reset();
+$GLOBALS['wp']['options']['elementor_active_kit'] = 5;
+update_post_meta( 5, '_elementor_page_settings', array( 'container_width' => array( 'size' => 1140 ) ) );
+es_tokens_reset();
+es_tokens( array( 'font_head' => 'Fraunces', 'font_body' => 'Inter Tight' ) );
+es_kit_apply();
+$ks = get_post_meta( 5, '_elementor_page_settings', true );
+ok( isset( $ks['container_width']['size'] ) && 1140 === $ks['container_width']['size'], 'el ajuste ajeno del kit sigue vivo con tipografias de por medio' );
+$tipo = array();
+foreach ( (array) $ks['system_typography'] as $f ) {
+	$tipo[ $f['_id'] ] = $f;
+}
+ok( 'Fraunces' === $tipo['primary']['typography_font_family'], 'y el par del proyecto llega al kit' );
+
+/* La familia que escribe el kit es la MISMA que el builder pone widget a widget. Si un dia dejaran
+   de coincidir, el sitio tendria dos tipografias discutiendo y ganaria la del widget, que es la que
+   no se puede cambiar desde un sitio. */
+ok( es_t( 'font_head' ) === $tipo['primary']['typography_font_family'], 'kit y widget leen el MISMO token de display' );
+ok( es_t( 'font_body' ) === $tipo['text']['typography_font_family'], 'y el mismo token de cuerpo' );
+es_tokens_reset();
+
 echo "\n$pass OK / $fail FAIL\n";
 exit( $fail ? 1 : 0 );

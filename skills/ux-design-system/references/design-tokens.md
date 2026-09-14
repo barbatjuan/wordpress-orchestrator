@@ -91,12 +91,19 @@ stylesheet. That is what makes a Plantilla's techo nativo of zero custom CSS rul
 | Acento | `--c-accent` | Global colour `accent`, plus link and link-hover colours | `es_kit_apply()` |
 | Dominant ground | `--c-bg` | Site background colour | `es_kit_apply()` |
 | Alternate ground, border, states | `--c-bg-alt`, `--c-border`, `--c-success`… | Custom global colours | No helper yet: named in the hand-off and set in Site Settings |
-| Display family | `--font-primary` | Global font `primary` | No helper yet: the builder writes the family per widget through native typography controls |
-| Body family | `--font-secondary` | Global font `text` | Same gap |
+| Display family | `--font-primary` | Global font `primary` | `es_kit_apply()`, from the `font_head` token |
+| Body family | `--font-secondary` | Global fonts `secondary`, `text` and `accent` | `es_kit_apply()`, from the `font_body` token |
 
 The four system colour ids are **Elementor's own** and are never renamed; every widget reads them
 by id. `es_kit_apply()` merges into the kit, reads the write back and returns `0` when nothing landed
-(`elementor-core/references/gotchas.md`).
+(`elementor-core/references/gotchas.md`). The global fonts use those same four ids and are read the
+same way.
+
+**Only the family is global; the scale is not.** Size, weight and line height stay per role, because
+the scale is four derived numbers and a global that fixed them would flatten the axis. What the
+global buys is the one thing worth buying: changing the brand's typeface is one field, not every
+widget ever written. The builder still writes `font_head` / `font_body` per widget as well — the same
+tokens, so the two agree — and collapsing those per-widget writes onto the global is still open.
 
 **A token with no slot is a design change, not an exception.** A gradient, a `color-mix()` veil or a
 fluid value with no native control is either redesigned in the lienzo or written in the ficha's

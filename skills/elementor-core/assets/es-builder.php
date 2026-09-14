@@ -3694,15 +3694,36 @@ function es_kit_apply() {
 	$settings['link_normal_color'] = $t['accent'];
 	$settings['link_hover_color']  = $t['accent_hover'];
 
+	/* The type pair, in the same four ids Elementor gives the colours, and read by widgets the same
+	   way: by id. This file already wrote `font_head` and `font_body` widget by widget — six places
+	   and counting — which is a family per element instead of a family per site: changing the
+	   brand's typeface meant editing every widget that had ever been written, and none of it was
+	   reachable from Site Settings. `design-tokens.md` named the gap in its own table («Global font
+	   primary / text — No helper yet»); this closes it with the tokens that already existed rather
+	   than inventing a second pair of keys for the same thing.
+
+	   Only the family is global. Size, weight and line height stay where they are, per role, because
+	   the scale axis is four numbers this file derives and a global that fixed them would flatten it.
+	   `typography_typography => custom` is not decoration: without it Elementor ignores the family
+	   sitting next to it. */
+	$settings['system_typography'] = array(
+		array( '_id' => 'primary',   'title' => 'Titulares', 'typography_typography' => 'custom', 'typography_font_family' => $t['font_head'] ),
+		array( '_id' => 'secondary', 'title' => 'Chrome',    'typography_typography' => 'custom', 'typography_font_family' => $t['font_body'] ),
+		array( '_id' => 'text',      'title' => 'Cuerpo',    'typography_typography' => 'custom', 'typography_font_family' => $t['font_body'] ),
+		array( '_id' => 'accent',    'title' => 'Acento',    'typography_typography' => 'custom', 'typography_font_family' => $t['font_body'] ),
+	);
+
 	update_post_meta( $kit, '_elementor_page_settings', $settings );
 
 	$back = get_post_meta( $kit, '_elementor_page_settings', true );
 	$ok   = is_array( $back )
 		&& isset( $back['body_background_color'] ) && $back['body_background_color'] === $t['bg']
-		&& isset( $back['system_colors'][0]['color'] ) && $back['system_colors'][0]['color'] === $t['text'];
+		&& isset( $back['system_colors'][0]['color'] ) && $back['system_colors'][0]['color'] === $t['text']
+		&& isset( $back['system_typography'][0]['typography_font_family'] )
+		&& $back['system_typography'][0]['typography_font_family'] === $t['font_head'];
 
 	if ( ! $ok ) {
-		es_warn( 'el kit ' . $kit . ' no conservo los colores globales al releerlo; el sitio sigue con lo que tuviera' );
+		es_warn( 'el kit ' . $kit . ' no conservo los colores ni las fuentes globales al releerlo; el sitio sigue con lo que tuviera' );
 		return 0;
 	}
 
