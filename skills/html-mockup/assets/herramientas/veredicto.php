@@ -33,6 +33,15 @@
  * (bad flags, an invalid slug, a Plantilla or library that does not exist). Library functions
  * throw `NmHerramientaMedida` / `NmHerramientaEntorno` (declared in color.php) and never exit();
  * only the CLI guard at the bottom maps them to codes.
+ *
+ * `--sellar-ruta <dir>` / `--comprobar-ruta <dir>` SEAL A CLIENT DELIVERY FOLDER THE SAME WAY, for a
+ * folder that is not `skills/web-templates/references/plantillas/<slug>/` shaped — no `--root`, no
+ * slug, just the folder itself, fingerprinted by `huella_directorio()` instead of `huella_plantilla()`.
+ * The one real difference: a Plantilla always owns a `ficha.md` declaring `paginas:`, so an absent one
+ * is a gap (`veredicto_faltas()` says so already); a client folder does not have to. Absent a
+ * `ficha.md`, `veredicto_faltas_ruta()` takes the pages OWED to be exactly the pages the barrido
+ * itself lists — so nothing can be missing or extra by construction — except that a barrido with NO
+ * rows at all is not "everything it owed", it is nothing sweeping anything, which is its own gap.
  */
 
 require_once __DIR__ . '/color.php';
@@ -473,6 +482,169 @@ function veredicto_biblioteca( $root ) {
 	return $filas;
 }
 
+// ─────────────────────────────────────────── client delivery folder ──────────────────────────────
+
+/** The client delivery folder at `$dir`, or `NmHerramientaEntorno` when it is not there or does not
+ *  even have a `maqueta/` — a request to seal something that is not shaped like a delivery is usage,
+ *  not a verdict, exactly like `veredicto_carpeta()` for an unknown Plantilla slug. */
+function veredicto_carpeta_ruta( $dir ) {
+	if ( ! is_string( $dir ) || '' === $dir ) {
+		throw new NmHerramientaEntorno( 'no se indicó la carpeta de entrega del cliente' );
+	}
+	$dir = rtrim( str_replace( '\\', '/', $dir ), '/' );
+	if ( ! is_dir( $dir ) ) {
+		throw new NmHerramientaEntorno( "no es un directorio (o no existe): $dir" );
+	}
+	if ( ! is_dir( $dir . '/maqueta' ) ) {
+		throw new NmHerramientaEntorno( "la carpeta de entrega no tiene maqueta/: $dir" );
+	}
+	return $dir;
+}
+
+/** The current fingerprint of a client folder, as the `hash:` field spells it. The only call into
+ *  huella.php's folder half — mirrors `veredicto_huella()`, which calls the Plantilla half. */
+function veredicto_huella_ruta( $dir ) {
+	return 'sha256:' . huella_directorio( $dir );
+}
+
+/** The pages a client folder's sweep owed: `ficha.md`'s own `paginas:` when the folder has one,
+ *  otherwise exactly the pages `$v`'s barrido already lists — so with no `ficha.md` nothing can be
+ *  reported missing or extra, that check simply has nothing left to assert. */
+function veredicto_paginas_ruta( $dir, array $v ) {
+	$paginas = veredicto_paginas_ficha( $dir );
+	if ( null !== $paginas ) {
+		return $paginas;
+	}
+	if ( null === $v['barrido'] || null === $v['barrido']['columnas'] ) {
+		return null;
+	}
+	$vistas = array();
+	foreach ( $v['barrido']['filas'] as $fila ) {
+		if ( '' !== $fila[0] ) {
+			$vistas[ $fila[0] ] = true;
+		}
+	}
+	return array_keys( $vistas );
+}
+
+/**
+ * `veredicto_faltas()` for a client folder, plus the one gap that check cannot see on its own: with
+ * no `ficha.md`, `veredicto_paginas_ruta()` derives the owed pages FROM the barrido's own rows, so a
+ * barrido with zero rows trivially "matches" — nothing was owed because nothing said what was owed.
+ * That is not complete, it is unmeasured, so it is called out here explicitly.
+ */
+function veredicto_faltas_ruta( $dir, array $v ) {
+	$faltas = veredicto_faltas( $v, veredicto_paginas_ruta( $dir, $v ) );
+	if ( null === veredicto_paginas_ficha( $dir ) ) {
+		$filas = ( null !== $v['barrido'] ) ? $v['barrido']['filas'] : array();
+		if ( array() === $filas ) {
+			$faltas[] = 'sin ficha.md, las páginas debidas son las que el propio barrido liste, y el barrido no tiene ninguna fila — nada se barrió';
+		}
+	}
+	return $faltas;
+}
+
+/**
+ * Seal a client delivery folder's `veredicto.md` — same contract as `veredicto_sellar()`, computed
+ * over `veredicto_carpeta_ruta()` / `veredicto_huella_ruta()` / `veredicto_faltas_ruta()` instead of
+ * their Plantilla counterparts. Returns `[ 'hash' => …, 'fecha' => … ]`.
+ */
+function veredicto_sellar_ruta( $dir ) {
+	$dir  = veredicto_carpeta_ruta( $dir );
+	$ruta = $dir . '/veredicto.md';
+	if ( ! is_file( $ruta ) ) {
+		throw new NmHerramientaMedida( "ausente: la carpeta de entrega no tiene veredicto.md — los jueces lo escriben primero; no hay nada juzgado que sellar" );
+	}
+	$texto = file_get_contents( $ruta );
+	if ( false === $texto ) {
+		throw new NmHerramientaEntorno( "no se pudo leer $ruta" );
+	}
+	$v      = veredicto_leer( $texto );
+	$faltas = veredicto_faltas_ruta( $dir, $v );
+	if ( array() !== $faltas ) {
+		throw new NmHerramientaMedida( 'incompleto: ' . implode( '; ', $faltas ) );
+	}
+	if ( 'profesional' !== $v['cabecera']['juez_b'] ) {
+		throw new NmHerramientaMedida( 'no-profesional: juez_b dice no-profesional — un veredicto que no aprueba la entrega no se sella' );
+	}
+	$hash  = veredicto_huella_ruta( $dir );
+	$fecha = date( 'Y-m-d' );
+	if ( false === file_put_contents( $ruta, veredicto_con_sello( $texto, $hash, $fecha ) ) ) {
+		throw new NmHerramientaEntorno( "no se pudo escribir $ruta" );
+	}
+	return array( 'hash' => $hash, 'fecha' => $fecha );
+}
+
+/**
+ * Whether a client delivery folder's veredicto is CURRENT — same contract, and the same result
+ * shape, as `veredicto_comprobar()`. Throws `NmHerramientaEntorno` only for a folder that is not
+ * there or is not shaped like a delivery; every other gap comes back as a reason in `motivos`.
+ */
+function veredicto_comprobar_ruta( $dir ) {
+	$dir    = veredicto_carpeta_ruta( $dir );
+	$actual = veredicto_huella_ruta( $dir );
+	$res    = array( 'ok' => false, 'motivos' => array(), 'hash' => $actual, 'sellado' => null );
+	$ruta   = $dir . '/veredicto.md';
+	$texto  = is_file( $ruta ) ? file_get_contents( $ruta ) : false;
+	if ( false === $texto ) {
+		$res['motivos'][] = 'ausente: no hay veredicto.md';
+		return $res;
+	}
+
+	$v      = veredicto_leer( $texto );
+	$faltas = veredicto_faltas_ruta( $dir, $v );
+	if ( array() !== $faltas ) {
+		$res['motivos'][] = 'incompleto: ' . implode( '; ', $faltas );
+	}
+	$cab = (array) $v['cabecera'];
+	if ( isset( $cab['juez_b'] ) && 'no-profesional' === $cab['juez_b'] ) {
+		$res['motivos'][] = 'no-profesional: juez_b dice no-profesional';
+	}
+
+	$sellado = isset( $cab['hash'] ) ? $cab['hash'] : '';
+	if ( '' === $sellado ) {
+		$res['motivos'][] = 'sin sellar: no hay hash — veredicto.php --sellar-ruta ' . $dir;
+	} elseif ( 1 !== preg_match( '/^sha256:[0-9a-f]{64}$/', $sellado ) ) {
+		$res['motivos'][] = "sin sellar: hash mal formado «{$sellado}» (sha256: y 64 hexadecimales en minúscula)";
+	} else {
+		$res['sellado'] = $sellado;
+		if ( ! hash_equals( $sellado, $actual ) ) {
+			$res['motivos'][] = 'caducado: sellado ' . substr( $sellado, 0, 19 ) . '…, actual ' . substr( $actual, 0, 19 )
+				. '… — los bytes cambiaron después de juzgarlos; vuelve a juzgar y sella';
+		}
+	}
+	if ( ! isset( $cab['fecha'] ) || 1 !== preg_match( '/^\d{4}-\d{2}-\d{2}$/', $cab['fecha'] ) ) {
+		if ( '' !== $sellado ) {
+			$res['motivos'][] = 'sin sellar: fecha ausente o mal formada (AAAA-MM-DD)';
+		}
+	}
+
+	if ( null !== $v['barrido'] && NM_VEREDICTO_COLUMNAS === $v['barrido']['columnas'] ) {
+		$saltadas = array();
+		$abiertos = array();
+		foreach ( $v['barrido']['filas'] as $fila ) {
+			list( $pagina, $celdas ) = $fila;
+			foreach ( NM_VEREDICTO_COLUMNAS as $i => $ancho ) {
+				$celda = isset( $celdas[ $i ] ) ? $celdas[ $i ] : '';
+				if ( 'no-disponible' === $celda ) {
+					$saltadas[] = "$pagina@$ancho";
+				} elseif ( '' !== $celda && '✓' !== $celda ) {
+					$abiertos[] = "$celda ($pagina@$ancho)";
+				}
+			}
+		}
+		if ( array() !== $saltadas ) {
+			$res['motivos'][] = 'PARCIAL: celdas no-disponible en ' . implode( ', ', $saltadas ) . ' — un barrido incompleto nunca es un aprobado';
+		}
+		if ( array() !== $abiertos ) {
+			$res['motivos'][] = 'hallazgos abiertos: ' . implode( ', ', $abiertos );
+		}
+	}
+
+	$res['ok'] = array() === $res['motivos'];
+	return $res;
+}
+
 // ─────────────────────────────────────────── dual-mode CLI ───────────────────────────────────────
 
 if ( 'cli' === PHP_SAPI && isset( $argv[0] ) && realpath( $argv[0] ) === __FILE__ ) {
@@ -480,7 +652,9 @@ if ( 'cli' === PHP_SAPI && isset( $argv[0] ) && realpath( $argv[0] ) === __FILE_
 		fwrite( STDERR, "veredicto: usage:\n"
 			. "  veredicto.php --sellar <slug> [--root=<dir>]\n"
 			. "  veredicto.php --comprobar <slug> [--root=<dir>]\n"
-			. "  veredicto.php --biblioteca [--root=<dir>]\n" );
+			. "  veredicto.php --biblioteca [--root=<dir>]\n"
+			. "  veredicto.php --sellar-ruta <carpeta>\n"
+			. "  veredicto.php --comprobar-ruta <carpeta>\n" );
 	}
 
 	/* Default root: the repository this file's checkout lives in — four levels up from
@@ -535,6 +709,27 @@ if ( 'cli' === PHP_SAPI && isset( $argv[0] ) && realpath( $argv[0] ) === __FILE_
 			}
 			printf( "veredicto: %d de %d plantillas vigentes\n", $vigentes, count( $filas ) );
 			exit( $vigentes === count( $filas ) ? 0 : 1 );
+		}
+
+		if ( '--sellar-ruta' === $accion && 2 === count( $resto ) ) {
+			try {
+				$sello = veredicto_sellar_ruta( $resto[1] );
+			} catch ( NmHerramientaMedida $e ) {
+				fwrite( STDERR, "veredicto: {$resto[1]} no se sella — " . $e->getMessage() . "\n" );
+				exit( 1 );
+			}
+			echo "veredicto: {$resto[1]} sellado — hash {$sello['hash']} · fecha {$sello['fecha']}\n";
+			exit( 0 );
+		}
+
+		if ( '--comprobar-ruta' === $accion && 2 === count( $resto ) ) {
+			$res = veredicto_comprobar_ruta( $resto[1] );
+			if ( $res['ok'] ) {
+				echo "veredicto: {$resto[1]} vigente ({$res['hash']})\n";
+				exit( 0 );
+			}
+			fwrite( STDERR, "veredicto: {$resto[1]} no vigente — " . implode( '; ', $res['motivos'] ) . "\n" );
+			exit( 1 );
 		}
 
 		veredicto_cli_usage();

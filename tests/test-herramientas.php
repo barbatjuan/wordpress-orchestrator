@@ -639,5 +639,401 @@ foreach ( $usos as $caso => $r ) {
 	ok( 2 === $r['code'], "veredicto: $caso exits 2: {$r['out']}" );
 }
 
+// ═══════════════════════════════════════ veredicto.php, client folder ═══════════════════════════
+/* ---------------------------------------------------------------------------------------------
+   A CLIENT MAQUETA IS SEALED LIKE A PLANTILLA. `--sellar-ruta <dir>` / `--comprobar-ruta <dir>`
+   take a client delivery folder (`maqueta/`, optionally `img/`, `canvas/`, `ficha.md`,
+   `manifiesto-imagenes.md`, and its `veredicto.md`) instead of a library slug. The fingerprint is
+   huella.php's normalisation over whatever of those inputs exists, keyed by paths relative to the
+   folder, so the seal does not depend on where the folder lives. With no `ficha.md`, the pages the
+   sweep owed are the rows the veredicto itself lists.
+
+   Same RED-run discipline as above: every exit-1 assertion demands its reason keyword, and every
+   in-process call sits behind `function_exists()`. */
+
+$huella_dir_lib = function_exists( 'huella_directorio_manifest' ) && function_exists( 'huella_directorio' );
+ok( $huella_dir_lib, 'huella: huella.php defines huella_directorio_manifest() and huella_directorio() for an arbitrary folder' );
+$ruta_lib = function_exists( 'veredicto_sellar_ruta' ) && function_exists( 'veredicto_comprobar_ruta' );
+ok( $ruta_lib, 'veredicto: veredicto.php defines veredicto_sellar_ruta() and veredicto_comprobar_ruta()' );
+
+/** A synthetic client delivery folder at `$dir`: every input the folder fingerprint covers, `ficha.md`
+ *  only when asked for, plus `veredicto.md` when one is given. Returns `$dir`. */
+function nm_entrega( $dir, $veredicto_md = null, $ficha = true ) {
+	if ( $ficha ) {
+		nm_write( "$dir/ficha.md", "---\nslug: cliente\npaginas: [inicio, contacto]\n---\n\n# Ficha del cliente\n" );
+	}
+	nm_write( "$dir/canvas/Inicio.dc.html", "<div>lienzo del cliente</div>\n" );
+	nm_write( "$dir/maqueta/index.html", "<!doctype html>\n<title>cliente</title>\n<section id=\"inicio\">hola</section>\n" );
+	nm_write( "$dir/img/cliente-hero.webp", "RIFF0000WEBPVP8 client image bytes" );
+	if ( null !== $veredicto_md ) {
+		nm_write( "$dir/veredicto.md", $veredicto_md );
+	}
+	return $dir;
+}
+
+function nm_ruta_cli( $flag, $dir ) {
+	return run_cli( 'veredicto.php', $flag . ' ' . escapeshellarg( $dir ) );
+}
+
+/** Copy a directory tree, files only. */
+function nm_copiar_arbol( $from, $to ) {
+	foreach ( huella_walk( $from ) as $file ) {
+		nm_write( $to . substr( $file, strlen( str_replace( '\\', '/', $from ) ) ), file_get_contents( $file ) );
+	}
+}
+
+echo "--- huella.php: the folder fingerprint covers what exists, relative to the folder ---\n";
+$hd_dir = nm_entrega( nm_tmpdir( 'huella-dir' ) . '/entrega', nm_veredicto_md() );
+nm_write( "$hd_dir/notas.txt", "not a covered input\n" );
+if ( ! $huella_dir_lib ) {
+	ok( false, 'huella: folder functions unavailable, the in-process half cannot run' );
+} else {
+	$hd_manifest = huella_directorio_manifest( $hd_dir );
+	ok(
+		array( 'canvas/Inicio.dc.html', 'ficha.md', 'img/cliente-hero.webp', 'maqueta/index.html' ) === array_keys( $hd_manifest ),
+		'huella: the folder manifest lists canvas/, ficha.md, img/ and maqueta/ relative to the folder, sorted — no veredicto.md, no notas.txt, no "absent" row for a missing manifiesto-imagenes.md: ' . implode( ', ', array_keys( $hd_manifest ) )
+	);
+	ok( hash( 'sha256', "canvas/Inicio.dc.html\n" ) !== huella_directorio( $hd_dir ) && huella_digest( $hd_manifest ) === huella_directorio( $hd_dir ), 'huella: huella_directorio() is huella_digest() over that manifest — one digest definition' );
+	$hd_before = huella_directorio( $hd_dir );
+	nm_write( "$hd_dir/notas.txt", "edited, still not covered\n" );
+	ok( $hd_before === huella_directorio( $hd_dir ), 'huella: editing a file outside the covered inputs does not move the folder huella' );
+	file_put_contents( "$hd_dir/maqueta/index.html", str_replace( "\n", "\r\n", file_get_contents( "$hd_dir/maqueta/index.html" ) ) );
+	ok( $hd_before === huella_directorio( $hd_dir ), 'huella: CRLF against LF in a covered text file does not move the folder huella' );
+}
+
+echo "=== veredicto.php --sellar-ruta: seals a complete, professional client veredicto ===\n";
+$rt_dir = nm_entrega( nm_tmpdir( 'ruta-sellar' ) . '/entrega', nm_veredicto_md() );
+$r      = nm_ruta_cli( '--sellar-ruta', $rt_dir );
+ok( 0 === $r['code'] && false !== strpos( $r['out'], 'sellado' ), "veredicto: --sellar-ruta on a complete, professional client veredicto exits 0: {$r['out']}" );
+ok( $huella_dir_lib && 'sha256:' . huella_directorio( $rt_dir ) === nm_veredicto_campo( $rt_dir, 'hash' ), "veredicto: the sealed hash: is exactly huella_directorio() over the same folder" );
+ok( date( 'Y-m-d' ) === nm_veredicto_campo( $rt_dir, 'fecha' ), "veredicto: --sellar-ruta writes today's fecha:" );
+
+echo "--- veredicto.php --comprobar-ruta: current after sealing, stale after one byte, not stale after CRLF ---\n";
+$r = nm_ruta_cli( '--comprobar-ruta', $rt_dir );
+ok( 0 === $r['code'] && false !== strpos( $r['out'], 'vigente' ), "veredicto: --comprobar-ruta right after sealing exits 0 and says vigente: {$r['out']}" );
+foreach ( array( 'maqueta/index.html', 'img/cliente-hero.webp', 'canvas/Inicio.dc.html', 'ficha.md' ) as $covered ) {
+	nm_ruta_cli( '--sellar-ruta', $rt_dir );
+	$before = nm_ruta_cli( '--comprobar-ruta', $rt_dir );
+	nm_flip_byte( "$rt_dir/$covered" );
+	$r = nm_ruta_cli( '--comprobar-ruta', $rt_dir );
+	ok( 0 === $before['code'] && 1 === $r['code'] && false !== strpos( $r['out'], 'caducado' ), "veredicto: one byte changed in the client's $covered after sealing exits 1, caducado: {$r['out']}" );
+}
+nm_ruta_cli( '--sellar-ruta', $rt_dir );
+foreach ( array( 'maqueta/index.html', 'ficha.md' ) as $texto ) {
+	$lf = file_get_contents( "$rt_dir/$texto" );
+	file_put_contents( "$rt_dir/$texto", str_replace( "\n", "\r\n", str_replace( "\r\n", "\n", $lf ) ) );
+	$r = nm_ruta_cli( '--comprobar-ruta', $rt_dir );
+	ok( 0 === $r['code'], "veredicto: the client's $texto rewritten with CRLF still matches the LF-sealed hash: {$r['out']}" );
+}
+$rt_copia = nm_tmpdir( 'ruta-copia' ) . '/otra-ubicacion';
+nm_copiar_arbol( $rt_dir, $rt_copia );
+$r = nm_ruta_cli( '--comprobar-ruta', $rt_copia );
+ok( 0 === $r['code'], "veredicto: the same sealed folder copied somewhere else is still vigente — the seal names no absolute path: {$r['out']}" );
+
+echo "--- veredicto.php --sellar-ruta: refuses an incomplete client veredicto, and writes nothing ---\n";
+$rt_incompletos = array(
+	'juez_b missing'                                   => nm_veredicto_md( array( 'cabecera' => array( 'juez_b' => null ) ) ),
+	'a barrido cell left empty'                        => nm_veredicto_md( array( 'filas' => array( 'inicio' => array( '✓', '', '✓' ), 'contacto' => array( '✓', '✓', '✓' ) ) ) ),
+	'vistas + saltadas not matching the swept rows'    => nm_veredicto_md( array( 'cabecera' => array( 'vistas' => '7' ) ) ),
+	'no ## Hallazgos section'                          => nm_veredicto_md( array( 'hallazgos' => null ) ),
+	'a cell citing a finding ## Hallazgos never lists' => nm_veredicto_md( array( 'filas' => array( 'inicio' => array( 'H1', '✓', '✓' ), 'contacto' => array( '✓', '✓', '✓' ) ) ) ),
+	'a page the client ficha declares with no row'     => nm_veredicto_md( array( 'cabecera' => array( 'vistas' => '1' ), 'filas' => array( 'inicio' => array( '✓', '✓', '✓' ) ) ) ),
+);
+foreach ( $rt_incompletos as $caso => $md ) {
+	$i_dir = nm_entrega( nm_tmpdir( 'ruta-incompleto' ) . '/entrega', $md );
+	$r     = nm_ruta_cli( '--sellar-ruta', $i_dir );
+	ok( 1 === $r['code'] && false !== strpos( $r['out'], 'incompleto' ), "veredicto: --sellar-ruta refuses $caso — exit 1, incompleto: {$r['out']}" );
+	ok( $md === file_get_contents( "$i_dir/veredicto.md" ), "veredicto: refusing $caso leaves the client veredicto.md byte-for-byte untouched" );
+}
+$np_dir = nm_entrega( nm_tmpdir( 'ruta-no-profesional' ) . '/entrega', nm_veredicto_md( array( 'cabecera' => array( 'juez_b' => 'no-profesional' ) ) ) );
+$r      = nm_ruta_cli( '--sellar-ruta', $np_dir );
+ok( 1 === $r['code'] && false !== strpos( $r['out'], 'no-profesional' ), "veredicto: --sellar-ruta refuses juez_b: no-profesional — exit 1: {$r['out']}" );
+$ab_dir = nm_entrega( nm_tmpdir( 'ruta-ausente' ) . '/entrega' );
+$r      = nm_ruta_cli( '--sellar-ruta', $ab_dir );
+ok( 1 === $r['code'] && false !== strpos( $r['out'], 'ausente' ), "veredicto: --sellar-ruta on a folder with no veredicto.md exits 1, ausente: {$r['out']}" );
+$r = nm_ruta_cli( '--comprobar-ruta', $ab_dir );
+ok( 1 === $r['code'] && false !== strpos( $r['out'], 'ausente' ), "veredicto: --comprobar-ruta on a folder with no veredicto.md exits 1, ausente: {$r['out']}" );
+
+echo "--- veredicto.php ruta: with no ficha.md, the pages owed are the rows the veredicto lists ---\n";
+$nf_dir = nm_entrega( nm_tmpdir( 'ruta-sin-ficha' ) . '/entrega', nm_veredicto_md( array(
+	'cabecera' => array( 'vistas' => '3' ),
+	'filas'    => array( 'inicio' => array( '✓', '✓', '✓' ), 'contacto' => array( '✓', '✓', '✓' ), 'servicios' => array( '✓', '✓', '✓' ) ),
+) ), false );
+$r_seal = nm_ruta_cli( '--sellar-ruta', $nf_dir );
+$r      = nm_ruta_cli( '--comprobar-ruta', $nf_dir );
+ok( 0 === $r_seal['code'] && 0 === $r['code'], "veredicto: a client folder with no ficha.md seals and checks against its own three rows: {$r_seal['out']} / {$r['out']}" );
+$nr_md  = "---\njuez_b: profesional\nautojuzgado: sí\nvistas: 0\nsaltadas: 0\n---\n\n## Barrido\n\n| Página | 430 | 768 | 1280 |\n|---|---|---|---|\n\n## Hallazgos\n\nninguno\n";
+$nr_dir = nm_entrega( nm_tmpdir( 'ruta-sin-filas' ) . '/entrega', $nr_md, false );
+$r      = nm_ruta_cli( '--sellar-ruta', $nr_dir );
+ok( 1 === $r['code'] && false !== strpos( $r['out'], 'incompleto' ), "veredicto: with no ficha.md and a sweep with no rows, there is nothing that was swept — exit 1, incompleto: {$r['out']}" );
+ok( $nr_md === file_get_contents( "$nr_dir/veredicto.md" ), 'veredicto: and the empty sweep is not sealed' );
+
+echo "--- veredicto.php ruta: PARCIAL and open findings are sealed but never current ---\n";
+$pr_dir = nm_entrega( nm_tmpdir( 'ruta-parcial' ) . '/entrega', nm_veredicto_md( array(
+	'cabecera' => array( 'vistas' => '1', 'saltadas' => '1' ),
+	'filas'    => array( 'inicio' => array( '✓', '✓', '✓' ), 'contacto' => array( '✓', 'no-disponible', '✓' ) ),
+) ) );
+$r_seal = nm_ruta_cli( '--sellar-ruta', $pr_dir );
+$r      = nm_ruta_cli( '--comprobar-ruta', $pr_dir );
+ok( 0 === $r_seal['code'] && 1 === $r['code'] && false !== strpos( $r['out'], 'PARCIAL' ), "veredicto: a PARCIAL client sweep seals, and --comprobar-ruta exits 1, PARCIAL: {$r['out']}" );
+
+echo "--- veredicto.php ruta: a folder that is not there, or not a delivery folder, is usage — exit 2 ---\n";
+$rt_nada = nm_tmpdir( 'ruta-nada' );
+$rt_file = $rt_nada . '/un-fichero.txt';
+nm_write( $rt_file, "no soy una carpeta\n" );
+$rt_sin_maqueta = $rt_nada . '/sin-maqueta';
+nm_write( "$rt_sin_maqueta/veredicto.md", nm_veredicto_md() );
+$rt_usos = array(
+	'--sellar-ruta on a directory that does not exist'    => nm_ruta_cli( '--sellar-ruta', $rt_nada . '/no-existe' ),
+	'--comprobar-ruta on a directory that does not exist' => nm_ruta_cli( '--comprobar-ruta', $rt_nada . '/no-existe' ),
+	'--sellar-ruta on a file, not a directory'            => nm_ruta_cli( '--sellar-ruta', $rt_file ),
+	'--sellar-ruta on a folder with no maqueta/'          => nm_ruta_cli( '--sellar-ruta', $rt_sin_maqueta ),
+	'--sellar-ruta with no directory at all'              => run_cli( 'veredicto.php', '--sellar-ruta' ),
+	'--comprobar-ruta with no directory at all'           => run_cli( 'veredicto.php', '--comprobar-ruta' ),
+);
+foreach ( $rt_usos as $caso => $r ) {
+	ok( 2 === $r['code'], "veredicto: $caso exits 2: {$r['out']}" );
+}
+ok( nm_veredicto_md() === file_get_contents( "$rt_sin_maqueta/veredicto.md" ), 'veredicto: refusing a folder with no maqueta/ writes no seal into its veredicto.md' );
+
+if ( $ruta_lib ) {
+	try {
+		veredicto_comprobar_ruta( $rt_nada . '/no-existe' );
+		ok( false, 'veredicto: veredicto_comprobar_ruta() on a missing folder must throw, not return' );
+	} catch ( NmHerramientaEntorno $e ) {
+		ok( true, 'veredicto: a missing client folder throws NmHerramientaEntorno — usage, not a verdict: ' . $e->getMessage() );
+	} catch ( Exception $e ) {
+		ok( false, 'veredicto: wrong exception type for a missing client folder: ' . get_class( $e ) );
+	}
+	$res = veredicto_comprobar_ruta( $rt_copia );
+	ok( is_array( $res ) && true === $res['ok'] && array() === $res['motivos'], 'veredicto: veredicto_comprobar_ruta() returns ok with no reasons for a current client veredicto' );
+}
+
+echo "--- veredicto.php ruta: a covered file that links outside the folder is refused, never read ---\n";
+$sl_dir = nm_entrega( nm_tmpdir( 'ruta-enlace' ) . '/entrega', nm_veredicto_md() );
+$sl_out = nm_tmpdir( 'ruta-fuera' ) . '/secreto.html';
+nm_write( $sl_out, "fuera de la carpeta\n" );
+if ( function_exists( 'symlink' ) && @symlink( $sl_out, "$sl_dir/maqueta/enlace.html" ) ) {
+	$sl_md = file_get_contents( "$sl_dir/veredicto.md" );
+	$r     = nm_ruta_cli( '--sellar-ruta', $sl_dir );
+	ok( 2 === $r['code'] && false !== strpos( $r['out'], 'fuera' ), "veredicto: a symlink in maqueta/ resolving outside the folder exits 2 and says fuera: {$r['out']}" );
+	ok( $sl_md === file_get_contents( "$sl_dir/veredicto.md" ), 'veredicto: and nothing is sealed' );
+} else {
+	echo "  SKIP this platform does not let this process create a symlink; the escape case is not reproducible here\n";
+}
+
+// ═══════════════════════════════════════════ empaquetar.php ═══════════════════════════════════════
+/* ---------------------------------------------------------------------------------------------
+   A MAQUETA PUBLISHED AS ONE FILE. A Plantilla's maqueta references its photographs as
+   `../img/<file>`; published as a single-file Artifact those paths resolve to nothing and the CSP
+   blocks every remote URL. `empaquetar.php` writes a copy with each reference replaced by a `data:`
+   URI of that file, and refuses (writing nothing) when an image is missing, a remote resource is
+   left, or the result passes the 16 MB Artifact ceiling. The source maqueta is never modified.
+
+   Same RED-run discipline: the file is required only when it exists, in-process calls sit behind
+   `function_exists()`, and every exit-1 assertion demands its reason keyword. */
+
+$empaquetar_file = NM_HERRAMIENTAS_DIR . '/empaquetar.php';
+if ( is_file( $empaquetar_file ) ) {
+	require_once $empaquetar_file;
+}
+$empaquetar_lib = function_exists( 'empaquetar_maqueta_plantilla' ) && function_exists( 'empaquetar_html' )
+	&& function_exists( 'empaquetar_remotos' ) && function_exists( 'empaquetar_archivo' );
+ok( $empaquetar_lib, 'empaquetar: empaquetar.php defines empaquetar_maqueta_plantilla(), empaquetar_html(), empaquetar_remotos() and empaquetar_archivo()' );
+
+/** An embedded font face exactly as `nm_font_faces()` writes one — must survive byte for byte. */
+const NM_EMP_FONT = "@font-face{font-family:'Prueba';font-style:normal;font-weight:400;font-display:swap;src:url(data:font/woff2;base64,d09GMgABAAAAAAr0ABAAAAAAFbQAAAqSAAEAAAAAAAAAAAAAAAAAAAAA) format('woff2');}";
+
+/** A maqueta with three images referenced seven times — `src`, `srcset`, `poster`, a `<style>`
+ *  `url()` and an inline-style `url()` — one more mention inside an HTML comment, an embedded font,
+ *  and three links that are not resources. `$extra` is appended before the end. */
+function nm_emp_html( $extra = '' ) {
+	return "<!doctype html>\n<meta charset=\"utf-8\">\n<title>foo</title>\n"
+		. "<!-- NM-IMG:BEGIN\n     ../img/foo-a.webp   hero\n     NM-IMG:END -->\n"
+		. "<style>\n/* NM-FONTS:BEGIN */\n" . NM_EMP_FONT . "\n/* NM-FONTS:END */\n"
+		. ".banda{background-image:url(\"../img/foo-c.webp\")}\n</style>\n"
+		. "<img src=\"../img/foo-a.webp\" alt=\"a\">\n"
+		. "<img srcset=\"../img/foo-a.webp 1x, ../img/foo-b.webp 2x\" src=\"../img/foo-b.webp\" alt=\"b\">\n"
+		. "<video poster='../img/foo-b.webp'></video>\n"
+		. "<div style=\"background:url('../img/foo-c.webp') center/cover\"></div>\n"
+		. "<p><a href=\"https://www.aepd.es\">aepd</a> · <a href=\"mailto:hola@foo.es\">correo</a> · <a href=\"tel:+34910000000\">tel</a></p>\n"
+		. $extra;
+}
+
+/** A Plantilla `<slug>` under `<root>/skills/…/plantillas/` holding `$html` as its maqueta and three
+ *  distinct small image files. Returns the Plantilla folder. */
+function nm_emp_plantilla( $root, $slug, $html ) {
+	$base = $root . '/skills/web-templates/references/plantillas/' . $slug;
+	nm_emp_carpeta( $base, $html );
+	return $base;
+}
+
+/** `<dir>/maqueta/index.html` = `$html`, plus `<dir>/img/foo-{a,b,c}.webp` with distinct bytes. */
+function nm_emp_carpeta( $dir, $html ) {
+	nm_write( "$dir/maqueta/index.html", $html );
+	foreach ( array( 'a', 'b', 'c' ) as $i => $n ) {
+		nm_write( "$dir/img/foo-$n.webp", "RIFF\x00\x01\x02\xffWEBPVP8 foo-$n " . str_repeat( chr( 200 + $i ), 40 + $i ) );
+	}
+	return $dir;
+}
+
+function nm_emp_uri( $file ) {
+	return 'data:image/webp;base64,' . base64_encode( file_get_contents( $file ) );
+}
+
+echo "=== empaquetar.php --plantilla: every ../img reference becomes a data: URI of that file ===\n";
+$e_root = nm_tmpdir( 'empaquetar' );
+$e_html = nm_emp_html();
+$e_base = nm_emp_plantilla( $e_root, 'foo', $e_html );
+$e_src  = "$e_base/maqueta/index.html";
+$e_out  = "$e_root/foo-publicable.html";
+$r      = run_cli( 'empaquetar.php', '--plantilla foo --out ' . escapeshellarg( $e_out ) . ' --root=' . escapeshellarg( $e_root ) );
+$e_txt  = (string) @file_get_contents( $e_out );
+ok( 0 === $r['code'] && '' !== $e_txt, "empaquetar: --plantilla foo --out exits 0 and writes the packaged file: {$r['out']}" );
+ok( 1 === preg_match( '/\b3 imágenes\b/u', $r['out'] ), "empaquetar: it reports 3 images embedded — the number of distinct files referenced: {$r['out']}" );
+ok( '' !== $e_txt && false !== strpos( $r['out'], (string) strlen( $e_txt ) . ' bytes' ), "empaquetar: it reports the output size in bytes, equal to what it wrote: {$r['out']}" );
+ok( 7 === substr_count( $e_txt, 'data:image/webp;base64,' ), 'empaquetar: seven resource references become seven data: URIs (src, srcset ×2, second src, poster, <style> url(), inline url()): ' . substr_count( $e_txt, 'data:image/webp;base64,' ) );
+foreach ( array( 'a' => 2, 'b' => 3, 'c' => 2 ) as $n => $veces ) {
+	ok( $veces === substr_count( $e_txt, nm_emp_uri( "$e_base/img/foo-$n.webp" ) ), "empaquetar: foo-$n.webp is embedded $veces times, each URI decoding to that file's exact bytes" );
+}
+ok( '' !== $e_txt && false === strpos( $e_txt, '../img/' ), 'empaquetar: the output contains no ../img/ string anywhere, comment included' );
+ok( false !== strpos( $e_txt, NM_EMP_FONT ), 'empaquetar: the embedded font data: URI is byte-identical in the output' );
+ok(
+	false !== strpos( $e_txt, '<a href="https://www.aepd.es">aepd</a>' ) && false !== strpos( $e_txt, 'href="mailto:hola@foo.es"' ) && false !== strpos( $e_txt, 'href="tel:+34910000000"' ),
+	'empaquetar: an external <a href="https://…"> link, mailto: and tel: are left exactly as they were'
+);
+ok( $e_html === file_get_contents( $e_src ), 'empaquetar: the source maqueta is byte-for-byte untouched' );
+
+echo "--- empaquetar.php --maqueta: a client maqueta outside the library, images beside its own folder ---\n";
+$c_root = nm_tmpdir( 'empaquetar-cliente' );
+$c_dir  = nm_emp_carpeta( "$c_root/entrega", $e_html );
+$c_out  = "$c_root/cliente-publicable.html";
+$r      = run_cli( 'empaquetar.php', '--maqueta ' . escapeshellarg( "$c_dir/maqueta/index.html" ) . ' --out ' . escapeshellarg( $c_out ) );
+$c_txt  = (string) @file_get_contents( $c_out );
+ok( 0 === $r['code'] && 1 === preg_match( '/\b3 imágenes\b/u', $r['out'] ), "empaquetar: --maqueta <path> --out exits 0 and embeds 3 images: {$r['out']}" );
+ok( '' !== $c_txt && false === strpos( $c_txt, '../img/' ) && 1 === substr_count( $c_txt, nm_emp_uri( "$c_dir/img/foo-c.webp" ) ) * 0 + ( 2 === substr_count( $c_txt, nm_emp_uri( "$c_dir/img/foo-c.webp" ) ) ? 1 : 0 ), 'empaquetar: the client images are resolved from the maqueta\'s own folder and embedded' );
+ok( $e_html === file_get_contents( "$c_dir/maqueta/index.html" ), 'empaquetar: the client source maqueta is untouched' );
+
+echo "--- empaquetar.php: refuses a missing image, and writes nothing ---\n";
+$m_root = nm_tmpdir( 'empaquetar-falta' );
+$m_html = nm_emp_html( "<img src=\"../img/foo-no-existe.webp\" alt=\"falta\">\n" );
+$m_base = nm_emp_plantilla( $m_root, 'foo', $m_html );
+$m_out  = "$m_root/foo-publicable.html";
+$r      = run_cli( 'empaquetar.php', '--plantilla foo --out ' . escapeshellarg( $m_out ) . ' --root=' . escapeshellarg( $m_root ) );
+ok( 1 === $r['code'] && false !== strpos( $r['out'], 'foo-no-existe.webp' ), "empaquetar: a referenced image that does not exist exits 1 and names it: {$r['out']}" );
+ok( ! file_exists( $m_out ), 'empaquetar: refusing a missing image writes no output file' );
+ok( $m_html === file_get_contents( "$m_base/maqueta/index.html" ), 'empaquetar: and leaves the source maqueta untouched' );
+
+echo "--- empaquetar.php: refuses a remote resource left in the maqueta ---\n";
+$remotos = array(
+	'a remote <img src>'               => '<img src="https://cdn.example.com/foto.webp" alt="x">',
+	'a remote <script src>'            => '<script src="https://cdn.example.com/app.js"></script>',
+	'a remote <link rel=stylesheet>'   => '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter">',
+	'a remote CSS url()'               => '<style>.x{background:url(https://example.com/fondo.webp)}</style>',
+	'a remote url() in an inline style' => '<div style="background-image:url(\'http://example.com/fondo.webp\')"></div>',
+	'a protocol-relative <script src>' => '<script src="//cdn.example.com/app.js"></script>',
+);
+foreach ( $remotos as $caso => $fragmento ) {
+	$x_root = nm_tmpdir( 'empaquetar-remoto' );
+	nm_emp_plantilla( $x_root, 'foo', nm_emp_html( $fragmento . "\n" ) );
+	$x_out = "$x_root/foo-publicable.html";
+	$r     = run_cli( 'empaquetar.php', '--plantilla foo --out ' . escapeshellarg( $x_out ) . ' --root=' . escapeshellarg( $x_root ) );
+	ok( 1 === $r['code'] && false !== strpos( $r['out'], 'remoto' ), "empaquetar: $caso exits 1, remoto: {$r['out']}" );
+	ok( ! file_exists( $x_out ), "empaquetar: refusing $caso writes no output file" );
+}
+
+echo "--- empaquetar.php: refuses an output past the 16 MB Artifact ceiling ---\n";
+$g_root = nm_tmpdir( 'empaquetar-grande' );
+$g_base = $g_root . '/skills/web-templates/references/plantillas/foo';
+nm_write( "$g_base/maqueta/index.html", "<!doctype html>\n<title>foo</title>\n<img src=\"../img/foo-enorme.webp\" alt=\"x\">\n" );
+nm_write( "$g_base/img/foo-enorme.webp", str_repeat( "\x9a", 12700000 ) );
+$g_out = "$g_root/foo-publicable.html";
+$r     = run_cli( 'empaquetar.php', '--plantilla foo --out ' . escapeshellarg( $g_out ) . ' --root=' . escapeshellarg( $g_root ) );
+ok( 1 === $r['code'] && false !== strpos( $r['out'], '16 MB' ), "empaquetar: a 12.7 MB image, 16.9 MB once base64-encoded, exits 1 naming the 16 MB ceiling: {$r['out']}" );
+ok( ! file_exists( $g_out ), 'empaquetar: refusing an oversized result writes no output file' );
+@unlink( "$g_base/img/foo-enorme.webp" );
+
+echo "--- empaquetar.php library: typed exceptions, never exit() ---\n";
+if ( ! $empaquetar_lib ) {
+	ok( false, 'empaquetar: library functions unavailable, the in-process half cannot run' );
+} else {
+	try {
+		empaquetar_html( $m_html, "$m_base/maqueta" );
+		ok( false, 'empaquetar: empaquetar_html() with a missing image must throw, not return' );
+	} catch ( NmHerramientaMedida $e ) {
+		ok( false !== strpos( $e->getMessage(), 'foo-no-existe.webp' ), 'empaquetar: a missing image throws NmHerramientaMedida naming it: ' . $e->getMessage() );
+	} catch ( Exception $e ) {
+		ok( false, 'empaquetar: wrong exception type for a missing image: ' . get_class( $e ) );
+	}
+	$lib = empaquetar_html( $e_html, "$e_base/maqueta" );
+	ok( 3 === $lib['imagenes'] && 7 === $lib['referencias'] && strlen( $lib['html'] ) === $lib['bytes'], 'empaquetar: empaquetar_html() returns the packaged html with 3 images, 7 references and its byte count' );
+	ok(
+		array( 'https://cdn.example.com/x.webp' ) === empaquetar_remotos( '<a href="https://example.com">x</a><!-- <img src="https://comentado.example.com/y.webp"> --><img alt="" src="https://cdn.example.com/x.webp">' ),
+		'empaquetar: empaquetar_remotos() lists the remote <img>, not the <a href> link nor a commented-out tag'
+	);
+	try {
+		empaquetar_maqueta_plantilla( $e_root, '../plantillas/foo' );
+		ok( false, 'empaquetar: a slug that is a path must throw, not resolve' );
+	} catch ( NmHerramientaEntorno $e ) {
+		ok( true, 'empaquetar: a slug that is a path throws NmHerramientaEntorno: ' . $e->getMessage() );
+	}
+}
+
+echo "--- empaquetar.php: the data: URI carries the file's OWN type, not a hardcoded one ---\n";
+/* Today every photograph in the library is .webp, so a hardcoded `image/webp` passes every test
+   above while being wrong. A client maqueta brings a logo: an SVG served as image/webp renders
+   as a broken image in every browser, silently. The type comes from the extension or the file
+   is refused — never guessed. */
+$t_root = nm_tmpdir( 'empaquetar-tipos' );
+$t_base = $t_root . '/skills/web-templates/references/plantillas/foo';
+$t_tipos = array(
+	'logo.svg'   => array( '<svg xmlns="http://www.w3.org/2000/svg"><rect width="4" height="4"/></svg>', 'image/svg+xml' ),
+	'sello.png'  => array( "\x89PNG\r\n\x1a\n sello", 'image/png' ),
+	'foto.jpg'   => array( "\xff\xd8\xff\xe0 foto", 'image/jpeg' ),
+	'foto2.jpeg' => array( "\xff\xd8\xff\xe0 foto2", 'image/jpeg' ),
+	'anim.gif'   => array( 'GIF89a anim', 'image/gif' ),
+	'hero.webp'  => array( "RIFF\x00\x01WEBPVP8 hero", 'image/webp' ),
+	'icono.avif' => array( "\x00\x00\x00\x20ftypavif icono", 'image/avif' ),
+);
+$t_html = "<!doctype html>\n<title>foo</title>\n";
+foreach ( $t_tipos as $nombre => $par ) {
+	nm_write( "$t_base/img/$nombre", $par[0] );
+	$t_html .= "<img src=\"../img/$nombre\" alt=\"$nombre\">\n";
+}
+nm_write( "$t_base/maqueta/index.html", $t_html );
+$t_out = "$t_root/foo-publicable.html";
+$r     = run_cli( 'empaquetar.php', '--plantilla foo --out ' . escapeshellarg( $t_out ) . ' --root=' . escapeshellarg( $t_root ) );
+$t_txt = (string) @file_get_contents( $t_out );
+ok( 0 === $r['code'] && '' !== $t_txt, "empaquetar: a maqueta mixing svg/png/jpg/gif/webp/avif packages and exits 0: {$r['out']}" );
+foreach ( $t_tipos as $nombre => $par ) {
+	$esperado = 'data:' . $par[1] . ';base64,' . base64_encode( $par[0] );
+	ok( '' !== $t_txt && false !== strpos( $t_txt, $esperado ), "empaquetar: $nombre is embedded as {$par[1]}, not as a guessed type" );
+}
+/* And an extension this file cannot name a type for is refused, never shipped with a wrong one. */
+nm_write( "$t_base/img/hoja.xyz", 'no soy una imagen' );
+nm_write( "$t_base/maqueta/index.html", "<!doctype html>\n<title>foo</title>\n<img src=\"../img/hoja.xyz\" alt=\"x\">\n" );
+$t_out2 = "$t_root/foo-desconocido.html";
+$r      = run_cli( 'empaquetar.php', '--plantilla foo --out ' . escapeshellarg( $t_out2 ) . ' --root=' . escapeshellarg( $t_root ) );
+ok( 1 === $r['code'] && false !== strpos( $r['out'], 'hoja.xyz' ), "empaquetar: an extension with no known image type exits 1 and names the file: {$r['out']}" );
+ok( ! file_exists( $t_out2 ), 'empaquetar: refusing an unknown image type writes no output file' );
+
+echo "--- empaquetar.php: usage and environment errors exit 2, never 0 or 1 ---\n";
+$u_root = nm_tmpdir( 'empaquetar-uso' );
+$u_base = nm_emp_plantilla( $u_root, 'foo', $e_html );
+$emp_usos = array(
+	'no arguments'                              => run_cli( 'empaquetar.php', '' ),
+	'--plantilla with no --out'                 => run_cli( 'empaquetar.php', '--plantilla foo --root=' . escapeshellarg( $u_root ) ),
+	'a slug with no Plantilla folder'           => run_cli( 'empaquetar.php', '--plantilla no-existe --out ' . escapeshellarg( "$u_root/x.html" ) . ' --root=' . escapeshellarg( $u_root ) ),
+	'a slug that is a path'                     => run_cli( 'empaquetar.php', '--plantilla ../plantillas/foo --out ' . escapeshellarg( "$u_root/x.html" ) . ' --root=' . escapeshellarg( $u_root ) ),
+	'--maqueta naming a file that does not exist' => run_cli( 'empaquetar.php', '--maqueta ' . escapeshellarg( "$u_root/no-existe/index.html" ) . ' --out ' . escapeshellarg( "$u_root/x.html" ) ),
+	'--plantilla and --maqueta together'        => run_cli( 'empaquetar.php', '--plantilla foo --maqueta ' . escapeshellarg( "$u_base/maqueta/index.html" ) . ' --out ' . escapeshellarg( "$u_root/x.html" ) . ' --root=' . escapeshellarg( $u_root ) ),
+	'--out in a directory that does not exist'  => run_cli( 'empaquetar.php', '--plantilla foo --out ' . escapeshellarg( "$u_root/no-existe/x.html" ) . ' --root=' . escapeshellarg( $u_root ) ),
+	'--out naming the source maqueta itself'    => run_cli( 'empaquetar.php', '--plantilla foo --out ' . escapeshellarg( "$u_base/maqueta/index.html" ) . ' --root=' . escapeshellarg( $u_root ) ),
+);
+foreach ( $emp_usos as $caso => $r ) {
+	ok( 2 === $r['code'], "empaquetar: $caso exits 2: {$r['out']}" );
+}
+ok( $e_html === file_get_contents( "$u_base/maqueta/index.html" ), 'empaquetar: --out naming the source maqueta leaves it byte-for-byte untouched' );
+
 echo "\n$pass OK / $fail FAIL\n";
 exit( $fail ? 1 : 0 );

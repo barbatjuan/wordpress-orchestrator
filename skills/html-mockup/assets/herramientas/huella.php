@@ -29,7 +29,20 @@
  * `framework-audit.php` can `require_once` this file and recompute a fingerprint against `--root`,
  * and so this file's own CLI can be pointed at a scratch tree for tests without touching the real
  * library.
+ *
+ * A CLIENT DELIVERY FOLDER IS NOT A PLANTILLA. `huella_directorio_manifest( $dir )` /
+ * `huella_directorio( $dir )` fingerprint an arbitrary folder — `veredicto.php`'s `--sellar-ruta`
+ * needs the same normalisation for a folder that is not `skills/web-templates/references/plantillas/
+ * <slug>/` shaped and does not commit to owning a `ficha.md` or `manifiesto-imagenes.md` the way a
+ * Plantilla does. So unlike `huella_plantilla_manifest()`, which treats `ficha.md` and
+ * `manifiesto-imagenes.md` as FIXED inputs and records `absent` when either is missing,
+ * `huella_directorio_manifest()` covers whatever of `ficha.md`, `manifiesto-imagenes.md`, `canvas/**`,
+ * `maqueta/**`, `img/**` actually exists under `$dir` and records nothing for what does not — a
+ * client folder that never had a `manifiesto-imagenes.md` is not carrying a defect the way a
+ * Plantilla omitting its own would be. `veredicto.md` stays excluded, same reason as always.
  */
+
+require_once __DIR__ . '/color.php';
 
 /** Text extensions LF-normalised before hashing. Every other extension is hashed raw. */
 const NM_HUELLA_TEXT_EXT = array( 'md', 'html', 'json', 'css', 'js', 'svg', 'txt' );
@@ -138,6 +151,50 @@ function huella_biblioteca( $skills_dir ) {
 		'rows'   => $rows,
 		'digest' => hash( 'sha256', $lines ),
 	);
+}
+
+/**
+ * `path => sha256` for an arbitrary folder `$dir`, paths relative to `$dir` itself — see the
+ * docblock above for how this differs from `huella_plantilla_manifest()`. A symlink among the
+ * covered files that resolves outside `$dir` is refused before it is ever opened for hashing
+ * (`NmHerramientaEntorno`, naming the offending path): a client delivery folder is not committed
+ * repository content, so nothing here should follow a link off of it.
+ */
+function huella_directorio_manifest( $dir ) {
+	$dir  = rtrim( str_replace( '\\', '/', $dir ), '/' );
+	$real = realpath( $dir );
+
+	$files = array();
+	foreach ( array( 'ficha.md', 'manifiesto-imagenes.md' ) as $fijo ) {
+		if ( is_file( $dir . '/' . $fijo ) ) {
+			$files[] = $dir . '/' . $fijo;
+		}
+	}
+	foreach ( array( 'canvas', 'maqueta', 'img' ) as $sub ) {
+		foreach ( huella_walk( $dir . '/' . $sub ) as $hit ) {
+			$files[] = $hit;
+		}
+	}
+
+	$manifest = array();
+	foreach ( $files as $file ) {
+		$rel = ( 0 === strpos( $file, $dir . '/' ) ) ? substr( $file, strlen( $dir ) + 1 ) : $file;
+		if ( false !== $real ) {
+			$real_file = realpath( $file );
+			if ( false === $real_file || 0 !== strpos( $real_file, $real . DIRECTORY_SEPARATOR ) ) {
+				throw new NmHerramientaEntorno( "fuera de la carpeta: $rel resuelve fuera de $dir" );
+			}
+		}
+		$manifest[ $rel ] = huella_hash_file( $file );
+	}
+	ksort( $manifest, SORT_STRING );
+	return $manifest;
+}
+
+/** One folder's own huella: `huella_digest( huella_directorio_manifest( … ) )` — one digest
+ *  definition shared with `huella_plantilla()`, never a second implementation. */
+function huella_directorio( $dir ) {
+	return huella_digest( huella_directorio_manifest( $dir ) );
 }
 
 // ─────────────────────────────────────────── dual-mode CLI ───────────────────────────────────────

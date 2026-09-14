@@ -220,8 +220,9 @@ directly. Shared exit contract: `0` pass, `1` a measured failure, `2` usage or e
 |---|---|---|
 | `../assets/herramientas/color.php` | `--contraste <#hex> <#hex>`, `--maqueta <archivo-html>` | Contrast maths (`srgb_lum`, `contrast`, `ratio_str`, `css_mix`, `ink_tint`, `ink_ends`, `ink_curve`) and the `:root` pair re-measurement (`color_root_tokens`, `color_root_pairs`) |
 | `../assets/herramientas/scrim.php` | `--peor-pixel <img.webp> <x> <y> <w> <h>` | Worst text-over-photo pixel (`worst_pixel`, `ink_mean`) |
-| `../assets/herramientas/huella.php` | `--plantilla <slug>`, `--biblioteca`, `--comprobar <slug> <sha256>` | The LF-normalised fingerprint of a Plantilla and of the library (`huella_plantilla`, `huella_biblioteca`) |
-| `../assets/herramientas/veredicto.php` | `--sellar <slug>`, `--comprobar <slug>`, `--biblioteca` | Seals a Plantilla's veredicto with its fingerprint and checks the seal. It knows Plantilla folders only; nothing seals a client maqueta yet |
+| `../assets/herramientas/huella.php` | `--plantilla <slug>`, `--biblioteca`, `--comprobar <slug> <sha256>` | The LF-normalised fingerprint of a Plantilla and of the library (`huella_plantilla`, `huella_biblioteca`), and of an arbitrary folder (`huella_directorio_manifest`, `huella_directorio`) for a client delivery that is not `skills/`-shaped |
+| `../assets/herramientas/veredicto.php` | `--sellar <slug>`, `--comprobar <slug>`, `--biblioteca`, `--sellar-ruta <carpeta>`, `--comprobar-ruta <carpeta>` | Seals a veredicto with its fingerprint and checks the seal — a Plantilla by slug (`veredicto_sellar`, `veredicto_comprobar`), or a client delivery folder by path (`veredicto_sellar_ruta`, `veredicto_comprobar_ruta`) |
+| `../assets/herramientas/empaquetar.php` | `--plantilla <slug> --out <archivo>`, `--maqueta <archivo> --out <archivo>` | Packages a maqueta into one self-contained HTML file for Artifact publishing — every `../img/<file>` becomes a `data:` URI carrying that file's own type (`empaquetar_maqueta_plantilla`, `empaquetar_html`, `empaquetar_remotos`, `empaquetar_tipo`, `empaquetar_archivo`) |
 | `../assets/herramientas/medir-geometria.mjs` | `<url> [--ancho 1440] [--json]` | Rail, margin fraction, reading measure, what touches the glass, overflow |
 
 ## What the gallery cost to learn
