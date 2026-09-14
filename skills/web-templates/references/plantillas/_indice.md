@@ -15,18 +15,18 @@ sin veredicto vigente, la plantilla no se ofrece a un cliente.
 | `terrazza` · Casa Terrazza | `reservar-mesa` | `lujo-oscuro` | corporate | inicio · carta · plato · nosotros · contacto · gracias · aviso legal · privacidad · cookies · 404 | sin veredicto |
 | `bajura` · Bajura | `subasta-diaria` | `brutalista` | ecommerce | portada | sin veredicto · sin maqueta |
 | `corte` · Corte | `prenda-a-medida` | `vitrina` | ecommerce | portada | sin veredicto · sin maqueta |
-| `tueste` · Tueste | `suscripcion` | `institucional` | ecommerce | portada | sin veredicto · sin maqueta |
+| `tueste` · Tueste Norte | `suscripcion` | `editorial` | ecommerce | portada · categoría · ficha de producto · carro · pago · pedido recibido · mi cuenta · la marca · contacto · condiciones de venta y envíos · aviso legal · privacidad · cookies · 404 | sin veredicto |
 
-**Ocho plantillas tienen su juego completo de páginas** derivado en `maqueta/index.html` — `delao`,
-`aranda`, `lumiere` y `terrazza` con diez, y `marzo`, `barro`, `cadencia` y `escuadra` con catorce — y
-a las ocho les falta sólo el veredicto. **Tres siguen siendo sólo su portada**: `bajura`, `corte` y
-`tueste` vienen del lienzo «seis portadas», que dibujó una lámina por marca, así que les faltan las
+**Nueve plantillas tienen su juego completo de páginas** derivado en `maqueta/index.html` — `delao`,
+`aranda`, `lumiere` y `terrazza` con diez, y `marzo`, `barro`, `cadencia`, `escuadra` y `tueste` con
+catorce — y a las nueve les falta sólo el veredicto. **Dos siguen siendo sólo su portada**: `bajura` y
+`corte` vienen del lienzo «seis portadas», que dibujó una lámina por marca, así que les faltan las
 páginas de contenido, la maqueta y la ficha. Hasta tener maqueta y veredicto, ninguna se ofrece a un
 cliente: una maqueta que nadie ha mirado es una carpeta de ficheros que pasa los tests.
 
 **El margen de página no es el mismo en todas, y es a propósito.** `delao`, `marzo`, `barro`,
 `cadencia` y `escuadra` usan el 7,5&nbsp;% del estándar de la casa; `lumiere` usa 6,667&nbsp;%,
-`aranda` 5&nbsp;% y `terrazza` 3,333&nbsp;%, medidos en sus lienzos y declarados en sus fichas con su
+`aranda` 5&nbsp;%, `terrazza` 3,333&nbsp;% y `tueste` 10&nbsp;%, medidos en sus lienzos y declarados en sus fichas con su
 razón. Once plantillas con el
 mismo margen serían once plantillas hechas por la misma mano.
 
@@ -132,6 +132,9 @@ Una carpeta por slug, y dentro siempre lo mismo:
 
 ## tueste
 
+- `references/plantillas/tueste/ficha.md`
 - `references/plantillas/tueste/manifiesto-imagenes.md`
-- `references/plantillas/tueste/canvas/` — `Tueste`
+- `references/plantillas/tueste/canvas/` — `Tueste`, `Categoria`, `Ficha`, `LaMarca`, `Contacto`,
+  `canvas.json` y su `MANIFIESTO.md`
+- `references/plantillas/tueste/maqueta/` — `index.html`
 - `references/plantillas/tueste/img/` — cinco `.webp`

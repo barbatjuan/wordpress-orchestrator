@@ -1,0 +1,166 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter+Tight:wght@400;500;600&display=swap">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; background: #E8DFD0; color: #20180E; font-family: "Inter Tight", "Helvetica Neue", Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+    [data-suelo] h1, [data-suelo] h2, [data-suelo] h3, [data-suelo] h4,
+    [data-suelo] p, [data-suelo] ul, [data-suelo] li, [data-suelo] dl, [data-suelo] dd, [data-suelo] dt, [data-suelo] form, [data-suelo] fieldset {
+      margin: 0; padding: 0;
+    }
+    [data-suelo] ul { list-style: none; }
+    [data-suelo] img { display: block; border: 0; }
+    [data-suelo] fieldset { border: none; }
+    [data-suelo] input, [data-suelo] textarea { font: inherit; color: inherit; background: transparent; }
+    a { color: #0F5C28; text-decoration: none; }
+    a:hover { color: #20180E; text-decoration: underline; }
+    p { text-wrap: pretty; }
+  </style>
+</helmet>
+
+<div data-suelo style="width: 1440px; background: #E8DFD0; color: #20180E; font-family: 'Inter Tight', Helvetica, Arial, sans-serif;">
+
+  <!-- ============================ CABECERA — idéntica a Tueste.dc.html ============================ -->
+  <div style="display: flex; align-items: center; justify-content: space-between; padding: 24px 144px;">
+    <a href="Tueste.dc.html" style="font-family: 'Fraunces', Georgia, 'Times New Roman', serif; font-size: 25px; font-weight: 700; letter-spacing: -0.01em; color: #20180E;">Tueste Norte</a>
+    <div style="display: flex; align-items: center; gap: 32px; font-size: 15px; color: #57493A;">
+      <a href="Tueste.dc.html" style="color: #57493A;">La suscripción</a>
+      <a href="Categoria.dc.html" style="color: #57493A;">Orígenes</a>
+      <a href="Tueste.dc.html" style="color: #57493A;">Bolsas sueltas</a>
+      <a href="LaMarca.dc.html" style="color: #57493A;">El tostadero</a>
+      <a href="Tueste.dc.html" style="background: #0F5C28; color: #FFFFFF; padding: 11px 24px; border-radius: 999px; font-size: 15px; font-weight: 500;">Entrar</a>
+    </div>
+  </div>
+
+  <!-- ============================ TITULAR — sin fotografía, misma razón que LaMarca.dc.html: las
+       cinco fotografías del manifiesto ya están habladas y ninguna es una escena de atención al
+       cliente que valga la pena inventar aquí. ================================================== -->
+  <div style="padding: 88px 144px 0 144px;">
+    <p style="font-size: 14px; letter-spacing: 0.04em; text-transform: uppercase; color: #57493A;">Contacto</p>
+    <h1 style="margin: 22px 0 0 0; max-width: 680px; font-family: 'Fraunces', Georgia, 'Times New Roman', serif; font-size: 50px; line-height: 1.1; font-weight: 700; letter-spacing: -0.02em;">Escríbenos antes del lunes a las 12:00</h1>
+    <p style="margin: 24px 0 0 0; max-width: 560px; font-size: 17px; line-height: 1.65; color: #3D3125;">Responde Marina o Aitor, nunca un centro de atención externo. Si es sobre un pedido en curso, dinos el correo con el que te suscribiste y vamos más rápido.</p>
+  </div>
+
+  <!-- ============================ DATOS + FORMULARIO ============================ -->
+  <div style="padding: 80px 144px 0 144px; display: flex; gap: 88px;">
+    <div style="width: 340px; flex-shrink: 0;">
+      <div style="font-size: 13px; letter-spacing: 0.04em; text-transform: uppercase; color: #57493A; padding-bottom: 18px; border-bottom: 1px solid rgba(32,24,14,0.28);">El tostadero</div>
+      <div style="padding-top: 22px; display: flex; flex-direction: column; gap: 20px;">
+        <div style="padding-top: 16px; border-top: 1px solid rgba(32,24,14,0.14);">
+          <div style="font-size: 13px; color: #57493A;">Dirección</div>
+          <div style="margin-top: 6px; font-size: 15px; line-height: 1.6;">Polígono de Silvota, nave 12<br>33192 Llanera, Asturias</div>
+        </div>
+        <div style="padding-top: 16px; border-top: 1px solid rgba(32,24,14,0.14);">
+          <div style="font-size: 13px; color: #57493A;">Visitas</div>
+          <div style="margin-top: 6px; font-size: 15px; line-height: 1.6;">Viernes, 17:00, avisando antes</div>
+        </div>
+        <div style="padding-top: 16px; border-top: 1px solid rgba(32,24,14,0.14);">
+          <div style="font-size: 13px; color: #57493A;">Pedidos cierran</div>
+          <div style="margin-top: 6px; font-size: 15px; line-height: 1.6;">Lunes, 12:00</div>
+        </div>
+        <div style="padding-top: 16px; border-top: 1px solid rgba(32,24,14,0.14);">
+          <div style="font-size: 13px; color: #57493A;">Teléfono</div>
+          <div style="margin-top: 6px; font-size: 15px; line-height: 1.6;">985 77 30 41</div>
+        </div>
+        <div style="padding-top: 16px; border-top: 1px solid rgba(32,24,14,0.14); padding-bottom: 16px; border-bottom: 1px solid rgba(32,24,14,0.14);">
+          <div style="font-size: 13px; color: #57493A;">Correo</div>
+          <div style="margin-top: 6px; font-size: 15px; line-height: 1.6;">hola@tuestenorte.es</div>
+        </div>
+      </div>
+    </div>
+
+    <form style="flex-grow: 1; max-width: 680px;">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 28px;">
+        <label style="display: block;">
+          <span style="display: block; font-size: 13px; color: #57493A; padding-bottom: 8px;">Nombre</span>
+          <input type="text" placeholder="Nombre y apellidos" style="width: 100%; height: 46px; border: none; border-bottom: 1px solid rgba(32,24,14,0.32); font-size: 15px; color: #20180E;">
+        </label>
+        <label style="display: block;">
+          <span style="display: block; font-size: 13px; color: #57493A; padding-bottom: 8px;">Correo</span>
+          <input type="email" placeholder="tu@correo.com" style="width: 100%; height: 46px; border: none; border-bottom: 1px solid rgba(32,24,14,0.32); font-size: 15px; color: #20180E;">
+        </label>
+      </div>
+
+      <label style="display: block; padding-top: 30px;">
+        <span style="display: block; font-size: 13px; color: #57493A; padding-bottom: 8px;">Motivo</span>
+        <input type="text" placeholder="Un pedido en curso, una duda antes de suscribirte, una visita" style="width: 100%; height: 46px; border: none; border-bottom: 1px solid rgba(32,24,14,0.32); font-size: 15px; color: #20180E;">
+      </label>
+
+      <label style="display: block; padding-top: 30px;">
+        <span style="display: block; font-size: 13px; color: #57493A; padding-bottom: 8px;">Mensaje</span>
+        <textarea rows="5" placeholder="Cuéntanos qué necesitas" style="width: 100%; border: none; border-bottom: 1px solid rgba(32,24,14,0.32); font-size: 15px; line-height: 1.6; color: #20180E; resize: none; padding-bottom: 10px;"></textarea>
+      </label>
+
+      <label style="display: flex; align-items: flex-start; gap: 12px; padding-top: 26px;">
+        <input type="checkbox" style="width: 16px; height: 16px; margin-top: 3px; flex-shrink: 0;">
+        <span style="font-size: 13px; line-height: 1.6; color: #57493A;">He leído y acepto la <a href="Tueste.dc.html" style="color: #20180E; border-bottom: 1px solid #0F5C28;">política de privacidad</a>. Tueste Norte usa estos datos sólo para responder.</span>
+      </label>
+
+      <a href="Tueste.dc.html" style="display: inline-block; margin-top: 28px; background: #0F5C28; color: #FFFFFF; padding: 16px 36px; border-radius: 999px; font-size: 15px; font-weight: 600;">Enviar mensaje</a>
+    </form>
+  </div>
+
+  <!-- ============================ LO QUE YA SABEMOS RESPONDER ============================ -->
+  <div style="padding: 128px 144px 0 144px;">
+    <h2 style="margin: 0; max-width: 480px; font-family: 'Fraunces', Georgia, 'Times New Roman', serif; font-size: 34px; line-height: 1.15; font-weight: 600; letter-spacing: -0.02em;">Lo que ya sabemos responder</h2>
+    <div style="margin-top: 40px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 48px;">
+      <div style="padding-top: 20px; border-top: 1px solid rgba(32,24,14,0.28);">
+        <div style="font-size: 16px; font-weight: 600;">¿Puedo saltar un mes sin llamar?</div>
+        <div style="margin-top: 12px; font-size: 15px; line-height: 1.6; color: #3D3125;">Sí, desde tu cuenta, hasta 48 horas antes del envío. El mes siguiente sigue su curso sin que tengas que avisar de nuevo.</div>
+      </div>
+      <div style="padding-top: 20px; border-top: 1px solid rgba(32,24,14,0.28);">
+        <div style="font-size: 16px; font-weight: 600;">¿Puedo elegir el origen cada mes?</div>
+        <div style="margin-top: 12px; font-size: 15px; line-height: 1.6; color: #3D3125;">No; enviamos el lote que mejor está esa semana. Si un origen concreto no te vale, puedes pausar ese envío en lugar de recibirlo.</div>
+      </div>
+      <div style="padding-top: 20px; border-top: 1px solid rgba(32,24,14,0.28);">
+        <div style="font-size: 16px; font-weight: 600;">¿Y si nadie está en casa?</div>
+        <div style="margin-top: 12px; font-size: 15px; line-height: 1.6; color: #3D3125;">El transportista deja aviso y reintenta al día siguiente. La bolsa aguanta bien cerrada varias semanas, así que no hay prisa en recogerla.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================ PIE ============================ -->
+  <footer style="background: #20180E; color: #E8DFD0; margin-top: 104px; padding: 0 144px 0 144px;">
+    <div style="display: flex; gap: 96px; padding: 56px 0; border-top: 1px solid rgba(232,223,208,0.16); border-bottom: 1px solid rgba(232,223,208,0.16);">
+      <div style="width: 400px; flex-shrink: 0;">
+        <div style="font-family: 'Fraunces', Georgia, 'Times New Roman', serif; font-size: 24px; font-weight: 600;">Tueste Norte</div>
+        <p style="margin-top: 14px; font-size: 15px; line-height: 1.7; color: #BFB3A0;">Café por suscripción, tostado en Llanera, Asturias. Un origen distinto cada envío, elegido por quien lo tuesta.</p>
+      </div>
+      <div style="display: flex; gap: 72px;">
+        <div>
+          <div style="font-size: 13px; letter-spacing: 0.04em; text-transform: uppercase; color: #9C8D77; margin-bottom: 18px;">La tienda</div>
+          <a href="Tueste.dc.html" style="display: block; font-size: 15px; color: #E8DFD0; margin-bottom: 12px;">La suscripción</a>
+          <a href="Categoria.dc.html" style="display: block; font-size: 15px; color: #E8DFD0; margin-bottom: 12px;">Orígenes</a>
+          <a href="Tueste.dc.html" style="display: block; font-size: 15px; color: #E8DFD0;">Bolsas sueltas</a>
+        </div>
+        <div>
+          <div style="font-size: 13px; letter-spacing: 0.04em; text-transform: uppercase; color: #9C8D77; margin-bottom: 18px;">El tostadero</div>
+          <a href="LaMarca.dc.html" style="display: block; font-size: 15px; color: #E8DFD0; margin-bottom: 12px;">La marca</a>
+          <a href="Contacto.dc.html" style="display: block; font-size: 15px; color: #E8DFD0;">Contacto</a>
+        </div>
+        <div>
+          <div style="font-size: 13px; letter-spacing: 0.04em; text-transform: uppercase; color: #9C8D77; margin-bottom: 18px;">Condiciones</div>
+          <a href="Tueste.dc.html" style="display: block; font-size: 15px; color: #E8DFD0; margin-bottom: 12px;">Condiciones de venta y envíos</a>
+          <a href="Tueste.dc.html" style="display: block; font-size: 15px; color: #E8DFD0; margin-bottom: 12px;">Aviso legal</a>
+          <a href="Tueste.dc.html" style="display: block; font-size: 15px; color: #E8DFD0; margin-bottom: 12px;">Privacidad</a>
+          <a href="Tueste.dc.html" style="display: block; font-size: 15px; color: #E8DFD0;">Cookies</a>
+        </div>
+      </div>
+    </div>
+    <div style="display: flex; justify-content: space-between; padding: 24px 0 28px 0; font-size: 14px; color: #9C8D77;">
+      <div>Tueste Norte · Polígono de Silvota, nave 12, Llanera, Asturias</div>
+      <div>985 77 30 41 · hola@tuestenorte.es</div>
+    </div>
+  </footer>
+
+</div>
+</x-dc>
+</body>
+</html>

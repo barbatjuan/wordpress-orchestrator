@@ -62,7 +62,7 @@ propio Objetivo.
 | `tienda-lote` | `barro` | ecommerce | `lujo-oscuro` | en la biblioteca |
 | `equipo-por-uso` | `cadencia` | ecommerce | `tecnologico` | en la biblioteca |
 | `catalogo-amplio` | `escuadra` | ecommerce | `directo` | en la biblioteca |
-| `suscripcion` | `tueste` | ecommerce | `institucional` | en la biblioteca |
+| `suscripcion` | `tueste` | ecommerce | `editorial` | en la biblioteca |
 | `subasta-diaria` | `bajura` | ecommerce | `brutalista` | en la biblioteca |
 | `prenda-a-medida` | `corte` | ecommerce | `vitrina` | en la biblioteca |
 | `plan-fases` | sin plantilla | — | — | ruta a medida |

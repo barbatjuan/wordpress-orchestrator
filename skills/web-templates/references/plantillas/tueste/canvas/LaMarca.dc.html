@@ -1,0 +1,147 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter+Tight:wght@400;500;600&display=swap">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; background: #E8DFD0; color: #20180E; font-family: "Inter Tight", "Helvetica Neue", Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+    [data-suelo] h1, [data-suelo] h2, [data-suelo] h3, [data-suelo] h4,
+    [data-suelo] p, [data-suelo] ul, [data-suelo] li, [data-suelo] dl, [data-suelo] dd, [data-suelo] dt {
+      margin: 0; padding: 0;
+    }
+    [data-suelo] ul { list-style: none; }
+    [data-suelo] img { display: block; border: 0; }
+    a { color: #0F5C28; text-decoration: none; }
+    a:hover { color: #20180E; text-decoration: underline; }
+    p { text-wrap: pretty; }
+  </style>
+</helmet>
+
+<div data-suelo style="width: 1440px; background: #E8DFD0; color: #20180E; font-family: 'Inter Tight', Helvetica, Arial, sans-serif;">
+
+  <!-- ============================ CABECERA — idéntica a Tueste.dc.html ============================ -->
+  <div style="display: flex; align-items: center; justify-content: space-between; padding: 24px 144px;">
+    <a href="Tueste.dc.html" style="font-family: 'Fraunces', Georgia, 'Times New Roman', serif; font-size: 25px; font-weight: 700; letter-spacing: -0.01em; color: #20180E;">Tueste Norte</a>
+    <div style="display: flex; align-items: center; gap: 32px; font-size: 15px; color: #57493A;">
+      <a href="Tueste.dc.html" style="color: #57493A;">La suscripción</a>
+      <a href="Categoria.dc.html" style="color: #57493A;">Orígenes</a>
+      <a href="Tueste.dc.html" style="color: #57493A;">Bolsas sueltas</a>
+      <a href="LaMarca.dc.html" style="color: #20180E; font-weight: 500;">El tostadero</a>
+      <a href="Tueste.dc.html" style="background: #0F5C28; color: #FFFFFF; padding: 11px 24px; border-radius: 999px; font-size: 15px; font-weight: 500;">Entrar</a>
+    </div>
+  </div>
+
+  <!-- ============================ TITULAR — sin fotografía: las cinco imágenes del manifiesto ya
+       están habladas en la portada y en la ficha, y repetir una de ambiente aquí (el tostadero, el
+       molinillo) es justo el defecto que defectos-de-derivacion.md nombra bajo "Canvas y
+       artboards". El Enfoque institucional resuelve con cifra y tabla, no con una segunda foto del
+       mismo tostador. ============================================================================ -->
+  <div style="padding: 88px 144px 0 144px;">
+    <p style="font-size: 14px; letter-spacing: 0.04em; text-transform: uppercase; color: #57493A;">El tostadero</p>
+    <h1 style="margin: 22px 0 0 0; max-width: 760px; font-family: 'Fraunces', Georgia, 'Times New Roman', serif; font-size: 50px; line-height: 1.1; font-weight: 700; letter-spacing: -0.02em;">Dos personas, un tostador de 12 kg y un cuaderno de cata</h1>
+    <p style="margin: 24px 0 0 0; max-width: 620px; font-size: 17px; line-height: 1.65; color: #3D3125;">Tueste Norte lo llevan Aitor Solís, que tuesta, y Marina Cobo, que compra en origen y cierra cada lote antes de que suba a la máquina. Empezaron en 2019 con una tostadora de mesa en un garaje de Llanera; hoy siguen siendo los dos, con una nave más grande y el mismo cuaderno de cata a mano.</p>
+  </div>
+
+  <!-- ============================ TRES CIFRAS — credenciales medibles antes que frase de marca,
+       el eje que el Enfoque institucional pide primero. ========================================= -->
+  <div style="margin-top: 72px; padding: 0 144px; display: flex; gap: 64px;">
+    <div style="flex: 1; padding-top: 24px; border-top: 1px solid rgba(15,92,40,0.32);">
+      <div style="font-family: 'Fraunces', Georgia, 'Times New Roman', serif; font-size: 44px; font-weight: 700; color: #0F5C28;">2019</div>
+      <div style="margin-top: 8px; font-size: 15px; color: #3D3125;">Primer lote tostado, 4&nbsp;kg de Huila en una tostadora de mesa</div>
+    </div>
+    <div style="flex: 1; padding-top: 24px; border-top: 1px solid rgba(15,92,40,0.32);">
+      <div style="font-family: 'Fraunces', Georgia, 'Times New Roman', serif; font-size: 44px; font-weight: 700; color: #0F5C28;">6</div>
+      <div style="margin-top: 8px; font-size: 15px; color: #3D3125;">Fincas y estaciones de lavado con trato directo, sin intermediario de bolsa</div>
+    </div>
+    <div style="flex: 1; padding-top: 24px; border-top: 1px solid rgba(15,92,40,0.32);">
+      <div style="font-family: 'Fraunces', Georgia, 'Times New Roman', serif; font-size: 44px; font-weight: 700; color: #0F5C28;">62&nbsp;kg</div>
+      <div style="margin-top: 8px; font-size: 15px; color: #3D3125;">Lo que se tuesta un martes normal, repartido entre los tres orígenes de la semana</div>
+    </div>
+  </div>
+
+  <!-- ============================ CÓMO COMPRAMOS — el argumento de procedencia, en párrafo, con
+       las mismas fincas que ya nombra la portada: nada nuevo, el mismo dato mirado desde aquí. === -->
+  <div style="padding: 112px 144px 0 144px; display: flex; gap: 88px;">
+    <div style="width: 460px; flex-shrink: 0;">
+      <h2 style="margin: 0; font-family: 'Fraunces', Georgia, 'Times New Roman', serif; font-size: 38px; line-height: 1.15; font-weight: 600; letter-spacing: -0.02em;">Compramos el lote, no la cotización del día</h2>
+    </div>
+    <div style="flex-grow: 1; max-width: 600px;">
+      <p style="font-size: 17px; line-height: 1.68; color: #3D3125;">Marina viaja dos veces al año a Colombia y una a Etiopía o Kenia, y cierra el precio de cada lote antes de que se tueste el primer grano, no cuando llega el contenedor. A la finca La Esperanza, en Huila, le compramos desde 2020; a la estación de Konga, en Etiopía, desde 2022. Cuando un lote se agota antes de lo previsto, se retira de la lista en vez de completarlo con otro café con el mismo nombre.</p>
+      <p style="margin-top: 22px; font-size: 17px; line-height: 1.68; color: #3D3125;">No compramos certificado orgánico ni de comercio justo: compramos la relación directa, que es más lenta de construir y más fácil de comprobar con una factura que con un sello.</p>
+    </div>
+  </div>
+
+  <!-- ============================ EL MARTES, EN TRES PASOS — la tabla que ya prometía la
+       portada y el pie ("Tostamos el martes y sale el miércoles" / "pedidos hasta el lunes a las
+       12:00"), aquí puesta en registro en vez de en una frase suelta. ============================ -->
+  <div style="background: #DBD0BD; margin-top: 112px; padding: 88px 144px 96px 144px;">
+    <h2 style="margin: 0; font-family: 'Fraunces', Georgia, 'Times New Roman', serif; font-size: 38px; line-height: 1.15; font-weight: 600; letter-spacing: -0.02em;">La semana, de lunes a miércoles</h2>
+    <div style="margin-top: 44px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 56px;">
+      <div>
+        <div style="font-family: 'Fraunces', Georgia, 'Times New Roman', serif; font-size: 26px; font-weight: 700;">Lunes, 12:00</div>
+        <div style="margin-top: 14px; font-size: 16px; line-height: 1.6; color: #3D3125;">Cierra el pedido de la semana. Lo que entra después de esa hora pasa al lote del martes siguiente.</div>
+      </div>
+      <div>
+        <div style="font-family: 'Fraunces', Georgia, 'Times New Roman', serif; font-size: 26px; font-weight: 700;">Martes</div>
+        <div style="margin-top: 14px; font-size: 16px; line-height: 1.6; color: #3D3125;">Aitor tuesta los tres orígenes de la semana, en tandas de entre 8 y 14&nbsp;kg según cuánto haya pedido.</div>
+      </div>
+      <div>
+        <div style="font-family: 'Fraunces', Georgia, 'Times New Roman', serif; font-size: 26px; font-weight: 700;">Miércoles</div>
+        <div style="margin-top: 14px; font-size: 16px; line-height: 1.6; color: #3D3125;">Sale de Llanera con la fecha de tueste en el lateral. Nunca hay grano de más de seis días en un envío.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================ VISITAS ============================ -->
+  <div style="padding: 96px 144px 104px 144px; display: flex; align-items: center; gap: 18px;">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink: 0;" aria-hidden="true">
+      <rect x="3" y="5" width="18" height="16" rx="1" stroke="#0F5C28" stroke-width="1.6"></rect>
+      <path d="M3 10h18M8 3v4M16 3v4" stroke="#0F5C28" stroke-width="1.6"></path>
+    </svg>
+    <div style="font-size: 17px; line-height: 1.6; color: #3D3125;"><span style="color: #20180E; font-weight: 600;">El tostadero se visita.</span> Viernes a las 17:00, avisando antes por correo o teléfono — Polígono de Silvota, nave 12, Llanera.</div>
+  </div>
+
+  <!-- ============================ PIE ============================ -->
+  <footer style="background: #20180E; color: #E8DFD0; padding: 0 144px 0 144px;">
+    <div style="display: flex; gap: 96px; padding: 56px 0; border-top: 1px solid rgba(232,223,208,0.16); border-bottom: 1px solid rgba(232,223,208,0.16);">
+      <div style="width: 400px; flex-shrink: 0;">
+        <div style="font-family: 'Fraunces', Georgia, 'Times New Roman', serif; font-size: 24px; font-weight: 600;">Tueste Norte</div>
+        <p style="margin-top: 14px; font-size: 15px; line-height: 1.7; color: #BFB3A0;">Café por suscripción, tostado en Llanera, Asturias. Un origen distinto cada envío, elegido por quien lo tuesta.</p>
+      </div>
+      <div style="display: flex; gap: 72px;">
+        <div>
+          <div style="font-size: 13px; letter-spacing: 0.04em; text-transform: uppercase; color: #9C8D77; margin-bottom: 18px;">La tienda</div>
+          <a href="Tueste.dc.html" style="display: block; font-size: 15px; color: #E8DFD0; margin-bottom: 12px;">La suscripción</a>
+          <a href="Categoria.dc.html" style="display: block; font-size: 15px; color: #E8DFD0; margin-bottom: 12px;">Orígenes</a>
+          <a href="Tueste.dc.html" style="display: block; font-size: 15px; color: #E8DFD0;">Bolsas sueltas</a>
+        </div>
+        <div>
+          <div style="font-size: 13px; letter-spacing: 0.04em; text-transform: uppercase; color: #9C8D77; margin-bottom: 18px;">El tostadero</div>
+          <a href="LaMarca.dc.html" style="display: block; font-size: 15px; color: #E8DFD0; margin-bottom: 12px;">La marca</a>
+          <a href="Contacto.dc.html" style="display: block; font-size: 15px; color: #E8DFD0;">Contacto</a>
+        </div>
+        <div>
+          <div style="font-size: 13px; letter-spacing: 0.04em; text-transform: uppercase; color: #9C8D77; margin-bottom: 18px;">Condiciones</div>
+          <a href="Tueste.dc.html" style="display: block; font-size: 15px; color: #E8DFD0; margin-bottom: 12px;">Condiciones de venta y envíos</a>
+          <a href="Tueste.dc.html" style="display: block; font-size: 15px; color: #E8DFD0; margin-bottom: 12px;">Aviso legal</a>
+          <a href="Tueste.dc.html" style="display: block; font-size: 15px; color: #E8DFD0; margin-bottom: 12px;">Privacidad</a>
+          <a href="Tueste.dc.html" style="display: block; font-size: 15px; color: #E8DFD0;">Cookies</a>
+        </div>
+      </div>
+    </div>
+    <div style="display: flex; justify-content: space-between; padding: 24px 0 28px 0; font-size: 14px; color: #9C8D77;">
+      <div>Tueste Norte · Polígono de Silvota, nave 12, Llanera, Asturias</div>
+      <div>985 77 30 41 · hola@tuestenorte.es</div>
+    </div>
+  </footer>
+
+</div>
+</x-dc>
+</body>
+</html>
