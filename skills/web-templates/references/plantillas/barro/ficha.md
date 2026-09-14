@@ -94,8 +94,9 @@ términos y 404.
 
 Canvas en `canvas/`. Sin maqueta todavía.
 
-**Tipografías fuera de la casa.** Newsreader y Schibsted Grotesk no están en
-`html-mockup/assets/fonts/`. Sin decidir si se añaden con procedencia o se sustituyen.
+**Tipografías resueltas.** Newsreader y Schibsted Grotesk ya están en
+`html-mockup/assets/fonts/`, con su `OFL.txt` y dadas de alta en `_fonts.php`. La maqueta las embebe
+por ruta relativa, como el resto de la biblioteca.
 
 **Sin veredicto.** Geometría medida: 108px = 7,5%, cero raíles por dentro, cero tinta al cristal, cero
 desborde. Falta la mitad de jueces.
