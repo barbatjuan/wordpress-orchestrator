@@ -26,3 +26,21 @@ embebida en la casa.
 Acento del diseño: `#8A7B5C`. Medido, NO pasa 4,5:1 en ninguno de los dos fondos
 (3,77 sobre `#F6F4F0`, 3,49 sobre el alterno). El piloto lo resolvió con `#8A5A2A`
 (terracota), 5,35 y 4,94, que además supera la separación de canal ≥20 de la tinta.
+
+## Páginas de sistema: derivadas, no dibujadas
+
+El canvas trae cinco páginas. La plantilla lleva diez. Las cinco que faltan —**gracias**,
+**aviso legal**, **privacidad**, **cookies** y **404**— NO tienen artboard aquí y no se
+dibujaron: se derivaron directamente en `maqueta/index.html` (2026-09-14) a partir del sistema
+que fijan las cinco láminas. Misma cabecera, mismo pie, mismos tokens, misma escala de tipo,
+mismos márgenes y los mismos dos puntos de corte.
+
+| Página | De dónde sale cada pieza |
+|---|---|
+| gracias | cabecera partida con filete de Nosotros/Contacto · pasos de «Cómo trabajamos» · cierre de Nosotros |
+| aviso legal, privacidad, cookies | una sola maqueta legal: índice pegajoso con la proporción 1fr/1.5fr de «Cómo trabajamos», columna de lectura de 31em, fichas de datos con el filete de 1px de la tabla de características de Ficha |
+| 404 | cabecera partida · banda de búsqueda y tarjetas de Inicio |
+
+Por eso no hay nada que cosechar para ellas, y un cambio de diseño en estas cinco se hace en
+la maqueta, no en el canvas. Si algún día se dibujan en Claude Design, la lámina pasa a ser la
+autoridad y esta nota se retira.

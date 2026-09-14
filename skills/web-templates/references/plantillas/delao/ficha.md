@@ -5,7 +5,7 @@ tipo: corporate
 sector: inmobiliaria residencial de alto valor
 objetivo: cartera-curada
 enfoque: editorial
-paginas: [inicio, propiedades, ficha, nosotros, contacto]
+paginas: [inicio, propiedades, ficha, nosotros, contacto, gracias, aviso-legal, privacidad, cookies, 404]
 fuentes: [instrument-serif, archivo]
 canvas_url: https://claude.ai/code/artifact/eab59854-20dc-4f8e-831e-ef51375aefbe
 variantes:
@@ -52,7 +52,7 @@ secundaria y la portada la manda una fotografía.
 
 | Se cambia | Se conserva |
 |---|---|
-| Marca, logotipo y nombre | La estructura de las cinco páginas |
+| Marca, logotipo y nombre | La estructura de las diez páginas |
 | Los dos colores de fondo y el acento (re-medido) | El papel de cada color: fondo, alterno, tinta, acento |
 | Las doce fotografías | Los encuadres: portada apaisada, mosaico de ficha, retratos de equipo |
 | El copy entero | La longitud: un titular de dos líneas, no de cuatro |
@@ -77,13 +77,17 @@ cero. Divi queda declarado pero **no validado**, igual que en el resto del frame
 | Banda de búsqueda | Contenedor de fondo invertido + campos del formulario nativo | Módulo de formulario | Es el conmutador `hero: buscador` cuando se activa |
 | Rejilla de propiedades | Contenedor rejilla, hueco 1px, fondo entintado; cada tarjeta un contenedor con Imagen + Encabezado + Texto | Fila + módulos | El hueco dibuja la línea. Columnas por punto de ruptura con los controles nativos |
 | Banda oscura de valoración | Contenedor a dos columnas 1.15fr/1fr con fondo de tinta + Botón + enlace de teléfono | Sección de dos columnas | El segundo destino es un enlace `tel:`, no un segundo botón |
-| Cabecera partida de página interior | Contenedor rejilla 1.5fr/1fr | Fila 2 columnas | Compartida por las cuatro internas |
+| Cabecera partida de página interior | Contenedor rejilla 1.5fr/1fr | Fila 2 columnas | Compartida por todas las internas, las de sistema incluidas |
 | Barra de filtros | Contenedor flex + campos nativos, pegajosa arriba | Módulo de formulario | Apila por debajo de 900 con el control nativo |
 | Mosaico de la ficha | Contenedor rejilla 2fr/1fr + Imagen | Galería | Colapsa a una columna por debajo de 767 |
 | Tabla de características | Widget Lista de iconos o Tabla | Módulo de texto | Diez filas clave-valor; incluye certificado energético y gastos |
 | Panel de visita | Contenedor pegajoso + Formulario | Módulo de formulario | Pegajoso sólo por encima de 1024 |
 | Equipo | Contenedor rejilla, columnas = número de retratos | Fila | Nunca más columnas que personas |
-| Pie | Plantilla de pie del Theme Builder | Theme Builder | Enlaces legales incluidos |
+| Pie | Plantilla de pie del Theme Builder | Theme Builder | Aviso legal, Privacidad y Cookies enlazan a sus tres páginas |
+| Gracias | Página: cabecera partida (contenedor rejilla + Encabezado + Editor de texto) + contenedor rejilla 1fr/1.5fr con Encabezado pegajoso y tres contenedores de paso (Encabezado con el número + Encabezado + Editor de texto, separados por hueco de 1px sobre fondo entintado) + contenedor de cierre con fondo alterno, Botón y Botón con borde inferior como único borde | Página + módulos de texto y botón | Destino de la acción «Redirigir» del widget Formulario nativo en contacto, visita y valoración. Nombra el plazo: 24 horas laborables. Sin salida muerta: propiedades e inicio |
+| Aviso legal · Privacidad · Cookies | Una maqueta, tres páginas. Cabecera partida con la fecha de actualización en un Editor de texto; debajo, contenedor rejilla 1fr/1.5fr: a la izquierda contenedor pegajoso (Efectos de movimiento › Sticky, «permanecer en columna») con Encabezado + una entrada por apartado: contenedor rejilla 30px/1fr con etiqueta HTML `a` enlazado a su ancla, borde inferior y dos Encabezados (número en mono apagado y título); a la derecha contenedor de ancho máximo 31em con, por apartado, Ancla de menú + Encabezado (número) + Encabezado (título) + Editor de texto, y el filete entre apartados como borde superior del contenedor | Página + módulos de texto | La medida de 31em a 16px da 64–67 caracteres de media por línea, contados en el render. El salto de ancla de Elementor descuenta la cabecera pegajosa activa: se comprueba en el build, y si no lo hiciera se quita el pegado de la cabecera en estas tres, no se añade CSS |
+| Fichas de datos legales | Contenedor con fondo del color del filete y hueco de 1px; cada fila un contenedor rejilla 10.5em/1fr con dos Encabezados (etiqueta con etiqueta HTML `span`, valor con `p`); columnas a 1 por debajo de 767 | Módulo de texto | Titular del aviso legal, los seis tratamientos de privacidad y la tabla de cookies (nombre en Encabezado de tipografía mono; proveedor, finalidad, duración y tipo en filas). Una tabla HTML pediría estilos a mano: por eso son filas |
+| 404 | Plantilla «404» del Theme Builder: cabecera partida con Encabezado, Editor de texto, Botón y Botón con borde inferior + la banda de búsqueda y la rejilla de propiedades de la portada insertadas con el widget Plantilla | Theme Builder, plantilla 404 | Toda ruta inexistente cae aquí, nunca en la portada. Ofrece búsqueda, cartera e inicio, con cabecera y pie |
 
 **Techo declarado: cero widgets HTML y cero reglas de CSS a medida.** Si al construir
 apareciera una sección que no cabe en esta tabla, la sección se rediseña; no se abre una
@@ -97,8 +101,14 @@ excepción sin escribirla aquí con su razón.
 
 ## Páginas
 
-Cinco propias más las no negociables del framework: aviso legal, privacidad, cookies,
-términos, error 404, y gracias si hay formulario.
+Diez, el juego completo de un sitio corporativo: cinco de contenido —inicio, propiedades,
+ficha, nosotros y contacto— y cinco de sistema —gracias, aviso legal, privacidad, cookies y
+404—. Las de sistema no tienen lámina: se derivan en la maqueta del sistema de las otras cinco
+(`canvas/MANIFIESTO.md`). No hay términos y condiciones porque el sitio no contrata en línea;
+las condiciones de uso viven en el aviso legal.
+
+Los textos legales de la maqueta describen una empresa ficticia. En un encargo se reescriben
+con los datos reales del cliente mediante `wordpress-legal`; nunca se publican tal cual.
 
 Cada propiedad de la cartera arrastra **su propia ficha**: la rejilla dice «ver ficha» y un
 botón que no lleva a ninguna parte es el defecto que ya costó nueve enlaces muertos en el

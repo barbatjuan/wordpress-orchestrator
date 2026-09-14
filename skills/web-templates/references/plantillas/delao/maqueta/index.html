@@ -9,13 +9,13 @@
      variantes. Buscar y sustituir cadena por cadena basta.
 
        ../img/delao-hero.webp            1440x810  hero de Inicio · foto principal del mosaico de Ficha
-       ../img/delao-villa-alameda.webp    800x600  Villa Alameda (tarjeta ×2) · 3.ª foto del mosaico
-       ../img/delao-atico-mar.webp        800x600  Ático Mar de Plata (tarjeta ×2)
+       ../img/delao-villa-alameda.webp    800x600  Villa Alameda (tarjeta ×3, una en el 404) · 3.ª foto del mosaico
+       ../img/delao-atico-mar.webp        800x600  Ático Mar de Plata (tarjeta ×3, una en el 404)
        ../img/delao-galeria-1.webp       1440x810  Casa Los Cipreses (tarjeta ×2)
        ../img/delao-galeria-2.webp        800x600  Villa Bruma (tarjeta ×2)
        ../img/delao-galeria-3.webp        800x600  Casa Vela · 2.ª foto del mosaico de Ficha
        ../img/delao-cta.webp             800x1067  panel «Vender con nosotros» · Ático Los Arcos
-       ../img/delao-finca.webp            800x600  Finca El Almendral (tarjeta ×2)
+       ../img/delao-finca.webp            800x600  Finca El Almendral (tarjeta ×3, una en el 404)
        ../img/delao-oficina.webp          800x600  banda 21/9 de Nosotros
        ../img/delao-leire.webp            600x600  retrato · Marta de la O
        ../img/delao-julen.webp            600x600  retrato · Diego Arrieta
@@ -537,6 +537,9 @@ header.site{position:sticky;top:0;z-index:50;background:var(--c-bg);
       accent-color:var(--c-accent);cursor:pointer}
 .form .consent > span{font-size:12.5px;line-height:1.6;color:var(--c-text-muted);letter-spacing:0;
               text-transform:none;font-weight:400}
+.form .consent a{color:var(--c-text);text-decoration:underline;text-decoration-thickness:1px;
+      text-underline-offset:3px}
+.form .consent a:hover{color:var(--c-accent)}
 .form .btn{align-self:start;padding:21px 44px}
 .contacto-aside{display:flex;flex-direction:column;gap:var(--hair);background:var(--c-border)}
 .bloque{background:var(--c-bg);display:flex;flex-direction:column;gap:14px;padding:30px 0}
@@ -568,6 +571,71 @@ footer.site{background:var(--c-surface-inverse);color:var(--c-on-inverse)}
 .pie-fin{display:flex;justify-content:space-between;flex-wrap:wrap;gap:24px;padding-block:24px 40px;
          font-size:11px;letter-spacing:.08em;color:var(--c-on-inverse-muted)}
 .pie-fin div{display:flex;flex-wrap:wrap;gap:28px}
+.pie-fin a{transition:color .25s var(--ease)}
+.pie-fin a:hover{color:var(--c-on-inverse)}
+
+/* ═══════════════════════════ PÁGINAS DE SISTEMA · gracias · legales · 404 ═══════════════════════════
+   NO TIENEN LÁMINA: se DERIVAN del sistema que fijan las cinco dibujadas, y casi todo lo que usan ya
+   existe en otra página. La cabecera partida con filete es la de /nosotros y /contacto; los pasos
+   de /gracias son los de «Cómo trabajamos»; su cierre es el de /nosotros; la banda de búsqueda y
+   las tarjetas del 404 son las de la portada. Lo único nuevo es la maqueta legal, y está hecha con
+   el mismo vocabulario: filete de 1px dibujado por el hueco, eyebrow, serif de display para los
+   títulos y palo seco para el texto. Ni un color, ni un radio, ni un tamaño fuera de los tokens. */
+
+/* En COLUMNA y al borde derecho, como el botón único del cierre de /nosotros. En fila no cabían:
+   medido a 1280, la pista mide 365px y botón + enlace piden 375, así que el enlace saltaba debajo
+   alineado a la izquierda y el par quedaba flotando a media pista. */
+.cierre-acciones{display:flex;flex-direction:column;gap:18px;align-items:flex-end;justify-self:end}
+.pag-head-lado{display:flex;flex-direction:column;gap:28px;min-width:0}
+
+/* LEGAL. Una maqueta, tres páginas. Misma proporción (1fr / 1.5fr), mismo hueco y mismo pegado que
+   «Cómo trabajamos»: el índice acompaña al texto igual que allí el titular acompaña a la lista, así
+   que el raíl de la columna de lectura es uno que /nosotros ya tiene, no uno inventado aquí. */
+.legal-body{display:grid;grid-template-columns:1fr 1.5fr;gap:80px;align-items:start}
+.indice{position:sticky;top:calc(var(--header-h) + 32px);display:flex;flex-direction:column;gap:18px;
+        min-width:0;font-size:1rem}
+.indice ol{list-style:none;margin:0;padding:0;border-top:var(--hair) solid var(--c-border)}
+/* 13px arriba y abajo sobre 19px de línea dan 45px de fila: cada entrada del índice es un objetivo
+   táctil completo, no una línea de texto que hay que acertar. */
+.indice a{display:grid;grid-template-columns:30px minmax(0,1fr);gap:8px;align-items:baseline;
+          padding-block:13px;border-bottom:var(--hair) solid var(--c-border);font-size:14px;line-height:1.35;
+          transition:color .25s var(--ease)}
+.indice a:hover{color:var(--c-accent)}
+.indice a .mono{font-size:11px;color:var(--c-text-muted)}
+/* LA MEDIDA VA EN `em` DEL PROPIO TEXTO, NO EN PX, Y SE CONTÓ, NO SE ESTIMÓ. Lo que se acota es
+   cuántos caracteres caben en una línea, y eso lo decide el cuerpo de letra, que es fijo aquí
+   (16px) mientras el del resto de la página es fluido. La primera versión medía 40em a 15,5px y
+   `medir-geometria` la dio por buena con «74 caracteres»; contados carácter a carácter sobre las
+   líneas llenas eran 86 de media y 94 de máximo, porque la herramienta divide por medio cuerpo y
+   Archivo es más estrecha que eso. 31em da 67 de media, dentro de 60–75. */
+.legal-texto{container-type:inline-size;min-width:0;max-width:31em;font-size:1rem;
+             display:flex;flex-direction:column;gap:44px}
+.legal-sec{display:flex;flex-direction:column;gap:18px;padding-top:44px;border-top:var(--hair) solid var(--c-border)}
+.legal-sec:first-child{padding-top:0;border-top:0}
+.legal-sec > .mono{font-size:12px;line-height:1;color:var(--c-accent)}
+.legal-sec h2{font-size:clamp(1.5rem,2.4vw,1.875rem);line-height:1.15;letter-spacing:-.01em}
+.legal-sec h3{font-size:1.1875rem;line-height:1.3;letter-spacing:0}
+.legal-sec p,.legal-sec li{color:var(--c-text-soft);line-height:1.8;text-wrap:pretty}
+.legal-sec ul{margin:0;padding-left:1.25em;display:flex;flex-direction:column;gap:10px}
+.legal-sec strong{font-weight:500;color:var(--c-text)}
+.legal-sec a{color:var(--c-accent);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}
+.legal-sec a:hover{color:var(--c-accent-hover)}
+/* Ficha de datos: la tabla de características de la ficha de propiedad, en vertical. Filas
+   separadas por el hueco de 1px sobre el color del filete — el mismo recurso de todas las rejillas
+   de la maqueta — y SIN relleno lateral, para que etiqueta y valor arranquen en el raíl del texto. */
+.registro{display:flex;flex-direction:column;gap:var(--hair);background:var(--c-border);
+          border-block:var(--hair) solid var(--c-border)}
+.registro > div{background:var(--c-bg);display:grid;grid-template-columns:10.5em minmax(0,1fr);gap:20px;
+                padding-block:14px;align-items:baseline}
+.registro dt{font-size:9.5px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;
+             color:var(--c-text-muted);line-height:1.5}
+.registro dd{font-size:14.5px;line-height:1.6;color:var(--c-text)}
+/* Una ficha de datos que CIERRA su apartado no lleva filete inferior: 44px más abajo ya está el
+   filete del apartado siguiente, y dos reglas paralelas tan juntas se leían como una errata. */
+.legal-sec > .registro:last-child,.legal-sec > .tratamiento:last-child > .registro{border-bottom:0}
+.tratamiento{display:flex;flex-direction:column;gap:12px;padding-top:10px}
+.tratamiento h3.mono{font-family:var(--font-mono);font-size:14px;letter-spacing:.04em}
+.legal-sec .registro dt,.indice a span{overflow-wrap:normal;word-break:normal}
 
 /* ══════════════════════════════════════════════════════════════════════════════════════════════
    DOS PUNTOS DE CORTE Y NI UNO MÁS: 1024 y 767. No es una preferencia — Elementor sólo acepta
@@ -629,7 +697,12 @@ footer.site{background:var(--c-surface-inverse);color:var(--c-on-inverse)}
   .ficha-aside,.metodo-sec > h2{position:static}
   .ficha-body > .ficha-aside{order:-1}
   .cierre{padding:var(--sp-xl) var(--sp-l);gap:var(--sp-m)}
-  .cierre .btn{justify-self:start}
+  .cierre .btn,.cierre-acciones{justify-self:start}
+  .cierre-acciones{align-items:flex-start}
+  /* Legal en una columna: el índice deja de pegarse y se queda ENCIMA del texto, con la misma
+     medida que la columna de lectura para no abrir una lista de filetes de 960px. */
+  .legal-body{grid-template-columns:minmax(0,1fr);gap:var(--sp-l)}
+  .indice{position:static;max-width:31em}
 
   .mosaico{grid-template-columns:1fr;grid-template-rows:auto;height:auto}
   .mosaico > :first-child{grid-row:auto}
@@ -700,6 +773,10 @@ footer.site{background:var(--c-surface-inverse);color:var(--c-on-inverse)}
      cada una tiene el ancho entero — y además es la lectura correcta en móvil. */
   .caracteristicas > div{flex-direction:column;gap:6px}
   .caracteristicas span:last-child{text-align:left}
+  /* La misma razón que la tabla de características: la clave apilada sobre su valor. */
+  .registro > div{grid-template-columns:minmax(0,1fr);gap:4px}
+  .legal-texto{gap:var(--sp-l)}
+  .legal-sec{padding-top:var(--sp-l)}
   .cierre{padding:var(--sp-l) var(--sp-m)}
   .cta-copy{padding:var(--sp-l) var(--sp-m)}
   .simulador,.panel-visita{padding:var(--sp-m)}
@@ -738,7 +815,7 @@ footer.site{background:var(--c-surface-inverse);color:var(--c-on-inverse)}
   </nav>
 </header>
 
-<main id="contenido">
+<main id="contenido" tabindex="-1">
 
 <!-- ═══════════════════════════════════ 1 · INICIO ═══════════════════════════════════ -->
 <div class="page" id="inicio" data-title="Inmobiliaria de la O — Villas y áticos de autor en Marbella">
@@ -1279,11 +1356,15 @@ footer.site{background:var(--c-surface-inverse);color:var(--c-on-inverse)}
 
   <section>
     <div class="wrap contacto-body">
-      <form class="form" onsubmit="return false">
+      <!-- EL ENVÍO LLEVA A /gracias. En el build es la acción «Redirigir» del widget Formulario
+           nativo; aquí lo hace el manejador de envío, y SIN `action`: un GET a la propia página
+           pondría nombre, teléfono y correo en la URL. `required` es la validación nativa del
+           navegador y la misma casilla «Obligatorio» de cada campo en Elementor. -->
+      <form class="form" onsubmit="location.hash='gracias';return false">
         <div class="campos">
           <label>
             <span>Nombre y apellidos</span>
-            <input type="text" name="nombre" autocomplete="name">
+            <input type="text" name="nombre" autocomplete="name" required>
           </label>
           <label>
             <span>Teléfono</span>
@@ -1291,8 +1372,7 @@ footer.site{background:var(--c-surface-inverse);color:var(--c-on-inverse)}
           </label>
           <label>
             <span>Correo electrónico</span>
-            <input type="email" name="correo" autocomplete="email">
-          </label>
+            <input type="email" name="correo" autocomplete="email" required>
           <label>
             <span>Motivo</span>
             <select name="motivo">
@@ -1309,10 +1389,10 @@ footer.site{background:var(--c-surface-inverse);color:var(--c-on-inverse)}
           <textarea rows="4" name="mensaje" placeholder="Zona, tipo de propiedad, plazos…"></textarea>
         </label>
         <label class="consent">
-          <input type="checkbox" name="privacidad">
-          <span>He leído y acepto la política de privacidad. Sus datos no se comparten con terceros.</span>
+          <input type="checkbox" name="privacidad" required>
+          <span>He leído y acepto la <a href="#privacidad">política de privacidad</a>. Sus datos no se comparten con terceros.</span>
         </label>
-        <button class="btn btn-solid" type="button">Enviar consulta</button>
+        <button class="btn btn-solid" type="submit">Enviar consulta</button>
       </form>
 
       <aside class="contacto-aside">
@@ -1331,6 +1411,604 @@ footer.site{background:var(--c-surface-inverse);color:var(--c-on-inverse)}
           <span>mapa · Ricardo Soriano 42</span>
         </div>
       </aside>
+    </div>
+  </section>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════════════════════
+     PÁGINAS DE SISTEMA · 6 a 10. Sin lámina en el canvas: derivadas del sistema de las cinco
+     dibujadas (ver canvas/MANIFIESTO.md). Misma cabecera, mismo pie, mismos tokens.
+     ═══════════════════════════════════════════════════════════════════════════════════════════ -->
+
+<!-- ════════════════════════════════ 6 · GRACIAS ══════════════════════════════════ -->
+<div class="page" id="gracias" data-title="Consulta recibida — Inmobiliaria de la O">
+
+  <section style="padding-block-end:0">
+    <div class="wrap">
+      <div class="pag-head" style="padding-bottom:44px;border-bottom:1px solid var(--c-border)">
+        <div class="pag-head-copy">
+          <span class="eyebrow">Consulta recibida</span>
+          <h1>Gracias. Ya la estamos leyendo</h1>
+        </div>
+        <p class="lede">Una persona del equipo le llamará en menos de 24 horas laborables. Le hemos enviado una copia de su mensaje al correo que nos ha indicado.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap metodo-sec">
+      <h2>Qué pasa ahora</h2>
+      <div class="metodo">
+        <div class="paso">
+          <span class="mono">01</span>
+          <div class="paso-copy">
+            <h3>Una persona lee su consulta</h3>
+            <p>Hoy mismo, si nos ha escrito en horario de oficina: de lunes a viernes, de 9:30 a 19:00. Si no, a primera hora del siguiente día laborable. No enviamos respuestas automáticas.</p>
+          </div>
+        </div>
+        <div class="paso">
+          <span class="mono">02</span>
+          <div class="paso-copy">
+            <h3>Le llamamos en menos de 24 horas laborables</h3>
+            <p>Desde el +34&nbsp;952&nbsp;76&nbsp;41&nbsp;80. Si no le localizamos, le escribimos desde hola@inmobiliariadelao.es para buscar el mejor momento.</p>
+          </div>
+        </div>
+        <div class="paso">
+          <span class="mono">03</span>
+          <div class="paso-copy">
+            <h3>Visita o valoración, con fecha</h3>
+            <p>Si ha pedido una visita, en esa misma llamada fijamos día y hora. Si ha pedido una valoración, visitamos la casa y le entregamos el informe con comparables de cierre en 48 horas.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-block-start:0">
+    <div class="wrap">
+      <div class="cierre">
+        <div class="cierre-copy">
+          <h2>Mientras tanto, la cartera</h2>
+          <p>Diecisiete propiedades bajo mandato, cada una con su ficha completa. Si su consulta es urgente, llámenos al +34&nbsp;952&nbsp;76&nbsp;41&nbsp;80.</p>
+        </div>
+        <div class="cierre-acciones">
+          <a class="btn btn-solid" href="#propiedades">Ver propiedades</a>
+          <a class="link-rule" href="#inicio">Volver al inicio</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ══════════════════════════════ 7 · AVISO LEGAL ════════════════════════════════ -->
+<div class="page" id="aviso-legal" data-title="Aviso legal — Inmobiliaria de la O">
+
+  <section style="padding-block-end:0">
+    <div class="wrap">
+      <div class="pag-head" style="padding-bottom:44px;border-bottom:1px solid var(--c-border)">
+        <div class="pag-head-copy">
+          <span class="eyebrow">Información legal</span>
+          <h1>Aviso legal</h1>
+        </div>
+        <div class="pag-head-lado">
+          <p class="lede">Quién está detrás de este sitio web y en qué condiciones puede usarlo. Escrito para que se entienda sin un abogado al lado.</p>
+          <span class="small muted">Última actualización: 1 de septiembre de 2026</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap legal-body">
+      <nav class="indice" aria-label="Índice del aviso legal">
+        <span class="eyebrow eyebrow-mute">Índice</span>
+        <ol>
+          <li><a href="#al-titular"><span class="mono">01</span><span>Titular del sitio web</span></a></li>
+          <li><a href="#al-objeto"><span class="mono">02</span><span>Objeto y aceptación</span></a></li>
+          <li><a href="#al-uso"><span class="mono">03</span><span>Condiciones de uso</span></a></li>
+          <li><a href="#al-propiedades"><span class="mono">04</span><span>Información sobre las propiedades</span></a></li>
+          <li><a href="#al-propiedad-intelectual"><span class="mono">05</span><span>Propiedad intelectual e industrial</span></a></li>
+          <li><a href="#al-responsabilidad"><span class="mono">06</span><span>Responsabilidad</span></a></li>
+          <li><a href="#al-enlaces"><span class="mono">07</span><span>Enlaces a otros sitios</span></a></li>
+          <li><a href="#al-datos"><span class="mono">08</span><span>Protección de datos y cookies</span></a></li>
+          <li><a href="#al-ley"><span class="mono">09</span><span>Legislación aplicable y jurisdicción</span></a></li>
+        </ol>
+      </nav>
+
+      <div class="legal-texto">
+        <div class="legal-sec" id="al-titular">
+          <span class="mono">01</span>
+          <h2>Titular del sitio web</h2>
+          <p>En cumplimiento del artículo 10 de la Ley 34/2002, de 11 de julio, de servicios de la sociedad de la información y de comercio electrónico (LSSI-CE), estos son los datos del titular de inmobiliariadelao.es:</p>
+          <dl class="registro">
+            <div><dt>Denominación social</dt><dd>Inmobiliaria de la O, S. L.</dd></div>
+            <div><dt>Nombre comercial</dt><dd>Inmobiliaria de la O</dd></div>
+            <div><dt>NIF</dt><dd>B93418267</dd></div>
+            <div><dt>Domicilio social</dt><dd>Avenida Ricardo Soriano 42, 29601 Marbella (Málaga)</dd></div>
+            <div><dt>Registro Mercantil</dt><dd>Inscrita en el Registro Mercantil de Málaga, tomo 3874, folio 152, hoja MA-80417, inscripción 1.ª</dd></div>
+            <div><dt>Actividad</dt><dd>Intermediación en la compraventa y el arrendamiento de inmuebles (CNAE 6831)</dd></div>
+            <div><dt>Registro profesional</dt><dd>Registro de Agentes Inmobiliarios de Andalucía, n.º 2917 · Miembro de AIPP, n.º 4821</dd></div>
+            <div><dt>Correo electrónico</dt><dd><a href="mailto:hola@inmobiliariadelao.es">hola@inmobiliariadelao.es</a></dd></div>
+            <div><dt>Teléfono</dt><dd><a href="tel:+34952764180">+34&nbsp;952&nbsp;76&nbsp;41&nbsp;80</a></dd></div>
+          </dl>
+        </div>
+
+        <div class="legal-sec" id="al-objeto">
+          <span class="mono">02</span>
+          <h2>Objeto y aceptación</h2>
+          <p>Este aviso legal regula el acceso y el uso del sitio web inmobiliariadelao.es (en adelante, «el sitio web»), a través del cual Inmobiliaria de la O, S. L. (en adelante, «Inmobiliaria de la O») presenta su actividad de intermediación inmobiliaria y las propiedades que tiene en cartera.</p>
+          <p>El acceso al sitio web es gratuito, salvo el coste de la conexión, y atribuye la condición de usuario. Navegar por él supone aceptar este aviso legal en la versión publicada en ese momento, por lo que le recomendamos leerlo cada vez que lo visite.</p>
+        </div>
+
+        <div class="legal-sec" id="al-uso">
+          <span class="mono">03</span>
+          <h2>Condiciones de uso</h2>
+          <p>El usuario se compromete a utilizar el sitio web conforme a la ley, a la buena fe y a este aviso legal. En particular, se compromete a no:</p>
+          <ul>
+            <li>Utilizar los contenidos con fines ilícitos, contrarios al orden público o que puedan dañar los derechos de Inmobiliaria de la O o de terceros.</li>
+            <li>Introducir virus, programas maliciosos o cualquier otro sistema que pueda dañar el sitio web o los equipos de sus proveedores.</li>
+            <li>Facilitar datos falsos o de otra persona en los formularios, o suplantar su identidad.</li>
+            <li>Extraer de forma sistemática las fichas, las fotografías o los precios para incorporarlos a otros portales o bases de datos.</li>
+          </ul>
+          <p>Inmobiliaria de la O podrá suspender el acceso a quien incumpla estas condiciones, sin necesidad de aviso previo.</p>
+        </div>
+
+        <div class="legal-sec" id="al-propiedades">
+          <span class="mono">04</span>
+          <h2>Información sobre las propiedades</h2>
+          <p>Las fichas publicadas tienen carácter informativo y no constituyen una oferta contractual. Las superficies, las distribuciones y las distancias son aproximadas y proceden de la documentación facilitada por la propiedad. Las fotografías pueden no reflejar el estado actual del inmueble ni el mobiliario que se vende con él.</p>
+          <p>Los precios se expresan en euros y no incluyen los impuestos ni los gastos de notaría, registro y gestión que correspondan al comprador. Una propiedad puede venderse o reservarse antes de que su ficha se retire; confirmamos siempre la disponibilidad antes de concertar una visita. El simulador de hipoteca ofrece un cálculo orientativo y no constituye una oferta de financiación.</p>
+          <p>Conforme a la normativa andaluza de información al consumidor en la compraventa y el arrendamiento de viviendas, la documentación de cada inmueble, incluido el certificado de eficiencia energética que exige el Real Decreto 390/2021, de 1 de junio, está a disposición de los interesados en nuestra oficina y se entrega antes de cualquier compromiso de compra.</p>
+        </div>
+
+        <div class="legal-sec" id="al-propiedad-intelectual">
+          <span class="mono">05</span>
+          <h2>Propiedad intelectual e industrial</h2>
+          <p>Los contenidos del sitio web —textos, fotografías, planos, vídeos, diseño gráfico, código fuente, logotipos y marcas— pertenecen a Inmobiliaria de la O o a terceros que han autorizado su uso, y están protegidos por la legislación de propiedad intelectual e industrial.</p>
+          <p>Puede visualizarlos, imprimirlos y descargarlos para uso personal y privado. Queda prohibida su reproducción, distribución, comunicación pública o transformación con fines comerciales sin autorización previa y por escrito. Las fotografías de las propiedades se han tomado con permiso de sus propietarios y no pueden reutilizarse en otros anuncios.</p>
+        </div>
+
+        <div class="legal-sec" id="al-responsabilidad">
+          <span class="mono">06</span>
+          <h2>Responsabilidad</h2>
+          <p>Revisamos los contenidos del sitio web con diligencia, pero no podemos garantizar que no contengan errores ni que el sitio esté disponible sin interrupciones. Inmobiliaria de la O no se hace responsable de los daños derivados de:</p>
+          <ul>
+            <li>Interrupciones del servicio, fallos técnicos o desconexiones ajenas a su control.</li>
+            <li>Decisiones tomadas únicamente a partir de la información publicada, sin contrastarla con la documentación del inmueble.</li>
+            <li>Virus u otros elementos dañinos introducidos por terceros pese a las medidas de seguridad adoptadas.</li>
+          </ul>
+          <p>Cuando tengamos conocimiento de un contenido erróneo o ilícito, lo corregiremos o retiraremos lo antes posible. Puede comunicárnoslo en <a href="mailto:hola@inmobiliariadelao.es">hola@inmobiliariadelao.es</a>.</p>
+        </div>
+
+        <div class="legal-sec" id="al-enlaces">
+          <span class="mono">07</span>
+          <h2>Enlaces a otros sitios</h2>
+          <p>El sitio web puede incluir enlaces a páginas de terceros, como organismos públicos. Inmobiliaria de la O no controla esos sitios ni responde de sus contenidos, de su disponibilidad ni de sus políticas de privacidad, y el enlace no implica ninguna relación ni recomendación.</p>
+          <p>Quien quiera enlazar a este sitio web deberá hacerlo a su página de inicio o a una ficha concreta, sin reproducir sus contenidos ni sugerir una relación comercial que no existe.</p>
+        </div>
+
+        <div class="legal-sec" id="al-datos">
+          <span class="mono">08</span>
+          <h2>Protección de datos y cookies</h2>
+          <p>Cómo tratamos los datos personales que nos facilita a través del sitio web se explica en la <a href="#privacidad">política de privacidad</a>. El uso de cookies y tecnologías similares se explica en la <a href="#cookies">política de cookies</a>.</p>
+        </div>
+
+        <div class="legal-sec" id="al-ley">
+          <span class="mono">09</span>
+          <h2>Legislación aplicable y jurisdicción</h2>
+          <p>Este aviso legal se rige por la legislación española. Para resolver cualquier controversia, las partes se someten a los juzgados y tribunales de Marbella, salvo que la normativa de consumidores y usuarios establezca otro fuero, en cuyo caso será competente el del domicilio del consumidor.</p>
+          <p>Si es usted consumidor, tiene a su disposición en nuestra oficina las hojas oficiales de quejas y reclamaciones de la Junta de Andalucía.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ══════════════════════════════ 8 · PRIVACIDAD ═════════════════════════════════ -->
+<div class="page" id="privacidad" data-title="Política de privacidad — Inmobiliaria de la O">
+
+  <section style="padding-block-end:0">
+    <div class="wrap">
+      <div class="pag-head" style="padding-bottom:44px;border-bottom:1px solid var(--c-border)">
+        <div class="pag-head-copy">
+          <span class="eyebrow">Información legal</span>
+          <h1>Política de privacidad</h1>
+        </div>
+        <div class="pag-head-lado">
+          <p class="lede">Qué datos nos da cuando nos escribe, pide una visita o nos encarga una venta, para qué los usamos y cómo recuperar el control sobre ellos.</p>
+          <span class="small muted">Última actualización: 1 de septiembre de 2026</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap legal-body">
+      <nav class="indice" aria-label="Índice de la política de privacidad">
+        <span class="eyebrow eyebrow-mute">Índice</span>
+        <ol>
+          <li><a href="#pr-responsable"><span class="mono">01</span><span>Responsable del tratamiento</span></a></li>
+          <li><a href="#pr-datos"><span class="mono">02</span><span>Qué datos tratamos</span></a></li>
+          <li><a href="#pr-finalidades"><span class="mono">03</span><span>Finalidades y base jurídica</span></a></li>
+          <li><a href="#pr-conservacion"><span class="mono">04</span><span>Cuánto tiempo los conservamos</span></a></li>
+          <li><a href="#pr-destinatarios"><span class="mono">05</span><span>A quién los comunicamos</span></a></li>
+          <li><a href="#pr-transferencias"><span class="mono">06</span><span>Transferencias internacionales</span></a></li>
+          <li><a href="#pr-derechos"><span class="mono">07</span><span>Sus derechos y cómo ejercerlos</span></a></li>
+          <li><a href="#pr-autoridad"><span class="mono">08</span><span>Autoridad de control</span></a></li>
+          <li><a href="#pr-seguridad"><span class="mono">09</span><span>Seguridad y menores de edad</span></a></li>
+          <li><a href="#pr-cambios"><span class="mono">10</span><span>Cambios en esta política</span></a></li>
+        </ol>
+      </nav>
+
+      <div class="legal-texto">
+        <div class="legal-sec" id="pr-responsable">
+          <span class="mono">01</span>
+          <h2>Responsable del tratamiento</h2>
+          <p>Conforme al Reglamento (UE) 2016/679 (RGPD) y a la Ley Orgánica 3/2018, de 5 de diciembre, de Protección de Datos Personales y garantía de los derechos digitales (LOPDGDD), el responsable del tratamiento de sus datos es:</p>
+          <dl class="registro">
+            <div><dt>Responsable</dt><dd>Inmobiliaria de la O, S. L.</dd></div>
+            <div><dt>NIF</dt><dd>B93418267</dd></div>
+            <div><dt>Dirección postal</dt><dd>Avenida Ricardo Soriano 42, 29601 Marbella (Málaga)</dd></div>
+            <div><dt>Correo de privacidad</dt><dd><a href="mailto:privacidad@inmobiliariadelao.es">privacidad@inmobiliariadelao.es</a></dd></div>
+            <div><dt>Teléfono</dt><dd><a href="tel:+34952764180">+34&nbsp;952&nbsp;76&nbsp;41&nbsp;80</a></dd></div>
+          </dl>
+          <p>Por el volumen y la naturaleza de los datos que trata, Inmobiliaria de la O no está obligada a designar un delegado de protección de datos. Cualquier cuestión sobre esta política puede dirigirse al correo de privacidad.</p>
+        </div>
+
+        <div class="legal-sec" id="pr-datos">
+          <span class="mono">02</span>
+          <h2>Qué datos tratamos</h2>
+          <p>Solo tratamos los datos que usted nos facilita o que son necesarios para la operación en la que intervenimos:</p>
+          <ul>
+            <li><strong>Identificación y contacto:</strong> nombre y apellidos, teléfono y correo electrónico, que nos da en el formulario, por teléfono o en la oficina.</li>
+            <li><strong>Contenido de la consulta:</strong> el motivo que selecciona y lo que nos cuenta sobre la propiedad que busca o que quiere vender.</li>
+            <li><strong>Datos del inmueble,</strong> si nos encarga una venta o una valoración: dirección, referencia catastral, superficies, cargas y documentación técnica.</li>
+            <li><strong>Documento de identidad</strong> (DNI, NIE o pasaporte) y, cuando procede, titularidad real y origen de los fondos, si se formaliza una reserva o una compraventa, porque la ley nos obliga a pedirlos.</li>
+            <li><strong>Datos de navegación,</strong> en los términos que explica la <a href="#cookies">política de cookies</a>.</li>
+          </ul>
+          <p>No tratamos categorías especiales de datos. Si nos facilita datos de otra persona, por ejemplo de otro copropietario, debe haberla informado antes y contar con su autorización.</p>
+        </div>
+
+        <div class="legal-sec" id="pr-finalidades">
+          <span class="mono">03</span>
+          <h2>Finalidades y base jurídica</h2>
+          <p>Cada tratamiento tiene una finalidad concreta, una base que lo legitima y un plazo de conservación:</p>
+
+          <div class="tratamiento">
+            <h3>Responder a su consulta</h3>
+            <dl class="registro">
+              <div><dt>Datos</dt><dd>Identificación, contacto y contenido de la consulta.</dd></div>
+              <div><dt>Base jurídica</dt><dd>Su consentimiento, que otorga al enviar el formulario, y la aplicación de medidas precontractuales a petición suya (artículo 6.1.a y b del RGPD).</dd></div>
+              <div><dt>Conservación</dt><dd>Hasta resolver la consulta y, si no da lugar a ninguna relación, un máximo de doce meses.</dd></div>
+            </dl>
+          </div>
+
+          <div class="tratamiento">
+            <h3>Organizar visitas a las propiedades</h3>
+            <dl class="registro">
+              <div><dt>Datos</dt><dd>Identificación, contacto, fecha y propiedad visitada, que constan en la hoja de visita.</dd></div>
+              <div><dt>Base jurídica</dt><dd>Medidas precontractuales solicitadas por usted (artículo 6.1.b del RGPD).</dd></div>
+              <div><dt>Conservación</dt><dd>Mientras dure el encargo de venta de la propiedad y cinco años más, para atender posibles reclamaciones.</dd></div>
+            </dl>
+          </div>
+
+          <div class="tratamiento">
+            <h3>Valorar su propiedad y gestionar su venta</h3>
+            <dl class="registro">
+              <div><dt>Datos</dt><dd>Identificación, contacto y datos del inmueble.</dd></div>
+              <div><dt>Base jurídica</dt><dd>Ejecución del contrato de mediación o de las medidas previas que usted solicita (artículo 6.1.b del RGPD).</dd></div>
+              <div><dt>Conservación</dt><dd>Durante la relación contractual y cinco años más, plazo de prescripción de las acciones personales (artículo 1964 del Código Civil).</dd></div>
+            </dl>
+          </div>
+
+          <div class="tratamiento">
+            <h3>Prevenir el blanqueo de capitales</h3>
+            <dl class="registro">
+              <div><dt>Datos</dt><dd>Documento de identidad, titularidad real, actividad profesional y origen de los fondos.</dd></div>
+              <div><dt>Base jurídica</dt><dd>Obligación legal (artículo 6.1.c del RGPD y Ley 10/2010, de 28 de abril, de prevención del blanqueo de capitales y de la financiación del terrorismo).</dd></div>
+              <div><dt>Conservación</dt><dd>Diez años desde que termina la operación, como exige el artículo 25 de la Ley 10/2010.</dd></div>
+            </dl>
+          </div>
+
+          <div class="tratamiento">
+            <h3>Enviarle propiedades que encajan con lo que busca</h3>
+            <dl class="registro">
+              <div><dt>Datos</dt><dd>Contacto y criterios de búsqueda.</dd></div>
+              <div><dt>Base jurídica</dt><dd>Su consentimiento expreso, que puede retirar en cualquier momento sin que afecte a la licitud del tratamiento anterior (artículo 6.1.a del RGPD).</dd></div>
+              <div><dt>Conservación</dt><dd>Hasta que retire su consentimiento o pasen dos años sin contacto.</dd></div>
+            </dl>
+          </div>
+
+          <div class="tratamiento">
+            <h3>Cumplir obligaciones contables y fiscales</h3>
+            <dl class="registro">
+              <div><dt>Datos</dt><dd>Identificación y datos de facturación.</dd></div>
+              <div><dt>Base jurídica</dt><dd>Obligación legal (artículo 6.1.c del RGPD).</dd></div>
+              <div><dt>Conservación</dt><dd>Seis años, conforme al artículo 30 del Código de Comercio.</dd></div>
+            </dl>
+          </div>
+
+          <p>No elaboramos perfiles ni tomamos decisiones automatizadas que produzcan efectos jurídicos sobre usted.</p>
+        </div>
+
+        <div class="legal-sec" id="pr-conservacion">
+          <span class="mono">04</span>
+          <h2>Cuánto tiempo los conservamos</h2>
+          <p>El plazo de cada tratamiento figura en el apartado anterior. Cuando termina, bloqueamos los datos: dejan de usarse y solo quedan a disposición de jueces, tribunales y administraciones públicas durante el plazo de prescripción de las posibles responsabilidades, conforme al artículo 32 de la LOPDGDD. Pasado ese plazo, los suprimimos de forma segura.</p>
+        </div>
+
+        <div class="legal-sec" id="pr-destinatarios">
+          <span class="mono">05</span>
+          <h2>A quién los comunicamos</h2>
+          <p>No vendemos ni cedemos sus datos. Solo los comunicamos en estos casos:</p>
+          <ul>
+            <li>A la otra parte de la operación, a la notaría y al Registro de la Propiedad, cuando la compraventa o el arrendamiento se formaliza y en la medida necesaria para ello.</li>
+            <li>A la Agencia Estatal de Administración Tributaria, al Servicio Ejecutivo de la Comisión de Prevención del Blanqueo de Capitales (SEPBLAC), a jueces y tribunales, cuando una ley nos obliga.</li>
+            <li>A agencias colaboradoras de nuestra red internacional, solo si usted lo autoriza expresamente para una propiedad concreta.</li>
+          </ul>
+          <p>También acceden a los datos, sin que suponga una cesión, los proveedores que nos prestan servicios con contrato de encargado del tratamiento conforme al artículo 28 del RGPD: alojamiento del sitio web, correo electrónico, programa de gestión inmobiliaria y asesoría fiscal y contable.</p>
+        </div>
+
+        <div class="legal-sec" id="pr-transferencias">
+          <span class="mono">06</span>
+          <h2>Transferencias internacionales</h2>
+          <p>Nuestros proveedores tratan los datos dentro del Espacio Económico Europeo. Si alguno accediera a ellos desde fuera, lo haría con las garantías del capítulo V del RGPD: una decisión de adecuación de la Comisión Europea, como el Marco de Privacidad de Datos UE-EE.&nbsp;UU. para las empresas adheridas, o cláusulas contractuales tipo aprobadas por la Comisión.</p>
+          <p>Las cookies analíticas pueden implicar una transferencia a Estados Unidos; se explica en la <a href="#ck-terceros">política de cookies</a>.</p>
+        </div>
+
+        <div class="legal-sec" id="pr-derechos">
+          <span class="mono">07</span>
+          <h2>Sus derechos y cómo ejercerlos</h2>
+          <p>Puede ejercer en cualquier momento, y de forma gratuita, los siguientes derechos:</p>
+          <ul>
+            <li><strong>Acceso:</strong> saber si tratamos sus datos y obtener una copia.</li>
+            <li><strong>Rectificación:</strong> corregir los datos inexactos o completar los incompletos.</li>
+            <li><strong>Supresión:</strong> pedir que los borremos cuando ya no sean necesarios.</li>
+            <li><strong>Oposición:</strong> oponerse a un tratamiento, en particular al envío de propiedades.</li>
+            <li><strong>Limitación:</strong> pedir que conservemos los datos sin usarlos mientras se resuelve una reclamación.</li>
+            <li><strong>Portabilidad:</strong> recibir los datos que nos dio en un formato estructurado y de uso común.</li>
+            <li><strong>Retirada del consentimiento,</strong> sin que afecte a los tratamientos anteriores.</li>
+          </ul>
+          <p>Para ejercerlos, escriba a <a href="mailto:privacidad@inmobiliariadelao.es">privacidad@inmobiliariadelao.es</a> o por correo postal a Avenida Ricardo Soriano 42, 29601 Marbella (Málaga), indicando qué derecho ejerce. Solo le pediremos acreditar su identidad si tenemos dudas razonables sobre ella. Respondemos en el plazo de un mes, que puede ampliarse dos meses más si la solicitud es compleja; en ese caso le avisaremos dentro del primer mes.</p>
+        </div>
+
+        <div class="legal-sec" id="pr-autoridad">
+          <span class="mono">08</span>
+          <h2>Autoridad de control</h2>
+          <p>Si considera que no hemos atendido correctamente sus derechos, puede presentar una reclamación ante la Agencia Española de Protección de Datos, C/ Jorge Juan 6, 28001 Madrid, o a través de su sede electrónica, a la que se accede desde <a href="https://www.aepd.es">www.aepd.es</a>.</p>
+          <p>Antes, si lo prefiere, escríbanos a <a href="mailto:privacidad@inmobiliariadelao.es">privacidad@inmobiliariadelao.es</a> y revisaremos su caso.</p>
+        </div>
+
+        <div class="legal-sec" id="pr-seguridad">
+          <span class="mono">09</span>
+          <h2>Seguridad y menores de edad</h2>
+          <p>Aplicamos medidas técnicas y organizativas adecuadas al riesgo: conexión cifrada en todo el sitio web, acceso a los datos limitado al personal que los necesita, copias de seguridad y compromisos de confidencialidad con el equipo y los proveedores.</p>
+          <p>El sitio web no está dirigido a menores de catorce años y no recogemos conscientemente sus datos. Si detectamos que un menor nos los ha facilitado, los suprimiremos.</p>
+        </div>
+
+        <div class="legal-sec" id="pr-cambios">
+          <span class="mono">10</span>
+          <h2>Cambios en esta política</h2>
+          <p>Podemos actualizar esta política para adaptarla a cambios legales o de nuestra actividad. La fecha de la última actualización figura al principio de la página y, si el cambio es relevante, se lo comunicaremos por correo electrónico a quienes mantengan una relación activa con nosotros.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ═══════════════════════════════ 9 · COOKIES ═══════════════════════════════════ -->
+<div class="page" id="cookies" data-title="Política de cookies — Inmobiliaria de la O">
+
+  <section style="padding-block-end:0">
+    <div class="wrap">
+      <div class="pag-head" style="padding-bottom:44px;border-bottom:1px solid var(--c-border)">
+        <div class="pag-head-copy">
+          <span class="eyebrow">Información legal</span>
+          <h1>Política de cookies</h1>
+        </div>
+        <div class="pag-head-lado">
+          <p class="lede">Qué guarda este sitio web en su navegador, quién lo guarda y durante cuánto tiempo. No usamos cookies publicitarias.</p>
+          <span class="small muted">Última actualización: 1 de septiembre de 2026</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap legal-body">
+      <nav class="indice" aria-label="Índice de la política de cookies">
+        <span class="eyebrow eyebrow-mute">Índice</span>
+        <ol>
+          <li><a href="#ck-que-son"><span class="mono">01</span><span>Qué son las cookies</span></a></li>
+          <li><a href="#ck-tipos"><span class="mono">02</span><span>Qué tipos usamos</span></a></li>
+          <li><a href="#ck-listado"><span class="mono">03</span><span>Cookies de este sitio web</span></a></li>
+          <li><a href="#ck-consentimiento"><span class="mono">04</span><span>Aceptar, rechazar o cambiar de opinión</span></a></li>
+          <li><a href="#ck-terceros"><span class="mono">05</span><span>Cookies de terceros y transferencias</span></a></li>
+          <li><a href="#ck-navegador"><span class="mono">06</span><span>Cómo eliminarlas desde el navegador</span></a></li>
+          <li><a href="#ck-cambios"><span class="mono">07</span><span>Actualizaciones y contacto</span></a></li>
+        </ol>
+      </nav>
+
+      <div class="legal-texto">
+        <div class="legal-sec" id="ck-que-son">
+          <span class="mono">01</span>
+          <h2>Qué son las cookies</h2>
+          <p>Una cookie es un pequeño archivo que un sitio web guarda en su navegador para recordar información entre páginas o entre visitas. Esta política se aplica también a tecnologías similares, como el almacenamiento local del navegador.</p>
+          <p>La redactamos conforme al artículo 22.2 de la Ley 34/2002, de servicios de la sociedad de la información y de comercio electrónico (LSSI-CE), y a la guía sobre el uso de las cookies de la Agencia Española de Protección de Datos.</p>
+        </div>
+
+        <div class="legal-sec" id="ck-tipos">
+          <span class="mono">02</span>
+          <h2>Qué tipos usamos</h2>
+          <ul>
+            <li><strong>Técnicas:</strong> imprescindibles para que el sitio web funcione y para recordar su decisión sobre las cookies. No necesitan su consentimiento.</li>
+            <li><strong>De preferencias:</strong> recuerdan un ajuste que usted elige, como los valores del simulador de hipoteca. Tampoco lo necesitan, porque es usted quien pide que se recuerde.</li>
+            <li><strong>Analíticas:</strong> nos permiten contar las visitas y saber qué propiedades se consultan más, siempre de forma agregada. Solo se instalan si las acepta.</li>
+          </ul>
+          <p>No usamos cookies publicitarias ni de seguimiento entre sitios web, y no compartimos su navegación con redes sociales.</p>
+        </div>
+
+        <div class="legal-sec" id="ck-listado">
+          <span class="mono">03</span>
+          <h2>Cookies de este sitio web</h2>
+          <p>Estas son todas las cookies que puede instalar inmobiliariadelao.es, con su proveedor, su finalidad y su duración:</p>
+
+          <div class="tratamiento">
+            <h3 class="mono">delao_consent</h3>
+            <dl class="registro">
+              <div><dt>Proveedor</dt><dd>Inmobiliaria de la O (propia)</dd></div>
+              <div><dt>Finalidad</dt><dd>Guarda si ha aceptado o rechazado cada tipo de cookie, para no volver a preguntárselo en cada página.</dd></div>
+              <div><dt>Duración</dt><dd>12 meses</dd></div>
+              <div><dt>Tipo</dt><dd>Técnica · propia</dd></div>
+            </dl>
+          </div>
+
+          <div class="tratamiento">
+            <h3 class="mono">delao_simulador</h3>
+            <dl class="registro">
+              <div><dt>Proveedor</dt><dd>Inmobiliaria de la O (propia)</dd></div>
+              <div><dt>Finalidad</dt><dd>Recuerda la entrada, el plazo y el tipo de interés que ha elegido en el simulador de hipoteca.</dd></div>
+              <div><dt>Duración</dt><dd>30 días</dd></div>
+              <div><dt>Tipo</dt><dd>De preferencias · propia</dd></div>
+            </dl>
+          </div>
+
+          <div class="tratamiento">
+            <h3 class="mono">_ga</h3>
+            <dl class="registro">
+              <div><dt>Proveedor</dt><dd>Google Ireland Limited (Google Analytics)</dd></div>
+              <div><dt>Finalidad</dt><dd>Asigna un identificador aleatorio al navegador para contar visitantes únicos.</dd></div>
+              <div><dt>Duración</dt><dd>2 años</dd></div>
+              <div><dt>Tipo</dt><dd>Analítica · de terceros</dd></div>
+            </dl>
+          </div>
+
+          <div class="tratamiento">
+            <h3 class="mono">_ga_*</h3>
+            <dl class="registro">
+              <div><dt>Proveedor</dt><dd>Google Ireland Limited (Google Analytics)</dd></div>
+              <div><dt>Finalidad</dt><dd>Mantiene el estado de la sesión y registra las páginas vistas. El asterisco es el identificador de nuestra cuenta de Analytics.</dd></div>
+              <div><dt>Duración</dt><dd>2 años</dd></div>
+              <div><dt>Tipo</dt><dd>Analítica · de terceros</dd></div>
+            </dl>
+          </div>
+        </div>
+
+        <div class="legal-sec" id="ck-consentimiento">
+          <span class="mono">04</span>
+          <h2>Aceptar, rechazar o cambiar de opinión</h2>
+          <p>En su primera visita, un aviso le permite aceptar todas las cookies, rechazar las que no son técnicas o elegir por tipos. Aceptar y rechazar tienen el mismo peso, y rechazar no le impide usar el sitio web.</p>
+          <p>Puede cambiar su decisión en cualquier momento eliminando la cookie <strong>delao_consent</strong> desde su navegador: el aviso volverá a aparecer en la siguiente visita. Si retira el consentimiento, las cookies analíticas dejan de instalarse, aunque las ya guardadas permanecen hasta que las elimine.</p>
+        </div>
+
+        <div class="legal-sec" id="ck-terceros">
+          <span class="mono">05</span>
+          <h2>Cookies de terceros y transferencias</h2>
+          <p>Las cookies analíticas son de Google Ireland Limited, que puede transferir datos a Google LLC en Estados Unidos. Google está adherida al Marco de Privacidad de Datos UE-EE.&nbsp;UU., que la Comisión Europea reconoce como garantía adecuada.</p>
+          <p>Hemos configurado Google Analytics para que no comparta estos datos con otros servicios de Google ni los use con fines publicitarios. Más información sobre sus derechos en nuestra <a href="#privacidad">política de privacidad</a>.</p>
+        </div>
+
+        <div class="legal-sec" id="ck-navegador">
+          <span class="mono">06</span>
+          <h2>Cómo eliminarlas desde el navegador</h2>
+          <p>Además del aviso, puede bloquear o eliminar las cookies desde la configuración de su navegador:</p>
+          <ul>
+            <li><strong>Chrome:</strong> Configuración › Privacidad y seguridad › Cookies de terceros.</li>
+            <li><strong>Firefox:</strong> Ajustes › Privacidad &amp; Seguridad › Cookies y datos del sitio.</li>
+            <li><strong>Safari:</strong> Ajustes › Privacidad › Gestionar datos de sitios web.</li>
+            <li><strong>Edge:</strong> Configuración › Cookies y permisos del sitio.</li>
+          </ul>
+          <p>Si bloquea todas las cookies, algunas funciones, como recordar su decisión sobre las cookies, dejarán de funcionar.</p>
+        </div>
+
+        <div class="legal-sec" id="ck-cambios">
+          <span class="mono">07</span>
+          <h2>Actualizaciones y contacto</h2>
+          <p>Revisamos esta política cada vez que cambian las cookies del sitio web; la fecha de la última actualización figura al principio de la página. Para cualquier duda, escríbanos a <a href="mailto:privacidad@inmobiliariadelao.es">privacidad@inmobiliariadelao.es</a>.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ═════════════════════════════════ 10 · 404 ════════════════════════════════════ -->
+<!-- Recibe también cualquier ruta que no exista: `#loquesea` no devuelve la portada, que es
+     justo lo que un 404 existe para no hacer. -->
+<div class="page" id="404" data-title="Página no encontrada — Inmobiliaria de la O">
+
+  <section>
+    <div class="wrap pag-head">
+      <div class="pag-head-copy">
+        <span class="eyebrow">Error 404</span>
+        <h1>Esta página no existe</h1>
+      </div>
+      <div class="pag-head-lado">
+        <p class="lede">La dirección puede estar mal escrita, o la propiedad que buscaba ya se ha vendido: retiramos cada ficha el mismo día de la firma.</p>
+        <div class="cta-acciones">
+          <a class="btn btn-solid" href="#propiedades">Ver las 17 propiedades</a>
+          <a class="link-rule" href="#inicio">Volver al inicio</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="buscador bleedband">
+    <form class="wrap buscador-form" onsubmit="location.hash='propiedades';return false">
+      <label class="campo">
+        <span>Operación</span>
+        <select><option>Venta</option><option>Alquiler</option><option>Alquiler de temporada</option></select>
+      </label>
+      <label class="campo">
+        <span>Zona o municipio</span>
+        <select><option>Todas las zonas</option><option>Marbella</option><option>Sierra Blanca</option><option>Milla de Oro</option><option>La Zagaleta</option><option>Nueva Andalucía</option><option>Sotogrande</option><option>Benahavís</option><option>Estepona</option></select>
+      </label>
+      <label class="campo">
+        <span>Tipo</span>
+        <select><option>Todos</option><option>Villa</option><option>Ático</option><option>Apartamento</option><option>Finca</option></select>
+      </label>
+      <label class="campo">
+        <span>Precio</span>
+        <select><option>Sin límite</option><option>Hasta 1,5 M€</option><option>1,5 – 3 M€</option><option>3 – 6 M€</option><option>Más de 6 M€</option></select>
+      </label>
+      <button class="btn btn-accent" type="submit">Buscar</button>
+    </form>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="sec-head-copy">
+          <span class="eyebrow">Selección 2026</span>
+          <h2>Propiedades destacadas</h2>
+        </div>
+        <a class="link-rule" href="#propiedades">Ver toda la cartera</a>
+      </div>
+      <div class="cards">
+        <a class="card" href="#ficha">
+          <img src="../img/delao-villa-alameda.webp" alt="Villa Alameda: fachada blanca con carpintería de suelo a techo y piscina de desbordamiento">
+          <span class="tag">En exclusiva</span>
+          <span class="eyebrow">Sierra Blanca</span>
+          <h3>Villa Alameda</h3>
+          <div class="meta"><span>642 m²</span><span>5 hab.</span><span>6 baños</span></div>
+          <span class="precio">4.950.000&thinsp;€</span>
+        </a>
+        <a class="card" href="#ficha">
+          <img src="../img/delao-atico-mar.webp" alt="Ático Mar de Plata: terraza corrida con vistas abiertas al Mediterráneo">
+          <span class="tag">Nueva</span>
+          <span class="eyebrow">Milla de Oro</span>
+          <h3>Ático Mar de Plata</h3>
+          <div class="meta"><span>318 m²</span><span>3 hab.</span><span>3 baños</span></div>
+          <span class="precio">3.200.000&thinsp;€</span>
+        </a>
+        <a class="card" href="#ficha">
+          <img src="../img/delao-finca.webp" alt="Finca El Almendral: cortijo rehabilitado entre olivos en Benahavís">
+          <span class="tag">En exclusiva</span>
+          <span class="eyebrow">Benahavís</span>
+          <h3>Finca El Almendral</h3>
+          <div class="meta"><span>2.100 m²</span><span>6 hab.</span><span>6 baños</span></div>
+          <span class="precio">5.600.000&thinsp;€</span>
+        </a>
+      </div>
     </div>
   </section>
 </div>
@@ -1375,11 +2053,9 @@ footer.site{background:var(--c-surface-inverse);color:var(--c-on-inverse)}
     </div>
     <div class="pie-fin">
       <span>© 2026 Inmobiliaria de la O</span>
-      <!-- Aviso legal, Privacidad y Cookies NO son páginas de este set de cinco, así que aquí no
-           son enlaces: un enlace de navegación que no llega a ninguna parte es exactamente el
-           defecto que el barrido de base encontró. Se convierten en enlaces cuando
-           `wordpress-legal` genere las tres páginas en el build nativo. -->
-      <div><span>Aviso legal</span><span>Privacidad</span><span>Cookies</span></div>
+      <!-- Las tres legales SON páginas del set desde que la plantilla lleva las diez corporativas,
+           así que aquí vuelven a ser enlaces, y cada uno llega a la suya. -->
+      <div><a href="#aviso-legal">Aviso legal</a><a href="#privacidad">Privacidad</a><a href="#cookies">Cookies</a></div>
     </div>
   </div>
 </footer>
@@ -1387,10 +2063,13 @@ footer.site{background:var(--c-surface-inverse);color:var(--c-on-inverse)}
 <script>
 (function(){
   'use strict';
-  var PAGINAS = ['inicio','propiedades','ficha','nosotros','contacto'];
+  var PAGINAS = ['inicio','propiedades','ficha','nosotros','contacto',
+                 'gracias','aviso-legal','privacidad','cookies','404'];
 
   var burger  = document.getElementById('burger');
   var menu    = document.getElementById('menu-movil');
+  var cabecera = document.querySelector('header.site');
+  var actual  = null;
 
   function cerrarMenu(){
     burger.setAttribute('aria-expanded','false');
@@ -1398,13 +2077,28 @@ footer.site{background:var(--c-surface-inverse);color:var(--c-on-inverse)}
     menu.hidden = true;
   }
 
-  function mostrar(id){
-    if (PAGINAS.indexOf(id) === -1) { id = 'inicio'; }
+  // UN FRAGMENTO PUEDE SER UNA PÁGINA O UN PUNTO DENTRO DE UNA. El índice de las legales salta a
+  // `#pr-derechos`, y con el enrutador viejo cualquier fragmento que no fuese una página devolvía
+  // la portada: el índice entero llevaba a Inicio, y el enlace de salto `#contenido` también. Se
+  // resuelve en este orden: página → destino dentro de una página → elemento fuera de las páginas
+  // (se queda donde está) → nada, y nada es el 404, nunca la portada.
+  function resolver(hash){
+    var id = decodeURIComponent((hash || '').replace(/^#/, '')) || 'inicio';
+    if (PAGINAS.indexOf(id) !== -1) { return { pagina: id, destino: null }; }
+    var el = document.getElementById(id);
+    var pag = el && el.closest('.page');
+    if (pag) { return { pagina: pag.id, destino: el }; }
+    if (el) { return { pagina: actual || 'inicio', destino: el }; }
+    return { pagina: '404', destino: null };
+  }
+
+  function mostrar(hash){
+    var r = resolver(hash), id = r.pagina;
     PAGINAS.forEach(function(p){
       document.getElementById(p).classList.toggle('activa', p === id);
     });
     // Un solo <title> por documento: cada página lleva el suyo en data-title y lo escribe al
-    // activarse. Es la única forma honesta de dar «un title real por página» en un set de cinco
+    // activarse. Es la única forma honesta de dar «un title real por página» en un set de diez
     // páginas dentro de un archivo.
     var t = document.getElementById(id).getAttribute('data-title');
     if (t) { document.title = t; }
@@ -1414,11 +2108,19 @@ footer.site{background:var(--c-surface-inverse);color:var(--c-on-inverse)}
       else { a.removeAttribute('aria-current'); }
     });
     cerrarMenu();
-    window.scrollTo(0,0);
+    actual = id;
+    if (!r.destino) { window.scrollTo(0,0); return; }
+    // La cabecera es pegajosa: sin descontar su alto, el título del apartado quedaría debajo.
+    if (r.destino.tagName === 'MAIN') { r.destino.focus({ preventScroll: true }); }
+    var y = r.destino.getBoundingClientRect().top + window.scrollY - cabecera.offsetHeight - 24;
+    window.scrollTo(0, Math.max(0, y));
   }
 
-  window.addEventListener('hashchange', function(){
-    mostrar((location.hash || '#inicio').slice(1));
+  window.addEventListener('hashchange', function(){ mostrar(location.hash); });
+  // Pulsar dos veces la misma entrada del índice no cambia el hash y no dispara `hashchange`.
+  document.addEventListener('click', function(e){
+    var a = e.target.closest && e.target.closest('a[href^="#"]');
+    if (a && a.getAttribute('href') === location.hash) { e.preventDefault(); mostrar(location.hash); }
   });
 
   burger.addEventListener('click', function(){
@@ -1473,6 +2175,12 @@ footer.site{background:var(--c-surface-inverse);color:var(--c-on-inverse)}
   [sEntrada, sAnos, sTasa].forEach(function(r){ r.addEventListener('input', simular); });
   simular();
 
-  mostrar((location.hash || '#inicio').slice(1));
+  mostrar(location.hash);
+  // AL CARGAR CON `#pr-derechos`, EL NAVEGADOR HACE SU PROPIO SALTO AL FRAGMENTO DESPUÉS de este
+  // script, y lo hace sin descontar la cabecera: medido, el apartado quedaba en y=0, tapado. Se
+  // repite el salto propio una vez terminada la carga.
+  window.addEventListener('load', function(){
+    if (resolver(location.hash).destino) { setTimeout(function(){ mostrar(location.hash); }, 0); }
+  });
 })();
 </script>
