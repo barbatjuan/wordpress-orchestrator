@@ -10,17 +10,19 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..600&family=Inter+Tight:wght@300..600&display=swap">
   <style>
     * { box-sizing: border-box; }
-    body { margin: 0; background: #171310; color: #F4EBDF; font-family: 'Inter Tight', 'Helvetica Neue', Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+    html, body { margin: 0; background: #171310; }
+    body { color: #F4EBDF; font-family: 'Inter Tight', 'Helvetica Neue', Arial, sans-serif; -webkit-font-smoothing: antialiased; }
     img { display: block; }
     p { margin: 0; }
     h1, h2, h3, h4 { margin: 0; font-weight: 400; }
     ul { margin: 0; padding: 0; list-style: none; }
     a { color: #D9A441; text-decoration: none; }
     a:hover { color: #F0C071; }
+    [data-suelo] { background: #171310; }
   </style>
 </helmet>
 
-<div style="width: 1440px; background: #171310; overflow: hidden">
+<div data-suelo style="width: 1440px; background: #171310; overflow: hidden">
 
   <!-- utility bar -->
   <div style="display: flex; align-items: center; justify-content: space-between; height: 62px; padding: 0 48px; background: #211B16">
@@ -32,52 +34,45 @@
     </div>
   </div>
 
-  <!-- opening block: name + reservation strip, no photo -->
-  <div style="padding: 78px 48px 66px">
-    <div style="font-size: 12.5px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; color: #D9A441">Brasa de encina y arroz de secano · desde 1998</div>
-    <h1 style="margin-top: 26px; font-family: 'Fraunces', Georgia, serif; font-size: 94px; font-weight: 300; line-height: 0.98; letter-spacing: -0.025em; color: #F4EBDF">Casa Terrazza</h1>
-    <p style="margin-top: 26px; max-width: 60ch; font-size: 19.5px; font-weight: 300; line-height: 1.6; color: #D6C8B8">Una carta corta que cambia los martes, una parrilla que no se apaga y los precios donde tienen que estar: a la vista, antes de que preguntes.</p>
-
-    <div style="display: flex; align-items: flex-end; gap: 0; margin-top: 46px; width: 1044px">
-      <div style="width: 168px; background: #211B16; border: 1px solid #3A3129; border-right: none; padding: 12px 18px 13px">
-        <div style="font-size: 10.5px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: #D9A441">Personas</div>
-        <div style="margin-top: 5px; font-size: 16px; color: #F4EBDF">2 comensales</div>
-      </div>
-      <div style="width: 220px; background: #211B16; border: 1px solid #3A3129; border-right: none; padding: 12px 18px 13px">
-        <div style="font-size: 10.5px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: #D9A441">Día</div>
-        <div style="margin-top: 5px; font-size: 16px; color: #F4EBDF">Viernes 18 de septiembre</div>
-      </div>
-      <div style="width: 148px; background: #211B16; border: 1px solid #3A3129; border-right: none; padding: 12px 18px 13px">
-        <div style="font-size: 10.5px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: #D9A441">Hora</div>
-        <div style="margin-top: 5px; font-size: 16px; color: #F4EBDF">21:00</div>
-      </div>
-      <div style="width: 192px; background: #211B16; border: 1px solid #3A3129; border-right: none; padding: 12px 18px 13px">
-        <div style="font-size: 10.5px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: #D9A441">Zona</div>
-        <div style="margin-top: 5px; font-size: 16px; color: #F4EBDF">Sala de abajo</div>
-      </div>
-      <a href="#" style="display: flex; align-items: center; justify-content: center; width: 316px; height: 68px; background: #D9A441; color: #171310; font-size: 16px; font-weight: 600; letter-spacing: 0.01em">Reservar mesa</a>
+  <!-- nav header -->
+  <div style="display: flex; align-items: center; justify-content: space-between; height: 74px; padding: 0 48px; border-bottom: 1px solid #3A3129">
+    <a href="Terrazza.dc.html" style="font-family: 'Fraunces', Georgia, serif; font-size: 24px; font-weight: 400; color: #F4EBDF">Casa Terrazza</a>
+    <div style="display: flex; align-items: center; gap: 38px">
+      <a href="Terrazza.dc.html" style="font-size: 14px; color: #D6C8B8">Inicio</a>
+      <a href="Carta.dc.html" style="font-size: 14px; font-weight: 500; color: #D9A441">La carta</a>
+      <a href="Nosotros.dc.html" style="font-size: 14px; color: #D6C8B8">Nosotros</a>
+      <a href="Contacto.dc.html" style="font-size: 14px; color: #D6C8B8">Contacto</a>
+      <a href="Contacto.dc.html" style="display: flex; align-items: center; justify-content: center; height: 44px; padding: 0 22px; background: #D9A441; color: #171310; font-size: 13.5px; font-weight: 600">Reservar mesa</a>
     </div>
-    <p style="margin-top: 18px; font-size: 13.5px; color: #A8998B">Quedan tres mesas para el viernes a las 21:00. Grupos de más de ocho, por teléfono. La barra no reserva: se entra y ya está.</p>
   </div>
 
-  <!-- wordless full-bleed band -->
-  <img src="terrazza-sala.webp" alt="Comedor de ladrillo visto con mesas corridas de madera y lámparas colgantes" style="width: 1440px; height: 440px; object-fit: cover; object-position: 50% 58%">
+  <!-- miga -->
+  <div style="padding: 22px 48px 0">
+    <p style="font-size: 12.5px; letter-spacing: 0.04em; color: #A8998B"><a href="Terrazza.dc.html" style="color: #A8998B">Inicio</a> &nbsp;/&nbsp; <span style="color: #F4EBDF">La carta</span></p>
+  </div>
 
-  <!-- la carta · dense two-column priced menu -->
-  <div style="padding: 92px 48px 96px">
+  <!-- titular -->
+  <div style="padding: 40px 48px 0">
     <div style="display: flex; align-items: baseline; justify-content: space-between">
-      <h2 style="font-family: 'Fraunces', Georgia, serif; font-size: 44px; font-weight: 300; letter-spacing: -0.02em; color: #F4EBDF">La carta</h2>
-      <span style="font-size: 13.5px; color: #A8998B">Actualizada el 8 de septiembre · IVA incluido · pan y aperitivo, 2,50 € por persona</span>
+      <div>
+        <p style="font-size: 12.5px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; color: #D9A441">La carta completa</p>
+        <h1 style="margin-top: 18px; font-family: 'Fraunces', Georgia, serif; font-size: 60px; font-weight: 300; letter-spacing: -0.02em; color: #F4EBDF">Lo que se cocina esta semana</h1>
+        <p style="margin-top: 18px; max-width: 62ch; font-size: 16.5px; line-height: 1.65; color: #D6C8B8">Dieciocho platos, nunca más: lo que no está aquí, Álex no lo puede hacer bien un sábado con la sala llena. La carta cambia los martes según lo que traiga el Mercat Central, así que un plato puede acabarse antes del cierre.</p>
+      </div>
+      <span style="flex-shrink: 0; font-size: 13.5px; color: #A8998B; text-align: right">Actualizada el 8 de septiembre<br>IVA incluido · pan y aperitivo, 2,50&nbsp;€ por persona</span>
     </div>
+  </div>
 
-    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 104px; margin-top: 54px">
+  <!-- la carta: dense two-column priced menu, todas las filas enlazan al plato de la semana -->
+  <div style="padding: 54px 48px 0">
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 104px">
 
       <div>
         <div style="font-size: 11.5px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: #D9A441">Para empezar</div>
         <div style="margin-top: 20px">
           <div style="padding: 15px 0">
             <div style="display: flex; align-items: baseline; gap: 10px">
-              <span style="font-size: 16.5px; font-weight: 500; color: #F4EBDF">Anchoa del Cantábrico 00</span>
+              <a href="Plato.dc.html" style="font-size: 16.5px; font-weight: 500; color: #F4EBDF">Anchoa del Cantábrico 00</a>
               <span style="align-self: flex-end; flex-grow: 1; border-bottom: 1px dotted #6B5C4B; margin-bottom: 4px"></span>
               <span style="font-size: 16.5px; font-weight: 500; color: #D9A441; font-variant-numeric: tabular-nums">16,50 €</span>
             </div>
@@ -85,7 +80,7 @@
           </div>
           <div style="padding: 15px 0">
             <div style="display: flex; align-items: baseline; gap: 10px">
-              <span style="font-size: 16.5px; font-weight: 500; color: #F4EBDF">Croquetas de jamón ibérico</span>
+              <a href="Plato.dc.html" style="font-size: 16.5px; font-weight: 500; color: #F4EBDF">Croquetas de jamón ibérico</a>
               <span style="align-self: flex-end; flex-grow: 1; border-bottom: 1px dotted #6B5C4B; margin-bottom: 4px"></span>
               <span style="font-size: 16.5px; font-weight: 500; color: #D9A441; font-variant-numeric: tabular-nums">12,00 €</span>
             </div>
@@ -93,7 +88,7 @@
           </div>
           <div style="padding: 15px 0">
             <div style="display: flex; align-items: baseline; gap: 10px">
-              <span style="font-size: 16.5px; font-weight: 500; color: #F4EBDF">Ensaladilla con ventresca</span>
+              <a href="Plato.dc.html" style="font-size: 16.5px; font-weight: 500; color: #F4EBDF">Ensaladilla con ventresca</a>
               <span style="align-self: flex-end; flex-grow: 1; border-bottom: 1px dotted #6B5C4B; margin-bottom: 4px"></span>
               <span style="font-size: 16.5px; font-weight: 500; color: #D9A441; font-variant-numeric: tabular-nums">11,50 €</span>
             </div>
@@ -101,7 +96,7 @@
           </div>
           <div style="padding: 15px 0">
             <div style="display: flex; align-items: baseline; gap: 10px">
-              <span style="font-size: 16.5px; font-weight: 500; color: #F4EBDF">Steak tartar de vaca vieja</span>
+              <a href="Plato.dc.html" style="font-size: 16.5px; font-weight: 500; color: #F4EBDF">Steak tartar de vaca vieja</a>
               <span style="align-self: flex-end; flex-grow: 1; border-bottom: 1px dotted #6B5C4B; margin-bottom: 4px"></span>
               <span style="font-size: 16.5px; font-weight: 500; color: #D9A441; font-variant-numeric: tabular-nums">21,00 €</span>
             </div>
@@ -109,7 +104,7 @@
           </div>
           <div style="padding: 15px 0">
             <div style="display: flex; align-items: baseline; gap: 10px">
-              <span style="font-size: 16.5px; font-weight: 500; color: #F4EBDF">Alcachofas confitadas con jamón</span>
+              <a href="Plato.dc.html" style="font-size: 16.5px; font-weight: 500; color: #F4EBDF">Alcachofas confitadas con jamón</a>
               <span style="align-self: flex-end; flex-grow: 1; border-bottom: 1px dotted #6B5C4B; margin-bottom: 4px"></span>
               <span style="font-size: 16.5px; font-weight: 500; color: #D9A441; font-variant-numeric: tabular-nums">14,00 €</span>
             </div>
@@ -117,11 +112,11 @@
           </div>
           <div style="padding: 15px 0">
             <div style="display: flex; align-items: baseline; gap: 10px">
-              <span style="font-size: 16.5px; font-weight: 500; color: #F4EBDF">Berenjena a la brasa con miel de caña</span>
+              <a href="Plato.dc.html" style="font-size: 16.5px; font-weight: 500; color: #F4EBDF">Berenjena a la brasa con miel de caña</a>
               <span style="align-self: flex-end; flex-grow: 1; border-bottom: 1px dotted #6B5C4B; margin-bottom: 4px"></span>
               <span style="font-size: 16.5px; font-weight: 500; color: #D9A441; font-variant-numeric: tabular-nums">10,50 €</span>
             </div>
-            <p style="margin-top: 5px; max-width: 56ch; font-size: 13.5px; line-height: 1.5; color: #A8998B">Ahumada entera, con requesón de cabra de Bocairent.</p>
+            <p style="margin-top: 5px; max-width: 56ch; font-size: 13.5px; line-height: 1.5; color: #A8998B">Ahumada entera, con requesón de cabra de Bocairent. Plato vegetariano.</p>
           </div>
         </div>
 
@@ -129,7 +124,7 @@
         <div style="margin-top: 20px">
           <div style="padding: 15px 0">
             <div style="display: flex; align-items: baseline; gap: 10px">
-              <span style="font-size: 16.5px; font-weight: 500; color: #F4EBDF">Arroz de rabo de toro y níscalos</span>
+              <a href="Plato.dc.html" style="font-size: 16.5px; font-weight: 500; color: #F4EBDF">Arroz de rabo de toro y níscalos</a>
               <span style="align-self: flex-end; flex-grow: 1; border-bottom: 1px dotted #6B5C4B; margin-bottom: 4px"></span>
               <span style="font-size: 16.5px; font-weight: 500; color: #D9A441; font-variant-numeric: tabular-nums">23,00 €</span>
             </div>
@@ -137,7 +132,7 @@
           </div>
           <div style="padding: 15px 0">
             <div style="display: flex; align-items: baseline; gap: 10px">
-              <span style="font-size: 16.5px; font-weight: 500; color: #F4EBDF">Arroz a banda con sepia y gamba roja</span>
+              <a href="Plato.dc.html" style="font-size: 16.5px; font-weight: 500; color: #F4EBDF">Arroz a banda con sepia y gamba roja</a>
               <span style="align-self: flex-end; flex-grow: 1; border-bottom: 1px dotted #6B5C4B; margin-bottom: 4px"></span>
               <span style="font-size: 16.5px; font-weight: 500; color: #D9A441; font-variant-numeric: tabular-nums">26,00 €</span>
             </div>
@@ -145,7 +140,7 @@
           </div>
           <div style="padding: 15px 0">
             <div style="display: flex; align-items: baseline; gap: 10px">
-              <span style="font-size: 16.5px; font-weight: 500; color: #F4EBDF">Fideuà de calamar y alcachofa</span>
+              <a href="Plato.dc.html" style="font-size: 16.5px; font-weight: 500; color: #F4EBDF">Fideuà de calamar y alcachofa</a>
               <span style="align-self: flex-end; flex-grow: 1; border-bottom: 1px dotted #6B5C4B; margin-bottom: 4px"></span>
               <span style="font-size: 16.5px; font-weight: 500; color: #D9A441; font-variant-numeric: tabular-nums">21,00 €</span>
             </div>
@@ -159,7 +154,7 @@
         <div style="margin-top: 20px">
           <div style="padding: 15px 0">
             <div style="display: flex; align-items: baseline; gap: 10px">
-              <span style="font-size: 16.5px; font-weight: 500; color: #F4EBDF">Chuleta de vaca rubia gallega</span>
+              <a href="Plato.dc.html" style="font-size: 16.5px; font-weight: 500; color: #F4EBDF">Chuleta de vaca rubia gallega</a>
               <span style="align-self: flex-end; flex-grow: 1; border-bottom: 1px dotted #6B5C4B; margin-bottom: 4px"></span>
               <span style="font-size: 16.5px; font-weight: 500; color: #D9A441; font-variant-numeric: tabular-nums">68,00 €</span>
             </div>
@@ -167,31 +162,31 @@
           </div>
           <div style="padding: 15px 0">
             <div style="display: flex; align-items: baseline; gap: 10px">
-              <span style="font-size: 16.5px; font-weight: 500; color: #F4EBDF">Lubina salvaje a la espalda</span>
+              <a href="Plato.dc.html" style="font-size: 16.5px; font-weight: 500; color: #F4EBDF">Lubina salvaje a la espalda</a>
               <span style="align-self: flex-end; flex-grow: 1; border-bottom: 1px dotted #6B5C4B; margin-bottom: 4px"></span>
               <span style="font-size: 16.5px; font-weight: 500; color: #D9A441; font-variant-numeric: tabular-nums">32,00 €</span>
             </div>
-            <p style="margin-top: 5px; max-width: 56ch; font-size: 13.5px; line-height: 1.5; color: #A8998B">Pieza de 500 g aproximados, refrito de ajo y guindilla.</p>
+            <p style="margin-top: 5px; max-width: 56ch; font-size: 13.5px; line-height: 1.5; color: #A8998B">Pieza de 500 g aproximados, refrito de ajo y guindilla. Se acaba pronto.</p>
           </div>
           <div style="padding: 15px 0">
             <div style="display: flex; align-items: baseline; gap: 10px">
-              <span style="font-size: 16.5px; font-weight: 500; color: #F4EBDF">Pulpo a la brasa con parmentier ahumado</span>
+              <a href="Plato.dc.html" style="font-size: 16.5px; font-weight: 500; color: #F4EBDF">Pulpo a la brasa con parmentier ahumado</a>
               <span style="align-self: flex-end; flex-grow: 1; border-bottom: 1px dotted #6B5C4B; margin-bottom: 4px"></span>
               <span style="font-size: 16.5px; font-weight: 500; color: #D9A441; font-variant-numeric: tabular-nums">22,50 €</span>
             </div>
             <p style="margin-top: 5px; max-width: 56ch; font-size: 13.5px; line-height: 1.5; color: #A8998B">Pata entera, pimentón de la Vera y aceite de arbequina.</p>
           </div>
-          <div style="padding: 15px 0">
+          <div style="padding: 15px 0; background: rgba(217, 164, 65, 0.07); margin: 0 -14px; padding-left: 14px; padding-right: 14px">
             <div style="display: flex; align-items: baseline; gap: 10px">
-              <span style="font-size: 16.5px; font-weight: 500; color: #F4EBDF">Presa ibérica de bellota</span>
+              <a href="Plato.dc.html" style="font-size: 16.5px; font-weight: 600; color: #F4EBDF">Presa ibérica a la brasa con salsa de cerezas ⟶</a>
               <span style="align-self: flex-end; flex-grow: 1; border-bottom: 1px dotted #6B5C4B; margin-bottom: 4px"></span>
               <span style="font-size: 16.5px; font-weight: 500; color: #D9A441; font-variant-numeric: tabular-nums">24,00 €</span>
             </div>
-            <p style="margin-top: 5px; max-width: 56ch; font-size: 13.5px; line-height: 1.5; color: #A8998B">Al punto, con pimientos de cristal y sal de Añana.</p>
+            <p style="margin-top: 5px; max-width: 56ch; font-size: 13.5px; line-height: 1.5; color: #A8998B">El plato de esta semana. Bellota, boniato asado y cerezas de Ribesalbes en temporada — <a href="Plato.dc.html" style="color: #D9A441">ver el plato completo</a>.</p>
           </div>
           <div style="padding: 15px 0">
             <div style="display: flex; align-items: baseline; gap: 10px">
-              <span style="font-size: 16.5px; font-weight: 500; color: #F4EBDF">Verduras de la huerta a la parrilla</span>
+              <a href="Plato.dc.html" style="font-size: 16.5px; font-weight: 500; color: #F4EBDF">Verduras de la huerta a la parrilla</a>
               <span style="align-self: flex-end; flex-grow: 1; border-bottom: 1px dotted #6B5C4B; margin-bottom: 4px"></span>
               <span style="font-size: 16.5px; font-weight: 500; color: #D9A441; font-variant-numeric: tabular-nums">15,50 €</span>
             </div>
@@ -199,7 +194,7 @@
           </div>
           <div style="padding: 15px 0">
             <div style="display: flex; align-items: baseline; gap: 10px">
-              <span style="font-size: 16.5px; font-weight: 500; color: #F4EBDF">Secreto de atún rojo de almadraba</span>
+              <a href="Plato.dc.html" style="font-size: 16.5px; font-weight: 500; color: #F4EBDF">Secreto de atún rojo de almadraba</a>
               <span style="align-self: flex-end; flex-grow: 1; border-bottom: 1px dotted #6B5C4B; margin-bottom: 4px"></span>
               <span style="font-size: 16.5px; font-weight: 500; color: #D9A441; font-variant-numeric: tabular-nums">27,00 €</span>
             </div>
@@ -211,7 +206,7 @@
         <div style="margin-top: 20px">
           <div style="padding: 15px 0">
             <div style="display: flex; align-items: baseline; gap: 10px">
-              <span style="font-size: 16.5px; font-weight: 500; color: #F4EBDF">Tarta de queso cuajada</span>
+              <a href="Plato.dc.html" style="font-size: 16.5px; font-weight: 500; color: #F4EBDF">Tarta de queso cuajada</a>
               <span style="align-self: flex-end; flex-grow: 1; border-bottom: 1px dotted #6B5C4B; margin-bottom: 4px"></span>
               <span style="font-size: 16.5px; font-weight: 500; color: #D9A441; font-variant-numeric: tabular-nums">7,50 €</span>
             </div>
@@ -219,7 +214,7 @@
           </div>
           <div style="padding: 15px 0">
             <div style="display: flex; align-items: baseline; gap: 10px">
-              <span style="font-size: 16.5px; font-weight: 500; color: #F4EBDF">Torrija caramelizada</span>
+              <a href="Plato.dc.html" style="font-size: 16.5px; font-weight: 500; color: #F4EBDF">Torrija caramelizada</a>
               <span style="align-self: flex-end; flex-grow: 1; border-bottom: 1px dotted #6B5C4B; margin-bottom: 4px"></span>
               <span style="font-size: 16.5px; font-weight: 500; color: #D9A441; font-variant-numeric: tabular-nums">8,00 €</span>
             </div>
@@ -227,7 +222,7 @@
           </div>
           <div style="padding: 15px 0">
             <div style="display: flex; align-items: baseline; gap: 10px">
-              <span style="font-size: 16.5px; font-weight: 500; color: #F4EBDF">Coulant de chocolate 70 %</span>
+              <a href="Plato.dc.html" style="font-size: 16.5px; font-weight: 500; color: #F4EBDF">Coulant de chocolate 70 %</a>
               <span style="align-self: flex-end; flex-grow: 1; border-bottom: 1px dotted #6B5C4B; margin-bottom: 4px"></span>
               <span style="font-size: 16.5px; font-weight: 500; color: #D9A441; font-variant-numeric: tabular-nums">7,00 €</span>
             </div>
@@ -239,8 +234,8 @@
     </div>
   </div>
 
-  <!-- menús cerrados · split by a single brass hairline -->
-  <div style="background: #211B16; padding: 84px 48px 88px">
+  <!-- menús cerrados -->
+  <div style="margin-top: 72px; background: #211B16; padding: 84px 48px 88px">
     <div style="display: flex; align-items: stretch; gap: 0">
       <div style="width: 50%; padding-right: 72px">
         <h3 style="font-family: 'Fraunces', Georgia, serif; font-size: 32px; font-weight: 300; color: #F4EBDF">Menú del mediodía</h3>
@@ -276,123 +271,89 @@
     </div>
   </div>
 
-  <!-- wordless photo strip, zero gap -->
-  <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0">
-    <img src="terrazza-plato.webp" alt="Plato de carne con salsa de cerezas servido en una mesa oscura" style="width: 100%; height: 380px; object-fit: cover">
-    <img src="terrazza-mesa.webp" alt="Mesa larga vestida para una cena, con velas y sillas doradas" style="width: 100%; height: 380px; object-fit: cover">
-    <img src="terrazza-velas.webp" alt="Velas encendidas sobre una repisa de madera del comedor" style="width: 100%; height: 380px; object-fit: cover">
+  <!-- el plato de la semana: teaser con la foto que no se usa en ningún otro punto de esta lámina -->
+  <div style="padding: 84px 48px">
+    <div style="display: flex; align-items: center; gap: 64px">
+      <img src="terrazza-plato.webp" alt="Plato de carne con salsa de cerezas servido en una mesa oscura" style="width: 480px; height: 360px; object-fit: cover; flex-shrink: 0">
+      <div>
+        <p style="font-size: 12.5px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; color: #D9A441">El plato de esta semana</p>
+        <h2 style="margin-top: 16px; font-family: 'Fraunces', Georgia, serif; font-size: 40px; font-weight: 300; letter-spacing: -0.015em; color: #F4EBDF; max-width: 18ch">Presa ibérica a la brasa con salsa de cerezas</h2>
+        <p style="margin-top: 16px; max-width: 52ch; font-size: 15.5px; line-height: 1.65; color: #D6C8B8">Bellota de Guijuelo, boniato asado y cerezas de Ribesalbes mientras dure la temporada. Es la ejecución de esta semana de la presa que ya está en la carta — el martes que se acaben las cerezas, vuelve a su versión de siempre.</p>
+        <a href="Plato.dc.html" style="display: inline-flex; align-items: center; gap: 8px; margin-top: 22px; font-size: 14.5px; font-weight: 600; color: #D9A441">Ver el plato completo →</a>
+      </div>
+    </div>
   </div>
 
-  <!-- la barra -->
-  <div style="padding: 80px 48px 84px">
-    <div style="display: flex; align-items: flex-start; gap: 88px">
-      <div style="width: 300px">
-        <h3 style="font-family: 'Fraunces', Georgia, serif; font-size: 32px; font-weight: 300; color: #F4EBDF">La barra</h3>
-        <p style="margin-top: 14px; font-size: 14.5px; line-height: 1.65; color: #A8998B">Ocho taburetes, sin reserva y sin mínimo. Se abre a las 19:30 y es el sitio donde probar la carta corta si vienes solo.</p>
+  <!-- la bodega -->
+  <div style="background: #211B16; padding: 84px 48px 88px">
+    <div style="display: flex; align-items: baseline; justify-content: space-between">
+      <h2 style="font-family: 'Fraunces', Georgia, serif; font-size: 40px; font-weight: 300; letter-spacing: -0.015em; color: #F4EBDF">La bodega</h2>
+      <span style="font-size: 13.5px; color: #A8998B">Copa o botella · vinos de proximidad, sin excepción</span>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 104px; margin-top: 44px">
+      <div>
+        <div style="font-size: 11.5px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: #D9A441">Blancos y cava</div>
+        <div style="margin-top: 18px; display: flex; flex-direction: column; gap: 14px">
+          <div style="display: flex; align-items: baseline; gap: 10px">
+            <span style="font-size: 15.5px; color: #F4EBDF">Merseguera de Bocairent</span>
+            <span style="align-self: flex-end; flex-grow: 1; border-bottom: 1px dotted #6B5C4B; margin-bottom: 4px"></span>
+            <span style="font-size: 14.5px; color: #A8998B; font-variant-numeric: tabular-nums">4,50 € / 19,00 €</span>
+          </div>
+          <div style="display: flex; align-items: baseline; gap: 10px">
+            <span style="font-size: 15.5px; color: #F4EBDF">Albariño Rías Baixas</span>
+            <span style="align-self: flex-end; flex-grow: 1; border-bottom: 1px dotted #6B5C4B; margin-bottom: 4px"></span>
+            <span style="font-size: 14.5px; color: #A8998B; font-variant-numeric: tabular-nums">5,50 € / 24,00 €</span>
+          </div>
+          <div style="display: flex; align-items: baseline; gap: 10px">
+            <span style="font-size: 15.5px; color: #F4EBDF">Cava brut nature</span>
+            <span style="align-self: flex-end; flex-grow: 1; border-bottom: 1px dotted #6B5C4B; margin-bottom: 4px"></span>
+            <span style="font-size: 14.5px; color: #A8998B; font-variant-numeric: tabular-nums">4,50 € / 21,00 €</span>
+          </div>
+        </div>
       </div>
-      <div style="flex-grow: 1; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 40px">
-        <div>
-          <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 10px">
-            <span style="font-size: 16px; font-weight: 500; color: #F4EBDF">Negroni de casa</span>
-            <span style="font-size: 15.5px; font-weight: 500; color: #D9A441; font-variant-numeric: tabular-nums">9,50 €</span>
+      <div>
+        <div style="font-size: 11.5px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: #D9A441">Tintos</div>
+        <div style="margin-top: 18px; display: flex; flex-direction: column; gap: 14px">
+          <div style="display: flex; align-items: baseline; gap: 10px">
+            <span style="font-size: 15.5px; color: #F4EBDF">Bobal de Utiel-Requena</span>
+            <span style="align-self: flex-end; flex-grow: 1; border-bottom: 1px dotted #6B5C4B; margin-bottom: 4px"></span>
+            <span style="font-size: 14.5px; color: #A8998B; font-variant-numeric: tabular-nums">4,00 € / 17,00 €</span>
           </div>
-          <p style="margin-top: 6px; font-size: 13.5px; line-height: 1.5; color: #A8998B">Bitter macerado tres semanas con naranja sanguina.</p>
-        </div>
-        <div>
-          <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 10px">
-            <span style="font-size: 16px; font-weight: 500; color: #F4EBDF">Vermut de grifo</span>
-            <span style="font-size: 15.5px; font-weight: 500; color: #D9A441; font-variant-numeric: tabular-nums">3,50 €</span>
+          <div style="display: flex; align-items: baseline; gap: 10px">
+            <span style="font-size: 15.5px; color: #F4EBDF">Garnacha de Gredos</span>
+            <span style="align-self: flex-end; flex-grow: 1; border-bottom: 1px dotted #6B5C4B; margin-bottom: 4px"></span>
+            <span style="font-size: 14.5px; color: #A8998B; font-variant-numeric: tabular-nums">5,00 € / 22,00 €</span>
           </div>
-          <p style="margin-top: 6px; font-size: 13.5px; line-height: 1.5; color: #A8998B">De Reus, con aceituna y piel de naranja.</p>
-        </div>
-        <div>
-          <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 10px">
-            <span style="font-size: 16px; font-weight: 500; color: #F4EBDF">Gin tonic Mare</span>
-            <span style="font-size: 15.5px; font-weight: 500; color: #D9A441; font-variant-numeric: tabular-nums">11,00 €</span>
+          <div style="display: flex; align-items: baseline; gap: 10px">
+            <span style="font-size: 15.5px; color: #F4EBDF">Copa de la casa, tinto o blanco a granel</span>
+            <span style="align-self: flex-end; flex-grow: 1; border-bottom: 1px dotted #6B5C4B; margin-bottom: 4px"></span>
+            <span style="font-size: 14.5px; color: #A8998B; font-variant-numeric: tabular-nums">3,80 €</span>
           </div>
-          <p style="margin-top: 6px; font-size: 13.5px; line-height: 1.5; color: #A8998B">Con romero de la sierra y piel de limón.</p>
-        </div>
-        <div>
-          <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 10px">
-            <span style="font-size: 16px; font-weight: 500; color: #F4EBDF">Copa de la casa</span>
-            <span style="font-size: 15.5px; font-weight: 500; color: #D9A441; font-variant-numeric: tabular-nums">3,80 €</span>
-          </div>
-          <p style="margin-top: 6px; font-size: 13.5px; line-height: 1.5; color: #A8998B">Tinto o blanco de Utiel-Requena, a granel.</p>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- dos salas · photos adjacent, captions below -->
-  <div style="background: #211B16; padding: 76px 48px 82px">
-    <h3 style="font-family: 'Fraunces', Georgia, serif; font-size: 32px; font-weight: 300; color: #F4EBDF">Dos salas, y hay que elegir al reservar</h3>
-    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; margin-top: 34px">
-      <div>
-        <img src="terrazza-coctel.webp" alt="Rincón del comedor con pared de ladrillo y tablas de madera colgadas" style="width: 100%; height: 420px; object-fit: cover">
-        <div style="margin-top: 18px; font-size: 17px; font-weight: 500; color: #F4EBDF">La sala de abajo · 42 comensales</div>
-        <p style="margin-top: 7px; max-width: 58ch; font-size: 14.5px; line-height: 1.6; color: #A8998B">Ladrillo visto, banco corrido de terciopelo y las tablas de la casa colgadas en la pared. Es la sala del ruido bueno: si vienes a hablar de trabajo, mejor la terraza.</p>
-      </div>
-      <div>
-        <img src="terrazza-terraza.webp" alt="Terraza de restaurante en la calle con mesas y sillas de mimbre" style="width: 100%; height: 420px; object-fit: cover">
-        <div style="margin-top: 18px; font-size: 17px; font-weight: 500; color: #F4EBDF">La terraza · 24 comensales</div>
-        <p style="margin-top: 7px; max-width: 58ch; font-size: 14.5px; line-height: 1.6; color: #A8998B">De mayo a octubre, con estufas hasta noviembre. Sillas de rejilla, toldo y sombra de plátano toda la tarde. Aquí sí entran perros.</p>
-      </div>
+  <!-- alérgenos + grupos -->
+  <div style="padding: 76px 48px; display: flex; gap: 96px">
+    <div style="width: 50%">
+      <h3 style="font-family: 'Fraunces', Georgia, serif; font-size: 26px; font-weight: 300; color: #F4EBDF">Alérgenos</h3>
+      <p style="margin-top: 14px; max-width: 56ch; font-size: 14.5px; line-height: 1.65; color: #A8998B">Cada plato lleva su ficha de alérgenos en sala y Álex adapta lo que se pueda si lo dices al reservar. Con gluten, huevo, frutos secos o marisco en la mesa, mejor avisar con antelación: la cocina es pequeña y cruza utensilios.</p>
     </div>
-  </div>
-
-  <!-- la cocina · photo left bleeding, text right -->
-  <div style="display: flex; align-items: stretch">
-    <img src="terrazza-chef.webp" alt="Cocinero terminando un plato con una cuchara en la cocina" style="width: 700px; height: 520px; object-fit: cover; flex-shrink: 0">
-    <div style="flex-grow: 1; padding: 78px 48px 78px 72px">
-      <h3 style="font-family: 'Fraunces', Georgia, serif; font-size: 36px; font-weight: 300; line-height: 1.15; color: #F4EBDF">Álex Ibáñez lleva en esta parrilla desde 2011</h3>
-      <p style="margin-top: 20px; max-width: 58ch; font-size: 16px; line-height: 1.7; color: #D6C8B8">Entró de ayudante con veintitrés años y se quedó con la casa cuando su tío Vicente se jubiló. Su norma es corta: la carta no pasa de dieciocho platos, y ninguno entra si no se puede hacer bien un sábado a las 22:30 con la sala llena.</p>
-      <p style="margin-top: 16px; max-width: 58ch; font-size: 16px; line-height: 1.7; color: #D6C8B8">Compra en el Mercat Central los martes y los viernes por la mañana. Lo que no encuentra, no se pone: por eso la carta cambia y por eso a veces se acaba la lubina a las 22:00.</p>
-      <div style="display: flex; gap: 48px; margin-top: 30px">
-        <div>
-          <div style="font-family: 'Fraunces', Georgia, serif; font-size: 30px; color: #D9A441">18</div>
-          <div style="margin-top: 4px; font-size: 13.5px; color: #A8998B">platos como máximo en carta</div>
-        </div>
-        <div>
-          <div style="font-family: 'Fraunces', Georgia, serif; font-size: 30px; color: #D9A441">2</div>
-          <div style="margin-top: 4px; font-size: 13.5px; color: #A8998B">compras a mercado por semana</div>
-        </div>
-        <div>
-          <div style="font-family: 'Fraunces', Georgia, serif; font-size: 30px; color: #D9A441">27</div>
-          <div style="margin-top: 4px; font-size: 13.5px; color: #A8998B">años con la brasa encendida</div>
-        </div>
-      </div>
+    <div style="width: 50%">
+      <h3 style="font-family: 'Fraunces', Georgia, serif; font-size: 26px; font-weight: 300; color: #F4EBDF">Grupos y celebraciones</h3>
+      <p style="margin-top: 14px; max-width: 56ch; font-size: 14.5px; line-height: 1.65; color: #A8998B">A partir de ocho comensales, mesa y menú se cierran por teléfono, no por el formulario. La sala de abajo se reserva entera desde catorce personas; la terraza, de mayo a octubre.</p>
     </div>
   </div>
 
   <!-- cierre · brass band -->
   <div style="background: #D9A441; color: #171310; padding: 76px 48px 80px">
-    <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 64px">
-      <div style="width: 520px">
-        <h2 style="font-family: 'Fraunces', Georgia, serif; font-size: 52px; font-weight: 300; line-height: 1.05; letter-spacing: -0.02em; color: #171310">Reservar mesa</h2>
-        <p style="margin-top: 18px; max-width: 52ch; font-size: 16.5px; line-height: 1.65; color: #2E2313">Se confirma por SMS en menos de una hora. Guardamos la mesa quince minutos; a partir de ahí la soltamos, que hay lista de espera casi todos los viernes.</p>
-        <p style="margin-top: 16px; font-size: 16.5px; font-weight: 600; color: #171310">O por teléfono, que es más rápido: 963 91 44 07</p>
+    <div style="display: flex; align-items: center; justify-content: space-between; gap: 64px">
+      <div style="max-width: 560px">
+        <h2 style="font-family: 'Fraunces', Georgia, serif; font-size: 46px; font-weight: 300; line-height: 1.05; letter-spacing: -0.02em; color: #171310">¿Ya sabes qué vas a pedir?</h2>
+        <p style="margin-top: 16px; max-width: 52ch; font-size: 16.5px; line-height: 1.65; color: #2E2313">Resérvala antes de que se acabe: quedan tres mesas para el viernes a las 21:00.</p>
       </div>
-      <div style="flex-grow: 1; max-width: 720px">
-        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
-          <div style="background: rgba(23, 19, 16, 0.07); border: 1px solid rgba(23, 19, 16, 0.4); padding: 12px 16px 13px">
-            <div style="font-size: 10.5px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: #453516">Personas</div>
-            <div style="margin-top: 4px; font-size: 16px; color: #171310">2 comensales</div>
-          </div>
-          <div style="background: rgba(23, 19, 16, 0.07); border: 1px solid rgba(23, 19, 16, 0.4); padding: 12px 16px 13px">
-            <div style="font-size: 10.5px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: #453516">Día y hora</div>
-            <div style="margin-top: 4px; font-size: 16px; color: #171310">Viernes 18 · 21:00</div>
-          </div>
-          <div style="background: rgba(23, 19, 16, 0.07); border: 1px solid rgba(23, 19, 16, 0.4); padding: 12px 16px 13px">
-            <div style="font-size: 10.5px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: #453516">Zona</div>
-            <div style="margin-top: 4px; font-size: 16px; color: #171310">Sala de abajo</div>
-          </div>
-          <div style="background: rgba(23, 19, 16, 0.07); border: 1px solid rgba(23, 19, 16, 0.4); padding: 12px 16px 13px">
-            <div style="font-size: 10.5px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: #453516">Teléfono</div>
-            <div style="margin-top: 4px; font-size: 16px; color: #171310">Para el SMS de confirmación</div>
-          </div>
-        </div>
-        <a href="#" style="display: flex; align-items: center; justify-content: center; height: 66px; margin-top: 12px; background: #171310; color: #D9A441; font-size: 16.5px; font-weight: 600">Confirmar la reserva</a>
-      </div>
+      <a href="Contacto.dc.html" style="display: flex; align-items: center; justify-content: center; height: 66px; padding: 0 40px; background: #171310; color: #D9A441; font-size: 16.5px; font-weight: 600; flex-shrink: 0">Reservar mesa</a>
     </div>
   </div>
 
@@ -409,10 +370,10 @@
     <div>
       <div style="font-size: 14px; font-weight: 500; color: #F4EBDF">La casa</div>
       <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 12px">
-        <a href="#" style="font-size: 14px; color: #A8998B">La carta</a>
-        <a href="#" style="font-size: 14px; color: #A8998B">Menú Terrazza</a>
-        <a href="#" style="font-size: 14px; color: #A8998B">Grupos y celebraciones</a>
-        <a href="#" style="font-size: 14px; color: #A8998B">Alérgenos</a>
+        <a href="Carta.dc.html" style="font-size: 14px; color: #A8998B">La carta</a>
+        <a href="Carta.dc.html" style="font-size: 14px; color: #A8998B">Menú Terrazza</a>
+        <a href="Contacto.dc.html" style="font-size: 14px; color: #A8998B">Grupos y celebraciones</a>
+        <a href="Carta.dc.html" style="font-size: 14px; color: #A8998B">Alérgenos</a>
       </div>
     </div>
     <div style="width: 280px">

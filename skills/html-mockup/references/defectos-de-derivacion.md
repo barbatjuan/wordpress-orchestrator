@@ -65,6 +65,14 @@ MARZO desbordaba 91px a 430 con la rejilla ya en una columna. En Elementor esto 
 una columna, que nunca crece por encima de su padre; el equivalente en flex es `min-width:0` en el
 hijo, porque su mínimo automático también es `auto`.
 
+**Toda tabla se desplaza dentro de su propio contenedor por debajo de 768.** Una tabla no parte sus
+columnas: su ancho mínimo es la suma de sus celdas y no hay rejilla que la contenga. Pasó dos veces
+en la biblioteca con la misma forma —la tabla de medidas de MARZO y la de cookies de TERRAZZA, que a
+430 medía 538px dentro de 398 y desbordaba la página 124px—, y la de cookies está en las once
+plantillas, porque la página legal la exige. La regla: `display:block; overflow-x:auto;
+max-width:100%` y, desde 768, `display:table`. El desborde queda dentro de la tabla, que es donde se
+espera, y no en la página.
+
 **Un `style=` en línea no puede llevar punto de ruptura, así que no puede maquetar.** Los dos únicos
 desbordes de las cinco plantillas salieron del mismo sitio: `style="grid-template-columns:200px 1fr"`
 en MARZO y `style="flex:0 0 400px;width:400px"` en BARRO. Las dos reglas eran correctas a 1440 y no
