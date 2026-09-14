@@ -6,7 +6,7 @@ sin veredicto vigente, la plantilla no se ofrece a un cliente.
 | Slug | Objetivo | Enfoque | Tipo | Páginas | Veredicto |
 |---|---|---|---|---|---|
 | `delao` · Inmobiliaria de la O | `cartera-curada` | `editorial` | corporate | inicio · propiedades · ficha · nosotros · contacto | pendiente de firma |
-| `marzo` · MARZO | `tienda-talla` | `materia` | ecommerce | portada · ficha | sin veredicto · sin maqueta |
+| `marzo` · MARZO | `tienda-talla` | `materia` | ecommerce | portada · categoría · ficha de producto · carro · pago · pedido recibido · mi cuenta · la marca · contacto · condiciones de venta y envíos · aviso legal · privacidad · cookies · 404 | sin veredicto |
 | `barro` · BARRO | `tienda-lote` | `lujo-oscuro` | ecommerce | portada · ficha | sin veredicto · sin maqueta |
 | `cadencia` · CADENCIA | `equipo-por-uso` ⚑ | `tecnologico` | ecommerce | portada · ficha | sin veredicto · sin maqueta |
 | `escuadra` · ESCUADRA | `catalogo-amplio` ⚑ | `directo` | ecommerce | portada · ficha | sin veredicto · sin maqueta |
@@ -14,9 +14,11 @@ sin veredicto vigente, la plantilla no se ofrece a un cliente.
 ⚑ Objetivo nuevo, que todavía no existe en ningún recomendador. Se da de alta cuando exista
 `recomendador.md`, o la plantilla se reasigna a un objetivo que ya exista.
 
-**Las cuatro tiendas son lienzo y fotografías, no plantillas completas.** Tienen ficha, manifiesto de
-imágenes y canvas; les falta la maqueta derivada y el veredicto. Hasta tener las dos no se ofrecen a un
-cliente, igual que `delao` hasta que firme el suyo.
+**Tres de las cuatro tiendas son todavía lienzo y fotografías, no plantillas completas.** `barro`,
+`cadencia` y `escuadra` tienen ficha, manifiesto de imágenes y canvas; les falta la maqueta derivada
+y el veredicto. `marzo` ya tiene su juego completo de 14 páginas derivado en `maqueta/index.html`;
+le falta sólo el veredicto. Hasta tener las dos, ninguna de las cuatro se ofrece a un cliente, igual
+que `delao` hasta que firme el suyo.
 
 ## Qué contiene cada plantilla
 
@@ -46,7 +48,9 @@ Una carpeta por slug, y dentro siempre lo mismo:
 
 - `references/plantillas/marzo/ficha.md`
 - `references/plantillas/marzo/manifiesto-imagenes.md`
-- `references/plantillas/marzo/canvas/` — `Marzo`, `MarzoPieza`, `canvas.json` y su `MANIFIESTO.md`
+- `references/plantillas/marzo/canvas/` — `Marzo`, `MarzoPieza`, `Categoria`, `LaMarca`, `Contacto`,
+  `canvas.json` y su `MANIFIESTO.md`
+- `references/plantillas/marzo/maqueta/` — `index.html`
 - `references/plantillas/marzo/img/` — nueve `.webp`
 
 ## barro

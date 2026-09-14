@@ -7,6 +7,9 @@ baja después a la maqueta, nunca al revés.
 |---|---|---|
 | `Marzo.dc.html` | portada | 1440 × 6690 |
 | `MarzoPieza.dc.html` | ficha del abrigo Sagra | 1440 × 5510 |
+| `Categoria.dc.html` | categoría | 1440 × 2287 |
+| `LaMarca.dc.html` | la marca | 1440 × 3402 |
+| `Contacto.dc.html` | contacto | 1440 × 1819 |
 
 `canvas.json` coloca los dos artboards y guarda su alto. **El alto está medido, no tecleado**: sale del
 alto real del contenido a 1440, porque un alto que sobra enseña papel y uno que falta corta la última

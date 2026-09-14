@@ -5,7 +5,7 @@ tipo: ecommerce
 sector: moda de fibra natural, prendas de telar con tirada corta
 objetivo: tienda-talla
 enfoque: materia
-paginas: [portada, ficha]
+paginas: [portada, categoria, ficha, carro, pago, pedido-recibido, mi-cuenta, la-marca, contacto, condiciones-venta-envios, aviso-legal, privacidad, cookies, 404]
 fuentes: [bodoni-moda, jost]
 canvas_url: https://claude.ai/code/artifact/c52ec5bb-d146-464e-bc81-f32a1aa069f2
 variantes: {}
@@ -83,19 +83,44 @@ WooCommerce, sin widget HTML y sin CSS a medida. Colores y tipografías en los a
 
 ## Páginas
 
-Portada y ficha de producto, que son las dos que se diseñan. Carro, pago y cuenta son las páginas
-nativas de WooCommerce con sus widgets (`woocommerce-cart`, `woocommerce-checkout-page`,
-`woocommerce-my-account`), vestidas con los ajustes globales. Más las no negociables del framework:
-aviso legal, privacidad, cookies, términos, 404.
+Las 14 de ecommerce (`paginas-obligatorias.md`), completas. Cinco llevan artboard propio en
+`canvas/`, porque su composición es trabajo de diseño: **portada** (`Marzo.dc.html`), **categoría**
+(`Categoria.dc.html`, el registro completo), **ficha de producto** (`MarzoPieza.dc.html`, el Abrigo
+Sagra), **la marca** (`LaMarca.dc.html`, el taller y la tirada corta) y **contacto**
+(`Contacto.dc.html`, formulario + datos del taller). Las nueve restantes son derivadas directamente
+en `maqueta/index.html` a partir del sistema — cabecera, pie, tipo, color, tablas y formularios —
+sin lámina propia: **carro**, **pago**, **pedido recibido**, **mi cuenta**, **condiciones de venta y
+envíos**, **aviso legal**, **privacidad**, **cookies** y **404**.
+
+**El registro dibuja una ficha y la usan las doce filas.** Sólo el Abrigo Sagra (`LM-620`) tiene
+lámina de detalle, y las doce filas del registro llevan a ella, como las dieciocho tarjetas de delao
+llevan a su única ficha. La maqueta demuestra que el tipo de página existe y se alcanza desde el
+listado; en el sitio del cliente cada unidad tiene la suya, generada por la plantilla de producto
+único. Las doce se comportan igual: una tabla donde una fila se pulsa y once no se lee como rota,
+que es precisamente el defecto que `paginas-obligatorias.md` vino a cerrar.
 
 ## Procedencia y decisiones abiertas
 
-El diseño es el canvas de `canvas/`, la autoridad. No hay maqueta todavía: `maqueta/` se deriva cuando
-la plantilla se prepare para un cliente, con los dos puntos de ruptura que Elementor expresa, 1024 y 767.
+El diseño sigue siendo el canvas de `canvas/`, la autoridad — todo cambio empieza ahí y baja después a
+la maqueta, nunca al revés. `maqueta/index.html` ya existe: un único fichero autocontenido, con los dos
+puntos de ruptura que Elementor expresa, 1024 y 767, y el margen de página en fracción (7,5%) en vez de
+píxel fijo para que aguante entre los dos.
 
-**Tipografías fuera de la casa.** Ni Bodoni Moda ni Jost están en `html-mockup/assets/fonts/`. Al
-derivar la maqueta hay que añadirlas con su procedencia y licencia, o sustituirlas por un par de la
-casa que conserve el papel de cada una. Sin decidir.
+**Qué se dibujó y qué se derivó.** Los cinco artboards se tradujeron sección por sección — mismo
+orden, mismo texto, mismos tokens — a una escala tipográfica fluida entre 375 y 1440px en vez de los
+píxeles fijos del lienzo a 1440, porque una maqueta de cliente tiene que sostenerse en cualquier ancho
+intermedio y el canvas sólo dibuja uno. Las nueve páginas de sistema no tienen lámina que traducir: se
+construyeron con los mismos tokens de color, la misma pareja tipográfica y los mismos componentes
+(tabla del registro, listas de definición, formulario) que ya usaban las cinco dibujadas, para que
+carro, pago o el aviso legal no se sientan de otra plantilla.
 
-**Sin veredicto.** La geometría está medida —108px = 7,5% de margen, cero raíles por dentro, cero
-tinta al cristal, cero desborde— pero eso es la mitad medida. Falta la mitad de jueces.
+**Tipografías resueltas.** Bodoni Moda y Jost ya están en `html-mockup/assets/fonts/`, con su
+`OFL.txt` y dadas de alta en `_fonts.php` — Bodoni Moda con sus dos caras, redonda y cursiva. La
+maqueta las embebe como `data:` woff2 entre los marcadores `NM-FONTS`, igual que el resto de la
+biblioteca.
+
+**Sin veredicto todavía.** La geometría de origen está medida —108px = 7,5% de margen, cero raíles
+por dentro, cero tinta al cristal, cero desborde— y ahora hay una maqueta completa de 14 páginas sobre
+la que correr un barrido, pero no ha corrido: falta `blind-judges` (juez A contra la biblioteca, juez B
+sobre esta maqueta) y `visual-verification` a 430, 768 y 1280 en cada página. Sin las dos, esta
+plantilla no se ofrece a un cliente — lo dice `_indice.md`, que la sigue marcando «sin veredicto».
