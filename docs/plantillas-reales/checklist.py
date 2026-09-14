@@ -174,7 +174,7 @@ tbody th b {{ display:block; font-weight:600; }}
 <h2>Terminado quiere decir</h2>
 <div class="defin"><p>{e(D["terminado_es"])}</p></div>
 
-<h2>Las diez plantillas</h2>
+<h2>Las {len(D["plantillas"])} plantillas</h2>
 <div class="tabla"><table>
 <thead><tr><th scope="col">Plantilla</th>{cab}</tr></thead>
 <tbody>{"".join(filas_plantillas)}</tbody>
@@ -185,7 +185,7 @@ tbody th b {{ display:block; font-weight:600; }}
   <div><h4>Corporate · {len(D["paginas"]["corporate"])}</h4><p>{pag["corporate"]}</p></div>
   <div><h4>Ecommerce · {len(D["paginas"]["ecommerce"])}</h4><p>{pag["ecommerce"]}</p></div>
 </div>
-<div class="defin" style="margin-top:14px"><p><b>Fuera de esta tanda:</b> {e(D["fuera"])}</p></div>
+<div class="defin" style="margin-top:14px"><p><b>Alcance:</b> {e(D["fuera"])}</p></div>
 
 <h2>Tareas</h2>
 <div class="bloques">{"".join(bloques)}</div>

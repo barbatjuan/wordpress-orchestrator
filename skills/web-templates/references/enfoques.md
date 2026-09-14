@@ -19,15 +19,16 @@ Los ocho ids: `editorial`, `directo`, `materia`, `vitrina`, `institucional`, `te
 |---|---|---|---|
 | `editorial` | Una historia que merece leerse despacio | `delao` | corporate · `cartera-curada` |
 | `directo` | La cosa y su cifra, sin frase de marca delante | `escuadra` | ecommerce · `catalogo-amplio` |
-| `materia` | La página se siente como la sustancia que se vende | `marzo` · `lumiere` (en preparación) | ecommerce · `tienda-talla`; corporate · `ritual-bono` |
-| `vitrina` | La sala a oscuras y el objeto iluminado | `terrazza` (en preparación) | corporate · `reservar-mesa` |
-| `institucional` | Credibilidad antes que emoción | `albaran` (en preparación) | corporate · `servicios-captacion` |
-| `tecnologico` | Se vende por capacidad y por dato medido | `cadencia` · `aranda` (en preparación) | ecommerce · `equipo-por-uso`; corporate · `stock-ocasion` |
+| `materia` | La página se siente como la sustancia que se vende | `marzo` | ecommerce · `tienda-talla` |
+| `vitrina` | La sala a oscuras y el objeto iluminado | sin plantilla todavía | — |
+| `institucional` | Credibilidad antes que emoción | sin plantilla todavía | — |
+| `tecnologico` | Se vende por capacidad y por dato medido | `cadencia` | ecommerce · `equipo-por-uso` |
 | `lujo-oscuro` | Una colección que cuesta lo que parece costar | `barro` | ecommerce · `tienda-lote` |
-| `brutalista` | Se niega a ser de buen gusto, a propósito | `tueste` (en preparación) | ecommerce · `suscripcion` |
+| `brutalista` | Se niega a ser de buen gusto, a propósito | sin plantilla todavía | — |
 
-Los ocho enfoques quedan encarnados por al menos una plantilla y ningún par de plantillas comparte
-tipo + objetivo + enfoque. El estado de cada plantilla (maqueta, veredicto) no se repite aquí: lo
+Cinco de los ocho enfoques están encarnados por una plantilla de la biblioteca; `vitrina`, `institucional`
+y `brutalista` no tienen plantilla todavía, y un cliente cuyas referencias apunten a ellos va por la ruta a
+medida. Ningún par de plantillas comparte tipo + objetivo + enfoque. El estado de cada plantilla (maqueta, veredicto) no se repite aquí: lo
 lleva `plantillas/_indice.md`.
 
 ## Cómo leer los ejes
@@ -130,27 +131,23 @@ Las referencias del cliente apuntan aquí cuando enseñan fondos claros y cálid
 de frente con luz cálida, fichas técnicas y composición, filetes que enmarcan y ninguna prisa. Si las
 referencias piden fondo oscuro o una interfaz de datos, no es este enfoque.
 
-| Eje | Posición | En `marzo` | En `lumiere` |
-|---|---|---|---|
-| Escala | clásica | Display fino en el titular y robusto en la cifra | En preparación |
-| Densidad | estándar | La ficha no la fija | En preparación |
-| Fondo | cálido claro | Blanco roto cálido con un alterno | Claro, cálido y rosado en el material cosechado de la marca |
-| Elevación | filete | La ficha no la fija | En preparación |
-| Composición | rejilla estricta | La colección es una tabla de seis columnas; una sola fotografía por página rompe el margen | En preparación |
-| Acento | campo teñido | No hay acento: el único color marca existencias | En preparación |
-| Chasis | enmarcado por filete | Registro de fichas técnicas, sin miniaturas | En preparación |
-| Ornamento | textura | La ficha no lo fija | En preparación |
-
-**Por qué `lumiere` toma este enfoque:** una carta de rituales se elige por lo que se nota en la piel y
-se vuelve cinco veces, y un fondo cálido, un campo teñido sobre la carta y la textura de superficie
-cuentan esa sustancia mejor que una interfaz.
+| Eje | Posición | En `marzo` |
+|---|---|---|
+| Escala | clásica | Display fino en el titular y robusto en la cifra |
+| Densidad | estándar | La ficha no la fija |
+| Fondo | cálido claro | Blanco roto cálido con un alterno |
+| Elevación | filete | La ficha no la fija |
+| Composición | rejilla estricta | La colección es una tabla de seis columnas; una sola fotografía por página rompe el margen |
+| Acento | campo teñido | No hay acento: el único color marca existencias |
+| Chasis | enmarcado por filete | Registro de fichas técnicas, sin miniaturas |
+| Ornamento | textura | La ficha no lo fija |
 
 **Par tipográfico:** display de alto contraste + palo seco geométrico. En `marzo`, Bodoni Moda + Jost.
 
 **Dirección de imagen:** el producto de frente, luz cálida, de borde a borde dentro de la rejilla.
 Nunca la sonrisa de banco de imágenes.
 
-**Lo encarna: `marzo`** · `lumiere` (en preparación).
+**Lo encarna: `marzo`**.
 
 ---
 
@@ -162,20 +159,16 @@ enseñan una pieza sola sobre fondo oscuro con aire alrededor, una rejilla orden
 brillo metálico reservado al precio o al botón. Si las referencias llevan la foto a sangre de borde a
 borde, no es este enfoque: lo que lo define es el margen oscuro que rodea la pieza.
 
-| Eje | Posición | En `terrazza` |
-|---|---|---|
-| Escala | editorial | En preparación |
-| Densidad | monumental | En preparación |
-| Fondo | tinta neutra | Oscuro y cálido en el material cosechado de la marca |
-| Elevación | sombra suave | En preparación. Sobre tinta la sombra casi no se ve en reposo: separa el escalón de superficie |
-| Composición | rejilla estricta | En preparación |
-| Acento | metálico | Latón en el material cosechado: el metal de lámparas y cubiertos |
-| Chasis | tarjeta con sombra al levantarse | En preparación |
-| Ornamento | ninguno | En preparación |
-
-**Por qué `terrazza` toma este enfoque:** un restaurante se reserva por el plato y por la sala de noche,
-y el plato iluminado sobre fondo oscuro, la carta ordenada y el latón como único metal son exactamente
-la vitrina trasladada a una mesa.
+| Eje | Posición |
+|---|---|
+| Escala | editorial |
+| Densidad | monumental |
+| Fondo | tinta neutra |
+| Elevación | sombra suave |
+| Composición | rejilla estricta |
+| Acento | metálico |
+| Chasis | tarjeta con sombra al levantarse |
+| Ornamento | ninguno |
 
 **Par tipográfico:** palo seco de peso alto para titulares + palo seco de texto; ninguna de las dos es
 la display de otro enfoque.
@@ -183,7 +176,7 @@ la display de otro enfoque.
 **Dirección de imagen:** el objeto aislado e iluminado contra el fondo oscuro, con aire alrededor.
 Nunca a sangre.
 
-**Lo encarna: `terrazza`** (en preparación).
+**Lo encarna:** sin plantilla todavía.
 
 ---
 
@@ -195,27 +188,23 @@ tarjetas sobrias por área de servicio, iconos de línea, credenciales, cifras d
 testimonios, con titulares contenidos. Si las referencias piden un titular enorme o una fotografía que
 lo diga todo, no es este enfoque.
 
-| Eje | Posición | En `albaran` |
-|---|---|---|
-| Escala | contenida | En preparación |
-| Densidad | estándar | En preparación |
-| Fondo | frío claro | En preparación |
-| Elevación | sombra suave | En preparación |
-| Composición | centrada | En preparación |
-| Acento | reservado | En preparación |
-| Chasis | tarjeta con relleno | En preparación |
-| Ornamento | ilustración de línea | En preparación |
-
-**Por qué `albaran` toma este enfoque:** un despacho de abogados vende credibilidad antes que emoción
-—áreas de práctica sobrias, quién firma y su trayectoria, un acento reservado a pedir consulta—, que es
-el territorio exacto de este enfoque.
+| Eje | Posición |
+|---|---|
+| Escala | contenida |
+| Densidad | estándar |
+| Fondo | frío claro |
+| Elevación | sombra suave |
+| Composición | centrada |
+| Acento | reservado |
+| Chasis | tarjeta con relleno |
+| Ornamento | ilustración de línea |
 
 **Par tipográfico:** una sola familia, con disciplina de pesos en lugar de contraste.
 
 **Dirección de imagen:** fotografía sobria de contextos reales de trabajo; los procesos, guiados por
 icono. La prueba social es parte del contenido, no decoración.
 
-**Lo encarna: `albaran`** (en preparación).
+**Lo encarna:** sin plantilla todavía.
 
 ---
 
@@ -227,20 +216,16 @@ en monoespaciada, tablas alineadas, bloques sin tarjeta que caen en línea fija,
 real graduada. Si las referencias abren con una frase de marca y una foto de estilo de vida, no es este
 enfoque.
 
-| Eje | Posición | En `cadencia` | En `aranda` |
-|---|---|---|---|
-| Escala | contenida | La ficha no la fija | En preparación |
-| Densidad | generosa | La ficha no la fija | En preparación |
-| Fondo | tinta fría | Oscuro y frío | Claro y frío en el material cosechado de la marca, lo que la separa de `cadencia` |
-| Elevación | halo del acento | La ficha no la fija | En preparación |
-| Composición | rejilla estricta | Lista de sesiones como tabla con barras, en columnas | En preparación |
-| Acento | duotono | El naranja sólo mide: barras de intensidad y subrayados, nunca letra | En preparación |
-| Chasis | rejilla estricta | La ficha no lo fija | En preparación |
-| Ornamento | ninguno | La ficha no lo fija | En preparación |
-
-**Por qué `aranda` toma este enfoque:** un patio de coches de ocasión se decide comparando cifras
-—año, kilómetros, potencia, precio— entre unidades que entran y salen cada semana, y ese dato alineado
-en rejilla fija es la lectura que define el enfoque.
+| Eje | Posición | En `cadencia` |
+|---|---|---|
+| Escala | contenida | La ficha no la fija |
+| Densidad | generosa | La ficha no la fija |
+| Fondo | tinta fría | Oscuro y frío |
+| Elevación | halo del acento | La ficha no la fija |
+| Composición | rejilla estricta | Lista de sesiones como tabla con barras, en columnas |
+| Acento | duotono | El naranja sólo mide: barras de intensidad y subrayados, nunca letra |
+| Chasis | rejilla estricta | La ficha no lo fija |
+| Ornamento | ninguno | La ficha no lo fija |
 
 **Par tipográfico:** grotesca de trazo firme + monoespaciada para todo dato. En `cadencia`, Archivo +
 IBM Plex Mono.
@@ -248,7 +233,7 @@ IBM Plex Mono.
 **Dirección de imagen:** fotografía real, luz fría, sin neón y sin gimnasio o exposición de catálogo.
 Nunca una captura de interfaz en lugar de una foto.
 
-**Lo encarna: `cadencia`** · `aranda` (en preparación).
+**Lo encarna: `cadencia`**.
 
 ---
 
@@ -289,24 +274,20 @@ apuntan aquí cuando enseñan fondos saturados, bloques estampados con sombra du
 enormes sin ajustar, etiquetas de colores distintos y fotografía cruda con flash. Si las referencias
 piden contención, serifa fina o sombras suaves, no es este enfoque.
 
-| Eje | Posición | En `tueste` |
-|---|---|---|
-| Escala | monumental | En preparación |
-| Densidad | compacta | En preparación |
-| Fondo | saturado | En preparación; el material cosechado trae el papel kraft de la caja, más cerca de tierra |
-| Elevación | ninguna | En preparación |
-| Composición | asimétrica | En preparación |
-| Acento | policromo acotado: la norma de un solo color se suspende sólo para un conjunto nombrado, como la fila de etiquetas | En preparación |
-| Chasis | sombra dura, presente en reposo | En preparación |
-| Ornamento | patrón, en una sola superficie nombrada y nunca detrás del texto | En preparación |
-
-**Por qué `tueste` toma este enfoque:** el café de especialidad por suscripción vive de la tirada del
-mes, y cada origen con su color de etiqueta es el conjunto acotado donde el policromo tiene sentido,
-mientras el sello y la caja de envío piden el bloque estampado antes que la cafetería de lujo.
+| Eje | Posición |
+|---|---|
+| Escala | monumental |
+| Densidad | compacta |
+| Fondo | saturado |
+| Elevación | ninguna |
+| Composición | asimétrica |
+| Acento | policromo acotado: la norma de un solo color se suspende sólo para un conjunto nombrado, como la fila de etiquetas |
+| Chasis | sombra dura, presente en reposo |
+| Ornamento | patrón, en una sola superficie nombrada y nunca detrás del texto |
 
 **Par tipográfico:** grotesca en peso alto a su ancho natural, sin apretar el espaciado + palo seco de
 texto.
 
 **Dirección de imagen:** cruda, sin retocar, flash duro: la foto que una marca prudente recortaría.
 
-**Lo encarna: `tueste`** (en preparación).
+**Lo encarna:** sin plantilla todavía.

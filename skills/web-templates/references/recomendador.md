@@ -52,15 +52,15 @@ propio Objetivo.
 | Objetivo | Plantilla | Tipo | Enfoque | Estado |
 |---|---|---|---|---|
 | `cartera-curada` | `delao` | corporate | `editorial` | en la biblioteca |
-| `stock-ocasion` | `aranda` | corporate | `tecnologico` | en preparación |
-| `ritual-bono` | `lumiere` | corporate | `materia` | en preparación |
-| `reservar-mesa` | `terrazza` | corporate | `vitrina` | en preparación |
-| `servicios-captacion` | `albaran` | corporate | `institucional` | en preparación |
+| `stock-ocasion` | sin plantilla | — | — | ruta a medida |
+| `ritual-bono` | sin plantilla | — | — | ruta a medida |
+| `reservar-mesa` | sin plantilla | — | — | ruta a medida |
+| `servicios-captacion` | sin plantilla | — | — | ruta a medida |
 | `tienda-talla` | `marzo` | ecommerce | `materia` | en la biblioteca |
 | `tienda-lote` | `barro` | ecommerce | `lujo-oscuro` | en la biblioteca |
 | `equipo-por-uso` | `cadencia` | ecommerce | `tecnologico` | en la biblioteca |
 | `catalogo-amplio` | `escuadra` | ecommerce | `directo` | en la biblioteca |
-| `suscripcion` | `tueste` | ecommerce | `brutalista` | en preparación |
+| `suscripcion` | sin plantilla | — | — | ruta a medida |
 | `plan-fases` | sin plantilla | — | — | ruta a medida |
 | `pedir-cita` | sin plantilla | — | — | ruta a medida |
 | `urgencia-hoy` | sin plantilla | — | — | ruta a medida |
@@ -93,8 +93,8 @@ del veredicto para no quedarse vieja; se lee siempre del índice.
 
 3. **Plantilla.** Se toma la plantilla de la tabla para ese objetivo y se lee su `ficha.md`: «Para qué
    sirve» y «Para qué NO sirve». Si el brief cae en «Para qué NO sirve», la plantilla se descarta con esa
-   razón. Si el objetivo no tiene plantilla, se va al paso 6. Si la plantilla está en preparación o no
-   tiene veredicto vigente en `_indice.md`, se le dice al usuario y se le pregunta si espera a que lo
+   razón. Si el objetivo no tiene plantilla, se va al paso 6. Si la plantilla no tiene veredicto vigente
+   en `_indice.md`, se le dice al usuario y se le pregunta si espera a que lo
    tenga o sigue por la ruta a medida.
 
 4. **Referencias contra el enfoque.** Se piden al cliente **de dos a cuatro referencias** (sitios que le
