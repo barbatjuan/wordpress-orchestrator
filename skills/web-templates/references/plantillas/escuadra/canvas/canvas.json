@@ -1,0 +1,23 @@
+{
+  "artboards": [
+    {
+      "file": "Escuadra.dc.html",
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 6820,
+      "title": "ESCUADRA · portada"
+    },
+    {
+      "file": "EscuadraPieza.dc.html",
+      "x": 1600,
+      "y": 0,
+      "w": 1440,
+      "h": 2515,
+      "title": "ESCUADRA · ficha"
+    }
+  ],
+  "launch": {
+    "view": "canvas"
+  }
+}

@@ -6,6 +6,17 @@ sin veredicto vigente, la plantilla no se ofrece a un cliente.
 | Slug | Objetivo | Enfoque | Tipo | Páginas | Veredicto |
 |---|---|---|---|---|---|
 | `delao` · Inmobiliaria de la O | `cartera-curada` | `editorial` | corporate | inicio · propiedades · ficha · nosotros · contacto | pendiente de firma |
+| `marzo` · MARZO | `tienda-talla` | `materia` | ecommerce | portada · ficha | sin veredicto · sin maqueta |
+| `barro` · BARRO | `tienda-lote` | `lujo-oscuro` | ecommerce | portada · ficha | sin veredicto · sin maqueta |
+| `cadencia` · CADENCIA | `equipo-por-uso` ⚑ | `tecnologico` | ecommerce | portada · ficha | sin veredicto · sin maqueta |
+| `escuadra` · ESCUADRA | `catalogo-amplio` ⚑ | `directo` | ecommerce | portada · ficha | sin veredicto · sin maqueta |
+
+⚑ Objetivo nuevo, que todavía no existe en ningún recomendador. Se da de alta cuando exista
+`recomendador.md`, o la plantilla se reasigna a un objetivo que ya exista.
+
+**Las cuatro tiendas son lienzo y fotografías, no plantillas completas.** Tienen ficha, manifiesto de
+imágenes y canvas; les falta la maqueta derivada y el veredicto. Hasta tener las dos no se ofrecen a un
+cliente, igual que `delao` hasta que firme el suyo.
 
 ## Qué contiene cada plantilla
 
@@ -30,3 +41,31 @@ Una carpeta por slug, y dentro siempre lo mismo:
   `Nav`, `Pie` y su `MANIFIESTO.md`
 - `references/plantillas/delao/maqueta/` — `index.html`
 - `references/plantillas/delao/img/` — doce `.webp`
+
+## marzo
+
+- `references/plantillas/marzo/ficha.md`
+- `references/plantillas/marzo/manifiesto-imagenes.md`
+- `references/plantillas/marzo/canvas/` — `Marzo`, `MarzoPieza`, `canvas.json` y su `MANIFIESTO.md`
+- `references/plantillas/marzo/img/` — nueve `.webp`
+
+## barro
+
+- `references/plantillas/barro/ficha.md`
+- `references/plantillas/barro/manifiesto-imagenes.md`
+- `references/plantillas/barro/canvas/` — `Barro`, `BarroPieza`, `canvas.json` y su `MANIFIESTO.md`
+- `references/plantillas/barro/img/` — diez `.webp`
+
+## cadencia
+
+- `references/plantillas/cadencia/ficha.md`
+- `references/plantillas/cadencia/manifiesto-imagenes.md`
+- `references/plantillas/cadencia/canvas/` — `Cadencia`, `CadenciaPieza`, `canvas.json` y su `MANIFIESTO.md`
+- `references/plantillas/cadencia/img/` — ocho `.webp`
+
+## escuadra
+
+- `references/plantillas/escuadra/ficha.md`
+- `references/plantillas/escuadra/manifiesto-imagenes.md`
+- `references/plantillas/escuadra/canvas/` — `Escuadra`, `EscuadraPieza`, `canvas.json` y su `MANIFIESTO.md`
+- `references/plantillas/escuadra/img/` — dieciséis `.webp`

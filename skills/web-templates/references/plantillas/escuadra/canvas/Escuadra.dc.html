@@ -1,0 +1,296 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Martian+Mono:wght@400;500&display=swap">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  /* El suelo va tambien en body: el frame del artboard pinta su propio blanco donde el
+     contenido no llega. */
+  html, body { margin: 0; padding: 0; background: #EDEFEE; }
+  x-dc { display: block; }
+  [data-suelo] h1, [data-suelo] h2, [data-suelo] h3, [data-suelo] h4,
+  [data-suelo] p, [data-suelo] ul, [data-suelo] li, [data-suelo] dl, [data-suelo] dd, [data-suelo] dt,
+  [data-suelo] figure, [data-suelo] figcaption {
+    margin: 0; padding: 0;
+  }
+  [data-suelo] ul { list-style: none; }
+  [data-suelo] img { display: block; border: 0; }
+  [data-suelo] a { color: inherit; text-decoration: none; }
+  .mono { font-family: "Martian Mono", ui-monospace, monospace; }
+  /* El ocre es la UNICA pieza de color y NUNCA lleva texto encima. A #C8901F daba 2,44:1 y
+     un juez no encontro un solo pixel suyo en toda la primera pantalla: existir y no verse es
+     lo mismo. A #9C6D12 da 3,94:1, por encima del 3:1 que se le pide a un elemento de
+     interfaz, y sigue sin llegar al 4,5:1 de una letra. La cota es un corchete dibujado con
+     tres bordes, no un caracter. */
+  .cota { height: 9px; border-top: 2px solid #9C6D12; border-left: 1px solid #9C6D12; border-right: 1px solid #9C6D12; }
+  /* Las fotos sobre fondo crema se disolvian en el papel: su fondo esta a un pelo del
+     #EDEFEE y el canto izquierdo no se leia. Filete de 1px, que es un borde nativo. */
+  .placa { border: 1px solid rgba(30,42,50,0.38); }
+</style>
+</helmet>
+
+<div data-suelo style="width:1440px;background:#EDEFEE;color:#1E2A32;font-family:'Instrument Sans','Helvetica Neue',Arial,sans-serif;font-weight:400;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility">
+
+<!-- ============================ CABECERA ============================
+     Dos filas: identidad y utilidades arriba, y debajo el rail de departamentos, que en una
+     tienda de hogar es la navegacion de verdad. Seis columnas de 204 sobre la medida
+     108→1332, asi que cada departamento cae en su columna y no en un hueco residual. ===== -->
+<header style="border-bottom:1px solid rgba(30,42,50,0.16);">
+  <div style="display:flex; align-items:baseline; justify-content:space-between; padding:24px 108px 20px;">
+    <a href="Escuadra.dc.html" style="display:flex; align-items:baseline; gap:14px;">
+      <span style="font-size:22px; font-weight:600; letter-spacing:0.22em;">ESCUADRA</span>
+      <span class="mono" style="font-size:10px; color:#55636A;">todo para la casa</span>
+    </a>
+    <div style="display:flex; gap:26px; align-items:baseline;">
+      <a href="Escuadra.dc.html" class="mono" style="font-size:11px; color:#55636A;">Buscar</a>
+      <a href="Escuadra.dc.html" class="mono" style="font-size:11px; color:#55636A;">Guías de montaje</a>
+      <a href="Escuadra.dc.html" class="mono" style="font-size:11px; color:#55636A;">Tiendas</a>
+      <a href="Escuadra.dc.html" class="mono" style="font-size:11px;">Carro · 0</a>
+    </div>
+  </div>
+  <nav style="padding:0 108px; border-top:1px solid rgba(30,42,50,0.1);">
+    <ul style="display:flex;">
+      <li style="width:204px;"><a href="Escuadra.dc.html" style="display:block; padding:15px 0; font-size:15px; font-weight:500;">Salón</a></li>
+      <li style="width:204px;"><a href="Escuadra.dc.html" style="display:block; padding:15px 0; font-size:15px; color:#55636A;">Cocina</a></li>
+      <li style="width:204px;"><a href="Escuadra.dc.html" style="display:block; padding:15px 0; font-size:15px; color:#55636A;">Dormitorio</a></li>
+      <li style="width:204px;"><a href="Escuadra.dc.html" style="display:block; padding:15px 0; font-size:15px; color:#55636A;">Baño</a></li>
+      <li style="width:204px;"><a href="Escuadra.dc.html" style="display:block; padding:15px 0; font-size:15px; color:#55636A;">Almacenaje</a></li>
+      <li style="width:204px;"><a href="Escuadra.dc.html" style="display:block; padding:15px 0; font-size:15px; color:#55636A;">Iluminación</a></li>
+    </ul>
+  </nav>
+</header>
+
+<!-- ============================ EL SALÓN ENTERO ============================
+     No abre con una frase: abre con una habitacion montada y su cuenta. Seis referencias,
+     seis precios y un total. Es lo que una tienda de hogar promete, y es lo contrario de
+     una declaracion de marca. ======================================================== -->
+<section style="padding:40px 108px 0;">
+  <div style="display:flex; align-items:baseline; justify-content:space-between;">
+    <p class="mono" style="font-size:10px; letter-spacing:0.06em; text-transform:uppercase; color:#55636A;">El salón de la foto, entero</p>
+    <p class="mono" style="font-size:10px; letter-spacing:0.06em; text-transform:uppercase; color:#55636A;">6 referencias · en almacén</p>
+  </div>
+  <img class="placa" src="escuadra-hero.webp" alt="Piso pequeño y luminoso amueblado en contrachapado de abedul: mesa, dos sillas y un mueble bajo contra la pared" width="1224" height="430" style="width:1224px; height:430px; object-fit:cover; margin-top:22px;">
+
+  <div style="display:flex; gap:36px; margin-top:40px;">
+    <a href="Escuadra.dc.html" style="width:384px;"><img class="placa" src="escuadra-idx-cocina.webp" alt="Balda de cocina con vajilla blanca apilada y una sartén de acero colgada" width="384" height="176" style="width:384px; height:176px; object-fit:cover;"><span style="display:flex; align-items:baseline; justify-content:space-between; padding-top:12px;"><span style="font-size:16px; font-weight:500;">Cocina</span><span class="mono" style="font-size:11px; color:#55636A;">386 · desde 1,50 €</span></span></a>
+    <a href="Escuadra.dc.html" style="width:384px;"><img class="placa" src="escuadra-idx-dormitorio.webp" alt="Cama baja de contrachapado con ropa de cama de algodón lavado azul grisáceo" width="384" height="176" style="width:384px; height:176px; object-fit:cover;"><span style="display:flex; align-items:baseline; justify-content:space-between; padding-top:12px;"><span style="font-size:16px; font-weight:500;">Dormitorio</span><span class="mono" style="font-size:11px; color:#55636A;">178 · desde 6,00 €</span></span></a>
+    <a href="Escuadra.dc.html" style="width:384px;"><img class="placa" src="escuadra-idx-bano.webp" alt="Estantería de baño con toallas de rizo dobladas y cestas de fibra" width="384" height="176" style="width:384px; height:176px; object-fit:cover;"><span style="display:flex; align-items:baseline; justify-content:space-between; padding-top:12px;"><span style="font-size:16px; font-weight:500;">Baño</span><span class="mono" style="font-size:11px; color:#55636A;">132 · desde 2,00 €</span></span></a>
+  </div>
+
+  <div style="display:flex; gap:36px; margin-top:44px; align-items:flex-start;">
+    <ul style="width:804px; border-top:1px solid rgba(30,42,50,0.28);">
+      <li style="display:flex; align-items:baseline; padding:13px 0; border-bottom:1px solid rgba(30,42,50,0.12);"><span class="mono" style="width:112px; font-size:11px; color:#55636A;">ME-140</span><span style="width:380px; font-size:15px;">Mesa Aro</span><span class="mono" style="width:188px; font-size:12px; color:#55636A;">140 × 80 × 74</span><span class="mono" style="width:124px; font-size:14px; text-align:right;">189,00 €</span></li>
+      <li style="display:flex; align-items:baseline; padding:13px 0; border-bottom:1px solid rgba(30,42,50,0.12);"><span class="mono" style="width:112px; font-size:11px; color:#55636A;">SI-044</span><span style="width:380px; font-size:15px;">Silla Aro · dos unidades</span><span class="mono" style="width:188px; font-size:12px; color:#55636A;">44 × 48 × 82</span><span class="mono" style="width:124px; font-size:14px; text-align:right;">118,00 €</span></li>
+      <li style="display:flex; align-items:baseline; padding:13px 0; border-bottom:1px solid rgba(30,42,50,0.12);"><span class="mono" style="width:112px; font-size:11px; color:#55636A;">ES-180</span><span style="width:380px; font-size:15px;">Estante Tramo</span><span class="mono" style="width:188px; font-size:12px; color:#55636A;">80 × 32 × 180</span><span class="mono" style="width:124px; font-size:14px; text-align:right;">149,00 €</span></li>
+      <li style="display:flex; align-items:baseline; padding:13px 0; border-bottom:1px solid rgba(30,42,50,0.12);"><span class="mono" style="width:112px; font-size:11px; color:#55636A;">IL-040</span><span style="width:380px; font-size:15px;">Lámpara Vela, pantalla de papel</span><span class="mono" style="width:188px; font-size:12px; color:#55636A;">Ø40 × 26</span><span class="mono" style="width:124px; font-size:14px; text-align:right;">29,00 €</span></li>
+      <li style="display:flex; align-items:baseline; padding:13px 0; border-bottom:1px solid rgba(30,42,50,0.12);"><span class="mono" style="width:112px; font-size:11px; color:#55636A;">TX-160</span><span style="width:380px; font-size:15px;">Alfombra Sella</span><span class="mono" style="width:188px; font-size:12px; color:#55636A;">160 × 230</span><span class="mono" style="width:124px; font-size:14px; text-align:right;">79,00 €</span></li>
+      <li style="display:flex; align-items:baseline; padding:13px 0; border-bottom:1px solid rgba(30,42,50,0.12);"><span class="mono" style="width:112px; font-size:11px; color:#55636A;">TX-140</span><span style="width:380px; font-size:15px;">Cortina Sella, par</span><span class="mono" style="width:188px; font-size:12px; color:#55636A;">140 × 260</span><span class="mono" style="width:124px; font-size:14px; text-align:right;">34,00 €</span></li>
+    </ul>
+
+    <div style="width:384px;">
+      <p class="mono" style="font-size:10px; letter-spacing:0.06em; text-transform:uppercase; color:#55636A;">El salón entero</p>
+      <div class="cota" style="margin-top:14px;"></div>
+      <p class="mono" style="font-size:38px; margin-top:12px;">598,00 €</p>
+      <p style="font-size:14px; line-height:1.7; color:#55636A; margin-top:12px;">Seis bultos, 63 kg y hora y media de montaje entre dos. Cabe en un coche mediano.</p>
+      <a href="EscuadraPieza.dc.html" style="display:block; margin-top:22px; padding:16px 0; background:#1E2A32; color:#EDEFEE; font-size:14px; font-weight:500; letter-spacing:0.06em; text-align:center;">Añadir el salón al carro</a>
+      <p style="font-size:13px; color:#55636A; margin-top:12px;">O quítale lo que ya tengas: cada referencia se compra suelta.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ LOS DEPARTAMENTOS ============================ -->
+<section style="padding:104px 108px 0;">
+  <div style="display:flex; align-items:baseline; justify-content:space-between;">
+    <h2 style="font-size:44px; font-weight:600; line-height:1.1; letter-spacing:-0.026em;">Mil setecientos artículos para la casa.</h2>
+    <p class="mono" style="font-size:11px; color:#55636A;">Actualizado hoy</p>
+  </div>
+
+  <div style="display:flex; gap:32px; margin-top:40px;">
+    <figure style="width:596px;">
+      <img class="placa" src="escuadra-cocina.webp" alt="Rincón de cocina con balda de contrachapado, vajilla blanca apilada, tarros de vidrio, una tabla de madera y una sartén de acero colgada" width="596" height="447" style="width:596px; height:447px; object-fit:cover;">
+      <figcaption style="display:flex; align-items:baseline; justify-content:space-between; padding-top:16px;">
+        <span style="font-size:22px; font-weight:600;">Cocina</span>
+        <span class="mono" style="font-size:12px; color:#55636A;">386 artículos · desde 1,50 €</span>
+      </figcaption>
+    </figure>
+    <figure style="width:596px;">
+      <img class="placa" src="escuadra-dormitorio.webp" alt="Dormitorio sencillo con cama baja de contrachapado, ropa de cama de algodón lavado azul grisáceo y una mesilla con lámpara" width="596" height="447" style="width:596px; height:447px; object-fit:cover;">
+      <figcaption style="display:flex; align-items:baseline; justify-content:space-between; padding-top:16px;">
+        <span style="font-size:22px; font-weight:600;">Dormitorio</span>
+        <span class="mono" style="font-size:12px; color:#55636A;">178 artículos · desde 6,00 €</span>
+      </figcaption>
+    </figure>
+  </div>
+
+  <div style="display:flex; gap:36px; margin-top:44px;">
+    <figure style="width:384px;">
+      <img class="placa" src="escuadra-bano.webp" alt="Rincón de baño con estantería de contrachapado, toallas de rizo dobladas, cuatro cestas de fibra y un espejo redondo" width="384" height="512" style="width:384px; height:512px; object-fit:cover;">
+      <figcaption style="display:flex; align-items:baseline; justify-content:space-between; padding-top:16px;">
+        <span style="font-size:20px; font-weight:600;">Baño</span>
+        <span class="mono" style="font-size:11px; color:#55636A;">132 · desde 2,00 €</span>
+      </figcaption>
+    </figure>
+    <figure style="width:384px;">
+      <img class="placa" src="escuadra-lampara.webp" alt="Lámpara de techo con pantalla de papel blanco y suspensión de acero mate sobre una pared de yeso" width="384" height="512" style="width:384px; height:512px; object-fit:cover;">
+      <figcaption style="display:flex; align-items:baseline; justify-content:space-between; padding-top:16px;">
+        <span style="font-size:20px; font-weight:600;">Iluminación</span>
+        <span class="mono" style="font-size:11px; color:#55636A;">96 · desde 9,00 €</span>
+      </figcaption>
+    </figure>
+    <figure style="width:384px;">
+      <img class="placa" src="escuadra-textil.webp" alt="Pila de textiles doblados sobre una superficie de contrachapado: toallas de rizo, una sábana azul grisácea y fundas de cojín de lino" width="384" height="512" style="width:384px; height:512px; object-fit:cover;">
+      <figcaption style="display:flex; align-items:baseline; justify-content:space-between; padding-top:16px;">
+        <span style="font-size:20px; font-weight:600;">Textil</span>
+        <span class="mono" style="font-size:11px; color:#55636A;">204 · desde 3,50 €</span>
+      </figcaption>
+    </figure>
+  </div>
+
+  <ul style="margin-top:48px; border-top:1px solid rgba(30,42,50,0.28);">
+    <li style="display:flex; align-items:baseline; padding:15px 0; border-bottom:1px solid rgba(30,42,50,0.12);"><span style="width:612px; font-size:16px;">Salón y comedor</span><span class="mono" style="width:306px; font-size:12px; color:#55636A;">214 artículos</span><span class="mono" style="width:306px; font-size:13px; text-align:right;">desde 4,00 €</span></li>
+    <li style="display:flex; align-items:baseline; padding:15px 0; border-bottom:1px solid rgba(30,42,50,0.12);"><span style="width:612px; font-size:16px;">Almacenaje</span><span class="mono" style="width:306px; font-size:12px; color:#55636A;">240 artículos</span><span class="mono" style="width:306px; font-size:13px; text-align:right;">desde 3,00 €</span></li>
+    <li style="display:flex; align-items:baseline; padding:15px 0; border-bottom:1px solid rgba(30,42,50,0.12);"><span style="width:612px; font-size:16px;">Menaje y mesa</span><span class="mono" style="width:306px; font-size:12px; color:#55636A;">310 artículos</span><span class="mono" style="width:306px; font-size:13px; text-align:right;">desde 0,90 €</span></li>
+    <li style="display:flex; align-items:baseline; padding:15px 0; border-bottom:1px solid rgba(30,42,50,0.12);"><span style="width:612px; font-size:16px;">Infantil</span><span class="mono" style="width:306px; font-size:12px; color:#55636A;">148 artículos</span><span class="mono" style="width:306px; font-size:13px; text-align:right;">desde 2,50 €</span></li>
+    <li style="display:flex; align-items:baseline; padding:15px 0; border-bottom:1px solid rgba(30,42,50,0.12);"><span style="width:612px; font-size:16px;">Terraza</span><span class="mono" style="width:306px; font-size:12px; color:#55636A;">92 artículos</span><span class="mono" style="width:306px; font-size:13px; text-align:right;">desde 5,00 €</span></li>
+  </ul>
+</section>
+
+<!-- ============================ ALMACENAJE ============================ -->
+<section style="padding:104px 108px 0;">
+  <p class="mono" style="font-size:10px; letter-spacing:0.06em; text-transform:uppercase; color:#55636A;">Almacenaje</p>
+  <img class="placa" src="escuadra-banco.webp" alt="Banco bajo de contrachapado de abedul contra una pared de yeso, con la tapa entreabierta y unas zapatillas al lado" width="1224" height="460" style="width:1224px; height:460px; object-fit:cover; margin-top:26px;">
+  <div style="display:flex; align-items:flex-start; padding-top:26px; border-top:1px solid rgba(30,42,50,0.16); margin-top:22px;">
+    <div style="width:596px;">
+      <h3 style="font-size:32px; font-weight:600; line-height:1.12; letter-spacing:-0.02em;">Banco Vado</h3>
+      <p style="width:520px; font-size:15px; line-height:1.74; color:#55636A; margin-top:14px;">Un cajón con tapa a la altura de sentarse. Aguanta 120 kg encima y dentro caben dos edredones o el calzado de una casa entera.</p>
+    </div>
+    <div style="width:180px; padding-top:6px;">
+      <div class="cota"></div>
+      <p class="mono" style="font-size:13px; margin-top:9px;">110 × 40 × 45</p>
+      <p style="font-size:12px; color:#55636A; margin-top:4px;">centímetros</p>
+    </div>
+    <div style="width:150px; padding-top:6px;"><p class="mono" style="font-size:13px;">1 bulto</p><p style="font-size:12px; color:#55636A; margin-top:4px;">de 18 kg</p></div>
+    <div style="width:150px; padding-top:6px;"><p class="mono" style="font-size:13px;">18 min</p><p style="font-size:12px; color:#55636A; margin-top:4px;">de montaje</p></div>
+    <div style="width:148px; padding-top:6px; text-align:right;"><p class="mono" style="font-size:19px;">129,00 €</p></div>
+  </div>
+
+  <div style="display:flex; gap:64px; margin-top:56px; align-items:flex-start;">
+    <img class="placa" src="escuadra-estante.webp" alt="Mueble abierto de contrachapado de abedul contra una pared de yeso, con libros, una jarra de cerámica y una manta doblada" width="384" height="512" style="width:384px; height:512px; object-fit:cover;">
+    <div style="width:776px;">
+      <h3 style="font-size:32px; font-weight:600; line-height:1.12; letter-spacing:-0.02em;">Estante Tramo</h3>
+      <p style="width:640px; font-size:15px; line-height:1.74; color:#55636A; margin-top:14px;">Cinco baldas a 32 cm de fondo, que es lo que mide un libro grande de pie. Sube hasta 180 y se ancla a la pared con dos escuadras que van en el bulto.</p>
+      <div style="display:flex; margin-top:30px;">
+        <div style="width:194px;"><div class="cota"></div><p class="mono" style="font-size:13px; margin-top:9px;">80 cm</p><p style="font-size:12px; color:#55636A; margin-top:4px;">de ancho</p></div>
+        <div style="width:194px;"><div class="cota"></div><p class="mono" style="font-size:13px; margin-top:9px;">32 cm</p><p style="font-size:12px; color:#55636A; margin-top:4px;">de fondo</p></div>
+        <div style="width:194px;"><div class="cota"></div><p class="mono" style="font-size:13px; margin-top:9px;">180 cm</p><p style="font-size:12px; color:#55636A; margin-top:4px;">de alto</p></div>
+        <div style="width:194px;"><div class="cota"></div><p class="mono" style="font-size:13px; margin-top:9px;">40 kg</p><p style="font-size:12px; color:#55636A; margin-top:4px;">por balda</p></div>
+      </div>
+      <div style="display:flex; align-items:baseline; justify-content:space-between; margin-top:32px; padding-top:20px; border-top:1px solid rgba(30,42,50,0.16);">
+        <p style="font-size:14px; color:#55636A;">3 bultos · 40 minutos de montaje</p>
+        <p class="mono" style="font-size:22px;">149,00 €</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ EL CATÁLOGO ACOTADO ============================ -->
+<section style="padding:104px 108px 0;">
+  <div style="display:flex; gap:32px; align-items:flex-start;">
+    <img class="placa" src="escuadra-mesa.webp" alt="Mesa rectangular lisa de contrachapado de abedul fotografiada casi de alzado sobre fondo hueso" width="596" height="337" style="width:596px; height:337px; object-fit:cover;">
+    <div style="width:596px;">
+      <h2 style="font-size:40px; font-weight:600; line-height:1.1; letter-spacing:-0.024em;">Todo lleva su medida puesta.</h2>
+      <p style="font-size:16px; line-height:1.76; color:#55636A; margin-top:18px;">Ancho por fondo por alto en centímetros, hasta en una toalla. Los bultos son los que salen del almacén y los minutos, los que tardó una persona sola la primera vez, sin taladro.</p>
+      <p style="font-size:16px; line-height:1.76; color:#55636A; margin-top:14px;">Si una pieza no cabe por tu puerta, la ficha te lo dice antes de que la compres.</p>
+    </div>
+  </div>
+
+  <ul style="margin-top:52px; border-top:1px solid rgba(30,42,50,0.28);">
+    <li style="display:flex; align-items:baseline; padding:15px 0; border-bottom:1px solid rgba(30,42,50,0.22);">
+      <span class="mono" style="width:112px; font-size:10px; letter-spacing:0.06em; text-transform:uppercase; color:#55636A;">Ref.</span>
+      <span class="mono" style="width:392px; font-size:10px; letter-spacing:0.06em; text-transform:uppercase; color:#55636A;">Artículo</span>
+      <span class="mono" style="width:252px; font-size:10px; letter-spacing:0.06em; text-transform:uppercase; color:#55636A;">Medida en cm</span>
+      <span class="mono" style="width:130px; font-size:10px; letter-spacing:0.06em; text-transform:uppercase; color:#55636A;">Bultos</span>
+      <span class="mono" style="width:130px; font-size:10px; letter-spacing:0.06em; text-transform:uppercase; color:#55636A;">Montaje</span>
+      <span class="mono" style="width:208px; font-size:10px; letter-spacing:0.06em; text-transform:uppercase; color:#55636A; text-align:right;">Precio</span>
+    </li>
+    <li style="display:flex; align-items:baseline; padding:18px 0; border-bottom:1px solid rgba(30,42,50,0.12);"><span class="mono" style="width:112px; font-size:11px; color:#55636A;">ME-140</span><span style="width:392px; font-size:16px;">Mesa Aro</span><span class="mono" style="width:252px; font-size:12px; color:#55636A;">140 × 80 × 74</span><span class="mono" style="width:130px; font-size:12px; color:#55636A;">2</span><span class="mono" style="width:130px; font-size:12px; color:#55636A;">25 min</span><span class="mono" style="width:208px; font-size:15px; text-align:right;">189,00 €</span></li>
+    <li style="display:flex; align-items:baseline; padding:18px 0; border-bottom:1px solid rgba(30,42,50,0.12);"><span class="mono" style="width:112px; font-size:11px; color:#55636A;">SI-044</span><span style="width:392px; font-size:16px;">Silla Aro</span><span class="mono" style="width:252px; font-size:12px; color:#55636A;">44 × 48 × 82</span><span class="mono" style="width:130px; font-size:12px; color:#55636A;">1</span><span class="mono" style="width:130px; font-size:12px; color:#55636A;">12 min</span><span class="mono" style="width:208px; font-size:15px; text-align:right;">59,00 €</span></li>
+    <li style="display:flex; align-items:baseline; padding:18px 0; border-bottom:1px solid rgba(30,42,50,0.12);"><span class="mono" style="width:112px; font-size:11px; color:#55636A;">ES-180</span><span style="width:392px; font-size:16px;">Estante Tramo</span><span class="mono" style="width:252px; font-size:12px; color:#55636A;">80 × 32 × 180</span><span class="mono" style="width:130px; font-size:12px; color:#55636A;">3</span><span class="mono" style="width:130px; font-size:12px; color:#55636A;">40 min</span><span class="mono" style="width:208px; font-size:15px; text-align:right;">149,00 €</span></li>
+    <li style="display:flex; align-items:baseline; padding:18px 0; border-bottom:1px solid rgba(30,42,50,0.12);"><span class="mono" style="width:112px; font-size:11px; color:#55636A;">BA-110</span><span style="width:392px; font-size:16px;">Banco Vado</span><span class="mono" style="width:252px; font-size:12px; color:#55636A;">110 × 40 × 45</span><span class="mono" style="width:130px; font-size:12px; color:#55636A;">1</span><span class="mono" style="width:130px; font-size:12px; color:#55636A;">18 min</span><span class="mono" style="width:208px; font-size:15px; text-align:right;">129,00 €</span></li>
+    <li style="display:flex; align-items:baseline; padding:18px 0; border-bottom:1px solid rgba(30,42,50,0.12);"><span class="mono" style="width:112px; font-size:11px; color:#55636A;">IL-040</span><span style="width:392px; font-size:16px;">Lámpara Vela</span><span class="mono" style="width:252px; font-size:12px; color:#55636A;">Ø40 × 26</span><span class="mono" style="width:130px; font-size:12px; color:#55636A;">1</span><span class="mono" style="width:130px; font-size:12px; color:#55636A;">6 min</span><span class="mono" style="width:208px; font-size:15px; text-align:right;">29,00 €</span></li>
+    <li style="display:flex; align-items:baseline; padding:18px 0; border-bottom:1px solid rgba(30,42,50,0.12);"><span class="mono" style="width:112px; font-size:11px; color:#55636A;">AL-039</span><span style="width:392px; font-size:16px;">Caja Cubo, tapa incluida</span><span class="mono" style="width:252px; font-size:12px; color:#55636A;">39 × 39 × 39</span><span class="mono" style="width:130px; font-size:12px; color:#55636A;">1</span><span class="mono" style="width:130px; font-size:12px; color:#55636A;">4 min</span><span class="mono" style="width:208px; font-size:15px; text-align:right;">9,00 €</span></li>
+    <li style="display:flex; align-items:baseline; padding:18px 0; border-bottom:1px solid rgba(30,42,50,0.12);"><span class="mono" style="width:112px; font-size:11px; color:#55636A;">TX-070</span><span style="width:392px; font-size:16px;">Toalla Ribera, rizo de 550 g/m²</span><span class="mono" style="width:252px; font-size:12px; color:#55636A;">70 × 140</span><span class="mono" style="width:130px; font-size:12px; color:#55636A;">—</span><span class="mono" style="width:130px; font-size:12px; color:#55636A;">—</span><span class="mono" style="width:208px; font-size:15px; text-align:right;">12,00 €</span></li>
+    <li style="display:flex; align-items:baseline; padding:18px 0; border-bottom:1px solid rgba(30,42,50,0.12);"><span class="mono" style="width:112px; font-size:11px; color:#55636A;">MN-024</span><span style="width:392px; font-size:16px;">Sartén Llano, acero de tres capas</span><span class="mono" style="width:252px; font-size:12px; color:#55636A;">Ø24 × 5</span><span class="mono" style="width:130px; font-size:12px; color:#55636A;">—</span><span class="mono" style="width:130px; font-size:12px; color:#55636A;">—</span><span class="mono" style="width:208px; font-size:15px; text-align:right;">26,00 €</span></li>
+  </ul>
+  <p style="font-size:13px; color:#55636A; margin-top:20px;">Ocho de mil setecientos. El catálogo completo se filtra por medida, por precio y por si cabe en el ascensor.</p>
+</section>
+
+<!-- ============================ CÓMO LLEGA ============================ -->
+<section style="padding:104px 108px 0;">
+  <div style="display:flex; gap:32px; align-items:flex-start;">
+    <div style="width:596px;">
+      <p class="mono" style="font-size:10px; letter-spacing:0.06em; text-transform:uppercase; color:#55636A;">Cómo llega</p>
+      <h3 style="font-size:32px; font-weight:600; line-height:1.12; letter-spacing:-0.02em; margin-top:18px;">Plano, y por la escalera.</h3>
+      <p style="font-size:15px; line-height:1.76; color:#55636A; margin-top:18px;">Ningún bulto pasa de 25 kg ni de 8 cm de canto, que es lo que sube una persona sola por una escalera estrecha sin ayuda y sin rozar la pared.</p>
+      <p style="font-size:15px; line-height:1.76; color:#55636A; margin-top:14px;">El cartón va sin imprimir y sin plástico. Lo recogemos en la siguiente entrega si nos lo dejas plegado en el portal.</p>
+    </div>
+    <img class="placa" src="escuadra-caja.webp" alt="Tres cajas planas de cartón marrón sin imprimir apiladas en el suelo junto a una pared de yeso" width="596" height="447" style="width:596px; height:447px; object-fit:cover;">
+  </div>
+</section>
+
+<!-- ============================ EL MONTAJE ============================ -->
+<section style="padding:104px 108px 0;">
+  <img class="placa" src="escuadra-taller.webp" alt="Banco de montaje visto desde arriba con paneles de contrachapado claro dispuestos en orden y una bolsa de herrajes volcada" width="1224" height="460" style="width:1224px; height:460px; object-fit:cover;">
+  <div style="display:flex; justify-content:space-between; align-items:baseline; padding-top:20px; border-top:1px solid rgba(30,42,50,0.16); margin-top:20px;">
+    <p style="width:756px; font-size:15px; line-height:1.7; color:#55636A;">Las instrucciones vienen dibujadas a tamaño real: se apoya la pieza encima del papel y se comprueba que es la que toca antes de atornillar nada.</p>
+    <p class="mono" style="font-size:11px; color:#55636A;">SIN TORNILLOS SOBRANTES</p>
+  </div>
+</section>
+
+<!-- ============================ PIE ============================ -->
+<footer style="padding:112px 108px 72px;">
+  <div style="display:flex; gap:80px; padding-top:34px; border-top:1px solid rgba(30,42,50,0.28);">
+    <div style="width:512px;">
+      <p style="font-size:22px; font-weight:600; letter-spacing:0.22em;">ESCUADRA</p>
+      <p style="width:404px; font-size:15px; line-height:1.76; color:#55636A; margin-top:18px;">Mil setecientos artículos para la casa, todos con su medida puesta. Almacén y tienda en Alaquàs, Valencia.</p>
+    </div>
+    <div style="display:flex; gap:80px;">
+      <ul>
+        <li class="mono" style="font-size:10px; letter-spacing:0.06em; text-transform:uppercase; color:#55636A; margin-bottom:20px;">Departamentos</li>
+        <li style="margin-bottom:12px;"><a href="Escuadra.dc.html" style="font-size:15px;">Salón y comedor</a></li>
+        <li style="margin-bottom:12px;"><a href="Escuadra.dc.html" style="font-size:15px;">Cocina y menaje</a></li>
+        <li style="margin-bottom:12px;"><a href="Escuadra.dc.html" style="font-size:15px;">Dormitorio y textil</a></li>
+        <li><a href="Escuadra.dc.html" style="font-size:15px;">Baño y almacenaje</a></li>
+      </ul>
+      <ul>
+        <li class="mono" style="font-size:10px; letter-spacing:0.06em; text-transform:uppercase; color:#55636A; margin-bottom:20px;">La casa</li>
+        <li style="margin-bottom:12px;"><a href="Escuadra.dc.html" style="font-size:15px;">Tiendas y horarios</a></li>
+        <li style="margin-bottom:12px;"><a href="Escuadra.dc.html" style="font-size:15px;">Guías de montaje</a></li>
+        <li style="margin-bottom:12px;"><a href="Escuadra.dc.html" style="font-size:15px;">Piezas de repuesto</a></li>
+        <li><a href="Escuadra.dc.html" style="font-size:15px;">Contacto</a></li>
+      </ul>
+      <ul>
+        <li class="mono" style="font-size:10px; letter-spacing:0.06em; text-transform:uppercase; color:#55636A; margin-bottom:20px;">Condiciones</li>
+        <li style="margin-bottom:12px;"><a href="Escuadra.dc.html" style="font-size:15px;">Envíos y devoluciones</a></li>
+        <li style="margin-bottom:12px;"><a href="Escuadra.dc.html" style="font-size:15px;">Aviso legal</a></li>
+        <li style="margin-bottom:12px;"><a href="Escuadra.dc.html" style="font-size:15px;">Privacidad</a></li>
+        <li><a href="Escuadra.dc.html" style="font-size:15px;">Cookies</a></li>
+      </ul>
+    </div>
+  </div>
+  <div style="display:flex; justify-content:space-between; margin-top:72px; padding-top:22px; border-top:1px solid rgba(30,42,50,0.12);">
+    <p class="mono" style="font-size:11px; color:#55636A;">ESCUADRA S. L. U. — Alaquàs, Valencia · hola@escuadra.es · 963 24 71 08</p>
+    <p class="mono" style="font-size:11px; color:#55636A;">© 2026</p>
+  </div>
+</footer>
+
+</div>
+</x-dc>
+</body>
+</html>
