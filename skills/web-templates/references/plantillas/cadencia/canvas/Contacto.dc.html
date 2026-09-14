@@ -1,0 +1,179 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  /* El suelo va en body ADEMAS de en el envoltorio: el frame del artboard pinta su propio
+     blanco alli donde el contenido no llega. */
+  html, body { margin: 0; padding: 0; background: #141A21; }
+  x-dc { display: block; }
+  [data-suelo] h1, [data-suelo] h2, [data-suelo] h3, [data-suelo] h4,
+  [data-suelo] p, [data-suelo] ul, [data-suelo] li, [data-suelo] dl, [data-suelo] dd, [data-suelo] dt,
+  [data-suelo] figure, [data-suelo] figcaption, [data-suelo] form, [data-suelo] fieldset {
+    margin: 0; padding: 0;
+  }
+  [data-suelo] ul { list-style: none; }
+  [data-suelo] img { display: block; border: 0; }
+  [data-suelo] a { color: inherit; text-decoration: none; }
+  [data-suelo] fieldset { border: none; }
+  [data-suelo] input, [data-suelo] textarea { font: inherit; color: inherit; background: transparent; }
+  .mono { font-family: "IBM Plex Mono", ui-monospace, monospace; }
+  /* El naranja nunca es color de letra: sobre el suelo frio mide 4,38:1, por debajo del 4,5:1
+     de un texto. Va en dos piezas de interfaz, las barras de intensidad y el subrayado de los
+     enlaces, y las dos pasan el 3:1 que se les pide. */
+  .barra { display: inline-block; width: 9px; height: 14px; background: #2E3944; }
+  .barra.on { background: #D9542B; }
+</style>
+</helmet>
+
+<div data-suelo style="width:1440px;background:#141A21;color:#E9EEF2;font-family:'Archivo','Helvetica Neue',Arial,sans-serif;font-weight:400;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility">
+
+<!-- ============================ CABECERA ============================ -->
+<header style="display:flex; align-items:baseline; justify-content:space-between; padding:26px 108px; border-bottom:1px solid rgba(233,238,242,0.14);">
+  <div style="display:flex; align-items:baseline; gap:56px;">
+    <a href="Cadencia.dc.html" style="display:flex; align-items:baseline; gap:14px;">
+      <span style="font-size:19px; font-weight:700; letter-spacing:0.26em;">CADENCIA</span>
+      <span class="mono" style="font-size:11px; letter-spacing:0.1em; color:#8C97A3;">ropa de frío</span>
+    </a>
+    <nav>
+      <ul style="display:flex; gap:34px;">
+        <li><a href="Categoria.dc.html" style="font-size:15px; letter-spacing:0.04em; color:#8C97A3;">Sesiones</a></li>
+        <li><a href="Cadencia.dc.html" style="font-size:15px; letter-spacing:0.04em; color:#8C97A3;">Prendas</a></li>
+        <li><a href="LaMarca.dc.html" style="font-size:15px; letter-spacing:0.04em; color:#8C97A3;">El banco</a></li>
+        <li><a href="Contacto.dc.html" style="font-size:15px; font-weight:500; letter-spacing:0.04em;">Contacto</a></li>
+      </ul>
+    </nav>
+  </div>
+  <div style="display:flex; gap:26px; align-items:baseline;">
+    <a href="Cadencia.dc.html" class="mono" style="font-size:12px; letter-spacing:0.06em; color:#8C97A3;">Buscar</a>
+    <a href="Cadencia.dc.html" class="mono" style="font-size:12px; letter-spacing:0.06em;">Carro · 0</a>
+  </div>
+</header>
+
+<!-- ============================ MIGA ============================ -->
+<div style="padding:24px 108px 0;">
+  <p class="mono" style="font-size:11px; letter-spacing:0.1em; color:#8C97A3;"><a href="Cadencia.dc.html" style="color:#8C97A3;">CADENCIA</a> · <span style="color:#E9EEF2;">Contacto</span></p>
+</div>
+
+<!-- ============================ TITULAR ============================ -->
+<section style="padding:64px 108px 0;">
+  <p class="mono" style="font-size:11px; letter-spacing:0.22em; text-transform:uppercase; color:#8C97A3;">Antes de comprar · o después</p>
+  <h1 style="font-size:58px; font-weight:600; line-height:1.05; letter-spacing:-0.028em; margin-top:22px; max-width:780px;">Cuéntanos la sesión, te decimos el equipo.</h1>
+  <p style="font-size:16px; line-height:1.74; color:#8C97A3; margin-top:24px; max-width:640px;">Sin línea 900 ni chat automático. Escribe la duración, el rango de temperatura y la intensidad que buscas, y respondemos con el equipo exacto o con lo que falta probar. Contestamos en día laborable, casi siempre el mismo día.</p>
+</section>
+
+<!-- ============================ DATOS + FORMULARIO ============================ -->
+<section id="formulario" style="padding:96px 108px 0;">
+  <div style="display:flex; gap:80px; align-items:flex-start;">
+
+    <div style="width:340px;">
+      <p class="mono" style="font-size:11px; letter-spacing:0.24em; text-transform:uppercase; color:#8C97A3; padding-bottom:20px; border-bottom:1px solid rgba(233,238,242,0.22);">El banco</p>
+      <ul class="mono" style="padding-top:20px;">
+        <li style="padding:11px 0; border-bottom:1px solid rgba(233,238,242,0.14); font-size:13px;"><span style="display:block; color:#8C97A3; font-size:10.5px; letter-spacing:0.1em; text-transform:uppercase;">Dirección</span><span style="display:block; margin-top:6px; color:#E9EEF2;">Camino del Puerto, 3<br>40109 Valsaín (Segovia)</span></li>
+        <li style="padding:11px 0; border-bottom:1px solid rgba(233,238,242,0.14); font-size:13px;"><span style="display:block; color:#8C97A3; font-size:10.5px; letter-spacing:0.1em; text-transform:uppercase;">Visitas al banco</span><span style="display:block; margin-top:6px; color:#E9EEF2;">Con cita previa</span></li>
+        <li style="padding:11px 0; border-bottom:1px solid rgba(233,238,242,0.14); font-size:13px;"><span style="display:block; color:#8C97A3; font-size:10.5px; letter-spacing:0.1em; text-transform:uppercase;">Horario</span><span style="display:block; margin-top:6px; color:#E9EEF2;">Lunes a viernes, 9:00–15:00</span></li>
+        <li style="padding:11px 0; border-bottom:1px solid rgba(233,238,242,0.14); font-size:13px;"><span style="display:block; color:#8C97A3; font-size:10.5px; letter-spacing:0.1em; text-transform:uppercase;">Teléfono</span><span style="display:block; margin-top:6px; color:#E9EEF2;">921 47 30 16</span></li>
+        <li style="padding:11px 0; border-bottom:1px solid rgba(233,238,242,0.14); font-size:13px;"><span style="display:block; color:#8C97A3; font-size:10.5px; letter-spacing:0.1em; text-transform:uppercase;">Correo</span><span style="display:block; margin-top:6px; color:#E9EEF2;">hola@cadencia.es</span></li>
+      </ul>
+    </div>
+
+    <form style="width:596px;">
+      <div style="display:flex; gap:32px;">
+        <label style="display:block; width:282px;">
+          <span class="mono" style="display:block; font-size:10.5px; letter-spacing:0.16em; text-transform:uppercase; color:#8C97A3; padding-bottom:10px;">Nombre</span>
+          <input type="text" placeholder="Nombre y apellidos" style="width:100%; height:44px; border:none; border-bottom:1px solid rgba(233,238,242,0.35); font-size:14px; letter-spacing:0.01em; color:#E9EEF2;">
+        </label>
+        <label style="display:block; width:282px;">
+          <span class="mono" style="display:block; font-size:10.5px; letter-spacing:0.16em; text-transform:uppercase; color:#8C97A3; padding-bottom:10px;">Correo</span>
+          <input type="email" placeholder="tu@correo.com" style="width:100%; height:44px; border:none; border-bottom:1px solid rgba(233,238,242,0.35); font-size:14px; letter-spacing:0.01em; color:#E9EEF2;">
+        </label>
+      </div>
+
+      <label style="display:block; padding-top:30px;">
+        <span class="mono" style="display:block; font-size:10.5px; letter-spacing:0.16em; text-transform:uppercase; color:#8C97A3; padding-bottom:10px;">Tu sesión</span>
+        <input type="text" placeholder="Duración, temperatura, intensidad" style="width:100%; height:44px; border:none; border-bottom:1px solid rgba(233,238,242,0.35); font-size:14px; letter-spacing:0.01em; color:#E9EEF2;">
+      </label>
+
+      <label style="display:block; padding-top:30px;">
+        <span class="mono" style="display:block; font-size:10.5px; letter-spacing:0.16em; text-transform:uppercase; color:#8C97A3; padding-bottom:10px;">Mensaje</span>
+        <textarea rows="4" placeholder="Talla, prueba, pedido, lo que sea" style="width:100%; border:none; border-bottom:1px solid rgba(233,238,242,0.35); font-size:14px; line-height:1.6; letter-spacing:0.01em; color:#E9EEF2; resize:none; padding-bottom:10px;"></textarea>
+      </label>
+
+      <label style="display:flex; align-items:flex-start; gap:12px; padding-top:26px;">
+        <input type="checkbox" style="width:16px; height:16px; margin-top:2px; flex-shrink:0;">
+        <span style="font-size:12px; line-height:1.6; letter-spacing:0.01em; color:#8C97A3;">He leído y acepto la <a href="Cadencia.dc.html" style="color:#E9EEF2; border-bottom:1px solid #D9542B;">política de privacidad</a>. CADENCIA usa estos datos sólo para responder.</span>
+      </label>
+
+      <button type="button" style="display:flex; align-items:center; justify-content:center; width:240px; height:56px; margin-top:30px; background:#E9EEF2; border:none; font-family:'Archivo',sans-serif; font-weight:600; font-size:13px; letter-spacing:0.06em; color:#141A21; cursor:pointer;">Enviar mensaje</button>
+    </form>
+  </div>
+</section>
+
+<!-- ============================ LO QUE YA SABEMOS RESPONDER ============================ -->
+<section style="padding:104px 108px 0;">
+  <h2 style="font-size:40px; font-weight:600; line-height:1.1; letter-spacing:-0.022em;">Lo que ya sabemos responder.</h2>
+
+  <div style="display:flex; gap:32px; margin-top:44px;">
+    <div style="width:392px;">
+      <p class="mono" style="font-size:10.5px; letter-spacing:0.2em; text-transform:uppercase; color:#E9EEF2; padding-bottom:16px; border-bottom:1px solid rgba(233,238,242,0.30);">Tallas y cambios</p>
+      <p style="font-size:14px; line-height:1.8; color:#8C97A3; padding-top:16px;">La ficha de cada equipo lleva su tabla de medidas en centímetros. Un cambio de talla es gratis en los primeros 30 días.</p>
+    </div>
+    <div style="width:392px;">
+      <p class="mono" style="font-size:10.5px; letter-spacing:0.2em; text-transform:uppercase; color:#E9EEF2; padding-bottom:16px; border-bottom:1px solid rgba(233,238,242,0.30);">Envíos</p>
+      <p style="font-size:14px; line-height:1.8; color:#8C97A3; padding-top:16px;">Península en 48 horas. Fuera de la Unión Europea, escríbenos antes de pagar: no todo el catálogo aguanta el tránsito.</p>
+    </div>
+    <div style="width:392px;">
+      <p class="mono" style="font-size:10.5px; letter-spacing:0.2em; text-transform:uppercase; color:#E9EEF2; padding-bottom:16px; border-bottom:1px solid rgba(233,238,242,0.30);">Tu sesión no está en catálogo</p>
+      <p style="font-size:14px; line-height:1.8; color:#8C97A3; padding-top:16px;">Manda duración, rango de temperatura e intensidad y te decimos si ya existe un equipo o si hay que montarlo.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ PIE ============================ -->
+<footer style="padding:112px 108px 72px;">
+  <div style="display:flex; gap:80px; padding-top:34px; border-top:1px solid rgba(233,238,242,0.22);">
+    <div style="width:512px;">
+      <p style="font-size:22px; font-weight:700; letter-spacing:0.26em;">CADENCIA</p>
+      <p style="width:404px; font-size:15px; line-height:1.76; color:#8C97A3; margin-top:18px;">Ropa para entrenar en frío, probada en la sierra de Guadarrama. Taller y banco de pruebas en Valsaín, Segovia.</p>
+    </div>
+    <div style="display:flex; gap:80px;">
+      <ul>
+        <li class="mono" style="font-size:11px; letter-spacing:0.22em; text-transform:uppercase; color:#8C97A3; margin-bottom:20px;">Tienda</li>
+        <li style="margin-bottom:12px;"><a href="Categoria.dc.html" style="font-size:15px;">Sesiones</a></li>
+        <li style="margin-bottom:12px;"><a href="Cadencia.dc.html" style="font-size:15px;">Prendas</a></li>
+        <li style="margin-bottom:12px;"><a href="Cadencia.dc.html" style="font-size:15px;">Tallas y medidas</a></li>
+        <li><a href="Cadencia.dc.html" style="font-size:15px;">Tarjeta regalo</a></li>
+      </ul>
+      <ul>
+        <li class="mono" style="font-size:11px; letter-spacing:0.22em; text-transform:uppercase; color:#8C97A3; margin-bottom:20px;">La casa</li>
+        <li style="margin-bottom:12px;"><a href="LaMarca.dc.html" style="font-size:15px;">El banco de pruebas</a></li>
+        <li style="margin-bottom:12px;"><a href="Cadencia.dc.html" style="font-size:15px;">El diario</a></li>
+        <li style="margin-bottom:12px;"><a href="Cadencia.dc.html" style="font-size:15px;">Reparaciones</a></li>
+        <li><a href="Contacto.dc.html" style="font-size:15px;">Contacto</a></li>
+      </ul>
+      <ul>
+        <li class="mono" style="font-size:11px; letter-spacing:0.22em; text-transform:uppercase; color:#8C97A3; margin-bottom:20px;">Condiciones</li>
+        <li style="margin-bottom:12px;"><a href="Cadencia.dc.html" style="font-size:15px;">Envíos y devoluciones</a></li>
+        <li style="margin-bottom:12px;"><a href="Cadencia.dc.html" style="font-size:15px;">Aviso legal</a></li>
+        <li style="margin-bottom:12px;"><a href="Cadencia.dc.html" style="font-size:15px;">Privacidad</a></li>
+        <li><a href="Cadencia.dc.html" style="font-size:15px;">Cookies</a></li>
+      </ul>
+    </div>
+  </div>
+  <div style="display:flex; justify-content:space-between; margin-top:72px; padding-top:22px; border-top:1px solid rgba(233,238,242,0.14);">
+    <p class="mono" style="font-size:13px; letter-spacing:0.03em; color:#8C97A3;">CADENCIA S. L. — Valsaín, Segovia · hola@cadencia.es · 921 47 30 16</p>
+    <p class="mono" style="font-size:13px; letter-spacing:0.03em; color:#8C97A3;">© 2026</p>
+  </div>
+</footer>
+
+</div>
+</x-dc>
+</body>
+</html>

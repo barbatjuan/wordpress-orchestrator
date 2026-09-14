@@ -8,17 +8,16 @@ sin veredicto vigente, la plantilla no se ofrece a un cliente.
 | `delao` · Inmobiliaria de la O | `cartera-curada` | `editorial` | corporate | inicio · propiedades · ficha · nosotros · contacto | pendiente de firma |
 | `marzo` · MARZO | `tienda-talla` | `materia` | ecommerce | portada · categoría · ficha de producto · carro · pago · pedido recibido · mi cuenta · la marca · contacto · condiciones de venta y envíos · aviso legal · privacidad · cookies · 404 | sin veredicto |
 | `barro` · BARRO | `tienda-lote` | `lujo-oscuro` | ecommerce | portada · categoría · ficha de producto · carro · pago · pedido recibido · mi cuenta · la marca · contacto · condiciones de venta y envíos · aviso legal · privacidad · cookies · 404 | sin veredicto |
-| `cadencia` · CADENCIA | `equipo-por-uso` ⚑ | `tecnologico` | ecommerce | portada · ficha | sin veredicto · sin maqueta |
+| `cadencia` · CADENCIA | `equipo-por-uso` ⚑ | `tecnologico` | ecommerce | portada · categoría · ficha de producto · carro · pago · pedido recibido · mi cuenta · la marca · contacto · condiciones de venta y envíos · aviso legal · privacidad · cookies · 404 | sin veredicto |
 | `escuadra` · ESCUADRA | `catalogo-amplio` ⚑ | `directo` | ecommerce | portada · categoría · ficha de producto · carro · pago · pedido recibido · mi cuenta · la marca · contacto · condiciones de venta y envíos · aviso legal · privacidad · cookies · 404 | sin veredicto |
 
 ⚑ Objetivo nuevo, que todavía no existe en ningún recomendador. Se da de alta cuando exista
 `recomendador.md`, o la plantilla se reasigna a un objetivo que ya exista.
 
-**Una de las cuatro tiendas es todavía lienzo y fotografías, no una plantilla completa.** `cadencia`
-tiene ficha, manifiesto de imágenes y canvas; le falta la maqueta derivada. `marzo`, `barro` y
-`escuadra` ya tienen su juego completo de 14 páginas derivado en `maqueta/index.html`; a las tres les
-falta sólo el veredicto. Hasta tener las dos cosas, ninguna de las cuatro se ofrece a un cliente,
-igual que `delao` hasta que firme el suyo.
+**Las cuatro tiendas tienen ya su juego completo de 14 páginas** derivado en `maqueta/index.html`, con
+cinco láminas dibujadas y nueve páginas de sistema derivadas del mismo sistema. A las cuatro les falta
+sólo el veredicto, y a `delao` firmar el suyo. Hasta tenerlo, ninguna se ofrece a un cliente: una
+maqueta que nadie ha mirado es una carpeta de ficheros que pasa los tests.
 
 ## Qué contiene cada plantilla
 
@@ -67,7 +66,9 @@ Una carpeta por slug, y dentro siempre lo mismo:
 
 - `references/plantillas/cadencia/ficha.md`
 - `references/plantillas/cadencia/manifiesto-imagenes.md`
-- `references/plantillas/cadencia/canvas/` — `Cadencia`, `CadenciaPieza`, `canvas.json` y su `MANIFIESTO.md`
+- `references/plantillas/cadencia/canvas/` — `Cadencia`, `CadenciaPieza`, `Categoria`, `LaMarca`,
+  `Contacto`, `canvas.json` y su `MANIFIESTO.md`
+- `references/plantillas/cadencia/maqueta/` — `index.html`
 - `references/plantillas/cadencia/img/` — ocho `.webp`
 
 ## escuadra

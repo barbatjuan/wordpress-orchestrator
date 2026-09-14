@@ -7,10 +7,17 @@ baja después a la maqueta, nunca al revés.
 |---|---|---|
 | `Cadencia.dc.html` | portada | 1440 × 4920 |
 | `CadenciaPieza.dc.html` | ficha del equipo Fondo largo en frío | 1440 × 2735 |
+| `Categoria.dc.html` | categoría — todas las sesiones | 1440 × 2760 |
+| `LaMarca.dc.html` | la marca — el banco de pruebas | 1440 × 1947 |
+| `Contacto.dc.html` | contacto | 1440 × 1780 |
 
-`canvas.json` coloca los dos artboards y guarda su alto. **El alto está medido, no tecleado**: sale del
-alto real del contenido a 1440, porque un alto que sobra enseña papel y uno que falta corta la última
-línea.
+`canvas.json` coloca los cinco artboards y guarda su alto. **El alto está medido, no tecleado**: sale
+del alto real del contenido a 1440, con `alto-contenido.mjs`, porque un alto que sobra enseña papel y
+uno que falta corta la última línea. Las tres láminas nuevas se midieron 2760 / 1947 / 1780. Al mismo
+tiempo se volvieron a medir las dos que ya existían como control: `Cadencia.dc.html` dio 4914 contra
+los 4920 declarados y `CadenciaPieza.dc.html` dio 2727 contra los 2735 declarados — 6 y 8 píxeles de
+diferencia, dirección inofensiva (sobra papel, no corta línea) y dentro de la variación de medición ya
+documentada en `defectos-de-derivacion.md`. No se ha tocado `canvas.json` para esas dos filas.
 
 ## De dónde sale
 
