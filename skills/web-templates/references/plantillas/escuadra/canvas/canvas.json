@@ -15,6 +15,30 @@
       "w": 1440,
       "h": 2515,
       "title": "ESCUADRA · ficha"
+    },
+    {
+      "file": "Categoria.dc.html",
+      "x": 0,
+      "y": 6940,
+      "w": 1440,
+      "h": 2066,
+      "title": "ESCUADRA · categoría (Cocina)"
+    },
+    {
+      "file": "LaMarca.dc.html",
+      "x": 1520,
+      "y": 6940,
+      "w": 1440,
+      "h": 2854,
+      "title": "ESCUADRA · la marca"
+    },
+    {
+      "file": "Contacto.dc.html",
+      "x": 3040,
+      "y": 6940,
+      "w": 1440,
+      "h": 1986,
+      "title": "ESCUADRA · contacto"
     }
   ],
   "launch": {

@@ -9,16 +9,16 @@ sin veredicto vigente, la plantilla no se ofrece a un cliente.
 | `marzo` · MARZO | `tienda-talla` | `materia` | ecommerce | portada · categoría · ficha de producto · carro · pago · pedido recibido · mi cuenta · la marca · contacto · condiciones de venta y envíos · aviso legal · privacidad · cookies · 404 | sin veredicto |
 | `barro` · BARRO | `tienda-lote` | `lujo-oscuro` | ecommerce | portada · categoría · ficha de producto · carro · pago · pedido recibido · mi cuenta · la marca · contacto · condiciones de venta y envíos · aviso legal · privacidad · cookies · 404 | sin veredicto |
 | `cadencia` · CADENCIA | `equipo-por-uso` ⚑ | `tecnologico` | ecommerce | portada · ficha | sin veredicto · sin maqueta |
-| `escuadra` · ESCUADRA | `catalogo-amplio` ⚑ | `directo` | ecommerce | portada · ficha | sin veredicto · sin maqueta |
+| `escuadra` · ESCUADRA | `catalogo-amplio` ⚑ | `directo` | ecommerce | portada · categoría · ficha de producto · carro · pago · pedido recibido · mi cuenta · la marca · contacto · condiciones de venta y envíos · aviso legal · privacidad · cookies · 404 | sin veredicto |
 
 ⚑ Objetivo nuevo, que todavía no existe en ningún recomendador. Se da de alta cuando exista
 `recomendador.md`, o la plantilla se reasigna a un objetivo que ya exista.
 
-**Dos de las cuatro tiendas son todavía lienzo y fotografías, no plantillas completas.** `cadencia`
-y `escuadra` tienen ficha, manifiesto de imágenes y canvas; les falta la maqueta derivada y el
-veredicto. `marzo` y `barro` ya tienen su juego completo de 14 páginas derivado en `maqueta/index.html`;
-a las dos les falta sólo el veredicto. Hasta tener las dos cosas, ninguna de las cuatro se ofrece a
-un cliente, igual que `delao` hasta que firme el suyo.
+**Una de las cuatro tiendas es todavía lienzo y fotografías, no una plantilla completa.** `cadencia`
+tiene ficha, manifiesto de imágenes y canvas; le falta la maqueta derivada. `marzo`, `barro` y
+`escuadra` ya tienen su juego completo de 14 páginas derivado en `maqueta/index.html`; a las tres les
+falta sólo el veredicto. Hasta tener las dos cosas, ninguna de las cuatro se ofrece a un cliente,
+igual que `delao` hasta que firme el suyo.
 
 ## Qué contiene cada plantilla
 
@@ -74,5 +74,7 @@ Una carpeta por slug, y dentro siempre lo mismo:
 
 - `references/plantillas/escuadra/ficha.md`
 - `references/plantillas/escuadra/manifiesto-imagenes.md`
-- `references/plantillas/escuadra/canvas/` — `Escuadra`, `EscuadraPieza`, `canvas.json` y su `MANIFIESTO.md`
+- `references/plantillas/escuadra/canvas/` — `Escuadra`, `EscuadraPieza`, `Categoria`, `LaMarca`,
+  `Contacto`, `canvas.json` y su `MANIFIESTO.md`
+- `references/plantillas/escuadra/maqueta/` — `index.html`
 - `references/plantillas/escuadra/img/` — dieciséis `.webp`
