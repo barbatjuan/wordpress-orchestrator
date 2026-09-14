@@ -306,14 +306,14 @@
     {
      "id": "C7",
      "t": "Geometría y contraste medidos en todas las páginas a 430, 768 y 1280",
-     "s": "parcial",
-     "n": "Contraste MEDIDO en las cinco y en verde, incluidos los siete colores derivados de delao (4,90 a 7,97:1). Falta la geometria a 430, 768 y 1280"
+     "s": "hecho",
+     "n": "198 medidas (66 paginas x 3 anchos) de scrollWidth contra clientWidth, sin una sola captura: 2 desbordes encontrados en las fichas de MARZO (91px) y BARRO (2px), los dos arreglados y re-medidos a cero. Contraste medido y en verde en las cinco"
     },
     {
      "id": "C8",
      "t": "Veredicto sellado de las cinco: juez ciego y barrido visual de todas las páginas",
      "s": "pendiente",
-     "n": "El barrido de delao se cortó por el límite; se retoma"
+     "n": "Es lo unico que queda para que una plantilla se pueda ofrecer: juez ciego B por plantilla y juez A de conjunto. Necesita ojos, no medidas"
     }
    ]
   },
