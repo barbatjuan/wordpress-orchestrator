@@ -57,6 +57,22 @@ es más visible que el defecto.
 **Una rejilla nunca lleva más pistas que elementos.** Con la técnica del hueco entintado, una
 celda que falta en la última fila no es un blanco: es una losa maciza del color de la línea.
 
+**Una pista `1fr` no baja del `min-content` de lo que lleva dentro.** `1fr` es `minmax(auto, 1fr)`, y
+ese `auto` es el mínimo automático, no cero. Una tabla que no parte sus columnas, o una columna de
+compra con ancho puesto, hacen que la pista mida más que su propio padre y la página desborde aunque
+la rejilla ya esté colapsada a una sola columna. Se escribe `minmax(0, 1fr)`. Medido: la ficha de
+MARZO desbordaba 91px a 430 con la rejilla ya en una columna. En Elementor esto es un contenedor de
+una columna, que nunca crece por encima de su padre; el equivalente en flex es `min-width:0` en el
+hijo, porque su mínimo automático también es `auto`.
+
+**Un `style=` en línea no puede llevar punto de ruptura, así que no puede maquetar.** Los dos únicos
+desbordes de las cinco plantillas salieron del mismo sitio: `style="grid-template-columns:200px 1fr"`
+en MARZO y `style="flex:0 0 400px;width:400px"` en BARRO. Las dos reglas eran correctas a 1440 y no
+tenían forma de dejar de serlo a 430. Lo que decide la composición —columnas, bases de flex, anchos—
+va a una clase con sus `@media`; en línea se queda lo que no cambia con el ancho. Un ancho fijo en
+línea es además el único trozo de la maqueta que no se puede expresar como ajuste responsive de un
+contenedor de Elementor.
+
 ## Pegajosos y primera pantalla
 
 **Una cabecera pegajosa translúcida deja pasar el texto que corre por debajo.** A 94% de opacidad

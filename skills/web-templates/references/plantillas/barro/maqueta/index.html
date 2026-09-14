@@ -623,7 +623,10 @@ main{display:block;}
         </div>
       </div>
 
-      <div style="flex:0 0 400px;width:400px;">
+      <!-- La columna de compra mide 400 mientras quepa, y encoge cuando no. Con `flex:0 0 400px` no
+           encogía nunca y la ficha desbordaba 2px a 430: medido, no supuesto. En Elementor esto es
+           un ancho de 400 con el contenedor autorizado a encoger, no un ancho fijo. -->
+      <div style="flex:1 1 400px;max-width:400px;min-width:0;">
         <p class="price-lg">38,00&nbsp;€</p>
         <p class="copy" style="margin-top:14px;">IVA incluido · envío 5,90&nbsp;€</p>
 

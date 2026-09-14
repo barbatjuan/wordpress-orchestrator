@@ -99,9 +99,18 @@ fieldset{border:none;}
 
 .row2{display:grid;grid-template-columns:minmax(180px,300px) 1fr;column-gap:56px;align-items:start;}
 .row3{display:grid;grid-template-columns:repeat(3,1fr);column-gap:26px;align-items:start;}
+/* Esquema de medidas + tabla. Vivía en un `style=` en línea con una columna fija de 200px, y un
+   estilo en línea no puede llevar punto de ruptura: a 430 la rejilla seguía pidiendo 200 + 48 + la
+   tabla y la ficha desbordaba. Como clase colapsa en 1024 igual que el resto. */
+.esquema-medidas{display:grid;grid-template-columns:200px minmax(0,1fr);column-gap:48px;align-items:start;}
+/* Una sola columna, y `minmax(0,…)` en vez de `1fr` a secas: el mínimo automático de una pista `1fr`
+   es el min-content de su contenido, así que la tabla de medidas —que no parte sus columnas— hacía
+   la pista de 489px dentro de un cristal de 430 y la ficha desbordaba 91px. Medido a 430. En
+   Elementor esto es un contenedor de una columna, que nunca crece por encima de su padre. */
 @media (max-width:1024px){
-  .row2{grid-template-columns:1fr;row-gap:28px;}
-  .row3{grid-template-columns:1fr;row-gap:36px;}
+  .row2{grid-template-columns:minmax(0,1fr);row-gap:28px;}
+  .row3{grid-template-columns:minmax(0,1fr);row-gap:36px;}
+  .esquema-medidas{grid-template-columns:minmax(0,1fr);row-gap:30px;}
 }
 
 /* Banda a sangre: el hijo de la derecha toca el borde del cristal. Rompe el margen UNA vez por
@@ -328,13 +337,15 @@ main{display:block;}
   text-transform:uppercase;color:var(--c-text);padding-top:16px;}
 
 /* Talla · selector nativo (span de estado, no <select>) */
-.size-grid{display:grid;grid-template-columns:repeat(5,52px);column-gap:10px;}
+/* Cinco tallas en cinco columnas iguales, con tope de ancho en vez de columnas de 52px fijos. Así
+   encoge sola por debajo de 420 sin un TERCER punto de ruptura: Elementor sólo expresa 1024 y 767,
+   y una regla a 420 no se puede construir de forma nativa. */
+.size-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));column-gap:10px;max-width:300px;}
 .size-cell{height:52px;display:flex;align-items:center;justify-content:center;
   border:1px solid var(--hair-030);font-family:var(--font-sans);font-size:0.8125rem;
   letter-spacing:0.06em;color:var(--c-ink);}
 .size-cell.is-selected{border-color:var(--c-ink);background:var(--c-ink);color:var(--c-bg);}
 .size-cell.is-out{border-color:var(--hair-016);color:var(--c-text);text-decoration:line-through;}
-@media (max-width:420px){.size-grid{grid-template-columns:repeat(5,1fr);}}
 </style>
 
 <!-- ════════════════════════════════════════════════════════════════════════════════════════════
@@ -717,7 +728,7 @@ main{display:block;}
         <p class="copy" style="padding-top:22px;">En centímetros, tomadas sobre la prenda en plano y multiplicadas por dos donde corresponde. No son medidas de cuerpo. Tolerancia de un centímetro.</p>
       </div>
 
-      <div style="display:grid;grid-template-columns:200px 1fr;column-gap:48px;align-items:start;">
+      <div class="esquema-medidas">
         <svg class="svg-esquema" viewBox="0 0 280 340" width="100%" height="auto" role="img" aria-label="Esquema del abrigo con los cinco puntos de medida marcados de la A a la E">
           <g fill="none" stroke="#1A1815" stroke-width="1" stroke-linejoin="round" stroke-linecap="round">
             <path d="M78 62 L182 62 L196 292 L64 292 Z"></path>
