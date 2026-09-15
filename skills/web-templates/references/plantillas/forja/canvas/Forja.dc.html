@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow+Condensed:wght@500;600&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  html, body { margin:0; padding:0; background:#0A0A0A; }
+  body { color:#F2F2F0; -webkit-font-smoothing:antialiased; }
+  * { box-sizing:border-box; }
+  a { color:#D9FF00; text-decoration:none; }
+  a:hover { color:#ffffff; }
+  [data-reveal] { opacity:0; transform:translateY(28px); transition:opacity .7s cubic-bezier(.2,.7,.2,1), transform .7s cubic-bezier(.2,.7,.2,1); }
+  [data-reveal].is-in { opacity:1; transform:none; }
+  @media (prefers-reduced-motion: reduce) { [data-reveal] { opacity:1; transform:none; transition:none; } }
+</style>
+</helmet>
+
+<div data-suelo="1" style="background:#0A0A0A;color:#F2F2F0;font-family:Barlow,system-ui,sans-serif">
+
+  <!-- NAV -->
+  <header style="position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:24px;padding:18px 10vw;background:#0A0A0A;border-bottom:1px solid rgba(255,255,255,.08)">
+    <div style="display:flex;align-items:baseline;gap:10px">
+      <span style="font-family:Anton,Impact,sans-serif;font-size:24px;letter-spacing:.02em;color:#F2F2F0;text-transform:uppercase">FORJA</span>
+      <span style="font-family:Anton,Impact,sans-serif;font-size:24px;letter-spacing:.02em;color:#D9FF00;text-transform:uppercase">BOX</span>
+    </div>
+    <nav style="display:flex;align-items:center;gap:28px;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:600;letter-spacing:.14em;text-transform:uppercase">
+      <a href="Disciplinas.dc.html" style="color:rgba(242,242,240,.72)">Disciplinas</a>
+      <a href="ElBox.dc.html" style="color:rgba(242,242,240,.72)">El box</a>
+      <a href="Coaches.dc.html" style="color:rgba(242,242,240,.72)">Coaches</a>
+      <a href="Planes.dc.html" style="color:rgba(242,242,240,.72)">Planes</a>
+      <a href="Contacto.dc.html" style="color:rgba(242,242,240,.72)">Contacto</a>
+      <a href="Contacto.dc.html#reservar" style="display:inline-block;padding:13px 22px;background:#D9FF00;color:#0A0A0A;letter-spacing:.12em">Prueba gratis</a>
+    </nav>
+  </header>
+
+  <!-- HERO -->
+  <section style="position:relative;min-height:88vh;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);align-items:end;gap:48px;padding:7vw 10vw 4vw;max-width:calc(1440px + 20vw);margin:0 auto;background:#0A0A0A;border-bottom:1px solid rgba(255,255,255,.08)">
+    <div>
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:28px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:#D9FF00">
+        <span style="width:34px;height:2px;background:#D9FF00;display:block"></span>
+        Entrenamiento funcional y halterofilia · Madrid
+      </div>
+      <h1 style="margin:0;font-family:Anton,Impact,sans-serif;font-weight:400;text-transform:uppercase;font-size:clamp(52px,9vw,150px);line-height:1.0;letter-spacing:-.02em;color:#F2F2F0;text-wrap:balance">
+        Aquí se<br />
+        forja<br />
+        <span style="color:#D9FF00">tu fuerza</span>
+      </h1>
+      <p style="max-width:44ch;margin:32px 0 0;font-size:18px;line-height:1.6;color:rgba(242,242,240,.66)">
+        Clases guiadas por coaches certificados, 12 atletas por sesión como máximo y un plan que se adapta a tu nivel desde el primer día.
+      </p>
+      <div style="display:flex;flex-wrap:wrap;align-items:center;gap:16px;margin-top:40px">
+        <a href="Contacto.dc.html#reservar" style="display:inline-block;padding:20px 40px;background:#D9FF00;color:#0A0A0A;font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:600;letter-spacing:.14em;text-transform:uppercase">Reserva tu prueba gratis</a>
+        <a href="Planes.dc.html" style="display:inline-block;padding:20px 40px;border:1px solid rgba(242,242,240,.3);color:#F2F2F0;font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:600;letter-spacing:.14em;text-transform:uppercase">Ver planes</a>
+      </div>
+    </div>
+    <div style="position:relative;aspect-ratio:3/4;min-height:420px;background:repeating-linear-gradient(135deg,#141414 0 12px,#191919 12px 24px);border:1px solid rgba(255,255,255,.1);display:flex;align-items:flex-end;justify-content:flex-start;padding:20px">
+      <span style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;letter-spacing:.06em;color:rgba(217,255,0,.85)">[ foto hero — atleta en barra, vertical 1200×1600 ]</span>
+    </div>
+  </section>
+
+  <!-- MARQUESINA -->
+  <section style="padding:26px 10vw;background:#D9FF00">
+    <p style="max-width:1440px;margin:0 auto;font-family:Anton,Impact,sans-serif;font-size:40px;line-height:1.2;letter-spacing:.01em;text-transform:uppercase;text-align:center;text-wrap:balance;color:#0A0A0A">Fuerza / Metcon / Halterofilia / Gimnástico / Endurance / Movilidad / Iniciación / Open box</p>
+  </section>
+
+  <!-- CONTADORES -->
+  <section style="padding:72px 10vw;background:#0A0A0A;border-bottom:1px solid rgba(255,255,255,.08)">
+    <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:40px;max-width:1440px;margin:0 auto">
+      <div data-reveal>
+        <div style="font-family:Anton,Impact,sans-serif;font-size:clamp(46px,5.2vw,78px);line-height:1.08;color:#D9FF00">{{ c1 }}</div>
+        <div style="margin-top:10px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:rgba(242,242,240,.55)">Atletas activos</div>
+      </div>
+      <div data-reveal>
+        <div style="font-family:Anton,Impact,sans-serif;font-size:clamp(46px,5.2vw,78px);line-height:1.08;color:#F2F2F0">{{ c2 }}</div>
+        <div style="margin-top:10px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:rgba(242,242,240,.55)">Clases por semana</div>
+      </div>
+      <div data-reveal>
+        <div style="font-family:Anton,Impact,sans-serif;font-size:clamp(46px,5.2vw,78px);line-height:1.08;color:#F2F2F0">{{ c3 }}</div>
+        <div style="margin-top:10px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:rgba(242,242,240,.55)">m² de box</div>
+      </div>
+      <div data-reveal>
+        <div style="font-family:Anton,Impact,sans-serif;font-size:clamp(46px,5.2vw,78px);line-height:1.08;color:#F2F2F0">{{ c4 }}</div>
+        <div style="margin-top:10px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:rgba(242,242,240,.55)">Coaches certificados</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DISCIPLINAS -->
+  <section id="disciplinas" style="padding:9vw 10vw;background:#0F0F0F;border-bottom:1px solid rgba(255,255,255,.08)">
+    <div style="max-width:1440px;margin:0 auto">
+      <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:32px;margin-bottom:64px">
+        <h2 data-reveal style="margin:0;max-width:16ch;font-family:Anton,Impact,sans-serif;font-weight:400;text-transform:uppercase;font-size:clamp(38px,5vw,82px);line-height:1.02;letter-spacing:-.015em;color:#F2F2F0">Ocho formas de <span style="color:#D9FF00">entrenar</span></h2>
+        <p data-reveal style="max-width:36ch;margin:0;font-size:17px;line-height:1.65;color:rgba(242,242,240,.6)">Todas las clases están programadas en bloques de ocho semanas y escaladas por nivel.</p>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid rgba(255,255,255,.1);border-left:1px solid rgba(255,255,255,.1)">
+        <sc-for list="{{ disciplinas }}" as="d" hint-placeholder-count="6">
+          <article data-reveal style="padding:40px 32px 44px;background:#0A0A0A;border-right:1px solid rgba(255,255,255,.1);border-bottom:1px solid rgba(255,255,255,.1);min-height:300px;display:flex;flex-direction:column;justify-content:space-between;gap:36px" style-hover="background:#141414;box-shadow:inset 3px 0 0 #D9FF00">
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:600;letter-spacing:.14em;font-variant-numeric:tabular-nums;color:#D9FF00">{{ d.num }}</div>
+            <div>
+              <h3 style="margin:0 0 14px;font-family:Anton,Impact,sans-serif;font-weight:400;text-transform:uppercase;font-size:clamp(24px,2.2vw,32px);line-height:1.1;letter-spacing:.005em">{{ d.titulo }}</h3>
+              <p style="margin:0;font-size:16px;line-height:1.6;color:rgba(242,242,240,.6)">{{ d.texto }}</p>
+              <div style="margin-top:22px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:rgba(242,242,240,.6)">{{ d.meta }}</div>
+            </div>
+          </article>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <!-- TITULAR GIGANTE + IMAGEN FULL BLEED -->
+  <section style="position:relative;min-height:clamp(540px,64vw,780px);display:flex;align-items:center;justify-content:center;padding:9vw 10vw;background:repeating-linear-gradient(135deg,#141414 0 12px,#191919 12px 24px);border-bottom:1px solid rgba(255,255,255,.08)">
+    <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,10,10,.72) 0%,rgba(10,10,10,.86) 100%)"></div>
+    <span style="position:absolute;top:24px;right:10vw;font-family:ui-monospace,monospace;font-size:12px;letter-spacing:.06em;color:rgba(217,255,0,.85)">[ foto de fondo — clase completa en plena serie, horizontal 2400×1400 ]</span>
+    <div style="position:relative;width:100%;max-width:900px;margin:0 auto;display:flex;flex-direction:column;align-items:center;text-align:center;gap:36px">
+      <div>
+        <p data-reveal style="margin:0 0 28px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:#D9FF00">La regla de la casa</p>
+        <h2 data-reveal style="margin:0;font-family:Anton,Impact,sans-serif;font-weight:400;text-transform:uppercase;font-size:clamp(48px,9vw,150px);line-height:.98;letter-spacing:-.03em;color:#F2F2F0">
+          Nadie<br />entrena<br /><span style="color:#D9FF00">solo</span>
+        </h2>
+      </div>
+      <p data-reveal style="max-width:52ch;margin:0;font-size:19px;line-height:1.7;color:#F2F2F0">Cada clase la dirige un coach de principio a fin: calentamiento conjunto, corrección uno a uno y el mismo WOD para todos, escalado a tu nivel. Entras solo, terminas con un grupo que te espera al día siguiente.</p>
+    </div>
+  </section>
+
+  <!-- INSTALACIONES -->
+  <section id="instalaciones" style="padding:9vw 10vw;background:#0F0F0F;border-bottom:1px solid rgba(255,255,255,.08)">
+    <div style="max-width:1440px;margin:0 auto">
+      <h2 data-reveal style="margin:0 0 56px;max-width:18ch;font-family:Anton,Impact,sans-serif;font-weight:400;text-transform:uppercase;font-size:clamp(38px,5vw,82px);line-height:1.02;letter-spacing:-.015em;color:#F2F2F0">El box</h2>
+      <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px">
+        <sc-for list="{{ instalaciones }}" as="g" hint-placeholder-count="4">
+          <figure data-reveal style="margin:0">
+            <div style="aspect-ratio:4/5;background:repeating-linear-gradient(135deg,#141414 0 12px,#191919 12px 24px);border:1px solid rgba(255,255,255,.1);display:flex;align-items:flex-end;padding:16px">
+              <span style="font-family:ui-monospace,monospace;font-size:11px;line-height:1.5;letter-spacing:.05em;color:rgba(217,255,0,.85)">{{ g.slot }}</span>
+            </div>
+            <figcaption style="margin-top:16px;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:#F2F2F0">{{ g.titulo }}</figcaption>
+            <div style="margin-top:6px;font-size:15px;color:rgba(242,242,240,.55)">{{ g.detalle }}</div>
+          </figure>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <!-- COACHES -->
+  <section id="coaches" style="padding:9vw 10vw;background:#0A0A0A;border-bottom:1px solid rgba(255,255,255,.08)">
+    <div style="max-width:1440px;margin:0 auto">
+      <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:32px;margin-bottom:56px">
+        <h2 data-reveal style="margin:0;font-family:Anton,Impact,sans-serif;font-weight:400;text-transform:uppercase;font-size:clamp(38px,5vw,82px);line-height:1.02;letter-spacing:-.015em;color:#F2F2F0">Coaches</h2>
+        <p data-reveal style="max-width:34ch;margin:0;font-size:17px;line-height:1.65;color:rgba(242,242,240,.6)">Cuatro personas siguen tu progresión, corrigen técnica y ajustan cargas clase a clase.</p>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px">
+        <sc-for list="{{ coaches }}" as="c" hint-placeholder-count="4">
+          <article data-reveal>
+            <div style="aspect-ratio:3/4;background:repeating-linear-gradient(135deg,#141414 0 12px,#191919 12px 24px);border:1px solid rgba(255,255,255,.1);display:flex;align-items:flex-end;padding:16px">
+              <span style="font-family:ui-monospace,monospace;font-size:11px;letter-spacing:.05em;color:rgba(217,255,0,.85)">{{ c.slot }}</span>
+            </div>
+            <h3 style="margin:18px 0 4px;font-family:Anton,Impact,sans-serif;font-weight:400;text-transform:uppercase;font-size:26px;line-height:1.15;color:#F2F2F0">{{ c.nombre }}</h3>
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:#D9FF00">{{ c.rol }}</div>
+            <p style="margin:12px 0 0;font-size:15px;line-height:1.6;color:rgba(242,242,240,.55)">{{ c.cert }}</p>
+          </article>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRECIOS -->
+  <section id="precios" style="padding:9vw 10vw;background:#0F0F0F;border-bottom:1px solid rgba(255,255,255,.08)">
+    <div style="max-width:1440px;margin:0 auto">
+      <h2 data-reveal style="margin:0 0 16px;font-family:Anton,Impact,sans-serif;font-weight:400;text-transform:uppercase;font-size:clamp(38px,5vw,82px);line-height:1.02;letter-spacing:-.015em;color:#F2F2F0">Planes</h2>
+      <p data-reveal style="margin:0 0 56px;max-width:44ch;font-size:17px;line-height:1.65;color:rgba(242,242,240,.6)">Sin matrícula. Sin permanencia. Cancelas cuando quieras.</p>
+      <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;align-items:stretch">
+        <sc-for list="{{ planes }}" as="p" hint-placeholder-count="3">
+          <article data-reveal style="display:flex;flex-direction:column;gap:28px;padding:40px 32px;background:{{ p.bg }};border:1px solid {{ p.borde }};color:{{ p.ink }}">
+            <div>
+              <div style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;opacity:.7">{{ p.etiqueta }}</div>
+              <h3 style="margin:14px 0 0;font-family:Anton,Impact,sans-serif;font-weight:400;text-transform:uppercase;font-size:36px;line-height:1.1">{{ p.nombre }}</h3>
+            </div>
+            <div style="display:flex;align-items:flex-end;gap:8px">
+              <span style="font-family:Anton,Impact,sans-serif;font-size:clamp(52px,6vw,80px);line-height:1.0">{{ p.precio }}</span>
+              <span style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;opacity:.65;padding-bottom:10px">{{ p.periodo }}</span>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:12px;font-size:16px;line-height:1.5">
+              <sc-for list="{{ p.incluye }}" as="i" hint-placeholder-count="4">
+                <div style="display:flex;gap:12px;align-items:flex-start">
+                  <span style="width:6px;height:6px;margin-top:8px;flex:none;background:currentColor;display:block"></span>
+                  <span>{{ i }}</span>
+                </div>
+              </sc-for>
+            </div>
+            <a href="Contacto.dc.html#reservar" style="margin-top:auto;display:block;text-align:center;padding:18px;border:{{ p.btnBorde }};background:{{ p.btnBg }};color:{{ p.btnInk }};font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:600;letter-spacing:.14em;text-transform:uppercase">{{ p.cta }}</a>
+          </article>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <!-- NUTRICION Y RECUPERACION -->
+  <section style="padding:9vw 10vw;background:#0A0A0A;border-bottom:1px solid rgba(255,255,255,.08)">
+    <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:56px;align-items:center;max-width:1440px;margin:0 auto">
+      <div data-reveal style="aspect-ratio:1/1;background:repeating-linear-gradient(135deg,#141414 0 12px,#191919 12px 24px);border:1px solid rgba(255,255,255,.1);display:flex;align-items:flex-end;padding:20px">
+        <span style="font-family:ui-monospace,monospace;font-size:12px;letter-spacing:.05em;color:rgba(217,255,0,.85)">[ foto — zona de recuperación / fisio, cuadrada 1400×1400 ]</span>
+      </div>
+      <div>
+        <p data-reveal style="margin:0 0 24px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:#D9FF00">Nutrición y recuperación</p>
+        <h2 data-reveal style="margin:0 0 24px;font-family:Anton,Impact,sans-serif;font-weight:400;text-transform:uppercase;font-size:clamp(36px,4.4vw,70px);line-height:1.02;letter-spacing:-.015em;color:#F2F2F0">El trabajo sigue fuera del box</h2>
+        <p data-reveal style="margin:0 0 36px;max-width:46ch;font-size:17px;line-height:1.7;color:rgba(242,242,240,.62)">Plan nutricional con revisión mensual, fisioterapia dentro del centro y protocolos de movilidad para cada bloque de entrenamiento.</p>
+        <div data-reveal style="display:grid;max-width:560px;border-bottom:1px solid rgba(255,255,255,.1)">
+          <sc-for list="{{ recuperacion }}" as="r" hint-placeholder-count="3">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;gap:24px;padding:22px 4px;border-top:1px solid rgba(255,255,255,.1)">
+              <span style="font-family:'Barlow Condensed',sans-serif;font-size:19px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#F2F2F0">{{ r.titulo }}</span>
+              <span style="font-size:15px;color:rgba(242,242,240,.55);text-align:right">{{ r.detalle }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA FINAL -->
+  <section id="prueba" style="padding:10vw 10vw;background:#D9FF00;color:#0A0A0A">
+    <div style="max-width:1440px;margin:0 auto;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:48px;align-items:end">
+      <div>
+        <p style="margin:0 0 24px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;letter-spacing:.24em;text-transform:uppercase">Primera clase gratis</p>
+        <h2 style="margin:0;font-family:Anton,Impact,sans-serif;font-weight:400;text-transform:uppercase;font-size:clamp(44px,7.5vw,128px);line-height:.98;letter-spacing:-.025em">Ven y prueba</h2>
+      </div>
+      <div>
+        <p style="margin:0 0 28px;max-width:40ch;font-size:18px;line-height:1.6;color:rgba(10,10,10,.75)">Reserva una sesión sin compromiso. Solo necesitas ropa deportiva y ganas.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:14px">
+          <a href="Contacto.dc.html#reservar" style="display:inline-block;padding:20px 40px;background:#0A0A0A;color:#D9FF00;font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:600;letter-spacing:.14em;text-transform:uppercase">Reservar prueba gratis</a>
+          <a href="Contacto.dc.html" style="display:inline-block;padding:20px 40px;border:1px solid rgba(10,10,10,.35);color:#0A0A0A;font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:600;letter-spacing:.14em;text-transform:uppercase">Hablar con un coach</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer style="padding:72px 10vw 40px;background:#0A0A0A;border-top:1px solid rgba(255,255,255,.08)">
+    <div style="max-width:1440px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1.4fr) repeat(3,minmax(0,1fr));gap:48px">
+      <div>
+        <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:18px">
+          <span style="font-family:Anton,Impact,sans-serif;font-size:26px;text-transform:uppercase;color:#F2F2F0">FORJA</span>
+          <span style="font-family:Anton,Impact,sans-serif;font-size:26px;text-transform:uppercase;color:#D9FF00">BOX</span>
+        </div>
+        <p style="margin:0;font-size:15px;line-height:1.7;color:rgba(242,242,240,.5)">Calle del Yunque 14<br />28019 Madrid<br />+34 915 27 43 86</p>
+      </div>
+      <div>
+        <div style="margin-bottom:16px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:rgba(242,242,240,.55)">Horario</div>
+        <p style="margin:0;font-size:15px;line-height:1.8;color:rgba(242,242,240,.65)">Lun – Vie · 06:30 – 22:00<br />Sábado · 09:00 – 14:00<br />Domingo · Open box 10:00 – 13:00</p>
+      </div>
+      <div>
+        <div style="margin-bottom:16px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:rgba(242,242,240,.55)">Secciones</div>
+        <div style="display:flex;flex-direction:column;gap:10px;font-size:15px">
+          <a href="Disciplinas.dc.html" style="color:rgba(242,242,240,.65)">Disciplinas</a>
+          <a href="ElBox.dc.html" style="color:rgba(242,242,240,.65)">Instalaciones</a>
+          <a href="Coaches.dc.html" style="color:rgba(242,242,240,.65)">Coaches</a>
+          <a href="Planes.dc.html" style="color:rgba(242,242,240,.65)">Planes</a>
+          <a href="Contacto.dc.html" style="color:rgba(242,242,240,.65)">Contacto</a>
+        </div>
+      </div>
+      <div>
+        <div style="margin-bottom:16px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:rgba(242,242,240,.55)">Síguenos</div>
+        <div style="display:flex;flex-direction:column;gap:10px;font-size:15px">
+          <a href="#prueba" style="color:rgba(242,242,240,.65)">Instagram</a>
+          <a href="#prueba" style="color:rgba(242,242,240,.65)">YouTube</a>
+          <a href="#prueba" style="color:rgba(242,242,240,.65)">WhatsApp</a>
+        </div>
+      </div>
+    </div>
+    <div style="max-width:1440px;margin:56px auto 0;padding-top:24px;border-top:1px solid rgba(255,255,255,.08);display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;font-size:13px;color:rgba(242,242,240,.55)">
+      <span>© 2026 Forja Box</span>
+      <span>Aviso legal · Privacidad · Cookies</span>
+    </div>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#D9FF00&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;options&quot;:[&quot;#D9FF00&quot;,&quot;#CCFF00&quot;,&quot;#E3FF04&quot;,&quot;#BFFF00&quot;],&quot;section&quot;:&quot;Marca&quot;}}">
+class Component extends DCLogic {
+  state = { p: 0 };
+
+  componentDidMount() {
+    this.sweep = () => {
+      const nodes = document.querySelectorAll('[data-reveal]:not(.is-in)');
+      const hid = document.hidden;
+      if (hid) document.querySelectorAll('[data-reveal]').forEach((n) => {
+        n.style.transition = 'none'; n.classList.add('is-in'); n.style.opacity = '1'; n.style.transform = 'none';
+      });
+      nodes.forEach((n) => {
+        if (n.getBoundingClientRect().top < window.innerHeight - 40) {
+          if (hid) n.style.transition = 'none';
+          n.classList.add('is-in');
+          n.style.opacity = '1';
+          n.style.transform = 'none';
+        }
+      });
+      const first = document.querySelector('[data-reveal]');
+      if (!this.started && first && first.getBoundingClientRect().top < window.innerHeight) {
+        this.started = true; this.run();
+      }
+      if (this.started && !document.querySelector('[data-reveal]:not(.is-in)')) clearInterval(this.poll);
+    };
+    this.onScroll = () => {
+      if (this.raf) return;
+      this.raf = requestAnimationFrame(() => { this.raf = null; this.sweep(); });
+    };
+    document.addEventListener('visibilitychange', this.onScroll);
+    window.addEventListener('scroll', this.onScroll, { passive: true });
+    window.addEventListener('resize', this.onScroll);
+    this.poll = setInterval(this.sweep, 250);
+    this.sweep();
+    this.fallback = setTimeout(() => {
+      document.querySelectorAll('[data-reveal]').forEach((n) => { if (document.hidden) n.style.transition = 'none'; n.classList.add('is-in'); n.style.opacity = '1'; n.style.transform = 'none'; });
+      if (!this.started) { this.started = true; this.setState({ p: 1 }); }
+    }, 2500);
+  }
+
+  componentDidUpdate() { if (this.sweep) this.sweep(); }
+
+  componentWillUnmount() {
+    clearInterval(this.t); clearInterval(this.poll); clearTimeout(this.fallback);
+    window.removeEventListener('scroll', this.onScroll);
+    window.removeEventListener('resize', this.onScroll);
+    document.removeEventListener('visibilitychange', this.onScroll);
+  }
+
+  run() {
+    const dur = 1400, t0 = performance.now();
+    clearInterval(this.t);
+    this.t = setInterval(() => {
+      const k = Math.min(1, (performance.now() - t0) / dur);
+      this.setState({ p: 1 - Math.pow(1 - k, 3) });
+      if (k >= 1) clearInterval(this.t);
+    }, 30);
+  }
+
+  n(v) { return Math.round(v * this.state.p).toLocaleString('es-ES'); }
+
+  renderVals() {
+    const acc = this.props.accent ?? '#D9FF00';
+    return {
+      c1: this.n(420) + '+',
+      c2: this.n(61),
+      c3: this.n(900),
+      c4: this.n(4),
+      disciplinas: [
+        { num: '01', titulo: 'Fuerza', texto: 'Ciclos de sentadilla, press y peso muerto con cargas progresivas y registro individual.', meta: '60 min · todos los niveles' },
+        { num: '02', titulo: 'Metcon', texto: 'Acondicionamiento metabólico de alta intensidad con trabajo por tiempo y rondas.', meta: '50 min · intensidad alta' },
+        { num: '03', titulo: 'Halterofilia', texto: 'Técnica de arrancada y dos tiempos desglosada en progresiones semanales.', meta: '75 min · técnica' },
+        { num: '04', titulo: 'Gimnástico', texto: 'Dominadas estrictas, anillas, pino y control corporal con escalado real.', meta: '55 min · progresivo' },
+        { num: '05', titulo: 'Endurance', texto: 'Remo, bici y carrera en intervalos largos para subir tu base aeróbica.', meta: '45 min · cardio' },
+        { num: '06', titulo: 'Movilidad', texto: 'Sesión guiada de rango articular y respiración para cerrar la semana.', meta: '40 min · recuperación' },
+        { num: '07', titulo: 'Iniciación', texto: 'Cuatro semanas de fundamentos para aprender los movimientos desde cero.', meta: '60 min · sin experiencia' },
+        { num: '08', titulo: 'Open box', texto: 'Entrenamiento libre con coach en sala para trabajar tus puntos débiles.', meta: '90 min · acceso libre' }
+      ],
+      instalaciones: [
+        { slot: '[ foto — zona de racks, 900×1125 ]', titulo: 'Zona de fuerza', detalle: '12 racks Rogue con plataforma de madera' },
+        { slot: '[ foto — pista y rig, 900×1125 ]', titulo: 'Rig y pista', detalle: '30 m de pista de sprint y trineo' },
+        { slot: '[ foto — cardio, 900×1125 ]', titulo: 'Cardio', detalle: 'Concept2, Assault Bike y SkiErg' },
+        { slot: '[ foto — vestuarios, 900×1125 ]', titulo: 'Vestuarios', detalle: 'Taquillas, duchas y sauna seca' }
+      ],
+      coaches: [
+        { slot: '[ retrato — Marta Ferrer, 900×1200 ]', nombre: 'Marta Ferrer', rol: 'Head coach', cert: 'CF-L3 · Halterofilia nivel II' },
+        { slot: '[ retrato — Iván Losada, 900×1200 ]', nombre: 'Iván Losada', rol: 'Fuerza', cert: 'CF-L2 · Powerlifting IPF' },
+        { slot: '[ retrato — Nora Blanco, 900×1200 ]', nombre: 'Nora Blanco', rol: 'Gimnástico', cert: 'CF-L2 · Gimnasia artística' },
+        { slot: '[ retrato — Samuel Ruiz, 900×1200 ]', nombre: 'Samuel Ruiz', rol: 'Endurance', cert: 'CF-L1 · Entrenador de triatlón' }
+      ],
+      planes: [
+        { etiqueta: 'Entrada', nombre: '2 días', precio: '49\u00A0€', periodo: '/mes', incluye: ['2 clases por semana', 'Acceso a open box', 'App de seguimiento', 'Sin permanencia'], cta: 'Empezar', bg: '#0A0A0A', borde: 'rgba(255,255,255,.14)', ink: '#F2F2F0', btnBg: 'transparent', btnBorde: '1px solid rgba(255,255,255,.22)', btnInk: '#D9FF00' },
+        { etiqueta: 'El más elegido', nombre: 'Ilimitado', precio: '79\u00A0€', periodo: '/mes', incluye: ['Clases ilimitadas', 'Test de nivel trimestral', 'Plan nutricional básico', '1 sesión de fisio al mes', 'Sin permanencia'], cta: 'Reservar plaza', bg: acc, borde: acc, ink: '#0A0A0A', btnBg: '#0A0A0A', btnInk: acc, btnBorde: '1px solid #0A0A0A' },
+        { etiqueta: 'Rendimiento', nombre: 'Coaching 1:1', precio: '149\u00A0€', periodo: '/mes', incluye: ['Todo el plan ilimitado', '4 sesiones individuales', 'Programación personalizada', 'Seguimiento nutricional completo'], cta: 'Solicitar', bg: '#0A0A0A', borde: 'rgba(255,255,255,.14)', ink: '#F2F2F0', btnBg: 'transparent', btnBorde: '1px solid rgba(255,255,255,.22)', btnInk: '#D9FF00' }
+      ],
+      recuperacion: [
+        { titulo: 'Plan nutricional', detalle: 'Revisión mensual con dietista' },
+        { titulo: 'Fisioterapia', detalle: 'En el centro, cita en 48 h' },
+        { titulo: 'Sauna y contraste', detalle: 'Acceso libre con cualquier plan' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -18,6 +18,7 @@ sin veredicto vigente, la plantilla no se ofrece a un cliente.
 | `tueste` · Tueste Norte | `suscripcion` | `editorial` | ecommerce | portada · categoría · ficha de producto · carro · pago · pedido recibido · mi cuenta · la marca · contacto · condiciones de venta y envíos · aviso legal · privacidad · cookies · 404 | sin veredicto |
 | `amalia` · Amalia Yoga | `clase-de-prueba` | `editorial` | corporate | inicio · filosofía · planes · clase · diario · entrada · contacto · gracias · aviso legal · privacidad · cookies · 404 | sin veredicto |
 | `amalia-salvia` · Amalia · Sala verde | `clase-de-prueba` | `editorial` | corporate | inicio · filosofía · planes · clase · diario · entrada · contacto · gracias · aviso legal · privacidad · cookies · 404 | sin veredicto |
+| `forja` · Forja Box | `clase-de-prueba` | `directo` | corporate | inicio · el box · disciplinas · coaches · planes · contacto · gracias · aviso legal · privacidad · cookies · 404 | sin veredicto |
 
 **`amalia` y `amalia-salvia` son las dos direcciones de un mismo encargo** —el mismo estudio, el
 mismo texto y las mismas doce páginas—, una en papel crudo y terracota con cabecera horizontal y
@@ -182,3 +183,13 @@ Una carpeta por slug, y dentro siempre lo mismo:
 - `references/plantillas/amalia-salvia/maqueta/` — `index.html`
 - `references/plantillas/amalia-salvia/img/` — veintidós `.webp`
 - `references/plantillas/amalia-salvia/veredicto.md`
+
+## forja
+
+- `references/plantillas/forja/ficha.md`
+- `references/plantillas/forja/manifiesto-imagenes.md`
+- `references/plantillas/forja/canvas/` — `Forja`, `ForjaSecciones`, `ElBox`, `Disciplinas`, `Coaches`,
+  `Planes`, `Contacto`, `canvas.json` y su `MANIFIESTO.md`
+- `references/plantillas/forja/maqueta/` — `index.html`
+- `references/plantillas/forja/img/` — once `.webp`
+- `references/plantillas/forja/veredicto.md`

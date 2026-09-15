@@ -59,6 +59,7 @@ propio Objetivo.
 | `ritual-bono` | `lumiere` | corporate | `materia` | en la biblioteca |
 | `reservar-mesa` | `terrazza` | corporate | `lujo-oscuro` | en la biblioteca |
 | `clase-de-prueba` | `amalia` · `amalia-salvia` (dos direcciones del mismo encargo) | corporate | `editorial` | en la biblioteca |
+| `clase-de-prueba` | `forja` | corporate | `directo` | en la biblioteca |
 | `servicios-captacion` | sin plantilla | — | — | ruta a medida |
 | `tienda-talla` | `marzo` | ecommerce | `materia` | en la biblioteca |
 | `tienda-lote` | `barro` | ecommerce | `lujo-oscuro` | en la biblioteca |
@@ -92,7 +93,9 @@ del veredicto para no quedarse vieja; se lee siempre del índice.
    - `plan-fases` frente a `suscripcion`: el plan termina; la suscripción no.
    - `clase-de-prueba` frente a `suscripcion`: un horario y una sala a los que se acude frente a una
      entrega que llega a casa. Frente a `pedir-cita`: si hay diagnóstico o tratamiento individual,
-     `pedir-cita`. Frente a `plan-fases`: la cuota de clases no termina.
+     `pedir-cita`. Frente a `plan-fases`: la cuota de clases no termina. Dentro de `clase-de-prueba`
+     decide el tono: un estudio que vende calma parte de `amalia`; un box o una escuela que vende
+     exigencia, de `forja`.
    - `tienda-lote` frente a `catalogo-amplio`: la procedencia frente al precio y la medida.
    - `tienda-talla` frente a `equipo-por-uso`: la prenda por su talla frente al conjunto por su uso.
    - `a-medida` frente a cualquier tienda: si el precio no se sabe hasta configurar, no hay carro.

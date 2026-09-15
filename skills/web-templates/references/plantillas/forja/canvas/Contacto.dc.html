@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow+Condensed:wght@500;600&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  html, body { margin:0; padding:0; background:#0A0A0A; }
+  body { color:#F2F2F0; -webkit-font-smoothing:antialiased; }
+  * { box-sizing:border-box; }
+  a { color:#D9FF00; text-decoration:none; }
+  a:hover { color:#ffffff; }
+  [data-reveal] { opacity:0; transform:translateY(28px); transition:opacity .7s cubic-bezier(.2,.7,.2,1), transform .7s cubic-bezier(.2,.7,.2,1); }
+  [data-reveal].is-in { opacity:1; transform:none; }
+  @media (prefers-reduced-motion: reduce) { [data-reveal] { opacity:1; transform:none; transition:none; } }
+</style>
+</helmet>
+<div data-suelo="1" style="background:#0A0A0A;color:#F2F2F0;font-family:Barlow,system-ui,sans-serif">
+<!-- NAV -->
+  <header style="position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:24px;padding:18px 10vw;background:#0A0A0A;border-bottom:1px solid rgba(255,255,255,.08)">
+    <div style="display:flex;align-items:baseline;gap:10px">
+      <span style="font-family:Anton,Impact,sans-serif;font-size:24px;letter-spacing:.02em;color:#F2F2F0;text-transform:uppercase">FORJA</span>
+      <span style="font-family:Anton,Impact,sans-serif;font-size:24px;letter-spacing:.02em;color:#D9FF00;text-transform:uppercase">BOX</span>
+    </div>
+    <nav style="display:flex;flex-wrap:wrap;align-items:center;gap:28px;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:600;letter-spacing:.14em;text-transform:uppercase">
+      <a href="Forja.dc.html" style="color:rgba(242,242,240,.72)">Inicio</a>
+      <a href="Disciplinas.dc.html" style="color:rgba(242,242,240,.72)">Disciplinas</a>
+      <a href="ElBox.dc.html" style="color:rgba(242,242,240,.72)">El box</a>
+      <a href="Coaches.dc.html" style="color:rgba(242,242,240,.72)">Coaches</a>
+      <a href="Planes.dc.html" style="color:rgba(242,242,240,.72)">Planes</a>
+      <a href="Contacto.dc.html" style="color:#D9FF00">Contacto</a>
+      <a href="Contacto.dc.html#reservar" style="display:inline-block;padding:13px 22px;background:#D9FF00;color:#0A0A0A;letter-spacing:.12em">Prueba gratis</a>
+    </nav>
+  </header>
+
+  <section style="padding:8vw 10vw 5vw;max-width:calc(1440px + 20vw);margin:0 auto;background:#0A0A0A;border-bottom:1px solid rgba(255,255,255,.08)">
+    <p style="margin:0 0 28px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:#D9FF00">Contacto</p>
+    <h1 style="margin:0;max-width:16ch;font-family:Anton,Impact,sans-serif;font-weight:400;text-transform:uppercase;font-size:clamp(46px,8vw,132px);line-height:1;letter-spacing:-.025em;color:#F2F2F0">Pásate por el box</h1>
+    <p style="max-width:52ch;margin:32px 0 0;font-size:18px;line-height:1.65;color:rgba(242,242,240,.66)">Escríbenos para reservar tu clase de prueba o ven directamente en horario de apertura. Te enseñamos las instalaciones sin compromiso.</p>
+  </section>
+
+  <section id="reservar" style="padding:7vw 10vw;max-width:calc(1440px + 20vw);margin:0 auto;background:#0A0A0A;border-bottom:1px solid rgba(255,255,255,.08)">
+    <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:64px">
+      <form data-reveal style="display:flex;flex-direction:column;gap:24px">
+        <label style="display:flex;flex-direction:column;gap:10px">
+          <span style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:rgba(242,242,240,.6)">Nombre</span>
+          <input type="text" name="nombre" required placeholder="Tu nombre" style="width:100%;padding:16px 18px;background:#0F0F0F;border:1px solid #767674;color:#F2F2F0;font-family:Barlow,sans-serif;font-size:16px" />
+        </label>
+        <label style="display:flex;flex-direction:column;gap:10px">
+          <span style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:rgba(242,242,240,.6)">Correo</span>
+          <input type="email" name="correo" required placeholder="tucorreo@ejemplo.com" style="width:100%;padding:16px 18px;background:#0F0F0F;border:1px solid #767674;color:#F2F2F0;font-family:Barlow,sans-serif;font-size:16px" />
+        </label>
+        <label style="display:flex;flex-direction:column;gap:10px">
+          <span style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:rgba(242,242,240,.6)">Teléfono (opcional)</span>
+          <input type="tel" name="telefono" placeholder="Tu móvil" style="width:100%;padding:16px 18px;background:#0F0F0F;border:1px solid #767674;color:#F2F2F0;font-family:Barlow,sans-serif;font-size:16px" />
+        </label>
+        <label style="display:flex;flex-direction:column;gap:10px">
+          <span style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:rgba(242,242,240,.6)">Qué te interesa</span>
+          <select style="width:100%;padding:16px 18px;background:#0F0F0F;border:1px solid #767674;color:#F2F2F0;font-family:Barlow,sans-serif;font-size:16px">
+            <option>Clase de prueba gratis</option>
+            <option>Plan 2 días</option>
+            <option>Plan ilimitado</option>
+            <option>Coaching 1:1</option>
+            <option>Otra consulta</option>
+          </select>
+        </label>
+        <label style="display:flex;flex-direction:column;gap:10px">
+          <span style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:rgba(242,242,240,.6)">Mensaje</span>
+          <textarea rows="4" placeholder="Cuéntanos tu nivel y tus objetivos" style="width:100%;padding:16px 18px;background:#0F0F0F;border:1px solid #767674;color:#F2F2F0;font-family:Barlow,sans-serif;font-size:16px;resize:vertical"></textarea>
+        </label>
+        <label style="display:flex;gap:12px;align-items:flex-start;font-size:14px;line-height:1.6;color:rgba(242,242,240,.66)"><input type="checkbox" name="consentimiento" required style="flex:0 0 18px;width:18px;height:18px;margin:3px 0 0;accent-color:#D9FF00" /><span>He leído la política de privacidad y acepto que Forja Box use mis datos para responder a esta consulta.</span></label>
+        <button type="submit" style="align-self:flex-start;margin-top:8px;padding:20px 40px;background:#D9FF00;border:none;color:#0A0A0A;font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;cursor:pointer">Enviar y reservar prueba</button>
+        <p style="margin:0;font-size:14px;line-height:1.6;color:rgba(242,242,240,.55)">Te respondemos en menos de 24 h laborables con un día y una hora para tu clase de prueba.</p>
+      </form>
+      <div data-reveal style="display:flex;flex-direction:column;gap:36px">
+        <div style="display:grid;border-bottom:1px solid rgba(255,255,255,.1)">
+          <div style="padding:24px 4px;border-top:1px solid rgba(255,255,255,.1)">
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:rgba(242,242,240,.6)">Dirección</div>
+            <div style="margin-top:8px;font-size:18px;line-height:1.5;color:#F2F2F0">Calle del Yunque 14<br />28019 Madrid</div>
+          </div>
+          <div style="padding:24px 4px;border-top:1px solid rgba(255,255,255,.1)">
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:rgba(242,242,240,.6)">Teléfono y correo</div>
+            <div style="margin-top:8px;font-size:18px;line-height:1.6;color:#F2F2F0"><a href="tel:+34915274386" style="color:#F2F2F0">+34 915 27 43 86</a><br /><a href="mailto:hola@forjabox.es">hola@forjabox.es</a></div>
+          </div>
+          <div style="padding:24px 4px;border-top:1px solid rgba(255,255,255,.1)">
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:rgba(242,242,240,.6)">Horario</div>
+            <div style="margin-top:8px;font-size:17px;line-height:1.7;color:#F2F2F0">Lun – Vie · 06:30 – 22:00<br />Sábado · 09:00 – 14:00<br />Domingo · Open box 10:00 – 13:00</div>
+          </div>
+        </div>
+        <div style="aspect-ratio:4/3;background:repeating-linear-gradient(135deg,#141414 0 12px,#191919 12px 24px);border:1px solid rgba(255,255,255,.1);display:flex;align-items:flex-end;padding:18px">
+          <span style="font-family:ui-monospace,monospace;font-size:12px;letter-spacing:.05em;color:rgba(217,255,0,.85)">[ mapa — Google Maps embed, 4:3 ]</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+<!-- FOOTER -->
+  <footer style="padding:72px 10vw 40px;background:#0A0A0A;border-top:1px solid rgba(255,255,255,.08)">
+    <div style="max-width:1440px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1.4fr) repeat(3,minmax(0,1fr));gap:48px">
+      <div>
+        <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:18px">
+          <span style="font-family:Anton,Impact,sans-serif;font-size:26px;text-transform:uppercase;color:#F2F2F0">FORJA</span>
+          <span style="font-family:Anton,Impact,sans-serif;font-size:26px;text-transform:uppercase;color:#D9FF00">BOX</span>
+        </div>
+        <p style="margin:0;font-size:15px;line-height:1.7;color:rgba(242,242,240,.5)">Calle del Yunque 14<br />28019 Madrid<br />+34 915 27 43 86</p>
+      </div>
+      <div>
+        <div style="margin-bottom:16px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:rgba(242,242,240,.55)">Horario</div>
+        <p style="margin:0;font-size:15px;line-height:1.8;color:rgba(242,242,240,.65)">Lun – Vie · 06:30 – 22:00<br />Sábado · 09:00 – 14:00<br />Domingo · Open box 10:00 – 13:00</p>
+      </div>
+      <div>
+        <div style="margin-bottom:16px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:rgba(242,242,240,.55)">Secciones</div>
+        <div style="display:flex;flex-direction:column;gap:10px;font-size:15px">
+          <a href="Disciplinas.dc.html" style="color:rgba(242,242,240,.65)">Disciplinas</a>
+          <a href="ElBox.dc.html" style="color:rgba(242,242,240,.65)">Instalaciones</a>
+          <a href="Coaches.dc.html" style="color:rgba(242,242,240,.65)">Coaches</a>
+          <a href="Planes.dc.html" style="color:rgba(242,242,240,.65)">Planes</a>
+        </div>
+      </div>
+      <div>
+        <div style="margin-bottom:16px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:rgba(242,242,240,.55)">Síguenos</div>
+        <div style="display:flex;flex-direction:column;gap:10px;font-size:15px">
+          <a href="Forja.dc.html#prueba" style="color:rgba(242,242,240,.65)">Instagram</a>
+          <a href="Forja.dc.html#prueba" style="color:rgba(242,242,240,.65)">YouTube</a>
+          <a href="Contacto.dc.html" style="color:rgba(242,242,240,.65)">WhatsApp</a>
+        </div>
+      </div>
+    </div>
+    <div style="max-width:1440px;margin:56px auto 0;padding-top:24px;border-top:1px solid rgba(255,255,255,.08);display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;font-size:13px;color:rgba(242,242,240,.55)">
+      <span>© 2026 Forja Box</span>
+      <span>Aviso legal · Privacidad · Cookies</span>
+    </div>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#D9FF00&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;options&quot;:[&quot;#D9FF00&quot;,&quot;#CCFF00&quot;,&quot;#E3FF04&quot;,&quot;#BFFF00&quot;],&quot;section&quot;:&quot;Marca&quot;}}">
+class Component extends DCLogic {
+  state = { p: 0 };
+
+  componentDidMount() {
+    this.sweep = () => {
+      const nodes = document.querySelectorAll('[data-reveal]:not(.is-in)');
+      const hid = document.hidden;
+      if (hid) document.querySelectorAll('[data-reveal]').forEach((n) => {
+        n.style.transition = 'none'; n.classList.add('is-in'); n.style.opacity = '1'; n.style.transform = 'none';
+      });
+      nodes.forEach((n) => {
+        if (n.getBoundingClientRect().top < window.innerHeight - 40) {
+          if (hid) n.style.transition = 'none';
+          n.classList.add('is-in');
+          n.style.opacity = '1';
+          n.style.transform = 'none';
+        }
+      });
+      const first = document.querySelector('[data-reveal]');
+      if (!this.started && first && first.getBoundingClientRect().top < window.innerHeight) {
+        this.started = true; this.run();
+      }
+      if (this.started && !document.querySelector('[data-reveal]:not(.is-in)')) clearInterval(this.poll);
+    };
+    this.onScroll = () => {
+      if (this.raf) return;
+      this.raf = requestAnimationFrame(() => { this.raf = null; this.sweep(); });
+    };
+    document.addEventListener('visibilitychange', this.onScroll);
+    window.addEventListener('scroll', this.onScroll, { passive: true });
+    window.addEventListener('resize', this.onScroll);
+    this.poll = setInterval(this.sweep, 250);
+    this.sweep();
+    this.fallback = setTimeout(() => {
+      document.querySelectorAll('[data-reveal]').forEach((n) => { if (document.hidden) n.style.transition = 'none'; n.classList.add('is-in'); n.style.opacity = '1'; n.style.transform = 'none'; });
+      if (!this.started) { this.started = true; this.setState({ p: 1 }); }
+    }, 2500);
+  }
+
+  componentDidUpdate() { if (this.sweep) this.sweep(); }
+
+  componentWillUnmount() {
+    clearInterval(this.t); clearInterval(this.poll); clearTimeout(this.fallback);
+    window.removeEventListener('scroll', this.onScroll);
+    window.removeEventListener('resize', this.onScroll);
+    document.removeEventListener('visibilitychange', this.onScroll);
+  }
+
+  run() {
+    const dur = 1400, t0 = performance.now();
+    clearInterval(this.t);
+    this.t = setInterval(() => {
+      const k = Math.min(1, (performance.now() - t0) / dur);
+      this.setState({ p: 1 - Math.pow(1 - k, 3) });
+      if (k >= 1) clearInterval(this.t);
+    }, 30);
+  }
+
+  n(v) { return Math.round(v * this.state.p).toLocaleString('es-ES'); }
+
+  renderVals() {
+    const acc = this.props.accent ?? '#D9FF00';
+    return {
+      c1: this.n(420) + '+',
+      c2: this.n(61),
+      c3: this.n(900),
+      c4: this.n(4),
+      disciplinas: [
+        { num: '01', titulo: 'Fuerza', texto: 'Ciclos de sentadilla, press y peso muerto con cargas progresivas y registro individual.', meta: '60 min · todos los niveles' },
+        { num: '02', titulo: 'Metcon', texto: 'Acondicionamiento metabólico de alta intensidad con trabajo por tiempo y rondas.', meta: '50 min · intensidad alta' },
+        { num: '03', titulo: 'Halterofilia', texto: 'Técnica de arrancada y dos tiempos desglosada en progresiones semanales.', meta: '75 min · técnica' },
+        { num: '04', titulo: 'Gimnástico', texto: 'Dominadas estrictas, anillas, pino y control corporal con escalado real.', meta: '55 min · progresivo' },
+        { num: '05', titulo: 'Endurance', texto: 'Remo, bici y carrera en intervalos largos para subir tu base aeróbica.', meta: '45 min · cardio' },
+        { num: '06', titulo: 'Movilidad', texto: 'Sesión guiada de rango articular y respiración para cerrar la semana.', meta: '40 min · recuperación' },
+        { num: '07', titulo: 'Iniciación', texto: 'Cuatro semanas de fundamentos para aprender los movimientos desde cero.', meta: '60 min · sin experiencia' },
+        { num: '08', titulo: 'Open box', texto: 'Entrenamiento libre con coach en sala para trabajar tus puntos débiles.', meta: '90 min · acceso libre' }
+      ],
+      instalaciones: [
+        { slot: '[ foto — zona de racks, 900×1125 ]', titulo: 'Zona de fuerza', detalle: '12 racks Rogue con plataforma de madera' },
+        { slot: '[ foto — pista y rig, 900×1125 ]', titulo: 'Rig y pista', detalle: '30 m de pista de sprint y trineo' },
+        { slot: '[ foto — cardio, 900×1125 ]', titulo: 'Cardio', detalle: 'Concept2, Assault Bike y SkiErg' },
+        { slot: '[ foto — vestuarios, 900×1125 ]', titulo: 'Vestuarios', detalle: 'Taquillas, duchas y sauna seca' }
+      ],
+      coaches: [
+        { slot: '[ retrato — Marta Ferrer, 900×1200 ]', nombre: 'Marta Ferrer', rol: 'Head coach', cert: 'CF-L3 · Halterofilia nivel II' },
+        { slot: '[ retrato — Iván Losada, 900×1200 ]', nombre: 'Iván Losada', rol: 'Fuerza', cert: 'CF-L2 · Powerlifting IPF' },
+        { slot: '[ retrato — Nora Blanco, 900×1200 ]', nombre: 'Nora Blanco', rol: 'Gimnástico', cert: 'CF-L2 · Gimnasia artística' },
+        { slot: '[ retrato — Samuel Ruiz, 900×1200 ]', nombre: 'Samuel Ruiz', rol: 'Endurance', cert: 'CF-L1 · Entrenador de triatlón' }
+      ],
+      planes: [
+        { etiqueta: 'Entrada', nombre: '2 días', precio: '49\u00A0€', periodo: '/mes', incluye: ['2 clases por semana', 'Acceso a open box', 'App de seguimiento', 'Sin permanencia'], cta: 'Empezar', bg: '#0A0A0A', borde: 'rgba(255,255,255,.14)', ink: '#F2F2F0', btnBg: 'transparent', btnBorde: '1px solid rgba(255,255,255,.22)', btnInk: '#D9FF00' },
+        { etiqueta: 'El más elegido', nombre: 'Ilimitado', precio: '79\u00A0€', periodo: '/mes', incluye: ['Clases ilimitadas', 'Test de nivel trimestral', 'Plan nutricional básico', '1 sesión de fisio al mes', 'Sin permanencia'], cta: 'Reservar plaza', bg: acc, borde: acc, ink: '#0A0A0A', btnBg: '#0A0A0A', btnInk: acc, btnBorde: '1px solid #0A0A0A' },
+        { etiqueta: 'Rendimiento', nombre: 'Coaching 1:1', precio: '149\u00A0€', periodo: '/mes', incluye: ['Todo el plan ilimitado', '4 sesiones individuales', 'Programación personalizada', 'Seguimiento nutricional completo'], cta: 'Solicitar', bg: '#0A0A0A', borde: 'rgba(255,255,255,.14)', ink: '#F2F2F0', btnBg: 'transparent', btnBorde: '1px solid rgba(255,255,255,.22)', btnInk: '#D9FF00' }
+      ],
+      recuperacion: [
+        { titulo: 'Plan nutricional', detalle: 'Revisión mensual con dietista' },
+        { titulo: 'Fisioterapia', detalle: 'En el centro, cita en 48 h' },
+        { titulo: 'Sauna y contraste', detalle: 'Acceso libre con cualquier plan' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>
