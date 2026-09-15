@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Control · barrido.mjs</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: sans-serif; color: #111; }
+  header.site { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 1px solid #ccc; }
+  .burger { display: none; background: #eee; border: 1px solid #999; padding: 6px 10px; }
+  @media (max-width: 700px) { .burger { display: inline-block; } }
+  .page { display: none; padding: 24px 16px; }
+  .page.activa { display: block; }
+
+  /* limpia: 3 items in a genuine 3-column grid, nothing collapses, nothing overflows. */
+  .grid-limpia { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .grid-limpia div { background: #def; padding: 16px; min-height: 40px; }
+
+  /* desborda: a fixed 2000px block, wider than any tested viewport. */
+  .ancho-fijo { width: 2000px; height: 40px; background: #fdd; }
+
+  /* tabla-scroll: the wide table scrolls INSIDE its own container, never at the page level. */
+  .tabla-wrap { overflow-x: auto; max-width: 100%; }
+  .tabla-wrap table { width: 2000px; border-collapse: collapse; }
+  .tabla-wrap td, .tabla-wrap th { border: 1px solid #ccc; padding: 6px 10px; }
+
+  /* rejilla-colapsa: the stylesheet AUTHORS 3 tracks; an inline style="" (the bug) renders 1. */
+  .grid-colapsa { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .grid-colapsa div { background: #dfd; padding: 16px; min-height: 40px; }
+
+  /* rejilla-fantasma: auto-fill creates more tracks than the 2 items fill, at every tested width. */
+  .grid-fantasma { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 12px; }
+  .grid-fantasma div { background: #ffd; padding: 16px; min-height: 40px; }
+
+  /* huerfano: 4 items in a fixed 3-column grid — a row of 3, then a lone 4th. */
+  .grid-huerfano { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .grid-huerfano div { background: #fde; padding: 16px; min-height: 40px; }
+
+  /* alineacion: 3 columns, align-items:center, children of very different heights — a real header
+     bar shape (logo / nav / button). Must read as ONE row of three, not three rows of one, even
+     though their tops differ because they are vertically centered at different heights. */
+  .grid-alineacion { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 24px; }
+  .grid-alineacion .corto { background: #dee; height: 20px; }
+  .grid-alineacion .alto { background: #edd; height: 80px; }
+
+  /* decorativo: the toggle button carries its own inner icon span with a "burger" class and
+     aria-hidden="true" — the icon, not a second control. */
+
+  /* celda-vacia: a 5-column header row where the LAST cell is a deliberately empty placeholder
+     (aligning with an icon-button column in a row below that this fixture does not need to show).
+     align-items:end collapses its box to zero height since it has no content — it must still
+     count as occupying its track, not as a phantom column. */
+  .grid-celda-vacia { display: grid; grid-template-columns: 1fr 80px 80px 80px 32px; align-items: end; gap: 12px; }
+
+  /* fila-heterogenea: five DIFFERENT things in one flex-wrap row (label / input / button / status
+     text / note) — mirrors bajura's .franja-cp-row. The 5th wraps alone at 1280, but these are not
+     repeated cards, so the refined orphan rule must skip it (different tagName/class each). */
+  .franja-control { display: flex; flex-wrap: wrap; align-items: center; gap: 24px; }
+  .franja-control > * { min-width: 0; flex-shrink: 1; }
+  .et-control { flex: 0 1 180px; }
+  .franja-control input { flex: 0 1 120px; }
+  .franja-control .btn { flex: 0 1 130px; }
+  .estado-control { flex: 0 1 700px; }
+  .nota-control { flex: 0 1 140px; }
+
+  /* columnas-homogeneas: four IDENTICAL div.col-control — same tagName, same class — in a
+     flex-wrap row. At 1280 three fit and the fourth wraps alone: this is the repeated-card shape
+     the orphan rule exists for, and it must still fail after the refinement above. */
+  .pie-cols-control { display: flex; flex-wrap: wrap; gap: 24px; }
+  .col-control { flex: 1 1 300px; background: #eef; padding: 16px; min-height: 40px; }
+
+  /* rejilla-con-span: a 3-track grid with two children — one plain, one grid-column:span 2 —
+     together filling all three tracks. Must NOT read as a phantom (2 children, 3 tracks) since
+     the second child's span accounts for the other two tracks itself. */
+  .grid-con-span { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .grid-con-span div { background: #ded; padding: 16px; min-height: 40px; }
+  .grid-con-span .ancha { grid-column: span 2; }
+</style>
+</head>
+<body>
+
+<div class="page activa" id="limpia">
+  <header class="site">
+    <div class="logo">Control</div>
+    <button class="burger" type="button" aria-expanded="false" aria-controls="menu-limpia">Menú</button>
+  </header>
+  <h1>Página limpia</h1>
+  <p>Ningún desborde, una rejilla de tres pistas que rinde tres pistas, un único control de menú.</p>
+  <div class="grid-limpia">
+    <div>Uno</div>
+    <div>Dos</div>
+    <div>Tres</div>
+  </div>
+</div>
+
+<div class="page" id="desborda">
+  <header class="site">
+    <div class="logo">Control</div>
+    <button class="burger" type="button" aria-expanded="false" aria-controls="menu-desborda">Menú</button>
+  </header>
+  <h1>Página que desborda</h1>
+  <div class="ancho-fijo">2000px de ancho fijo, más ancho que cualquier viewport de esta prueba.</div>
+</div>
+
+<div class="page" id="tabla-scroll">
+  <header class="site">
+    <div class="logo">Control</div>
+    <button class="burger" type="button" aria-expanded="false" aria-controls="menu-tabla">Menú</button>
+  </header>
+  <h1>Tabla ancha, contenida</h1>
+  <p>La tabla se desborda DENTRO de su propio contenedor con overflow-x:auto. La página no.</p>
+  <div class="tabla-wrap">
+    <table>
+      <tr><th>Columna A</th><th>Columna B</th><th>Columna C</th><th>Columna D</th><th>Columna E</th></tr>
+      <tr><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="page" id="rejilla-colapsa">
+  <header class="site">
+    <div class="logo">Control</div>
+    <button class="burger" type="button" aria-expanded="false" aria-controls="menu-colapsa">Menú</button>
+  </header>
+  <h1>Rejilla que colapsa a una pista</h1>
+  <p>La hoja de estilos autoriza tres pistas; un style="" en línea la deja en una.</p>
+  <div class="grid-colapsa" style="grid-template-columns: 1fr">
+    <div>Uno</div>
+    <div>Dos</div>
+    <div>Tres</div>
+  </div>
+</div>
+
+<div class="page" id="rejilla-fantasma">
+  <header class="site">
+    <div class="logo">Control</div>
+    <button class="burger" type="button" aria-expanded="false" aria-controls="menu-fantasma">Menú</button>
+  </header>
+  <h1>Rejilla con pistas fantasma</h1>
+  <p>auto-fill crea más pistas de las que dos elementos pueden llenar, a cualquier ancho de esta prueba.</p>
+  <div class="grid-fantasma">
+    <div>Uno</div>
+    <div>Dos</div>
+  </div>
+</div>
+
+<div class="page" id="huerfano">
+  <header class="site">
+    <div class="logo">Control</div>
+    <button class="burger" type="button" aria-expanded="false" aria-controls="menu-huerfano">Menú</button>
+  </header>
+  <h1>Rejilla con huérfano</h1>
+  <p>Cuatro elementos en una rejilla de tres columnas: una fila de tres, y un cuarto solo.</p>
+  <div class="grid-huerfano">
+    <div>Uno</div>
+    <div>Dos</div>
+    <div>Tres</div>
+    <div>Cuatro</div>
+  </div>
+</div>
+
+<div class="page" id="dos-toggles">
+  <header class="site">
+    <div class="logo">Control</div>
+    <button class="burger" type="button" aria-expanded="false" aria-controls="menu-a">Menú A</button>
+    <button class="burger burger-alt" type="button" aria-expanded="false" aria-controls="menu-b">Menú B</button>
+  </header>
+  <h1>Cabecera con dos controles de menú</h1>
+  <p>Dos elementos que cuentan como control de menú a 430, dentro de la misma cabecera.</p>
+</div>
+
+<div class="page" id="alineacion-vertical">
+  <header class="site">
+    <div class="logo">Control</div>
+    <button class="burger" type="button" aria-expanded="false" aria-controls="menu-alineacion">Menú</button>
+  </header>
+  <h1>Rejilla centrada, alturas distintas</h1>
+  <p>Tres columnas, align-items:center, una franja mucho más alta que las otras dos: sigue siendo una única fila.</p>
+  <div class="grid-alineacion">
+    <div class="corto">Uno</div>
+    <div class="alto">Dos</div>
+    <div class="corto">Tres</div>
+  </div>
+</div>
+
+<div class="page" id="icono-decorativo">
+  <header class="site">
+    <div class="logo">Control</div>
+    <button id="burger-icono" class="burger" type="button" aria-expanded="false" aria-controls="menu-icono">
+      <span class="burger-lines" aria-hidden="true"></span>
+    </button>
+  </header>
+  <h1>Icono decorativo dentro del control</h1>
+  <p>El span interior comparte clase "burger" y no es un segundo control: sigue siendo uno solo a 430.</p>
+</div>
+
+<div class="page" id="celda-vacia-intencional">
+  <header class="site">
+    <div class="logo">Control</div>
+    <button class="burger" type="button" aria-expanded="false" aria-controls="menu-celda-vacia">Menú</button>
+  </header>
+  <h1>Quinta celda vacía a propósito</h1>
+  <p>Cinco columnas, la última un span vacío sin texto: sigue contando como ocupada, no como fantasma.</p>
+  <div class="grid-celda-vacia">
+    <span>Prenda</span><span>Precio</span><span>Cantidad</span><span>Subtotal</span><span></span>
+  </div>
+</div>
+
+<div class="page" id="toggle-mas-accion">
+  <header class="site">
+    <div class="logo">Control</div>
+    <button class="burger" type="button" aria-expanded="false" aria-controls="menu-toggle-mas-accion">Menú</button>
+    <button class="btn" type="button">Buscar</button>
+  </header>
+  <h1>Toggle real más botón de acción</h1>
+  <p>El botón «Buscar» no expone aria-expanded ni aria-controls ni una clase de menú: no cuenta como segundo control a 430.</p>
+</div>
+
+<div class="page" id="dos-toggles-reales">
+  <header class="site">
+    <div class="logo">Control</div>
+    <button type="button" aria-expanded="false" aria-controls="menu-real-a">Uno</button>
+    <button class="menu-toggle" type="button">Dos</button>
+  </header>
+  <h1>Dos controles de menú reales</h1>
+  <p>El primero expone aria-expanded; el segundo lleva la clase menu-toggle: ambos son disclosure, ambos cuentan a 430.</p>
+</div>
+
+<div class="page" id="fila-heterogenea">
+  <header class="site">
+    <div class="logo">Control</div>
+    <button class="burger" type="button" aria-expanded="false" aria-controls="menu-fila-heterogenea">Menú</button>
+  </header>
+  <h1>Fila de cinco elementos distintos</h1>
+  <p>Título, campo, botón, estado y nota: el quinto envuelve a su propia línea, pero no son tarjetas repetidas.</p>
+  <div class="franja-control">
+    <div class="et-control">¿Llegamos a tu casa?</div>
+    <input type="text" value="27880" aria-label="Código postal">
+    <button class="btn" type="button">Comprobar</button>
+    <div class="estado-control">Burela, Lugo. Estás en Zona A: envío 5,90&nbsp;€ y gratis desde 60&nbsp;€.</div>
+    <div class="nota-control">Pides antes de las 17:00, lo tienes mañana.</div>
+  </div>
+</div>
+
+<div class="page" id="columnas-homogeneas">
+  <header class="site">
+    <div class="logo">Control</div>
+    <button class="burger" type="button" aria-expanded="false" aria-controls="menu-columnas-homogeneas">Menú</button>
+  </header>
+  <h1>Cuatro columnas homogéneas, 3|1</h1>
+  <p>Cuatro div.col-control iguales: a 1280 caben tres en la fila y la cuarta envuelve sola — sigue siendo un hallazgo.</p>
+  <div class="pie-cols-control">
+    <div class="col-control">Uno</div>
+    <div class="col-control">Dos</div>
+    <div class="col-control">Tres</div>
+    <div class="col-control">Cuatro</div>
+  </div>
+</div>
+
+<div class="page" id="rejilla-con-span">
+  <header class="site">
+    <div class="logo">Control</div>
+    <button class="burger" type="button" aria-expanded="false" aria-controls="menu-rejilla-con-span">Menú</button>
+  </header>
+  <h1>Rejilla de tres pistas, una columna con span 2</h1>
+  <p>Dos elementos: uno ocupa una pista, el otro dos (grid-column:span 2) — entre los dos llenan la fila, no hay pista vacía.</p>
+  <div class="grid-con-span">
+    <div>Uno</div>
+    <div class="ancha">Dos (span 2)</div>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var pages = Array.prototype.map.call(document.querySelectorAll('.page'), function (p) { return p.id; });
+  function mostrar(hash) {
+    var id = (hash || '').replace(/^#/, '') || pages[0];
+    if (pages.indexOf(id) === -1) { id = pages[0]; }
+    pages.forEach(function (p) {
+      document.getElementById(p).classList.toggle('activa', p === id);
+    });
+  }
+  window.addEventListener('hashchange', function () { mostrar(location.hash); });
+  mostrar(location.hash);
+})();
+</script>
+
+</body>
+</html>
