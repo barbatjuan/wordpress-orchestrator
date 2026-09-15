@@ -67,9 +67,11 @@ todo lo demás se ha decidido para que las tres no lean como la misma mano:
   (`Lumiere.dc.html`), documentada más abajo porque diverge de cómo `enfoques.md` describe el eje
   «acento» para `materia` en `marzo`.
 - **Recorte y colocación de fotografía.** Ninguna foto llega al borde del viewport: todas están
-  enmarcadas con `border-radius:2px` y relleno alrededor, incluso el hero de portada (banda completa,
-  pero dentro de su propia sección, nunca detrás del texto). Es lo contrario de un tratamiento a
-  sangre con velo oscuro.
+  enmarcadas con `border-radius:2px` y relleno alrededor, incluso el hero de portada, que es una
+  banda completa dentro de su propia sección. Ahí, y sólo ahí, el titular se apoya sobre la foto con
+  un velo en degradado de dos paradas y el panel del bono flota a la derecha, como en el lienzo; por
+  debajo de 1024 el texto sale de la foto y se apila sin velo. Es lo contrario de un tratamiento a
+  sangre con velo oscuro a todo el ancho.
 - **Cómo se construye una lista.** Las quince filas de la carta son espacio en blanco y un filete
   fino — nunca una tabla con celdas ni tarjetas de fotografía por fila.
 
@@ -127,13 +129,14 @@ solo widget HTML y sin CSS a medida.
 | Sección | Elementor (nativo) | Nota |
 |---|---|---|
 | Cabecera | Plantilla de cabecera del Theme Builder: contenedor flex + Logotipo (texto) + Menú de navegación + Botón | El menú nativo trae el desplegable móvil |
-| Hero de Inicio | Contenedor con Imagen a ancho completo + contenedor de texto (Encabezado + Editor de texto) + contenedor con sombra (panel de precios) | Sin velo ni texto superpuesto a la foto — ver ADN, fotografía enmarcada |
+| Hero de Inicio | Imagen a ancho completo (640px de alto) + contenedor siguiente con margen superior −640px: contenedor de texto (Encabezado + Editor de texto) y contenedor con sombra (panel de precios, franja entintada como último hijo y sin relleno inferior) | Texto sobre la foto como `Lumiere.dc.html`. Velo: fondo degradado nativo de dos paradas, `#FDF7F4` al 88&nbsp;% hasta el 44&nbsp;% y transparente al 70&nbsp;% — el color es global, la opacidad no tiene hueco global y se declara aquí. Peor píxel 5,25:1 (`scrim.php`, 1025–1440). Por debajo de 1024, margen 0 y sin velo: se apila bajo la foto |
 | Manifiesto | Contenedor flex de dos columnas: Encabezado + Editor de texto con lista | |
-| Banda de zona (Inicio y La carta) | Contenedor flex: Imagen + contenedor de filas; cada fila, Encabezado + Editor de texto + dos Encabezados de precio | El hueco entre filas y el filete superior son controles nativos de espaciado y borde |
-| Leyenda del bono | Contenedor con fondo entintado + iconos de texto en línea | |
-| Recapitulación del bono (rejilla de 3) | Contenedor rejilla de 3 columnas; cada tarjeta, Encabezado + Editor de texto + Encabezado (porcentaje) | Columnas a 1 por debajo de 767 con el control nativo |
+| Banda de zona (Inicio) | Contenedor flex: Imagen + contenedor de filas; cada fila, Encabezado + Editor de texto + dos Encabezados de precio | El hueco entre filas y el filete superior son controles nativos de espaciado y borde. Al pasar a columna bajo 767, los hijos vuelven a tamaño automático |
+| Zona de La carta | Contenedor por zona: fila de cabecera (Imagen 128×96 + Encabezado + Editor de texto, filete inferior) + lista de filas a todo el ancho; cada fila, contenedor flex con texto (ancho máx. 660px) y columna de precio de 140px de ancho | Como `Rituales.dc.html`: lista, no panel de dos columnas. Bajo 767 la fila pasa a columna y la miniatura a 96×72 |
+| Leyenda del bono | Contenedor con fondo entintado + iconos de texto en línea | Una columna bajo 767 |
+| Recapitulación del bono (rejilla de 3) | Contenedor a todo el ancho con fondo entintado (La carta) o dentro del panel del bono (Inicio); rejilla de 3 columnas; cada tarjeta, Encabezado + Editor de texto + Encabezado (porcentaje) + Editor de texto (ejemplo: precio en bono y precio suelto) | Columnas a 1 por debajo de 767 con el control nativo |
 | Banda de producto | Contenedor flex: Imagen + contenedor de texto | |
-| Equipo (Inicio y Nosotros) | Contenedor rejilla, columnas = número de personas (3) | Nunca más columnas que retratos |
+| Equipo (Inicio y Nosotros) | Contenedor rejilla, columnas = número de personas (3) a 1280 y a 768, 1 bajo 767; desfase de la lámina (0 / 76 / 32px) como relleno superior de cada retrato, a 0 bajo 767 | Nunca más columnas que retratos. Relleno y no margen: las tres cajas empiezan a la misma altura |
 | Panel del bono + CTA | Contenedor con sombra: contenedor flex de dos columnas (texto + rejilla) + fila de cierre (Botón + Botón + Editor de texto) | |
 | Visita / dónde estamos | Contenedor flex: Imagen + lista de definición | |
 | Cabecera de ficha de ritual + panel de precio | Contenedor flex: contenedor de texto + contenedor con sombra (filas de precio + dos Botones) | |
@@ -148,7 +151,7 @@ solo widget HTML y sin CSS a medida.
 | Índice + columna de lectura (legales) | Contenedor rejilla: contenedor pegajoso (Efectos de movimiento › Sticky) con lista de anclas + columna de Encabezados y Editor de texto por apartado | Mismo patrón que `delao` |
 | Fichas de datos (identificación, cookies) | Contenedor con hueco de 1px sobre fondo del filete; cada fila, contenedor con dos Encabezados | Una tabla HTML pediría estilos a mano: por eso son filas |
 | 404 | Plantilla «404» del Theme Builder: Encabezado + Editor de texto + tres Botones | Nunca la página desnuda del tema |
-| Pie | Plantilla de pie del Theme Builder | Aviso legal, Privacidad y Cookies enlazan a sus tres páginas |
+| Pie | Plantilla de pie del Theme Builder, sobre el suelo de página y sin margen superior; rejilla de 4 columnas con la de Contacto más ancha (mín. 11rem) | Aviso legal, Privacidad y Cookies enlazan a sus tres páginas. Como las cinco láminas: la banda rosa final de Inicio y de La carta llega al pie |
 
 **Techo declarado: cero widgets HTML y cero reglas de CSS a medida.** Si al construir apareciera una
 sección que no cabe en esta tabla, la sección se rediseña; no se abre una excepción sin escribirla

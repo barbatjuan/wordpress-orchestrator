@@ -1,3 +1,4 @@
+<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Marzo — maqueta</title>
@@ -114,11 +115,35 @@ fieldset{border:none;}
 }
 
 /* Banda a sangre: el hijo de la derecha toca el borde del cristal. Rompe el margen UNA vez por
-   página, nunca más — ver ficha.md § ADN. */
+   página, nunca más — ver ficha.md § ADN. El lienzo dibuja datos · aire · foto (300 · 212 · 820 en
+   portada y la marca, 300 · 56 · 976 en la ficha); aquí el aire es el hueco de columna de una rejilla
+   de dos pistas —16% de la rejilla, 212px a 1440; 56px en la ficha—, porque una pista vacía pide un
+   contenedor vacío en Elementor. Sin hueco, «Merina · alpaca», la talla 44 y «Añadir a la cesta»
+   acababan en el píxel exacto en que empezaba la fotografía. En una columna la foto sigue sangrando
+   por la derecha, pero los datos recuperan el margen: 8,108% de su pista es el 7,5% del cristal
+   (7,5 / 92,5). En Elementor, relleno derecho en porcentaje del contenedor de datos. */
 .bleed{width:100%;padding-left:var(--pad-x);padding-right:0;display:grid;
-       grid-template-columns:minmax(180px,300px) 1fr;column-gap:0;align-items:start;}
-.bleed img{width:100%;height:auto;display:block;}
-@media (max-width:1024px){.bleed{grid-template-columns:1fr;row-gap:24px;}}
+       grid-template-columns:minmax(180px,300px) minmax(0,1fr);column-gap:16%;align-items:start;}
+.bleed-ficha{column-gap:56px;}
+.bleed > img{width:100%;height:auto;display:block;}
+@media (max-width:1024px){
+  .bleed,.bleed-ficha{grid-template-columns:minmax(0,1fr);column-gap:0;row-gap:24px;}
+  .bleed-datos{padding-right:8.108%;}
+}
+
+/* Páginas de mensaje (404, pedido recibido): la medida es la del CONTENIDO. Con el max-width en la
+   caja, el 7,5% de relleno se resolvía contra el cristal y a 1280 quedaban 428px de los 620 —más
+   estrecho que a 768—, con los botones apilados y el titular del 404 en cuatro líneas. En Elementor
+   es el ancho «en caja» del contenedor, que ya se mide sin su relleno. */
+.medida-620{max-width:calc(620px + 2 * var(--pad-x));}
+.medida-720{max-width:calc(720px + 2 * var(--pad-x));}
+
+/* Pago: formulario en la pista ancha y pedido en la estrecha, espejo de .row2. El pedido va junto a
+   la forma de pago y el botón, en ese orden, como el pago nativo de WooCommerce: en una columna el
+   comprador repasa lo que compra justo antes de confirmarlo, no después. */
+.pago-rejilla{display:grid;grid-template-columns:minmax(0,1fr) minmax(180px,300px);column-gap:56px;
+  align-items:start;}
+@media (max-width:1024px){.pago-rejilla{grid-template-columns:minmax(0,1fr);row-gap:56px;}}
 
 /* ────────────────────────────────────────── tipografía ────────────────────────────────────── */
 h1,h2{font-family:var(--font-display);font-weight:400;line-height:0.98;letter-spacing:-0.012em;
@@ -196,13 +221,18 @@ h1,h2{font-family:var(--font-display);font-weight:400;line-height:0.98;letter-sp
 
 /* ─────────────────────────────────────────── registro (tabla) ─────────────────────────────── */
 .register{width:100%;}
-.register-head{display:grid;grid-template-columns:60px minmax(150px,1fr) minmax(150px,1fr) 84px 96px;
-  column-gap:22px;align-items:end;padding-bottom:13px;border-bottom:1px solid var(--hair-042);}
+/* Pistas del lienzo (72 · 274 · 240 · 86 · 92) reequilibradas para el tipo fluido: el nombre de pieza
+   más largo mide 238px a 1280 y el aviso «Agotada · vuelve en noviembre» 225px, así que su pista pide
+   al menos 240 incluso con una barra de desplazamiento de 17px (1263px → 245px). Con dos pistas 1fr
+   iguales medía 202px y partía ocho de los once nombres. Cada fila es su propia rejilla: sólo pistas
+   fijas o fr, nunca de contenido, o las columnas dejan de alinear entre filas. */
+.register-head{display:grid;grid-template-columns:52px minmax(0,1.2fr) minmax(0,1fr) 64px 72px;
+  column-gap:20px;align-items:end;padding-bottom:13px;border-bottom:1px solid var(--hair-042);}
 .register-head span{font-family:var(--font-sans);font-size:0.625rem;letter-spacing:0.18em;
   text-transform:uppercase;color:var(--c-text);}
 .register-head span.al-right{text-align:right;}
-.register-row{display:grid;grid-template-columns:60px minmax(150px,1fr) minmax(150px,1fr) 84px 96px;
-  column-gap:22px;align-items:center;min-height:92px;padding:18px 0;border-bottom:1px solid var(--hair-016);}
+.register-row{display:grid;grid-template-columns:52px minmax(0,1.2fr) minmax(0,1fr) 64px 72px;
+  column-gap:20px;align-items:center;min-height:92px;padding:18px 0;border-bottom:1px solid var(--hair-016);}
 .register-row.al-final{border-bottom-color:var(--hair-042);}
 /* Toda fila del registro lleva a la ficha, así que toda fila tiene que decir que se puede pulsar.
    El suelo alterno es el único cambio: la ADN no admite color de acento, y en Elementor esto es el
@@ -253,24 +283,32 @@ h1,h2{font-family:var(--font-display);font-weight:400;line-height:0.98;letter-sp
 .field-row3{display:grid;grid-template-columns:1fr 1fr 1fr;column-gap:28px;}
 @media (max-width:767px){.field-row2,.field-row3{grid-template-columns:1fr;row-gap:26px;}}
 .consent{display:flex;align-items:flex-start;gap:12px;}
-.consent input[type="checkbox"]{width:16px;height:16px;margin-top:2px;flex-shrink:0;appearance:auto;}
+.consent input[type="checkbox"]{width:16px;height:16px;margin-top:2px;flex-shrink:0;appearance:auto;accent-color:var(--c-ink);}
 .consent span{font-family:var(--font-sans);font-size:0.75rem;line-height:1.6;letter-spacing:0.01em;
   color:var(--c-text);}
 .radio-row{display:flex;align-items:center;gap:10px;padding:14px 0;border-bottom:1px solid var(--hair-014);}
-.radio-row input[type="radio"]{width:16px;height:16px;appearance:auto;}
+.radio-row input[type="radio"]{width:16px;height:16px;appearance:auto;accent-color:var(--c-ink);}
 .radio-row span{font-family:var(--font-sans);font-size:0.8125rem;color:var(--c-ink);}
 
 /* ─────────────────────────────────────────── tablas ────────────────────────────────────────── */
-.table-std thead th{text-align:left;vertical-align:bottom;padding:0 0 13px 0;
+/* Relleno lateral en toda celda menos la primera: sin él, a 430 la cabecera se leía «TALLAA ·
+   HOMBROB · PECHOC…» y la fila «MZ-2094814 sept 2026En preparación…», 0px entre celdas.
+   Por debajo de 767 la tabla se desplaza dentro de su propia caja y sus celdas no se parten
+   (defectos-de-derivacion.md § Fondos y rejillas); desde 768 vuelve a ser tabla. Sólo max-width:
+   la regla anterior usaba un min-width, que es un tercer tipo de consulta. */
+.table-std thead th{text-align:left;vertical-align:bottom;padding:0 0 13px 20px;
   border-bottom:1px solid var(--hair-045);font-family:var(--font-sans);font-weight:400;
   font-size:0.625rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--c-text);}
 .table-std thead th.al-right{text-align:right;}
-.table-std tbody td{padding:20px 0;border-bottom:1px solid var(--hair-018,rgba(26,24,21,0.18));
+.table-std tbody td{padding:20px 0 20px 20px;border-bottom:1px solid var(--hair-018,rgba(26,24,21,0.18));
   font-family:var(--font-sans);font-size:0.875rem;letter-spacing:0.02em;color:var(--c-text);}
+.table-std th:first-child,.table-std td:first-child{padding-left:0;}
 .table-std tbody td.al-right{text-align:right;}
 .table-std tbody td.al-strong{color:var(--c-ink);}
-.table-std{overflow-x:auto;display:block;}
-@media (min-width:768px){.table-std{display:table;overflow-x:visible;}}
+@media (max-width:767px){
+  .table-std{display:block;overflow-x:auto;max-width:100%;}
+  .table-std th,.table-std td{white-space:nowrap;}
+}
 
 /* ─────────────────────────────────────────── tarjetas 3-col ───────────────────────────────── */
 .card3-head{font-family:var(--font-sans);font-size:0.65625rem;letter-spacing:0.2em;
@@ -280,6 +318,9 @@ h1,h2{font-family:var(--font-display);font-weight:400;line-height:0.98;letter-sp
 
 /* ─────────────────────────────────────────── pie ───────────────────────────────────────────── */
 .site-footer{width:100%;padding-top:var(--sp-section);}
+/* 12,5px como el lienzo, no los 13 de .card3-body: «La prenda vuelve sin usar y con etiqueta» mide
+   226px a 13px y su pista 222 con una barra de 15px, así que partía la línea. */
+.site-footer .card3-body{font-size:0.78125rem;}
 .footer-top{display:grid;grid-template-columns:minmax(180px,300px) 1fr;column-gap:56px;
   align-items:start;padding-bottom:64px;border-bottom:1px solid var(--hair-020);}
 .footer-marca{font-family:var(--font-sans);font-weight:500;font-size:0.875rem;letter-spacing:0.42em;
@@ -328,7 +369,9 @@ h1,h2{font-family:var(--font-display);font-weight:400;line-height:0.98;letter-sp
 .page.activa{display:block;}
 main{display:block;}
 .page-pad-top{padding-top:64px;}
-.svg-esquema{display:block;}
+/* El esquema mide 240px en el lienzo; nunca más. Con width="100%" height="auto" (atributo inválido,
+   error de consola) llegaba a 653×793 a 768 con letras de 20px. */
+.svg-esquema{display:block;width:100%;max-width:240px;height:auto;aspect-ratio:280/340;}
 .svg-esquema text{font-family:'Jost',sans-serif;}
 
 /* Foto contenida (no a sangre): la que acompaña un bloque de texto sin tocar el margen. */
@@ -336,16 +379,44 @@ main{display:block;}
 .figure figcaption{font-family:var(--font-sans);font-weight:400;font-size:0.6875rem;letter-spacing:0.15em;
   text-transform:uppercase;color:var(--c-text);padding-top:16px;}
 
+/* Lo demás · trío escalonado. Pistas en la proporción del lienzo (272 · 344 · 196, hueco 28) y
+   escalones de 132 y 318 a 1440 expresados como fracción del ancho de su propia pista, para que el
+   escalón crezca con la foto. Antes: tres pistas iguales en un style= que no colapsaba a 430, y el
+   nombre heredaba las versalitas del pie de foto. Por debajo de 767, una columna que conserva el
+   escalonado en el ancho y la alineación de cada pieza. */
+.trio{display:grid;grid-template-columns:minmax(0,272fr) minmax(0,344fr) minmax(0,196fr);column-gap:28px;
+  align-items:start;}
+.trio-2{padding-top:38.37%;}
+.trio-3{padding-top:162.2%;}
+.trio figcaption{padding-top:16px;}
+.trio-nombre{display:block;font-family:var(--font-display);font-weight:400;font-variation-settings:'opsz' 30;
+  font-size:var(--fs-price-md);line-height:1.2;letter-spacing:0.004em;color:var(--c-ink);}
+.trio-dato{display:block;padding-top:11px;font-family:var(--font-sans);font-weight:400;font-size:0.6875rem;
+  letter-spacing:0.15em;text-transform:uppercase;color:var(--c-text);}
+@media (max-width:767px){
+  .trio{grid-template-columns:minmax(0,1fr);row-gap:40px;}
+  .trio-1{width:70%;}
+  .trio-2{width:88%;justify-self:end;padding-top:0;}
+  .trio-3{width:50%;padding-top:0;}
+}
+
+/* La casa: texto y lista de etapas lado a lado bajo la foto, 492 · 320 en el lienzo. */
+.casa-texto{display:grid;grid-template-columns:minmax(0,492fr) minmax(0,320fr);column-gap:56px;
+  align-items:start;padding-top:56px;}
+@media (max-width:767px){.casa-texto{grid-template-columns:minmax(0,1fr);row-gap:36px;padding-top:40px;}}
+
 /* Talla · selector nativo (span de estado, no <select>) */
 /* Cinco tallas en cinco columnas iguales, con tope de ancho en vez de columnas de 52px fijos. Así
    encoge sola por debajo de 420 sin un TERCER punto de ruptura: Elementor sólo expresa 1024 y 767,
    y una regla a 420 no se puede construir de forma nativa. */
 .size-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));column-gap:10px;max-width:300px;}
-.size-cell{height:52px;display:flex;align-items:center;justify-content:center;
-  border:1px solid var(--hair-030);font-family:var(--font-sans);font-size:0.8125rem;
-  letter-spacing:0.06em;color:var(--c-ink);}
-.size-cell.is-selected{border-color:var(--c-ink);background:var(--c-ink);color:var(--c-bg);}
-.size-cell.is-out{border-color:var(--hair-016);color:var(--c-text);text-decoration:line-through;}
+/* Botones de verdad: se enfocan con el teclado y dicen su estado con aria-pressed. */
+.size-cell{height:52px;display:flex;align-items:center;justify-content:center;padding:0;
+  background:transparent;border:1px solid var(--hair-030);font-family:var(--font-sans);font-size:0.8125rem;
+  letter-spacing:0.06em;color:var(--c-ink);cursor:pointer;}
+.size-cell[aria-pressed="true"]{border-color:var(--c-ink);background:var(--c-ink);color:var(--c-bg);}
+.size-cell:disabled{border-color:var(--hair-016);color:var(--c-text);text-decoration:line-through;
+  cursor:not-allowed;}
 </style>
 
 <!-- ════════════════════════════════════════════════════════════════════════════════════════════
@@ -359,7 +430,7 @@ main{display:block;}
       <a href="#la-marca">La casa</a>
       <a href="#contacto">Contacto</a>
       <a href="#mi-cuenta">Mi cuenta</a>
-      <a href="#carro" class="cesta">Cesta&nbsp;(2)</a>
+      <a href="#carro" class="cesta" data-cesta>Cesta&nbsp;(2)</a>
     </nav>
     <button id="burger" class="burger" type="button" aria-expanded="false" aria-controls="menu-movil">
       <span class="burger-lines" aria-hidden="true"></span>
@@ -372,7 +443,7 @@ main{display:block;}
     <a href="#la-marca">La casa</a>
     <a href="#contacto">Contacto</a>
     <a href="#mi-cuenta">Mi cuenta</a>
-    <a href="#carro">Cesta&nbsp;(2)</a>
+    <a href="#carro" data-cesta>Cesta&nbsp;(2)</a>
   </nav>
 </header>
 
@@ -396,7 +467,7 @@ main{display:block;}
   <!-- ÚNICA ROTURA DE RETÍCULA de esta página: la fotografía de cubierta sangra por la derecha. -->
   <section class="section">
     <div class="bleed">
-      <div style="padding-top:8px;">
+      <div class="bleed-datos" style="padding-top:8px;">
         <p class="small-label" style="font-size:.6875rem;letter-spacing:.24em;color:var(--c-ink);padding-bottom:20px;border-bottom:1px solid var(--hair-022);">Abrigo Sagra</p>
         <dl class="dl-rows" style="padding-top:20px;">
           <div><dt>Fibra</dt><dd>Merina · alpaca</dd></div>
@@ -478,18 +549,18 @@ main{display:block;}
         <h2 class="h-section">Lo demás</h2>
         <p class="copy" style="padding-top:22px;">Tres piezas que se llevan con el abrigo y sobreviven a la misma década.</p>
       </div>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);column-gap:26px;align-items:start;">
-        <figure class="figure">
+      <div class="trio">
+        <figure class="trio-1">
           <img src="../img/marzo-punto.webp" alt="Detalle del hombro y el cuello de un jersey de merino marfil" class="photo-contained" style="aspect-ratio:272/340;">
-          <figcaption><span class="piece-name" style="display:block;font-size:1.25rem;">Jersey Almadén</span><span style="display:block;padding-top:11px;">Merino 210&nbsp;g/m² · 165,00&nbsp;€</span></figcaption>
+          <figcaption><span class="trio-nombre">Jersey Almadén</span><span class="trio-dato">Merino 210&nbsp;g/m² · 165,00&nbsp;€</span></figcaption>
         </figure>
-        <figure class="figure" style="margin-top:64px;">
+        <figure class="trio-2">
           <img src="../img/marzo-pantalon.webp" alt="Pantalón ancho de algodón crudo fotografiado a media zancada" class="photo-contained" style="aspect-ratio:344/430;">
-          <figcaption><span class="piece-name" style="display:block;font-size:1.25rem;">Pantalón Ribera</span><span style="display:block;padding-top:11px;">Sarga 340&nbsp;g/m² · 145,00&nbsp;€</span></figcaption>
+          <figcaption><span class="trio-nombre">Pantalón Ribera</span><span class="trio-dato">Sarga 340&nbsp;g/m² · 145,00&nbsp;€</span></figcaption>
         </figure>
-        <figure class="figure" style="margin-top:128px;">
+        <figure class="trio-3">
           <img src="../img/marzo-manga.webp" alt="Manga y puño del abrigo Sagra colgado en una barra de acero contra un muro de yeso" class="photo-contained" style="aspect-ratio:196/245;">
-          <figcaption><span class="piece-name" style="display:block;font-size:1.25rem;">La espalda</span><span style="display:block;padding-top:11px;">Una sola costura</span></figcaption>
+          <figcaption><span class="trio-nombre">La espalda</span><span class="trio-dato">Una sola costura</span></figcaption>
         </figure>
       </div>
     </div>
@@ -503,9 +574,20 @@ main{display:block;}
         <p class="copy" style="padding-top:22px;">Taller propio en Toledo. Nueve personas. Ninguna prenda sale de aquí sin haber pasado por dos manos.</p>
       </div>
       <div>
-        <img src="../img/marzo-taller.webp" alt="Patrón de papel prendido con alfileres sobre una mesa de corte de madera, junto a un rollo de tela cruda" class="photo-contained" style="aspect-ratio:868/460;">
-        <p class="lead" style="padding-top:44px;">Compramos hilo, no tejido acabado. La sarga que llevan el pantalón y la chaqueta se teje en Bocairent a 340&nbsp;gramos por metro cuadrado y encoge lo que tiene que encoger antes de que nadie la corte. El corte se hace en Toledo sobre mesa, pieza a pieza, y el dobladillo se remata a mano.</p>
-        <p style="padding-top:24px;"><a href="#la-marca" class="eyebrow link-ink" style="color:var(--c-ink);">Cómo se hace, con detalle</a></p>
+        <img src="../img/marzo-taller.webp" alt="Patrón de papel prendido con alfileres sobre una mesa de corte de madera, junto a un rollo de tela cruda" class="photo-contained" style="aspect-ratio:868/637;">
+        <div class="casa-texto">
+          <div>
+            <p class="lead">Compramos hilo, no tejido acabado. La sarga que llevan el pantalón y la chaqueta se teje en Bocairent en telar de pinza a 340&nbsp;gramos por metro cuadrado, se lava dos veces y encoge lo que tiene que encoger antes de que nadie la corte: entre un tres y un cuatro por ciento. Después ya no se mueve. El corte se hace en Toledo sobre mesa, pieza a pieza, y el dobladillo se remata a mano porque a máquina se nota.</p>
+            <p style="padding-top:24px;"><a href="#la-marca" class="eyebrow link-ink" style="color:var(--c-ink);">Cómo se hace, con detalle</a></p>
+          </div>
+          <dl class="dl-rows">
+            <div><dt>Hilatura</dt><dd>Béjar, Salamanca</dd></div>
+            <div><dt>Tisaje</dt><dd>Bocairent · Alcoi</dd></div>
+            <div><dt>Confección</dt><dd>Toledo</dd></div>
+            <div><dt>Tinte</dt><dd>Rubia y gualda</dd></div>
+            <div><dt>Arreglos</dt><dd>De por vida</dd></div>
+          </dl>
+        </div>
       </div>
     </div>
   </section>
@@ -531,7 +613,7 @@ main{display:block;}
 
   <section class="section" id="listado">
     <div class="container row2">
-      <p class="eyebrow">12 piezas en catálogo<br>Ordenadas por referencia<br>Sin filtros, sin color de acento</p>
+      <p class="eyebrow">11 piezas en catálogo<br>Ordenadas por referencia<br>Sin filtros, sin color de acento</p>
       <div class="register">
         <div class="register-head">
           <span>Ref.</span><span>Pieza</span><span>Tela y gramaje</span><span>Telar</span><span class="al-right">Precio</span>
@@ -662,23 +744,23 @@ main{display:block;}
 
   <!-- ÚNICA ROTURA DE RETÍCULA de esta página: la fotografía principal sangra por la derecha. -->
   <section class="section">
-    <div class="bleed">
-      <div>
+    <div class="bleed bleed-ficha">
+      <div class="bleed-datos">
         <p class="price-lg">385,00&nbsp;€</p>
         <p class="eyebrow" style="padding-top:14px;padding-bottom:34px;border-bottom:1px solid var(--hair-022);">IVA incluido · Envío aparte</p>
 
         <p class="small-label" style="padding-top:32px;padding-bottom:16px;">Talla</p>
-        <div class="size-grid">
-          <span class="size-cell">36</span>
-          <span class="size-cell">38</span>
-          <span class="size-cell is-selected">40</span>
-          <span class="size-cell">42</span>
-          <span class="size-cell is-out">44</span>
+        <div class="size-grid" role="group" aria-label="Talla">
+          <button type="button" class="size-cell" aria-pressed="false" data-aviso="Quedan dos en la talla 36">36</button>
+          <button type="button" class="size-cell" aria-pressed="false" data-aviso="Quedan seis en la talla 38">38</button>
+          <button type="button" class="size-cell" aria-pressed="true" data-aviso="Quedan cuatro en la talla 40">40</button>
+          <button type="button" class="size-cell" aria-pressed="false" data-aviso="Quedan tres en la talla 42">42</button>
+          <button type="button" class="size-cell" disabled aria-label="44, agotada">44</button>
         </div>
         <p class="copy" style="padding-top:14px;">La 44 vuelve en noviembre. <a href="#medidas" class="link-ink">Medidas de la prenda</a></p>
 
         <a href="#carro" class="btn" style="width:100%;max-width:300px;margin-top:30px;">Añadir a la cesta</a>
-        <p class="stock" style="padding-top:14px;">Quedan cuatro en la talla 40</p>
+        <p class="stock" id="aviso-talla" aria-live="polite" style="padding-top:14px;">Quedan cuatro en la talla 40</p>
 
         <p class="copy" style="padding-top:24px;">Envío en 48&nbsp;h · 4,90&nbsp;€<br>Gratis a partir de 150,00&nbsp;€<br>Devolución 30 días, recogida incluida</p>
 
@@ -729,7 +811,7 @@ main{display:block;}
       </div>
 
       <div class="esquema-medidas">
-        <svg class="svg-esquema" viewBox="0 0 280 340" width="100%" height="auto" role="img" aria-label="Esquema del abrigo con los cinco puntos de medida marcados de la A a la E">
+        <svg class="svg-esquema" viewBox="0 0 280 340" width="240" height="291" role="img" aria-label="Esquema del abrigo con los cinco puntos de medida marcados de la A a la E">
           <g fill="none" stroke="#1A1815" stroke-width="1" stroke-linejoin="round" stroke-linecap="round">
             <path d="M78 62 L182 62 L196 292 L64 292 Z"></path>
             <path d="M118 62 L130 78 L142 62"></path>
@@ -842,32 +924,34 @@ main{display:block;}
         <span>Prenda</span><span class="al-right">Precio</span><span>Cantidad</span><span class="al-right">Subtotal</span><span></span>
       </div>
 
-      <div class="cart-row">
+      <div class="cart-row" data-precio="385">
         <div class="cart-piece">
           <a href="#ficha" class="piece-name" style="font-size:1.375rem;display:block;">Abrigo Sagra</a>
           <p class="copy" style="padding-top:6px;">Talla 40 · Ref. LM-620</p>
         </div>
         <span class="cart-unit">385,00&nbsp;€</span>
-        <div class="qty-stepper"><button type="button" aria-label="Quitar una unidad">–</button><span>1</span><button type="button" aria-label="Añadir una unidad">+</button></div>
+        <div class="qty-stepper"><button type="button" data-paso="-1" aria-label="Quitar una unidad">–</button><span aria-live="polite">1</span><button type="button" data-paso="1" aria-label="Añadir una unidad">+</button></div>
         <span class="cart-subtotal">385,00&nbsp;€</span>
         <button type="button" class="cart-remove">Quitar</button>
       </div>
 
-      <div class="cart-row">
+      <div class="cart-row" data-precio="165">
         <div class="cart-piece">
           <span class="piece-name" style="font-size:1.375rem;display:block;">Jersey Almadén</span>
           <p class="copy" style="padding-top:6px;">Talla M · Ref. ME-210</p>
         </div>
         <span class="cart-unit">165,00&nbsp;€</span>
-        <div class="qty-stepper"><button type="button" aria-label="Quitar una unidad">–</button><span>1</span><button type="button" aria-label="Añadir una unidad">+</button></div>
+        <div class="qty-stepper"><button type="button" data-paso="-1" aria-label="Quitar una unidad">–</button><span aria-live="polite">1</span><button type="button" data-paso="1" aria-label="Añadir una unidad">+</button></div>
         <span class="cart-subtotal">165,00&nbsp;€</span>
         <button type="button" class="cart-remove">Quitar</button>
       </div>
 
-      <div class="summary-box" style="max-width:380px;margin-left:auto;">
-        <div class="summary-row"><span>Subtotal</span><span>550,00&nbsp;€</span></div>
-        <div class="summary-row"><span>Envío</span><span>Gratis · superas 150,00&nbsp;€</span></div>
-        <div class="summary-row al-total"><span>Total</span><span>550,00&nbsp;€</span></div>
+      <p class="lead" id="carro-vacio" hidden style="padding-top:28px;">Tu cesta está vacía. <a href="#categoria" class="link-ink">Ver el registro</a></p>
+
+      <div class="summary-box" id="carro-resumen" style="max-width:380px;margin-left:auto;">
+        <div class="summary-row"><span>Subtotal</span><span id="carro-subtotal">550,00&nbsp;€</span></div>
+        <div class="summary-row"><span>Envío</span><span id="carro-envio">Gratis · superas 150,00&nbsp;€</span></div>
+        <div class="summary-row al-total"><span>Total</span><span id="carro-total">550,00&nbsp;€</span></div>
         <a href="#pago" class="btn btn-block" style="margin-top:26px;">Continuar al pago</a>
         <p style="text-align:center;padding-top:18px;"><a href="#categoria" class="eyebrow link-ink" style="color:var(--c-ink);">Seguir comprando</a></p>
       </div>
@@ -886,8 +970,8 @@ main{display:block;}
   </section>
 
   <section class="section-tight">
-    <div class="container row2">
-      <form>
+    <form class="container pago-rejilla">
+      <div>
         <p class="small-label" style="font-size:.6875rem;color:var(--c-ink);letter-spacing:.2em;padding-bottom:20px;border-bottom:1px solid var(--hair-022);">Datos de envío</p>
         <div style="padding-top:26px;">
           <div class="field-row2">
@@ -906,6 +990,19 @@ main{display:block;}
             <label class="field"><span class="field-label">Teléfono</span><input type="tel" placeholder="600 00 00 00"></label>
           </div>
         </div>
+      </div>
+
+      <div>
+        <p class="small-label" style="font-size:.6875rem;color:var(--c-ink);letter-spacing:.2em;padding-bottom:20px;border-bottom:1px solid var(--hair-022);">Tu pedido</p>
+        <dl class="dl-rows" style="padding-top:20px;">
+          <div><dt>Abrigo Sagra · talla 40</dt><dd>385,00&nbsp;€</dd></div>
+          <div><dt>Jersey Almadén · talla M</dt><dd>165,00&nbsp;€</dd></div>
+        </dl>
+        <div class="summary-box">
+          <div class="summary-row"><span>Subtotal</span><span>550,00&nbsp;€</span></div>
+          <div class="summary-row"><span>Envío</span><span>Gratis · superas 150,00&nbsp;€</span></div>
+          <div class="summary-row al-total"><span>Total</span><span>550,00&nbsp;€</span></div>
+        </div>
 
         <p class="small-label" style="font-size:.6875rem;color:var(--c-ink);letter-spacing:.2em;margin-top:44px;padding-bottom:20px;border-bottom:1px solid var(--hair-022);">Forma de pago</p>
         <div style="padding-top:6px;">
@@ -918,29 +1015,16 @@ main{display:block;}
           <span>Acepto las <a href="#condiciones-venta-envios" class="link-ink" style="color:var(--c-ink);">condiciones de venta y envíos</a> y he leído la <a href="#privacidad" class="link-ink" style="color:var(--c-ink);">política de privacidad</a>.</span>
         </label>
 
-        <a href="#pedido-recibido" class="btn" style="margin-top:30px;">Confirmar pedido</a>
-      </form>
-
-      <div>
-        <p class="small-label" style="font-size:.6875rem;color:var(--c-ink);letter-spacing:.2em;padding-bottom:20px;border-bottom:1px solid var(--hair-022);">Tu pedido</p>
-        <div class="dl-rows" style="padding-top:20px;">
-          <div><dt>Abrigo Sagra · talla 40</dt><dd>385,00&nbsp;€</dd></div>
-          <div><dt>Jersey Almadén · talla M</dt><dd>165,00&nbsp;€</dd></div>
-        </div>
-        <div class="summary-box">
-          <div class="summary-row"><span>Subtotal</span><span>550,00&nbsp;€</span></div>
-          <div class="summary-row"><span>Envío</span><span>Gratis · superas 150,00&nbsp;€</span></div>
-          <div class="summary-row al-total"><span>Total</span><span>550,00&nbsp;€</span></div>
-        </div>
+        <a href="#pedido-recibido" class="btn btn-block" style="margin-top:30px;">Confirmar pedido</a>
       </div>
-    </div>
+    </form>
   </section>
 
 </div>
 <div class="page" id="pedido-recibido" data-title="Pedido confirmado — Marzo">
 
   <section class="section" style="padding-top:80px;">
-    <div class="container" style="max-width:720px;">
+    <div class="container medida-720">
       <p class="eyebrow">Pedido n.º MZ-20948</p>
       <h1 class="h-page" style="padding-top:10px;">Gracias. Va camino del taller.</h1>
       <p class="lead" style="padding-top:26px;">Hemos mandado la confirmación a tu correo con el número de pedido y el resumen de lo comprado. En cuanto salga de Toledo llega un segundo correo con el número de seguimiento.</p>
@@ -996,13 +1080,15 @@ main{display:block;}
   <section class="section">
     <div class="container row2">
       <h2 class="h-section" style="font-size:1.375rem;">Datos de la cuenta</h2>
-      <dl class="dl-rows" style="max-width:520px;">
-        <div><dt>Nombre</dt><dd>Marta Ordóñez</dd></div>
-        <div><dt>Correo</dt><dd>marta.ordonez@correo.es</dd></div>
-        <div><dt>Teléfono</dt><dd>+34 600 22 41 08</dd></div>
-        <div><dt>Dirección de envío</dt><dd>Calle Mayor, 12 · 45001 Toledo</dd></div>
-      </dl>
-      <p style="padding-top:24px;"><a href="#portada" class="eyebrow link-ink" style="color:var(--c-ink);">Cerrar sesión</a></p>
+      <div>
+        <dl class="dl-rows" style="max-width:520px;">
+          <div><dt>Nombre</dt><dd>Marta Ordóñez</dd></div>
+          <div><dt>Correo</dt><dd>marta.ordonez@correo.es</dd></div>
+          <div><dt>Teléfono</dt><dd>+34 600 22 41 08</dd></div>
+          <div><dt>Dirección de envío</dt><dd>Calle Mayor, 12 · 45001 Toledo</dd></div>
+        </dl>
+        <p style="padding-top:24px;"><a href="#portada" class="eyebrow link-ink" style="color:var(--c-ink);">Cerrar sesión</a></p>
+      </div>
     </div>
   </section>
 
@@ -1028,7 +1114,7 @@ main{display:block;}
   <!-- ÚNICA ROTURA DE RETÍCULA de esta página: la fotografía del taller sangra por la derecha. -->
   <section class="section">
     <div class="bleed">
-      <div style="padding-top:8px;">
+      <div class="bleed-datos" style="padding-top:8px;">
         <p class="small-label" style="font-size:.6875rem;letter-spacing:.24em;color:var(--c-ink);padding-bottom:20px;border-bottom:1px solid var(--hair-022);">El taller</p>
         <dl class="dl-rows" style="padding-top:20px;">
           <div><dt>Abierto en</dt><dd>2014</dd></div>
@@ -1129,24 +1215,30 @@ main{display:block;}
         </dl>
       </div>
 
-      <form style="max-width:620px;">
+      <form id="form-contacto" style="max-width:620px;">
         <div class="field-row2">
-          <label class="field"><span class="field-label">Nombre</span><input type="text" placeholder="Nombre y apellidos"></label>
-          <label class="field"><span class="field-label">Correo</span><input type="email" placeholder="tu@correo.com"></label>
+          <label class="field"><span class="field-label">Nombre</span><input type="text" name="nombre" required autocomplete="name" placeholder="Nombre y apellidos"></label>
+          <label class="field"><span class="field-label">Correo</span><input type="email" name="correo" required autocomplete="email" placeholder="tu@correo.com"></label>
         </div>
 
         <label class="field" style="padding-top:34px;">
           <span class="field-label">Mensaje</span>
-          <textarea rows="5" placeholder="Talla, arreglo, pedido, lo que sea"></textarea>
+          <textarea rows="5" name="mensaje" required placeholder="Talla, arreglo, pedido, lo que sea"></textarea>
         </label>
 
         <label class="consent" style="padding-top:30px;">
-          <input type="checkbox">
+          <input type="checkbox" name="consentimiento" required>
           <span>He leído y acepto la <a href="#privacidad" class="link-ink" style="color:var(--c-ink);">política de privacidad</a>. Marzo usa estos datos sólo para responder.</span>
         </label>
 
-        <button type="button" class="btn" style="margin-top:34px;">Enviar mensaje</button>
+        <button type="submit" class="btn" style="margin-top:34px;">Enviar mensaje</button>
       </form>
+
+      <div id="contacto-enviado" role="status" tabindex="-1" hidden style="max-width:620px;">
+        <p class="small-label" style="font-size:.6875rem;letter-spacing:.24em;color:var(--c-ink);padding-bottom:20px;border-bottom:1px solid var(--hair-022);">Mensaje enviado</p>
+        <p class="lead" style="padding-top:24px;">Gracias. Lo lee alguien del taller y contesta desde taller@marzo.es, casi siempre el mismo día laborable.</p>
+        <p style="padding-top:24px;"><a href="#categoria" class="eyebrow link-ink" style="color:var(--c-ink);">Volver al registro</a></p>
+      </div>
     </div>
   </section>
 
@@ -1292,7 +1384,7 @@ main{display:block;}
 <div class="page" id="404" data-title="Página no encontrada — Marzo">
 
   <section class="section" style="padding-top:120px;padding-bottom:120px;">
-    <div class="container" style="max-width:620px;">
+    <div class="container medida-620">
       <p class="eyebrow">Error 404</p>
       <h1 class="h-page" style="padding-top:10px;">Esta página no está en el registro.</h1>
       <p class="lead" style="padding-top:22px;">El enlace puede haber cambiado, o la prenda que buscabas ya no está en catálogo. El registro completo sigue en su sitio.</p>
@@ -1404,6 +1496,58 @@ main{display:block;}
     if (e.key === 'Escape' && burger.getAttribute('aria-expanded') === 'true') {
       cerrarMenu(); burger.focus();
     }
+  });
+
+  // ── Controles de demostración, sin backend ──
+  // Talla: una sola elegida; el aviso de existencias cambia con ella.
+  var tallas = document.querySelector('#ficha .size-grid');
+  tallas.addEventListener('click', function(e){
+    var b = e.target.closest('.size-cell');
+    if (!b || b.disabled) { return; }
+    tallas.querySelectorAll('.size-cell').forEach(function(c){
+      if (!c.disabled) { c.setAttribute('aria-pressed', c === b ? 'true' : 'false'); }
+    });
+    document.getElementById('aviso-talla').textContent = b.getAttribute('data-aviso');
+  });
+
+  // Cesta: la cantidad cambia la línea y el resumen; «Quitar» retira la línea.
+  function euros(n){
+    var p = n.toFixed(2).split('.');
+    return p[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.') + ',' + p[1] + ' €';
+  }
+  function recalcular(){
+    var filas = document.querySelectorAll('#carro .cart-row'), sub = 0, uds = 0;
+    filas.forEach(function(f){
+      var q = Number(f.querySelector('.qty-stepper span').textContent), pr = Number(f.getAttribute('data-precio'));
+      f.querySelector('.cart-subtotal').textContent = euros(q * pr);
+      sub += q * pr; uds += q;
+    });
+    var envio = sub >= 150 ? 0 : 4.9;
+    document.getElementById('carro-subtotal').textContent = euros(sub);
+    document.getElementById('carro-envio').textContent = envio ? euros(envio) : 'Gratis · superas 150,00 €';
+    document.getElementById('carro-total').textContent = euros(sub + envio);
+    document.getElementById('carro-resumen').hidden = !filas.length;
+    document.getElementById('carro-vacio').hidden = !!filas.length;
+    document.querySelectorAll('[data-cesta]').forEach(function(a){ a.textContent = 'Cesta (' + uds + ')'; });
+  }
+  document.getElementById('carro').addEventListener('click', function(e){
+    var b = e.target.closest('button'), fila = b && b.closest('.cart-row');
+    if (!fila) { return; }
+    if (b.classList.contains('cart-remove')) { fila.remove(); }
+    else if (b.hasAttribute('data-paso')) {
+      var s = fila.querySelector('.qty-stepper span');
+      s.textContent = Math.max(1, Math.min(9, Number(s.textContent) + Number(b.getAttribute('data-paso'))));
+    }
+    recalcular();
+  });
+
+  // Contacto: con los campos y el consentimiento válidos, el formulario deja paso a la confirmación.
+  var formContacto = document.getElementById('form-contacto');
+  formContacto.addEventListener('submit', function(e){
+    e.preventDefault();
+    formContacto.hidden = true;
+    var ok = document.getElementById('contacto-enviado');
+    ok.hidden = false; ok.focus();
   });
 
   mostrar(location.hash);

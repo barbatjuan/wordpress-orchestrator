@@ -1,3 +1,4 @@
+<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Lumière — Estudio de belleza en Chamberí</title>
@@ -34,7 +35,8 @@ body{font-family:var(--font-body);color:var(--c-text);background:var(--c-bg);fon
 img{display:block;max-width:100%}
 p{margin:0}
 h1,h2,h3,h4{margin:0;font-weight:400;overflow-wrap:normal;word-break:normal}
-ul{margin:0;padding:0;list-style:none}
+ul,ol{margin:0;padding:0;list-style:none}
+dl,dd{margin:0}
 a{color:inherit;text-decoration:none}
 button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
 input,textarea{font:inherit;color:inherit}
@@ -89,10 +91,13 @@ input,textarea{font:inherit;color:inherit}
 
 /* ══════════════════════════════════════ utilidades ══════════════════════════════════════ */
 h1,h2,h3{font-family:var(--font-display);color:var(--c-ink)}
-h1{font-size:var(--fs-h1)}
-h2{font-size:var(--fs-h2);letter-spacing:-.01em}
-h3{font-size:var(--fs-h3)}
-.eyebrow{font-size:var(--fs-eyebrow);font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--c-accent)}
+/* Interlínea de titular medida en las láminas (h1 1,02–1,08; h2 1,10–1,15). Sin ella los titulares
+   heredaban el 1,6 del cuerpo: 86px de línea para un h1 de 54px. Es la tipografía global del sitio,
+   no una regla por sección. */
+h1{font-size:var(--fs-h1);line-height:1.08;letter-spacing:-.018em}
+h2{font-size:var(--fs-h2);line-height:1.15;letter-spacing:-.01em}
+h3{font-size:var(--fs-h3);line-height:1.2}
+.eyebrow{display:block;font-size:var(--fs-eyebrow);font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--c-accent)}
 .lede{max-width:60ch;font-size:var(--fs-lede);line-height:1.65;color:var(--c-text)}
 .muted{color:var(--c-text-muted)}
 .faint{color:var(--c-text-faint)}
@@ -145,22 +150,39 @@ header.site{position:sticky;top:0;z-index:50;background:var(--c-bg);border-botto
 .pag-head .lede{margin-top:18px}
 
 /* ══════════════════════════════════════ hero de inicio ══════════════════════════════════════ */
-.hero{position:relative;padding-block:0 var(--sp-xxl)}
-.hero-media{position:relative;width:100%;aspect-ratio:16/9;max-height:640px;overflow:hidden}
-.hero-media img{width:100%;height:100%;object-fit:cover;object-position:50% 20%}
-.hero-copy{position:relative;margin-top:var(--sp-xl);max-width:34rem}
-.hero-copy h1{color:var(--c-ink);line-height:1.06;letter-spacing:-.02em;font-size:var(--fs-h1-hero);text-wrap:pretty}
-.hero-copy .lede{margin-top:18px;max-width:34rem;color:var(--c-text)}
-.hero-copy .hero-datos{margin-top:14px;font-size:.84375rem;font-weight:500;letter-spacing:.01em;color:var(--c-text-muted)}
-.hero-panel{margin-top:var(--sp-l);background:var(--c-bg-float);border-radius:var(--radius);box-shadow:0 20px 52px rgba(42,27,31,.14);padding:30px}
+/* Como la lámina (Lumiere.dc.html:38-104): el titular va SOBRE la foto, arriba a la izquierda, y el
+   panel de precios flota a la derecha. Nativo: la foto es un widget Imagen de 640px de alto; la capa
+   es el contenedor siguiente, con margen superior −640px (margen negativo, control nativo por punto
+   de ruptura) y un degradado de dos paradas del color de suelo como velo (fondo degradado nativo).
+   La lámina no lleva velo; aquí sí, porque a la izquierda del texto hay madera y toallas y la tinta
+   tiene que pasar 4,5:1 en el peor píxel (scrim.php). Por debajo de 1024 la capa deja de superponerse
+   y se apila bajo la foto, sin velo. */
+.hero{padding-block:0 var(--sp-xxl)}
+.hero-foto{width:100%;height:640px;object-fit:cover;object-position:50% 4%}
+.hero-capa{position:relative;display:flex;align-items:flex-start;justify-content:space-between;gap:var(--sp-l);
+           min-height:640px;margin-top:-640px;padding-block:40px 0;
+           background:linear-gradient(90deg, rgba(253,247,244,.88) 44%, rgba(253,247,244,0) 70%)}
+.hero-copy{flex:0 1 570px;min-width:0}
+.hero-copy h1{line-height:1.05;letter-spacing:-.02em;font-size:var(--fs-h1-hero);text-wrap:pretty}
+.hero-copy .lede{margin-top:20px;max-width:35rem;color:var(--c-text)}
+.hero-datos{margin-top:16px;font-size:.84375rem;font-weight:500;letter-spacing:.02em;color:var(--c-text)}
+.hero-panel{flex:0 0 472px;margin-top:100px;background:var(--c-bg-float);border-radius:var(--radius);box-shadow:0 26px 64px rgba(42,27,31,.18);padding:34px 34px 0}
 .hero-panel-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
-.panel-fila{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;padding-block:16px;border-top:var(--hair) solid var(--c-border-soft)}
-.panel-fila:first-of-type{border-top:0;padding-top:20px}
-.panel-fila-nombre{font-size:1rem;font-weight:600;color:var(--c-ink)}
-.panel-fila-desc{margin-top:3px;font-size:.8125rem;line-height:1.45;color:var(--c-text-muted);max-width:30ch}
+.hero-panel-head h2{font-size:1.5rem}
+.hero-panel-head span{font-size:.75rem;font-weight:500;color:var(--c-text-faint)}
+.hero-panel-nota{margin-top:10px;font-size:.84375rem;line-height:1.5;color:var(--c-text-muted)}
+.panel-filas{display:flex;flex-direction:column;gap:22px;margin-top:26px}
+.panel-fila{display:flex;align-items:flex-start;justify-content:space-between;gap:20px}
+.panel-fila-info{flex-grow:1;min-width:0}
+.panel-fila-nombre{font-family:var(--font-display);font-size:1.1875rem;line-height:1.25;color:var(--c-ink)}
+.panel-fila-desc{margin-top:3px;font-size:.8125rem;line-height:1.45;color:var(--c-text-muted)}
 .panel-fila-precio{text-align:right;flex-shrink:0}
-.panel-cta{margin-top:24px;padding-top:20px;background:var(--c-bg-tint);margin-inline:-30px;padding-inline:30px;padding-bottom:22px;border-radius:0 0 var(--radius) var(--radius);display:flex;align-items:center;justify-content:space-between;gap:16px}
-.panel-cta span{font-size:.875rem;line-height:1.4;color:var(--c-text)}
+.panel-fila-min{font-size:.78125rem;color:var(--c-text-faint)}
+.panel-fila-eur{font-size:1.125rem;font-weight:600;color:var(--c-ink)}
+/* La franja es el último hijo del panel y el panel no lleva relleno inferior: la franja llega al borde,
+   como el `margin-bottom:-30px` de la lámina, sin margen negativo vertical. */
+.panel-cta{margin:28px -34px 0;padding:20px 34px 24px;background:var(--c-bg-tint);border-radius:0 0 var(--radius) var(--radius);display:flex;align-items:center;justify-content:space-between;gap:16px}
+.panel-cta span{font-size:.875rem;line-height:1.45;color:var(--c-text)}
 .panel-cta a{font-size:.875rem;font-weight:600;color:var(--c-accent);white-space:nowrap}
 
 /* ══════════════════════════════════════ manifiesto ══════════════════════════════════════ */
@@ -188,6 +210,9 @@ header.site{position:sticky;top:0;z-index:50;background:var(--c-bg);border-botto
 .zona{display:flex;flex-wrap:wrap;gap:var(--sp-l);border-radius:var(--radius);padding:var(--sp-l);margin-top:var(--sp-l)}
 .zona--tint{background:var(--c-bg-tint)}
 .zona--float{background:var(--c-bg-float);box-shadow:0 16px 44px rgba(42,27,31,.08)}
+/* REGLA DE ESTE FICHERO: toda base de flex en px de un hijo cuya fila pasa a columna en un punto de
+   ruptura se devuelve a `flex-basis:auto` en ese mismo punto (bloque de 767, al final). En columna la
+   base mide ALTO: `.fila-ritual-info{flex:1 1 260px}` dejaba 195px entre la descripción y su precio. */
 .zona-media{flex:1 1 360px;min-width:0}
 .zona-media img{width:100%;height:clamp(220px,26vw,400px);object-fit:cover;border-radius:2px}
 .zona-copy{flex:2 1 460px;min-width:0}
@@ -214,12 +239,34 @@ header.site{position:sticky;top:0;z-index:50;background:var(--c-bg);border-botto
 .fila-ritual-bono{margin-top:2px;font-size:.8125rem;color:var(--c-accent)}
 .fila-ritual-bono--muda{color:var(--c-text-faint)}
 
-.bono-recap{margin-top:var(--sp-xxl);background:var(--c-bg-tint);border-radius:var(--radius);padding:var(--sp-l)}
-.bono-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--sp-m);margin-top:var(--sp-l)}
-.bono-card{background:var(--c-bg-float);border-radius:var(--radius);padding:26px 24px}
+/* ── La carta (Rituales.dc.html:59-281): cada zona es una lista a todo el ancho, no un panel de dos
+   columnas. Cabecera con miniatura de 128×96 + nombre de zona + cabina sobre un filete; debajo, filas
+   de texto separadas por filete fino. La columna de precio lleva ANCHO fijo, no base de flex, para
+   que al apilarse no se convierta en alto. ── */
+.carta{padding-block:0 var(--sp-xxl)}
+.carta-zona{padding-top:var(--sp-xl)}
+.carta-zona-cabecera{display:flex;align-items:flex-end;gap:24px;padding-bottom:22px;border-bottom:var(--hair) solid var(--c-border)}
+.carta-zona-cabecera img{width:128px;height:96px;object-fit:cover;border-radius:2px;flex-shrink:0}
+.carta-zona-titulo{flex-grow:1;min-width:0;display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 16px}
+.carta-zona-titulo h2{font-size:clamp(1.625rem, 1.35rem + 1.1vw, 2.125rem);letter-spacing:0}
+.carta-zona .zona-nota{margin-top:16px;max-width:660px}
+.carta-filas{display:flex;flex-direction:column;margin-top:8px}
+.carta-fila{display:flex;align-items:flex-start;justify-content:space-between;gap:40px;padding-block:26px;border-bottom:var(--hair) solid var(--c-border-soft)}
+.carta-fila:last-child{border-bottom-color:var(--c-border)}
+.carta-fila:hover .fila-ritual-nombre{color:var(--c-accent)}
+.carta-fila-info{flex-grow:1;max-width:660px;min-width:0}
+.carta-fila-info .fila-ritual-tag{background:var(--c-bg-tint)}
+.carta-fila-precio{width:140px;flex-shrink:0;text-align:right}
+
+/* Banda entintada a todo el ancho, como la lámina (Rituales.dc.html:284), no una tarjeta redondeada. */
+.bono-recap{background:var(--c-bg-tint)}
+.bono-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px;margin-top:38px}
+.bono-card{background:var(--c-bg-float);border-radius:var(--radius);padding:28px 26px}
 .bono-card-nombre{font-family:var(--font-display);font-size:1.3125rem;color:var(--c-ink)}
 .bono-card-cond{margin-top:6px;font-size:.8125rem;line-height:1.4;color:var(--c-text-muted)}
-.bono-card-pct{margin-top:14px;font-size:1.75rem;font-weight:600;color:var(--c-accent)}
+.bono-card-pct{margin-top:16px;font-size:1.75rem;font-weight:600;color:var(--c-accent)}
+.bono-card-ejemplo{margin-top:8px;font-size:.875rem;line-height:1.5;color:var(--c-text)}
+.bono-card-ejemplo b{font-weight:600;color:var(--c-ink)}
 .bono-nota{margin-top:var(--sp-m);font-size:.8125rem;line-height:1.5;color:var(--c-text-muted);max-width:60ch}
 .bono-nota a{color:var(--c-text-muted);text-decoration:underline;text-underline-offset:2px}
 .bono-nota a:hover{color:var(--c-accent)}
@@ -233,8 +280,13 @@ header.site{position:sticky;top:0;z-index:50;background:var(--c-bg);border-botto
 .producto-media{flex:1 1 380px;min-width:0}
 .producto-media img{width:100%;height:clamp(260px,32vw,460px);object-fit:cover;border-radius:2px}
 
-.equipo{display:flex;flex-wrap:wrap;gap:var(--sp-l);margin-top:var(--sp-l)}
-.persona{flex:1 1 260px;min-width:0}
+/* Rejilla de tres, una por retrato, y el desfase de la lámina (0 / 76 / 32px) como relleno superior
+   de cada retrato: relleno y no margen, para que las tres cajas empiecen a la misma altura y la
+   rejilla se lea como una fila. A una columna por debajo de 767, sin desfase. */
+.equipo{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:start;gap:var(--sp-l);margin-top:52px}
+.persona{min-width:0}
+.persona--baja{padding-top:76px}
+.persona--media{padding-top:32px}
 .persona img{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:var(--radius)}
 .persona-nombre{margin-top:16px;font-family:var(--font-display);font-size:1.375rem;color:var(--c-ink)}
 .persona-rol{margin-top:4px;font-size:.875rem;color:var(--c-text-muted)}
@@ -258,7 +310,7 @@ header.site{position:sticky;top:0;z-index:50;background:var(--c-bg);border-botto
 .visita-datos p{font-size:.9375rem;line-height:1.55;color:var(--c-text)}
 
 /* ══════════════════════════════════════ ficha de ritual ══════════════════════════════════════ */
-.ficha-head{display:flex;flex-wrap:wrap;gap:var(--sp-xl)}
+.ficha-head{display:flex;flex-wrap:wrap;gap:var(--sp-xl);padding-block:var(--sp-m) 0}
 .ficha-head-copy{flex:1 1 380px}
 .ficha-head-copy .lede{margin-top:18px}
 .precio-panel{flex:1 1 300px;max-width:22rem;background:var(--c-bg-float);border-radius:var(--radius);box-shadow:0 18px 46px rgba(42,27,31,.10);padding:26px 28px;align-self:flex-start}
@@ -271,7 +323,9 @@ header.site{position:sticky;top:0;z-index:50;background:var(--c-bg);border-botto
 .precio-bono-fila span:last-child{font-size:.9375rem;font-weight:600;color:var(--c-accent)}
 .precio-panel .btn{margin-top:11px}
 
-.ficha-media{margin-top:var(--sp-xl)}
+/* 52px entre la cabecera de la ficha y la foto, como Ritual.dc.html:72. Antes: relleno inferior de
+   la cabecera + relleno superior de esta sección + 72px de margen = 238px a 1280. */
+.ficha-media{padding-block:3.25rem 0}
 .ficha-media img{width:100%;height:clamp(260px,36vw,520px);object-fit:cover;border-radius:var(--radius)}
 
 .fases{display:flex;flex-wrap:wrap;gap:var(--sp-xl)}
@@ -327,22 +381,25 @@ header.site{position:sticky;top:0;z-index:50;background:var(--c-bg);border-botto
 .contacto-aside img{width:100%;height:220px;object-fit:cover;border-radius:var(--radius);margin-top:var(--sp-m)}
 
 .form{flex:2 1 420px;min-width:0}
-.campos-doble{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:var(--sp-m)}
+/* Espaciado del formulario como Contacto.dc.html:80-106: Nombre y Teléfono comparten fila sin margen
+   propio (antes `.campo+.campo` bajaba Teléfono 26px respecto a Nombre); Correo y Mensaje, 30px
+   por encima. Al apilarse la fila doble, el hueco de fila de la rejilla da los mismos 30px. */
+.campos-doble{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:30px 28px}
 .campo{display:block}
 .campo span{display:block;font-size:.75rem;font-weight:500;letter-spacing:.02em;color:var(--c-text-muted);padding-bottom:8px}
-.campo input,.campo textarea{width:100%;border:0;border-bottom:var(--hair) solid var(--c-border);background:transparent;
+.campo input,.campo textarea{display:block;width:100%;border:0;border-bottom:var(--hair) solid var(--c-border);background:transparent;
    font-size:.9375rem;color:var(--c-ink);padding-block:11px}
 .campo input{height:48px}
 .campo textarea{resize:vertical;min-height:110px;line-height:1.6}
 .campo input:focus,.campo textarea:focus{outline:none;border-bottom-color:var(--c-accent)}
 .campo input::placeholder,.campo textarea::placeholder{color:var(--c-text-faint)}
-.campo+.campo{margin-top:26px}
-.consent{display:flex;align-items:flex-start;gap:12px;margin-top:24px}
+.form>.campo{margin-top:30px}
+.consent{display:flex;align-items:flex-start;gap:12px;margin-top:26px}
 .consent input[type=checkbox]{appearance:auto;width:16px;height:16px;margin-top:3px;flex-shrink:0;accent-color:var(--c-accent)}
 .consent span{font-size:.78125rem;line-height:1.55;color:var(--c-text-muted)}
 .consent a{color:var(--c-ink);text-decoration:underline;text-underline-offset:2px}
 .consent a:hover{color:var(--c-accent)}
-.form .btn{margin-top:26px}
+.form .btn{margin-top:30px}
 
 /* ══════════════════════════════════════ gracias ══════════════════════════════════════ */
 .gracias-head{text-align:left;max-width:40rem}
@@ -382,14 +439,18 @@ header.site{position:sticky;top:0;z-index:50;background:var(--c-bg);border-botto
 .cookies-tabla .nombre{font-family:var(--font-display);font-size:.875rem;color:var(--c-ink)}
 
 /* ══════════════════════════════════════ 404 ══════════════════════════════════════ */
-.error-head{max-width:36rem}
+.error-head{max-width:36rem;padding-block-end:var(--sp-section)}
 .error-head .eyebrow{color:var(--c-text-faint)}
 .error-links{display:flex;flex-wrap:wrap;gap:16px;margin-top:var(--sp-l)}
 
 /* ══════════════════════════════════════ pie ══════════════════════════════════════ */
-footer.site{background:var(--c-bg-tint);margin-top:var(--sp-xxl)}
+/* El pie va sobre el suelo de página, sin margen propio, como en las cinco láminas: la banda rosa del
+   bono (Inicio) y la de «El bono, aplicado a esta carta» (La carta) llegan hasta él. Antes era rosa
+   con 104px de margen claro encima: una franja clara entre dos rosas. El aire lo pone el relleno de
+   la última sección de cada página. */
+footer.site{background:var(--c-bg)}
 .pie-top{display:flex;flex-wrap:wrap;gap:var(--sp-xl);padding-block:var(--sp-xl) var(--sp-l)}
-.pie-marca{flex:1 1 260px}
+.pie-marca{flex:1 1 240px}
 .pie-marca b{font-family:var(--font-display);font-size:1.5rem;letter-spacing:.05em;color:var(--c-ink)}
 .pie-marca p{margin-top:14px;font-size:.875rem;line-height:1.6;color:var(--c-text-muted);max-width:28rem}
 /* DERIVATION FIX: the lienzo's footer holds La carta/Bonos/Contacto as flat siblings of the brand
@@ -401,8 +462,10 @@ footer.site{background:var(--c-bg-tint);margin-top:var(--sp-xxl)}
    fine once .pie-top stacks; 768 and 1280: an orphan). A fixed column-count grid removes the
    overflow-driven wrap entirely — 2 columns below 1024px (where .pie-cols shares its row with
    .pie-marca and has the least room), 4 at 1024px and up — so four items are always exactly two
-   full rows or one full row, never three-then-one. */
-.pie-cols{flex:2 1 480px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--sp-l)}
+   full rows or one full row, never three-then-one.
+   La columna Contacto es más ancha (la lámina le da 260px) y no baja de 11rem, para que
+   «hola@lumiere-estudio.es» no se parta por el guion a 1280. */
+.pie-cols{flex:3 1 560px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) minmax(11rem,1.6fr);gap:var(--sp-l) var(--sp-m)}
 .pie-col{min-width:0}
 .pie-col-titulo{font-size:.875rem;font-weight:600;color:var(--c-ink)}
 .pie-col a,.pie-col span{display:block;margin-top:12px;font-size:.875rem;color:var(--c-text-muted)}
@@ -415,7 +478,16 @@ footer.site{background:var(--c-bg-tint);margin-top:var(--sp-xxl)}
 /* ══════════════════════════════════════ breakpoints — sólo 1024 y 767 ══════════════════════════════════════ */
 @media (max-width:1024px){
   .nav,.barra-fin .tel{display:none}
+  /* El empuje a la derecha vivía en .nav, que aquí se oculta: lo toma el grupo del final. */
+  .barra-fin{margin-left:auto}
   .burger{display:flex}
+  /* Hero: la capa deja de superponerse a la foto y se apila debajo, sin velo. Fila → columna, así
+     que las bases de flex vuelven a auto. */
+  .hero-foto{height:auto;aspect-ratio:16/9;max-width:100%;min-width:0}
+  .hero-capa{flex-direction:column;align-items:stretch;min-height:0;margin-top:0;padding-block:var(--sp-xl) 0;background:none}
+  .hero-copy,.hero-panel{flex-basis:auto}
+  .hero-panel{margin-top:var(--sp-l);max-width:34rem}
+  .equipo{gap:var(--sp-m)}
   .menu-movil{display:block}
   .menu-movil[hidden]{display:none}
   .legal-body{grid-template-columns:minmax(0,1fr)}
@@ -431,13 +503,20 @@ footer.site{background:var(--c-bg-tint);margin-top:var(--sp-xxl)}
      ~150px de ancho hace que la barra desborde en un teléfono de 375px. La acción sigue disponible
      en el menú móvil (.cta-movil), a un toque de distancia. */
   .cta-header{display:none}
-  .promesas,.bono-grid{grid-template-columns:minmax(0,1fr)}
+  .promesas,.bono-grid,.equipo{grid-template-columns:minmax(0,1fr)}
+  .persona--baja,.persona--media{padding-top:0}
+  .hero-panel{padding:24px 22px 0}
+  .panel-cta{margin-inline:-22px;padding-inline:22px}
   .zona{flex-direction:column;padding:var(--sp-m)}
   .zona-media img{height:220px}
-  .ficha-head{flex-direction:column}
+  .ficha-head{flex-direction:column;gap:var(--sp-l)}
   .precio-panel{max-width:none}
   .fila-ritual{flex-direction:column;gap:8px}
-  .fila-ritual-precio{text-align:left}
+  .fila-ritual-precio{text-align:left;min-width:0}
+  .carta-fila{flex-direction:column;gap:8px;padding-block:22px}
+  .carta-fila-precio{width:auto;text-align:left}
+  .carta-zona-cabecera{gap:16px}
+  .carta-zona-cabecera img{width:96px;height:72px}
   .contacto-grid{flex-direction:column}
   .campos-doble{grid-template-columns:minmax(0,1fr)}
   .formacion-item span{flex-basis:100%}
@@ -446,6 +525,12 @@ footer.site{background:var(--c-bg-tint);margin-top:var(--sp-xxl)}
   .cookies-tabla>div span:not(:first-child)::before{content:attr(data-etiqueta) ": "; color:var(--c-text-faint)}
   .pie-top{flex-direction:column}
   .bono-panel-top{flex-direction:column}
+  .leyenda-bono{grid-template-columns:minmax(0,1fr);gap:8px}
+  /* Cada contenedor que acaba de pasar de fila a columna (.zona, .fila-ritual, .ficha-head,
+     .contacto-grid, .pie-top, .bono-panel-top): sus hijos devuelven la base a auto, o la base en px
+     se lee como alto y deja huecos vacíos (195px bajo una descripción, 163px bajo la marca del pie). */
+  .zona-media,.zona-copy,.fila-ritual-info,.ficha-head-copy,.precio-panel,.contacto-aside,.form,
+  .pie-marca,.pie-cols,.bono-panel-copy,.bono-panel-grid{flex-basis:auto}
 }
 </style>
 
@@ -482,37 +567,35 @@ footer.site{background:var(--c-bg-tint);margin-top:var(--sp-xxl)}
 <div class="page" id="inicio" data-title="Lumière — Estudio de belleza en Chamberí, rituales por zona en bono">
 
   <section class="hero">
-    <div class="hero-media">
-      <img src="../img/lumiere-cabina.webp" alt="Camilla de estética vestida en blanco, con velas encendidas y una planta al fondo">
-    </div>
-    <div style="padding-inline:var(--page-margin)">
+    <img class="hero-foto" src="../img/lumiere-cabina.webp" alt="Camilla de estética vestida en blanco, con velas encendidas y una planta al fondo">
+    <div class="hero-capa" style="padding-inline:var(--page-margin)">
       <div class="hero-copy">
         <h1>Un buen resultado no cabe en una tarde.</h1>
         <p class="lede">Trabajamos por rituales: cada uno dice con qué sales, cuánto dura y cuánto cuesta. Y se compran en bono.</p>
         <p class="hero-datos">Chamberí, Madrid · Cuatro cabinas · Bonos de 5, 8 y 10 sesiones</p>
       </div>
-      <div class="hero-panel" style="max-width:34rem">
+      <div class="hero-panel">
         <div class="hero-panel-head">
-          <h2 style="font-size:1.5rem">Los cuatro más pedidos</h2>
-          <span class="faint" style="font-size:.75rem">sesión suelta</span>
+          <h2>Los cuatro más pedidos</h2>
+          <span>sesión suelta</span>
         </div>
-        <p class="muted" style="margin-top:10px;font-size:.84375rem;line-height:1.5">Precio de una sesión. En bono baja entre un 10&nbsp;% y un 15&nbsp;%.</p>
-        <div>
+        <p class="hero-panel-nota">Precio de una sesión. En bono baja entre un 10&nbsp;% y un 15&nbsp;%.</p>
+        <div class="panel-filas">
           <div class="panel-fila">
-            <div><div class="panel-fila-nombre">Luz Fría</div><div class="panel-fila-desc">Sales con el poro cerrado y la piel mate.</div></div>
-            <div class="panel-fila-precio"><div class="faint" style="font-size:.75rem">60 min</div><div class="tab-nums" style="font-size:1.125rem;font-weight:600;color:var(--c-ink)">68,00&nbsp;€</div></div>
+            <div class="panel-fila-info"><div class="panel-fila-nombre">Luz Fría</div><div class="panel-fila-desc">Sales con el poro cerrado y la piel mate.</div></div>
+            <div class="panel-fila-precio"><div class="panel-fila-min">60 min</div><div class="panel-fila-eur tab-nums">68,00&nbsp;€</div></div>
           </div>
           <div class="panel-fila">
-            <div><div class="panel-fila-nombre">Descarga</div><div class="panel-fila-desc">Sales sin el nudo del trapecio.</div></div>
-            <div class="panel-fila-precio"><div class="faint" style="font-size:.75rem">50 min</div><div class="tab-nums" style="font-size:1.125rem;font-weight:600;color:var(--c-ink)">58,00&nbsp;€</div></div>
+            <div class="panel-fila-info"><div class="panel-fila-nombre">Descarga</div><div class="panel-fila-desc">Sales sin el nudo del trapecio.</div></div>
+            <div class="panel-fila-precio"><div class="panel-fila-min">50 min</div><div class="panel-fila-eur tab-nums">58,00&nbsp;€</div></div>
           </div>
           <div class="panel-fila">
-            <div><div class="panel-fila-nombre">Láser piernas enteras</div><div class="panel-fila-desc">Sales con las dos piernas hechas en media hora.</div></div>
-            <div class="panel-fila-precio"><div class="faint" style="font-size:.75rem">25 min</div><div class="tab-nums" style="font-size:1.125rem;font-weight:600;color:var(--c-ink)">95,00&nbsp;€</div></div>
+            <div class="panel-fila-info"><div class="panel-fila-nombre">Láser piernas enteras</div><div class="panel-fila-desc">Sales con las dos piernas hechas en media hora.</div></div>
+            <div class="panel-fila-precio"><div class="panel-fila-min">25 min</div><div class="panel-fila-eur tab-nums">95,00&nbsp;€</div></div>
           </div>
           <div class="panel-fila">
-            <div><div class="panel-fila-nombre">Manicura rusa</div><div class="panel-fila-desc">Sales con la uña limpia tres semanas.</div></div>
-            <div class="panel-fila-precio"><div class="faint" style="font-size:.75rem">75 min</div><div class="tab-nums" style="font-size:1.125rem;font-weight:600;color:var(--c-ink)">42,00&nbsp;€</div></div>
+            <div class="panel-fila-info"><div class="panel-fila-nombre">Manicura rusa</div><div class="panel-fila-desc">Sales con la uña limpia tres semanas.</div></div>
+            <div class="panel-fila-precio"><div class="panel-fila-min">75 min</div><div class="panel-fila-eur tab-nums">42,00&nbsp;€</div></div>
           </div>
         </div>
         <div class="panel-cta">
@@ -559,7 +642,7 @@ footer.site{background:var(--c-bg-tint);margin-top:var(--sp-xxl)}
             <div class="fila-ritual-precio"><div class="fila-ritual-min">75 min</div><div class="fila-ritual-eur tab-nums">89,00&nbsp;€</div></div>
           </a>
           <a class="fila-ritual" href="#ritual">
-            <div class="fila-ritual-info"><div class="fila-ritual-nombre">Piel Nueva</div><div class="fila-ritual-desc">Peeling de ácido láctico al 30 %. Sales con la mancha un tono más clara.</div></div>
+            <div class="fila-ritual-info"><div class="fila-ritual-nombre">Piel Nueva</div><div class="fila-ritual-desc">Peeling de ácido láctico al 30&nbsp;%. Sales con la mancha un tono más clara.</div></div>
             <div class="fila-ritual-precio"><div class="fila-ritual-min">45 min</div><div class="fila-ritual-eur tab-nums">74,00&nbsp;€</div></div>
           </a>
           <a class="fila-ritual" href="#ritual">
@@ -665,11 +748,11 @@ footer.site{background:var(--c-bg-tint);margin-top:var(--sp-xxl)}
         <img src="../img/lumiere-noa.webp" alt="Retrato de técnica de uñas sonriendo, fondo cálido liso">
         <div class="persona-nombre">Noa Ferreira</div><div class="persona-rol">Directora técnica · aparatología y láser · 12 años</div>
       </div>
-      <div class="persona">
+      <div class="persona persona--baja">
         <img src="../img/lumiere-pilar.webp" alt="Retrato de esteticista veterana de pelo blanco corto, fondo cálido liso">
         <div class="persona-nombre">Pilar Sanchís</div><div class="persona-rol">Peelings y protocolos de rostro · 9 años</div>
       </div>
-      <div class="persona">
+      <div class="persona persona--media">
         <img src="../img/lumiere-hugo.webp" alt="Retrato de masajista con barba corta, fondo cálido liso">
         <div class="persona-nombre">Hugo Belmonte</div><div class="persona-rol">Masaje terapéutico y drenaje · 7 años</div>
       </div>
@@ -686,9 +769,9 @@ footer.site{background:var(--c-bg-tint);margin-top:var(--sp-xxl)}
           </div>
           <div class="bono-panel-grid">
             <div class="bono-grid">
-              <div class="bono-card"><div class="bono-card-nombre">Esencial</div><div class="bono-card-cond">5 sesiones del mismo ritual · 6 meses</div><div class="bono-card-pct">−10 %</div></div>
-              <div class="bono-card"><div class="bono-card-nombre">Constancia</div><div class="bono-card-cond">10 sesiones del mismo ritual · 12 meses</div><div class="bono-card-pct">−15 %</div></div>
-              <div class="bono-card"><div class="bono-card-nombre">Libre</div><div class="bono-card-cond">8 sesiones a repartir entre zonas y entre dos personas · 12 meses</div><div class="bono-card-pct">−12 %</div></div>
+              <div class="bono-card"><div class="bono-card-nombre">Esencial</div><div class="bono-card-cond">5 sesiones del mismo ritual · 6 meses</div><div class="bono-card-pct tab-nums">−10&nbsp;%</div><p class="bono-card-ejemplo tab-nums">Luz Fría ×5<br><b>306,00&nbsp;€</b> en&nbsp;vez&nbsp;de&nbsp;340,00&nbsp;€</p></div>
+              <div class="bono-card"><div class="bono-card-nombre">Constancia</div><div class="bono-card-cond">10 sesiones del mismo ritual · 12 meses</div><div class="bono-card-pct tab-nums">−15&nbsp;%</div><p class="bono-card-ejemplo tab-nums">Luz Fría ×10<br><b>578,00&nbsp;€</b> en&nbsp;vez&nbsp;de&nbsp;680,00&nbsp;€</p></div>
+              <div class="bono-card"><div class="bono-card-nombre">Libre</div><div class="bono-card-cond">8 sesiones a repartir entre zonas y entre dos personas · 12 meses</div><div class="bono-card-pct tab-nums">−12&nbsp;%</div><p class="bono-card-ejemplo tab-nums">Luz Fría ×8<br><b>478,72&nbsp;€</b> en&nbsp;vez&nbsp;de&nbsp;544,00&nbsp;€</p></div>
             </div>
           </div>
         </div>
@@ -724,121 +807,121 @@ footer.site{background:var(--c-bg-tint);margin-top:var(--sp-xxl)}
       <div class="leyenda-bono">
         <span>Cómo se lee el bono:</span>
         <span>Sesión suelta = precio de lista</span>
-        <span>Bono Esencial (×5) = −10 %</span>
-        <span>Bono Constancia (×10) = −15 %</span>
+        <span>Bono Esencial (×5) = −10&nbsp;%</span>
+        <span>Bono Constancia (×10) = −15&nbsp;%</span>
       </div>
     </div>
   </div>
 
-  <section style="padding-inline:var(--page-margin)">
+  <section class="carta" style="padding-inline:var(--page-margin)">
 
-    <div class="zona zona--tint" id="rituales-rostro">
-      <div class="zona-media"><img src="../img/lumiere-rostro.webp" alt="Clienta tumbada con banda en el pelo durante un tratamiento facial" style="height:clamp(140px,10vw,180px)"></div>
-      <div class="zona-copy">
-        <div class="zona-head"><h3>Rostro</h3><span class="zona-cabina">Cabina 1 y 2 · Noa y Pilar</span></div>
-        <div>
-          <a class="fila-ritual" href="#ritual">
-            <div class="fila-ritual-info"><span class="fila-ritual-nombre">Luz Fría<span class="fila-ritual-tag">Ficha completa</span></span><div class="fila-ritual-desc">Higiene profunda con extracción manual y ácido mandélico. Sales con el poro cerrado y la piel mate.</div></div>
-            <div class="fila-ritual-precio"><div class="fila-ritual-min">60 min</div><div class="fila-ritual-eur tab-nums">68,00&nbsp;€</div><div class="fila-ritual-bono tab-nums">×5 en bono: 61,20&nbsp;€</div></div>
-          </a>
-          <a class="fila-ritual" href="#ritual">
-            <div class="fila-ritual-info"><div class="fila-ritual-nombre">Óvalo</div><div class="fila-ritual-desc">Radiofrecuencia y kobido a cuatro manos. Sales con la línea de la mandíbula levantada y sin la cara apagada.</div></div>
-            <div class="fila-ritual-precio"><div class="fila-ritual-min">75 min</div><div class="fila-ritual-eur tab-nums">89,00&nbsp;€</div><div class="fila-ritual-bono tab-nums">×5 en bono: 80,10&nbsp;€</div></div>
-          </a>
-          <a class="fila-ritual" href="#ritual">
-            <div class="fila-ritual-info"><div class="fila-ritual-nombre">Piel Nueva</div><div class="fila-ritual-desc">Peeling de ácido láctico al 30 %. Sales con la mancha un tono más clara; hacen falta cuatro para verla irse.</div></div>
-            <div class="fila-ritual-precio"><div class="fila-ritual-min">45 min</div><div class="fila-ritual-eur tab-nums">74,00&nbsp;€</div><div class="fila-ritual-bono tab-nums">×5 en bono: 66,60&nbsp;€</div></div>
-          </a>
-          <a class="fila-ritual" href="#ritual">
-            <div class="fila-ritual-info"><div class="fila-ritual-nombre">Ojos Despiertos</div><div class="fila-ritual-desc">Drenaje periocular y radiofrecuencia suave. Sales sin la bolsa de la mañana.</div></div>
-            <div class="fila-ritual-precio"><div class="fila-ritual-min">30 min</div><div class="fila-ritual-eur tab-nums">46,00&nbsp;€</div><div class="fila-ritual-bono tab-nums">×5 en bono: 41,40&nbsp;€</div></div>
-          </a>
-        </div>
+    <div class="carta-zona" id="rituales-rostro">
+      <div class="carta-zona-cabecera">
+        <img src="../img/lumiere-rostro.webp" alt="Clienta tumbada con banda en el pelo durante un tratamiento facial">
+        <div class="carta-zona-titulo"><h2>Rostro</h2><span class="zona-cabina">Cabina 1 y 2 · Noa y Pilar</span></div>
+      </div>
+      <div class="carta-filas">
+        <a class="carta-fila" href="#ritual">
+          <div class="carta-fila-info"><span class="fila-ritual-nombre">Luz Fría<span class="fila-ritual-tag">Ficha completa</span></span><div class="fila-ritual-desc">Higiene profunda con extracción manual y ácido mandélico. Sales con el poro cerrado y la piel mate.</div></div>
+          <div class="carta-fila-precio"><div class="fila-ritual-min">60 min</div><div class="fila-ritual-eur tab-nums">68,00&nbsp;€</div><div class="fila-ritual-bono tab-nums">×5 en bono: 61,20&nbsp;€</div></div>
+        </a>
+        <a class="carta-fila" href="#ritual">
+          <div class="carta-fila-info"><div class="fila-ritual-nombre">Óvalo</div><div class="fila-ritual-desc">Radiofrecuencia y kobido a cuatro manos. Sales con la línea de la mandíbula levantada y sin la cara apagada.</div></div>
+          <div class="carta-fila-precio"><div class="fila-ritual-min">75 min</div><div class="fila-ritual-eur tab-nums">89,00&nbsp;€</div><div class="fila-ritual-bono tab-nums">×5 en bono: 80,10&nbsp;€</div></div>
+        </a>
+        <a class="carta-fila" href="#ritual">
+          <div class="carta-fila-info"><div class="fila-ritual-nombre">Piel Nueva</div><div class="fila-ritual-desc">Peeling de ácido láctico al 30&nbsp;%. Sales con la mancha un tono más clara; hacen falta cuatro para verla irse.</div></div>
+          <div class="carta-fila-precio"><div class="fila-ritual-min">45 min</div><div class="fila-ritual-eur tab-nums">74,00&nbsp;€</div><div class="fila-ritual-bono tab-nums">×5 en bono: 66,60&nbsp;€</div></div>
+        </a>
+        <a class="carta-fila" href="#ritual">
+          <div class="carta-fila-info"><div class="fila-ritual-nombre">Ojos Despiertos</div><div class="fila-ritual-desc">Drenaje periocular y radiofrecuencia suave. Sales sin la bolsa de la mañana.</div></div>
+          <div class="carta-fila-precio"><div class="fila-ritual-min">30 min</div><div class="fila-ritual-eur tab-nums">46,00&nbsp;€</div><div class="fila-ritual-bono tab-nums">×5 en bono: 41,40&nbsp;€</div></div>
+        </a>
       </div>
     </div>
 
-    <div class="zona zona--float" id="rituales-cuerpo">
-      <div class="zona-media"><img src="../img/lumiere-cuerpo.webp" alt="Manos de esteticista aplicando aceite en la pierna de una clienta tapada con toalla" style="height:clamp(140px,10vw,180px)"></div>
-      <div class="zona-copy">
-        <div class="zona-head"><h3>Cuerpo</h3><span class="zona-cabina">Cabina 3 · Hugo</span></div>
-        <div>
-          <a class="fila-ritual" href="#ritual">
-            <div class="fila-ritual-info"><div class="fila-ritual-nombre">Descarga</div><div class="fila-ritual-desc">Masaje profundo de espalda, cervicales y trapecio. Sales sin el nudo del ordenador y girando el cuello entero.</div></div>
-            <div class="fila-ritual-precio"><div class="fila-ritual-min">50 min</div><div class="fila-ritual-eur tab-nums">58,00&nbsp;€</div><div class="fila-ritual-bono tab-nums">×5 en bono: 52,20&nbsp;€</div></div>
-          </a>
-          <a class="fila-ritual" href="#ritual">
-            <div class="fila-ritual-info"><div class="fila-ritual-nombre">Drenaje Lento</div><div class="fila-ritual-desc">Drenaje linfático manual de pierna entera, a ritmo bajo. Sales sin pesadez de la rodilla para abajo.</div></div>
-            <div class="fila-ritual-precio"><div class="fila-ritual-min">60 min</div><div class="fila-ritual-eur tab-nums">65,00&nbsp;€</div><div class="fila-ritual-bono tab-nums">×5 en bono: 58,50&nbsp;€</div></div>
-          </a>
-          <a class="fila-ritual" href="#ritual">
-            <div class="fila-ritual-info"><div class="fila-ritual-nombre">Vientre</div><div class="fila-ritual-desc">Maderoterapia abdominal y presoterapia. Sales con el abdomen deshinchado y la digestión en marcha.</div></div>
-            <div class="fila-ritual-precio"><div class="fila-ritual-min">70 min</div><div class="fila-ritual-eur tab-nums">78,00&nbsp;€</div><div class="fila-ritual-bono tab-nums">×5 en bono: 70,20&nbsp;€</div></div>
-          </a>
-          <a class="fila-ritual" href="#ritual">
-            <div class="fila-ritual-info"><div class="fila-ritual-nombre">Espalda Limpia</div><div class="fila-ritual-desc">Higiene de espalda con extracción y peeling enzimático. Sales con la espalda lisa para el vestido de escote.</div></div>
-            <div class="fila-ritual-precio"><div class="fila-ritual-min">55 min</div><div class="fila-ritual-eur tab-nums">62,00&nbsp;€</div><div class="fila-ritual-bono tab-nums">×5 en bono: 55,80&nbsp;€</div></div>
-          </a>
-        </div>
+    <div class="carta-zona" id="rituales-cuerpo">
+      <div class="carta-zona-cabecera">
+        <img src="../img/lumiere-cuerpo.webp" alt="Manos de esteticista aplicando aceite en la pierna de una clienta tapada con toalla">
+        <div class="carta-zona-titulo"><h2>Cuerpo</h2><span class="zona-cabina">Cabina 3 · Hugo</span></div>
+      </div>
+      <div class="carta-filas">
+        <a class="carta-fila" href="#ritual">
+          <div class="carta-fila-info"><div class="fila-ritual-nombre">Descarga</div><div class="fila-ritual-desc">Masaje profundo de espalda, cervicales y trapecio. Sales sin el nudo del ordenador y girando el cuello entero.</div></div>
+          <div class="carta-fila-precio"><div class="fila-ritual-min">50 min</div><div class="fila-ritual-eur tab-nums">58,00&nbsp;€</div><div class="fila-ritual-bono tab-nums">×5 en bono: 52,20&nbsp;€</div></div>
+        </a>
+        <a class="carta-fila" href="#ritual">
+          <div class="carta-fila-info"><div class="fila-ritual-nombre">Drenaje Lento</div><div class="fila-ritual-desc">Drenaje linfático manual de pierna entera, a ritmo bajo. Sales sin pesadez de la rodilla para abajo.</div></div>
+          <div class="carta-fila-precio"><div class="fila-ritual-min">60 min</div><div class="fila-ritual-eur tab-nums">65,00&nbsp;€</div><div class="fila-ritual-bono tab-nums">×5 en bono: 58,50&nbsp;€</div></div>
+        </a>
+        <a class="carta-fila" href="#ritual">
+          <div class="carta-fila-info"><div class="fila-ritual-nombre">Vientre</div><div class="fila-ritual-desc">Maderoterapia abdominal y presoterapia. Sales con el abdomen deshinchado y la digestión en marcha.</div></div>
+          <div class="carta-fila-precio"><div class="fila-ritual-min">70 min</div><div class="fila-ritual-eur tab-nums">78,00&nbsp;€</div><div class="fila-ritual-bono tab-nums">×5 en bono: 70,20&nbsp;€</div></div>
+        </a>
+        <a class="carta-fila" href="#ritual">
+          <div class="carta-fila-info"><div class="fila-ritual-nombre">Espalda Limpia</div><div class="fila-ritual-desc">Higiene de espalda con extracción y peeling enzimático. Sales con la espalda lisa para el vestido de escote.</div></div>
+          <div class="carta-fila-precio"><div class="fila-ritual-min">55 min</div><div class="fila-ritual-eur tab-nums">62,00&nbsp;€</div><div class="fila-ritual-bono tab-nums">×5 en bono: 55,80&nbsp;€</div></div>
+        </a>
       </div>
     </div>
 
-    <div class="zona zona--tint" id="rituales-depilacion">
-      <div class="zona-media"><img src="../img/lumiere-depilacion.webp" alt="Esteticista con guantes extendiendo cera tibia en la pierna con una espátula" style="height:clamp(140px,10vw,180px)"></div>
-      <div class="zona-copy">
-        <div class="zona-head"><h3>Depilación</h3><span class="zona-cabina">Cabina 4 · Hugo y Noa</span></div>
-        <p class="zona-nota">El láser no se vende suelto: la pauta clínica son 8 sesiones cada 6 semanas y el precio en color ya es el de bono. Axilas, ingles y facial sí se reservan sueltas.</p>
-        <div>
-          <a class="fila-ritual" href="#ritual">
-            <div class="fila-ritual-info"><div class="fila-ritual-nombre">Láser Piernas Enteras</div><div class="fila-ritual-desc">Diodo refrigerado de alta potencia. Sales con las dos piernas hechas en menos de media hora.</div></div>
-            <div class="fila-ritual-precio"><div class="fila-ritual-min">25 min</div><div class="fila-ritual-eur tab-nums">95,00&nbsp;€</div><div class="fila-ritual-bono tab-nums">×8 en bono: 668,00&nbsp;€</div></div>
-          </a>
-          <a class="fila-ritual" href="#ritual">
-            <div class="fila-ritual-info"><div class="fila-ritual-nombre">Láser Axilas e Ingles</div><div class="fila-ritual-desc">Sesión corta, sin anestesia. Sales pudiendo ducharte esa misma noche.</div></div>
-            <div class="fila-ritual-precio"><div class="fila-ritual-min">15 min</div><div class="fila-ritual-eur tab-nums">58,00&nbsp;€</div><div class="fila-ritual-bono tab-nums">×8 en bono: 408,32&nbsp;€</div></div>
-          </a>
-          <a class="fila-ritual" href="#ritual">
-            <div class="fila-ritual-info"><div class="fila-ritual-nombre">Láser Facial</div><div class="fila-ritual-desc">Labio, mentón y patillas. Sales sin la sombra que tapabas con maquillaje.</div></div>
-            <div class="fila-ritual-precio"><div class="fila-ritual-min">15 min</div><div class="fila-ritual-eur tab-nums">45,00&nbsp;€</div><div class="fila-ritual-bono tab-nums">×8 en bono: 316,80&nbsp;€</div></div>
-          </a>
-          <a class="fila-ritual" href="#ritual">
-            <div class="fila-ritual-info"><div class="fila-ritual-nombre">Cera Tibia de Baja Fusión</div><div class="fila-ritual-desc">Media pierna e ingles, sin tirones. Sales sin rojeces a las dos horas.</div></div>
-            <div class="fila-ritual-precio"><div class="fila-ritual-min">30 min</div><div class="fila-ritual-eur tab-nums">32,00&nbsp;€</div><div class="fila-ritual-bono fila-ritual-bono--muda">sólo suelta, no lleva bono</div></div>
-          </a>
-        </div>
+    <div class="carta-zona" id="rituales-depilacion">
+      <div class="carta-zona-cabecera">
+        <img src="../img/lumiere-depilacion.webp" alt="Esteticista con guantes extendiendo cera tibia en la pierna con una espátula">
+        <div class="carta-zona-titulo"><h2>Depilación</h2><span class="zona-cabina">Cabina 4 · Hugo y Noa</span></div>
+      </div>
+      <p class="zona-nota">El láser no se vende suelto: la pauta clínica son 8 sesiones cada 6 semanas y el precio en color ya es el de bono. Axilas, ingles y facial sí se reservan sueltas.</p>
+      <div class="carta-filas">
+        <a class="carta-fila" href="#ritual">
+          <div class="carta-fila-info"><div class="fila-ritual-nombre">Láser Piernas Enteras</div><div class="fila-ritual-desc">Diodo refrigerado de alta potencia. Sales con las dos piernas hechas en menos de media hora.</div></div>
+          <div class="carta-fila-precio"><div class="fila-ritual-min">25 min</div><div class="fila-ritual-eur tab-nums">95,00&nbsp;€</div><div class="fila-ritual-bono tab-nums">×8 en bono: 668,00&nbsp;€</div></div>
+        </a>
+        <a class="carta-fila" href="#ritual">
+          <div class="carta-fila-info"><div class="fila-ritual-nombre">Láser Axilas e Ingles</div><div class="fila-ritual-desc">Sesión corta, sin anestesia. Sales pudiendo ducharte esa misma noche.</div></div>
+          <div class="carta-fila-precio"><div class="fila-ritual-min">15 min</div><div class="fila-ritual-eur tab-nums">58,00&nbsp;€</div><div class="fila-ritual-bono tab-nums">×8 en bono: 408,32&nbsp;€</div></div>
+        </a>
+        <a class="carta-fila" href="#ritual">
+          <div class="carta-fila-info"><div class="fila-ritual-nombre">Láser Facial</div><div class="fila-ritual-desc">Labio, mentón y patillas. Sales sin la sombra que tapabas con maquillaje.</div></div>
+          <div class="carta-fila-precio"><div class="fila-ritual-min">15 min</div><div class="fila-ritual-eur tab-nums">45,00&nbsp;€</div><div class="fila-ritual-bono tab-nums">×8 en bono: 316,80&nbsp;€</div></div>
+        </a>
+        <a class="carta-fila" href="#ritual">
+          <div class="carta-fila-info"><div class="fila-ritual-nombre">Cera Tibia de Baja Fusión</div><div class="fila-ritual-desc">Media pierna e ingles, sin tirones. Sales sin rojeces a las dos horas.</div></div>
+          <div class="carta-fila-precio"><div class="fila-ritual-min">30 min</div><div class="fila-ritual-eur tab-nums">32,00&nbsp;€</div><div class="fila-ritual-bono fila-ritual-bono--muda">sólo suelta, no lleva bono</div></div>
+        </a>
       </div>
     </div>
 
-    <div class="zona zona--float" id="rituales-manos">
-      <div class="zona-media"><img src="../img/lumiere-manos.webp" alt="Manos de una clienta sobre la toalla junto al torno y las herramientas de manicura" style="height:clamp(140px,10vw,180px)"></div>
-      <div class="zona-copy">
-        <div class="zona-head"><h3>Manos y pies</h3><span class="zona-cabina">Mesa de recepción · Pilar</span></div>
-        <div>
-          <a class="fila-ritual" href="#ritual">
-            <div class="fila-ritual-info"><div class="fila-ritual-nombre">Manicura Rusa</div><div class="fila-ritual-desc">Cutícula al torno y esmaltado semipermanente. Sales con la uña limpia tres semanas, no diez días.</div></div>
-            <div class="fila-ritual-precio"><div class="fila-ritual-min">75 min</div><div class="fila-ritual-eur tab-nums">42,00&nbsp;€</div><div class="fila-ritual-bono tab-nums">×10 al mes: 35,70&nbsp;€</div></div>
-          </a>
-          <a class="fila-ritual" href="#ritual">
-            <div class="fila-ritual-info"><div class="fila-ritual-nombre">Pedicura Clínica</div><div class="fila-ritual-desc">Retirada de durezas y trabajo de uña encarnada. Sales pudiendo andar sin la molestia del dedo gordo.</div></div>
-            <div class="fila-ritual-precio"><div class="fila-ritual-min">60 min</div><div class="fila-ritual-eur tab-nums">48,00&nbsp;€</div><div class="fila-ritual-bono tab-nums">×5 en bono: 43,20&nbsp;€</div></div>
-          </a>
-          <a class="fila-ritual" href="#ritual">
-            <div class="fila-ritual-info"><div class="fila-ritual-nombre">Manos de Invierno</div><div class="fila-ritual-desc">Peeling, parafina y masaje. Sales sin la piel tirante de la calefacción.</div></div>
-            <div class="fila-ritual-precio"><div class="fila-ritual-min">35 min</div><div class="fila-ritual-eur tab-nums">34,00&nbsp;€</div><div class="fila-ritual-bono tab-nums">×5 en bono: 30,60&nbsp;€</div></div>
-          </a>
-        </div>
+    <div class="carta-zona" id="rituales-manos">
+      <div class="carta-zona-cabecera">
+        <img src="../img/lumiere-manos.webp" alt="Manos de una clienta sobre la toalla junto al torno y las herramientas de manicura">
+        <div class="carta-zona-titulo"><h2>Manos y pies</h2><span class="zona-cabina">Mesa de recepción · Pilar</span></div>
+      </div>
+      <div class="carta-filas">
+        <a class="carta-fila" href="#ritual">
+          <div class="carta-fila-info"><div class="fila-ritual-nombre">Manicura Rusa</div><div class="fila-ritual-desc">Cutícula al torno y esmaltado semipermanente. Sales con la uña limpia tres semanas, no diez días.</div></div>
+          <div class="carta-fila-precio"><div class="fila-ritual-min">75 min</div><div class="fila-ritual-eur tab-nums">42,00&nbsp;€</div><div class="fila-ritual-bono tab-nums">×10 al mes: 35,70&nbsp;€</div></div>
+        </a>
+        <a class="carta-fila" href="#ritual">
+          <div class="carta-fila-info"><div class="fila-ritual-nombre">Pedicura Clínica</div><div class="fila-ritual-desc">Retirada de durezas y trabajo de uña encarnada. Sales pudiendo andar sin la molestia del dedo gordo.</div></div>
+          <div class="carta-fila-precio"><div class="fila-ritual-min">60 min</div><div class="fila-ritual-eur tab-nums">48,00&nbsp;€</div><div class="fila-ritual-bono tab-nums">×5 en bono: 43,20&nbsp;€</div></div>
+        </a>
+        <a class="carta-fila" href="#ritual">
+          <div class="carta-fila-info"><div class="fila-ritual-nombre">Manos de Invierno</div><div class="fila-ritual-desc">Peeling, parafina y masaje. Sales sin la piel tirante de la calefacción.</div></div>
+          <div class="carta-fila-precio"><div class="fila-ritual-min">35 min</div><div class="fila-ritual-eur tab-nums">34,00&nbsp;€</div><div class="fila-ritual-bono tab-nums">×5 en bono: 30,60&nbsp;€</div></div>
+        </a>
       </div>
     </div>
+  </section>
 
-    <div class="bono-recap">
-      <h2 style="font-weight:300">El bono, aplicado a esta carta</h2>
-      <p class="lede" style="margin-top:12px">El mismo descuento vale para las 15 filas de arriba, ritual a ritual. Elige el ritual en la carta y el bono se calcula sobre su propio precio, nunca sobre un paquete cerrado.</p>
-      <div class="bono-grid">
-        <div class="bono-card" id="bono-esencial"><div class="bono-card-nombre">Esencial</div><div class="bono-card-cond">5 sesiones del mismo ritual · 6 meses</div><div class="bono-card-pct">−10 %</div></div>
-        <div class="bono-card" id="bono-constancia"><div class="bono-card-nombre">Constancia</div><div class="bono-card-cond">10 sesiones del mismo ritual · 12 meses</div><div class="bono-card-pct">−15 %</div></div>
-        <div class="bono-card" id="bono-libre"><div class="bono-card-nombre">Libre</div><div class="bono-card-cond">8 sesiones a repartir entre zonas y entre dos personas · 12 meses</div><div class="bono-card-pct">−12 %</div></div>
-      </div>
-      <p class="bono-nota">Caducidad, cómo se comparte y cómo se cancela una sesión: <a href="#aviso-legal-bonos">condiciones de los bonos</a>, en el aviso legal.</p>
+  <section class="bono-recap" style="padding-inline:var(--page-margin)">
+    <h2 style="font-weight:300">El bono, aplicado a esta carta</h2>
+    <p class="lede" style="margin-top:14px">El mismo descuento vale para las 15 filas de arriba, ritual a ritual. Elige el ritual en la carta y el bono se calcula sobre su propio precio, nunca sobre un paquete cerrado.</p>
+    <div class="bono-grid">
+      <div class="bono-card" id="bono-esencial"><div class="bono-card-nombre">Esencial</div><div class="bono-card-cond">5 sesiones del mismo ritual · 6 meses</div><div class="bono-card-pct">−10&nbsp;%</div></div>
+      <div class="bono-card" id="bono-constancia"><div class="bono-card-nombre">Constancia</div><div class="bono-card-cond">10 sesiones del mismo ritual · 12 meses</div><div class="bono-card-pct">−15&nbsp;%</div></div>
+      <div class="bono-card" id="bono-libre"><div class="bono-card-nombre">Libre</div><div class="bono-card-cond">8 sesiones a repartir entre zonas y entre dos personas · 12 meses</div><div class="bono-card-pct">−12&nbsp;%</div></div>
     </div>
+    <p class="bono-nota">Caducidad, cómo se comparte y cómo se cancela una sesión: <a href="#aviso-legal-bonos">condiciones de los bonos</a>, en el aviso legal.</p>
   </section>
 </div>
 
@@ -847,7 +930,7 @@ footer.site{background:var(--c-bg-tint);margin-top:var(--sp-xxl)}
   <div style="padding-inline:var(--page-margin)">
     <nav class="migas"><p><a href="#inicio">Lumière</a> &nbsp;/&nbsp; <a href="#rituales">La carta</a> &nbsp;/&nbsp; <span style="color:var(--c-ink)">Luz Fría</span></p></nav>
 
-    <section class="ficha-head" style="padding-block-start:var(--sp-m)">
+    <section class="ficha-head">
       <div class="ficha-head-copy">
         <span class="eyebrow">Rostro · Cabina 1 y 2 · Noa y Pilar</span>
         <h1 style="margin-top:14px">Luz Fría</h1>
@@ -875,7 +958,7 @@ footer.site{background:var(--c-bg-tint);margin-top:var(--sp-xxl)}
       <div class="fases-lista">
         <div class="fase"><span class="fase-min">10 min</span><div><div class="fase-nombre">Doble limpieza</div><div class="fase-desc">Aceite desmaquillante y gel de limpieza para dejar el poro sin nada delante del ácido.</div></div></div>
         <div class="fase"><span class="fase-min">20 min</span><div><div class="fase-nombre">Extracción manual dirigida</div><div class="fase-desc">Sólo lo que está listo para salir. Ni un minuto más, aunque quede comedón visible: eso es la segunda sesión.</div></div></div>
-        <div class="fase"><span class="fase-min">15 min</span><div><div class="fase-nombre">Ácido mandélico al 20 %</div><div class="fase-desc">El más suave de los AHA de cara, apto para piel que reacciona a otros peelings. Se retira antes de que escueza.</div></div></div>
+        <div class="fase"><span class="fase-min">15 min</span><div><div class="fase-nombre">Ácido mandélico al 20&nbsp;%</div><div class="fase-desc">El más suave de los AHA de cara, apto para piel que reacciona a otros peelings. Se retira antes de que escueza.</div></div></div>
         <div class="fase"><span class="fase-min">15 min</span><div><div class="fase-nombre">Mascarilla calmante y protección solar</div><div class="fase-desc">Sales con el FPS puesto: el mandélico deja la piel más sensible al sol los tres días siguientes.</div></div></div>
       </div>
     </section>
@@ -951,12 +1034,12 @@ footer.site{background:var(--c-bg-tint);margin-top:var(--sp-xxl)}
           <div class="persona-nombre">Noa Ferreira</div><div class="persona-rol">Directora técnica · aparatología y láser · 12 años</div>
           <p class="persona-bio">Abrió Lumière con Pilar en 2013. Es quien firma la declaración responsable del láser y quien decide, cara a cara, qué equipo compramos.</p>
         </div>
-        <div class="persona">
+        <div class="persona persona--baja">
           <img src="../img/lumiere-pilar.webp" alt="Retrato de esteticista veterana de pelo blanco corto, fondo cálido liso">
           <div class="persona-nombre">Pilar Sanchís</div><div class="persona-rol">Peelings y protocolos de rostro · 9 años</div>
           <p class="persona-bio">Formada en dermocosmética en Barcelona antes de volver a Madrid. Es la que decide cuándo un peeling se aplaza, aunque la clienta insista.</p>
         </div>
-        <div class="persona">
+        <div class="persona persona--media">
           <img src="../img/lumiere-hugo.webp" alt="Retrato de masajista con barba corta, fondo cálido liso">
           <div class="persona-nombre">Hugo Belmonte</div><div class="persona-rol">Masaje terapéutico y drenaje · 7 años</div>
           <p class="persona-bio">Fisioterapeuta antes de dedicarse al masaje estético. Es quien decide si un dolor de espalda es cosa de Descarga o cosa de un médico.</p>
@@ -1015,7 +1098,7 @@ footer.site{background:var(--c-bg-tint);margin-top:var(--sp-xxl)}
     <section>
       <h2 style="font-weight:300">Mientras tanto</h2>
       <div class="pasos">
-        <div class="fase"><span class="fase-min">1</span><div><div class="fase-nombre">Mira la carta completa</div><div class="fase-desc">Las 15 rituales con duración, precio suelto y precio en bono, zona por zona.</div></div></div>
+        <div class="fase"><span class="fase-min">1</span><div><div class="fase-nombre">Mira la carta completa</div><div class="fase-desc">Los 15 rituales con duración, precio suelto y precio en bono, zona por zona.</div></div></div>
         <div class="fase"><span class="fase-min">2</span><div><div class="fase-nombre">Guarda la dirección</div><div class="fase-desc">Calle Fernández de los Ríos, 74, Chamberí — sin escalones en la entrada.</div></div></div>
         <div class="fase"><span class="fase-min">3</span><div><div class="fase-nombre">Llama si es urgente</div><div class="fase-desc">913 44 08 21, de lunes a sábado. El correo lo miramos una vez al día.</div></div></div>
       </div>
@@ -1311,10 +1394,24 @@ footer.site{background:var(--c-bg-tint);margin-top:var(--sp-xxl)}
     window.scrollTo(0, Math.max(0, y));
   }
 
-  window.addEventListener('hashchange', function(){ mostrar(location.hash); });
+  window.addEventListener('hashchange', function(){
+    mostrar(location.hash);
+    requestAnimationFrame(function(){ if (!resolver(location.hash).destino) { window.scrollTo(0, 0); } });
+  });
+  window.addEventListener('popstate', function(){
+    mostrar(location.hash);
+    requestAnimationFrame(function(){ if (!resolver(location.hash).destino) { window.scrollTo(0, 0); } });
+  });
+  // Un clic interno no deja que el navegador desplace al fragmento por su cuenta: ese desplazamiento
+  // nativo llevaba al contenedor de la página y dejaba las migas bajo la cabecera fija.
   document.addEventListener('click', function(e){
     var a = e.target.closest && e.target.closest('a[href^="#"]');
-    if (a && a.getAttribute('href') === location.hash) { e.preventDefault(); mostrar(location.hash); }
+    if (!a || e.metaKey || e.ctrlKey || e.shiftKey) { return; }
+    var h = a.getAttribute('href');
+    if (h === '#') { return; }
+    e.preventDefault();
+    if (h !== location.hash) { history.pushState(null, '', h); }
+    mostrar(h);
   });
 
   burger.addEventListener('click', function(){
@@ -1339,9 +1436,14 @@ footer.site{background:var(--c-bg-tint);margin-top:var(--sp-xxl)}
     });
   }
 
+  // Al abrir directamente `#rituales` el navegador desplaza al propio contenedor de la página
+  // después de cargar, y la cabecera fija tapa las migas: una página entera siempre arranca arriba.
+  if ('scrollRestoration' in history) { history.scrollRestoration = 'manual'; }
   mostrar(location.hash);
   window.addEventListener('load', function(){
-    if (resolver(location.hash).destino) { setTimeout(function(){ mostrar(location.hash); }, 0); }
+    setTimeout(function(){
+      if (resolver(location.hash).destino) { mostrar(location.hash); } else { window.scrollTo(0, 0); }
+    }, 0);
   });
 })();
 </script>

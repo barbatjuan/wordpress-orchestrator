@@ -73,7 +73,7 @@ WooCommerce, sin widget HTML y sin CSS a medida. Colores y tipografías en los a
 |---|---|---|
 | Cabecera | Plantilla de cabecera del Theme Builder: contenedor flex + Logotipo + Menú + `woocommerce-menu-cart` | |
 | El registro | Loop Grid de Elementor Pro con una plantilla de Loop Item de una fila: contenedor flex + etiquetas dinámicas de título y precio | Fibra, gramaje y pueblo son atributos del producto. **No verificado** que una etiqueta dinámica nativa lea un atributo suelto por fila |
-| Fotografía a sangre | Contenedor rejilla de tres pistas con relleno izquierdo de 108 y cero a la derecha + Imagen | La sangre es el relleno asimétrico del contenedor, no un margen negativo |
+| Fotografía a sangre | Contenedor rejilla de dos pistas (datos 300 · foto) con hueco de columna de 16% en portada y la marca y de 56 en la ficha, relleno izquierdo de 7,5% y cero a la derecha + Imagen. En tableta y móvil, una columna y relleno derecho de 8,108% en el contenedor de datos | La sangre es el relleno asimétrico del contenedor, no un margen negativo. El hueco es el aire del lienzo entre los datos y la foto (212 y 56 a 1440): como hueco y no como pista vacía no pide un contenedor vacío. El relleno derecho en una columna devuelve a los datos el mismo margen que a la izquierda |
 | Ficha: galería de dos vistas | `woocommerce-product-images` | |
 | Ficha: título, precio, compra | `woocommerce-product-title` + `woocommerce-product-price` + `woocommerce-product-add-to-cart` | El botón toma el color de tinta de los ajustes globales |
 | Ficha: tabla de tallas | Contenedores flex por fila + Encabezado + Editor de texto | Una fila por talla |
@@ -92,11 +92,11 @@ en `maqueta/index.html` a partir del sistema — cabecera, pie, tipo, color, tab
 sin lámina propia: **carro**, **pago**, **pedido recibido**, **mi cuenta**, **condiciones de venta y
 envíos**, **aviso legal**, **privacidad**, **cookies** y **404**.
 
-**El registro dibuja una ficha y la usan las doce filas.** Sólo el Abrigo Sagra (`LM-620`) tiene
-lámina de detalle, y las doce filas del registro llevan a ella, como las dieciocho tarjetas de delao
+**El registro dibuja una ficha y la usan las once filas.** Sólo el Abrigo Sagra (`LM-620`) tiene
+lámina de detalle, y las once filas del registro llevan a ella, como las dieciocho tarjetas de delao
 llevan a su única ficha. La maqueta demuestra que el tipo de página existe y se alcanza desde el
 listado; en el sitio del cliente cada unidad tiene la suya, generada por la plantilla de producto
-único. Las doce se comportan igual: una tabla donde una fila se pulsa y once no se lee como rota,
+único. Las once se comportan igual: una tabla donde una fila se pulsa y diez no se lee como rota,
 que es precisamente el defecto que `paginas-obligatorias.md` vino a cerrar.
 
 ## Procedencia y decisiones abiertas
