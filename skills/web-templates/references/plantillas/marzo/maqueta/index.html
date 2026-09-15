@@ -45,7 +45,15 @@
   --font-sans:'Jost',system-ui,-apple-system,'Segoe UI',sans-serif;
 
   --pad-x:7.5%;
-  --container-max:1440px;
+  /* LA MEDIDA ES LA DEL CONTENIDO, NO LA DE LA CAJA. El lienzo compone 1224px entre dos márgenes de
+     108. Con `max-width:1440px` y el 7,5% de relleno resuelto contra el cristal, a 1920 la caja se
+     quedaba en 1440 y el relleno crecía a 144: contenido de 1152px, más estrecho que a 1440, con el
+     raíl en x=384 mientras las migas, la foto a sangre y la línea legal del pie —sin tope— se iban a
+     x=144. Tres raíles en la misma pantalla. Ahora el tope es contenido + relleno: el raíl es el 7,5%
+     hasta 1440 y (ancho − 1224) / 2 por encima, igual en todas las secciones. En Elementor, el
+     ancho «en caja» de 1224 del contenedor interior dentro de un contenedor con relleno del 7,5%. */
+  --content-max:1224px;
+  --container-max:calc(var(--content-max) + 2 * var(--pad-x));
 
   --hair-020:rgba(26,24,21,0.20);
   --hair-016:rgba(26,24,21,0.16);
@@ -65,6 +73,9 @@
   --fs-price-lg: clamp(1.75rem, 1.486rem + 1.127vw, 2.5rem);/* precio grande: 28px → 40px */
   --fs-price-md: clamp(1.5rem, 1.368rem + 0.563vw, 1.875rem);/* precio medio: 24px → 30px */
   --sp-section: clamp(4rem, 1.887rem + 9.014vw, 10rem);      /* ritmo vertical: 64px → 160px */
+  --sp-hero:    clamp(3.5rem, 1.8275rem + 7.136vw, 8.25rem);  /* sobre el titular de portada: 56px → 132px */
+  --sp-head:    clamp(2.5rem, 1.2676rem + 5.258vw, 6rem);     /* migas → titular de página: 40px → 96px */
+  --sp-lead:    clamp(1.75rem, 1.398rem + 1.502vw, 2.75rem);  /* titular → entradilla: 28px → 44px */
 
   --header-h:84px;
   --ease:cubic-bezier(.22,1,.36,1);
@@ -95,15 +106,43 @@ fieldset{border:none;}
 .container{max-width:var(--container-max);margin:0 auto;padding:0 var(--pad-x);}
 .section{padding-top:var(--sp-section);}
 .section-tight{padding-top:calc(var(--sp-section) * .44);}
+/* Los espaciados de cabecera de página son los del lienzo a 1440 (132 · 96 · 44 · 120), no el ritmo
+   general de 160: con .section-tight en las dos, el titular de categoría, ficha, la casa y contacto
+   subía 34px y la entradilla bajaba 26px respecto al artboard. */
+.section-hero{padding-top:var(--sp-hero);}
+.section-head{padding-top:var(--sp-head);}
+.section-lead{padding-top:var(--sp-lead);}
+.section-main{padding-top:calc(var(--sp-section) * .75);}
 .alt-band{background:var(--c-bg-alt);padding-bottom:var(--sp-section);}
 .alt-band > .row2{padding-top:var(--sp-section);}
 
 .row2{display:grid;grid-template-columns:minmax(180px,300px) 1fr;column-gap:56px;align-items:start;}
+.row2.al-base{align-items:end;}
 .row3{display:grid;grid-template-columns:repeat(3,1fr);column-gap:26px;align-items:start;}
+/* Dos textos o dos fotos a la par dentro de la pista ancha: 408 · 52 · 408 y 416 · 36 · 416 en el
+   lienzo. Vivían en un style= con `1fr 1fr`, que no colapsa: a 430 dos columnas de 170px de lectura. */
+.par{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:52px;align-items:start;}
+.par-fotos{column-gap:36px;}
+@media (max-width:767px){.par{grid-template-columns:minmax(0,1fr);row-gap:28px;}}
+/* Columna de texto sobre el segundo raíl: el de las entradillas y las tablas (300 + 56 a la derecha
+   del margen). Las páginas legales, el pedido recibido y el 404 iban centradas en una caja de 868 o
+   620 y abrían raíles propios —394, 360 y 410 a 1440; 670, 600 y 650 a 1920— que ninguna otra
+   página tenía. En Elementor, relleno izquierdo de 356px del contenedor en escritorio. */
+.columna-texto{margin-left:356px;max-width:652px;}
+@media (max-width:1024px){.columna-texto{margin-left:0;}}
+.botonera{display:flex;flex-wrap:wrap;gap:20px;}
+.medida-form{max-width:620px;}
+/* Rótulo de un titular de página en la pista estrecha, a la altura de la primera línea. */
+.eyebrow-titular{padding-top:18px;}
+@media (max-width:1024px){.eyebrow-titular{padding-top:0;}}
 /* Esquema de medidas + tabla. Vivía en un `style=` en línea con una columna fija de 200px, y un
    estilo en línea no puede llevar punto de ruptura: a 430 la rejilla seguía pidiendo 200 + 48 + la
    tabla y la ficha desbordaba. Como clase colapsa en 1024 igual que el resto. */
-.esquema-medidas{display:grid;grid-template-columns:200px minmax(0,1fr);column-gap:48px;align-items:start;}
+/* 240 · 56 · 572 a 1440, en fracciones: por debajo el esquema cede y la tabla conserva 484px sin partir
+   cabeceras (a 1280 la pista mide 662); entre 1025 y 1200 el esquema guarda al
+   menos 120px. */
+.esquema-medidas{display:grid;grid-template-columns:minmax(0,240fr) minmax(min(484px,calc(100% - 176px)),572fr);
+  column-gap:56px;align-items:start;}
 /* Una sola columna, y `minmax(0,…)` en vez de `1fr` a secas: el mínimo automático de una pista `1fr`
    es el min-content de su contenido, así que la tabla de medidas —que no parte sus columnas— hacía
    la pista de 489px dentro de un cristal de 430 y la ficha desbordaba 91px. Medido a 430. En
@@ -122,7 +161,13 @@ fieldset{border:none;}
    acababan en el píxel exacto en que empezaba la fotografía. En una columna la foto sigue sangrando
    por la derecha, pero los datos recuperan el margen: 8,108% de su pista es el 7,5% del cristal
    (7,5 / 92,5). En Elementor, relleno derecho en porcentaje del contenedor de datos. */
-.bleed{width:100%;padding-left:var(--pad-x);padding-right:0;display:grid;
+/* Por encima de 1440 la banda arranca donde arranca el contenedor —(ancho − 1224) / 2 menos su 7,5%—
+   y sigue hasta el cristal: el ancho es la mitad del cristal + la mitad del contenido + el relleno,
+   alineado a la derecha. Sin ese tope los datos se iban a x=144 a 1920 con el resto de la página en
+   x=348, y la foto crecía hasta 1192×1715. En Elementor, ancho personalizado del contenedor
+   `calc(57.5% + 612px)` con margen izquierdo automático. */
+.bleed{width:100%;max-width:calc(50% + var(--content-max) / 2 + var(--pad-x));margin-left:auto;
+       padding-left:var(--pad-x);padding-right:0;display:grid;
        grid-template-columns:minmax(180px,300px) minmax(0,1fr);column-gap:16%;align-items:start;}
 .bleed-ficha{column-gap:56px;}
 .bleed > img{width:100%;height:auto;display:block;}
@@ -130,13 +175,6 @@ fieldset{border:none;}
   .bleed,.bleed-ficha{grid-template-columns:minmax(0,1fr);column-gap:0;row-gap:24px;}
   .bleed-datos{padding-right:8.108%;}
 }
-
-/* Páginas de mensaje (404, pedido recibido): la medida es la del CONTENIDO. Con el max-width en la
-   caja, el 7,5% de relleno se resolvía contra el cristal y a 1280 quedaban 428px de los 620 —más
-   estrecho que a 768—, con los botones apilados y el titular del 404 en cuatro líneas. En Elementor
-   es el ancho «en caja» del contenedor, que ya se mide sin su relleno. */
-.medida-620{max-width:calc(620px + 2 * var(--pad-x));}
-.medida-720{max-width:calc(720px + 2 * var(--pad-x));}
 
 /* Pago: formulario en la pista ancha y pedido en la estrecha, espejo de .row2. El pedido va junto a
    la forma de pago y el botón, en ese orden, como el pago nativo de WooCommerce: en una columna el
@@ -148,16 +186,30 @@ fieldset{border:none;}
 /* ────────────────────────────────────────── tipografía ────────────────────────────────────── */
 h1,h2{font-family:var(--font-display);font-weight:400;line-height:0.98;letter-spacing:-0.012em;
       text-wrap:balance;color:var(--c-ink);}
-.h-hero{font-size:var(--fs-hero);font-variation-settings:'opsz' 96;line-height:0.95;}
+/* -0,018em como el lienzo: con -0,012em «abrigo durante» medía 871px en una pista de 868 y el titular
+   caía a cuatro líneas en vez de tres. */
+/* En escritorio el cuerpo sigue a su pista, no al cristal: 132px en 868 a 1440 (15,2%). Con la escala
+   fluida general, a 1280 eran 119px en una pista de 732 y el titular volvía a cuatro líneas. La pista
+   mide 85% del ancho − 356, así que el cuerpo es 12,92vw − 54px, con suelo de 78px a 1025. Por debajo
+   de 1024 la pista es el ancho entero y vuelve la escala fluida general. */
+.h-hero{font-size:clamp(4.875rem, 12.92vw - 3.381rem, 8.25rem);font-variation-settings:'opsz' 96;
+        line-height:0.95;letter-spacing:-0.018em;}
+@media (max-width:1024px){.h-hero{font-size:var(--fs-hero);}}
+/* El rótulo del titular de portada va arriba, a 22px, no al pie del titular: el lienzo alinea al
+   principio. Apilado, el hueco de fila ya lo separa. */
+.eyebrow-hero{padding-top:22px;}
+@media (max-width:1024px){.eyebrow-hero{padding-top:0;}}
 .h-page{font-size:var(--fs-h1);font-variation-settings:'opsz' 90;}
 .h-section{font-size:var(--fs-h2);font-variation-settings:'opsz' 44;line-height:1.06;letter-spacing:-0.002em;}
 .eyebrow{font-family:var(--font-sans);font-weight:400;font-size:0.6875rem;letter-spacing:0.22em;
          text-transform:uppercase;color:var(--c-text);line-height:1.9;}
 .eyebrow-tight{letter-spacing:0.18em;}
 .lead{font-family:var(--font-sans);font-weight:400;font-size:1rem;line-height:1.74;
-      letter-spacing:0.004em;color:var(--c-ink);max-width:66ch;}
+      letter-spacing:0.004em;color:var(--c-ink);max-width:64ch;}
 .copy{font-family:var(--font-sans);font-weight:400;font-size:0.8125rem;line-height:1.7;
       letter-spacing:0.01em;color:var(--c-text);}
+/* Nota al pie de un listado: la medida de lectura de la entradilla, no la pista entera de 868. */
+.copy-medida{max-width:64ch;}
 .copy-lg{font-family:var(--font-sans);font-weight:400;font-size:0.9375rem;line-height:1.75;
          letter-spacing:0.01em;color:var(--c-text);}
 .small-label{font-family:var(--font-sans);font-weight:400;font-size:0.65625rem;letter-spacing:0.16em;
@@ -173,6 +225,8 @@ h1,h2{font-family:var(--font-display);font-weight:400;line-height:0.98;letter-sp
 .stock{font-family:var(--font-sans);font-weight:400;font-size:0.65625rem;letter-spacing:0.18em;
        text-transform:uppercase;color:var(--c-stock);}
 .link-ink{color:var(--c-ink);border-bottom:1px solid var(--hair-045);padding-bottom:2px;}
+.nota{font-family:var(--font-sans);font-weight:400;font-size:0.6875rem;line-height:1.7;letter-spacing:0.03em;
+      color:var(--c-text);}
 
 /* ─────────────────────────────────────────── botones ──────────────────────────────────────── */
 .btn{display:inline-flex;align-items:center;justify-content:center;height:58px;padding:0 34px;
@@ -183,15 +237,17 @@ h1,h2{font-family:var(--font-display);font-weight:400;line-height:0.98;letter-sp
      font-size:0.6875rem;letter-spacing:0.24em;text-transform:uppercase;border:1px solid var(--hair-035);
      cursor:pointer;}
 .btn-block{width:100%;}
+.btn-300{width:100%;max-width:300px;}
+.btn-240{width:240px;max-width:100%;}
 
 /* ─────────────────────────────────────────── cabecera ─────────────────────────────────────── */
 .site-header{width:100%;background:var(--c-bg);border-bottom:1px solid var(--hair-020);}
-.header-inner{max-width:var(--container-max);margin:0 auto;padding:26px var(--pad-x) 24px var(--pad-x);
+.header-inner{max-width:var(--container-max);margin:0 auto;padding:30px var(--pad-x) 28px var(--pad-x);
               display:flex;align-items:baseline;justify-content:space-between;}
 .logo{font-family:var(--font-sans);font-weight:500;font-size:0.9375rem;letter-spacing:0.42em;
       text-transform:uppercase;color:var(--c-ink);}
-.nav-desktop{display:flex;align-items:baseline;gap:38px;}
-.nav-desktop a{font-family:var(--font-sans);font-weight:400;font-size:0.6875rem;letter-spacing:0.16em;
+.nav-desktop{display:flex;align-items:baseline;gap:44px;}
+.nav-desktop a{font-family:var(--font-sans);font-weight:400;font-size:0.6875rem;letter-spacing:0.18em;
                text-transform:uppercase;color:var(--c-text);}
 .nav-desktop a[aria-current="page"]{color:var(--c-ink);}
 .nav-desktop a.cesta{color:var(--c-ink);}
@@ -214,25 +270,30 @@ h1,h2{font-family:var(--font-display);font-weight:400;line-height:0.98;letter-sp
 .menu-movil[hidden]{display:none;}
 
 /* ────────────────────────────────────────── migas ─────────────────────────────────────────── */
-.breadcrumb{padding:22px var(--pad-x) 0 var(--pad-x);font-family:var(--font-sans);font-weight:400;
-           font-size:0.65625rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--c-text);}
+/* Mismo tope que el contenedor: sin él las migas iban a x=144 a 1920 y el titular a x=348. */
+.breadcrumb{max-width:var(--container-max);margin:0 auto;padding:26px var(--pad-x) 0 var(--pad-x);
+           font-family:var(--font-sans);font-weight:400;
+           font-size:0.65625rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--c-text);}
 .breadcrumb a{color:var(--c-text);}
 .breadcrumb span{color:var(--c-ink);}
 
 /* ─────────────────────────────────────────── registro (tabla) ─────────────────────────────── */
 .register{width:100%;}
-/* Pistas del lienzo (72 · 274 · 240 · 86 · 92) reequilibradas para el tipo fluido: el nombre de pieza
-   más largo mide 238px a 1280 y el aviso «Agotada · vuelve en noviembre» 225px, así que su pista pide
-   al menos 240 incluso con una barra de desplazamiento de 17px (1263px → 245px). Con dos pistas 1fr
-   iguales medía 202px y partía ocho de los once nombres. Cada fila es su propia rejilla: sólo pistas
-   fijas o fr, nunca de contenido, o las columnas dejan de alinear entre filas. */
-.register-head{display:grid;grid-template-columns:52px minmax(0,1.2fr) minmax(0,1fr) 64px 72px;
-  column-gap:20px;align-items:end;padding-bottom:13px;border-bottom:1px solid var(--hair-042);}
-.register-head span{font-family:var(--font-sans);font-size:0.625rem;letter-spacing:0.18em;
+/* Pistas del lienzo (72 · 274 · 240 · 86 · 92, hueco 26) como fracciones, así que a 1440 caen en el
+   píxel del artboard. La reequilibración anterior (52 · 1,2fr · 1fr · 64 · 72, hueco 20) movía la
+   columna Pieza 26px a la izquierda, Tela 21 a la derecha y Telar 48: el registro no casaba con el
+   dibujo. El suelo de la pista Pieza es 240px mientras la fila mida más de 700 —el nombre más largo
+   mide 238px a 1280 y el aviso de agotada 225—; por debajo cede para que Tela no se quede en cero
+   entre 1025 y 1150. Cada fila es su propia rejilla: sólo pistas fijas o fr, nunca de contenido. */
+.register-head,.register-row{grid-template-columns:minmax(52px,72fr) minmax(min(240px,calc(100% - 460px)),274fr)
+  minmax(0,240fr) minmax(64px,86fr) minmax(72px,92fr);}
+.register-head{display:grid;
+  column-gap:26px;align-items:end;padding-bottom:14px;border-bottom:1px solid var(--hair-042);}
+.register-head span{font-family:var(--font-sans);font-size:0.625rem;letter-spacing:0.2em;
   text-transform:uppercase;color:var(--c-text);}
 .register-head span.al-right{text-align:right;}
-.register-row{display:grid;grid-template-columns:52px minmax(0,1.2fr) minmax(0,1fr) 64px 72px;
-  column-gap:20px;align-items:center;min-height:92px;padding:18px 0;border-bottom:1px solid var(--hair-016);}
+.register-row{display:grid;
+  column-gap:26px;align-items:center;min-height:98px;padding:20px 0;border-bottom:1px solid var(--hair-016);}
 .register-row.al-final{border-bottom-color:var(--hair-042);}
 /* Toda fila del registro lleva a la ficha, así que toda fila tiene que decir que se puede pulsar.
    El suelo alterno es el único cambio: la ADN no admite color de acento, y en Elementor esto es el
@@ -264,6 +325,9 @@ h1,h2{font-family:var(--font-display);font-weight:400;line-height:0.98;letter-sp
   text-transform:uppercase;color:var(--c-text);}
 .dl-rows dd{font-family:var(--font-sans);font-size:0.8125rem;line-height:1.5;letter-spacing:0.008em;
   color:var(--c-ink);text-align:right;}
+/* Lista de etapas de la casa: filas de 15px y valor a 14px en el lienzo. */
+.dl-rows-lg > div{padding:15px 0;border-bottom-color:var(--hair-020);}
+.dl-rows-lg dd{font-size:0.875rem;}
 .dl-stacked > div{padding:15px 0;border-bottom:1px solid var(--hair-014);}
 .dl-stacked dt{display:block;font-family:var(--font-sans);font-size:0.625rem;letter-spacing:0.18em;
   text-transform:uppercase;color:var(--c-text);}
@@ -279,7 +343,7 @@ h1,h2{font-family:var(--font-display);font-weight:400;line-height:0.98;letter-sp
   color:var(--c-ink);padding:0 0 10px 0;height:44px;}
 .field select{height:44px;appearance:auto;}
 .field textarea{height:auto;resize:none;padding-bottom:10px;}
-.field-row2{display:grid;grid-template-columns:1fr 1fr;column-gap:28px;}
+.field-row2{display:grid;grid-template-columns:1fr 1fr;column-gap:40px;}
 .field-row3{display:grid;grid-template-columns:1fr 1fr 1fr;column-gap:28px;}
 @media (max-width:767px){.field-row2,.field-row3{grid-template-columns:1fr;row-gap:26px;}}
 .consent{display:flex;align-items:flex-start;gap:12px;}
@@ -303,6 +367,17 @@ h1,h2{font-family:var(--font-display);font-weight:400;line-height:0.98;letter-sp
 .table-std tbody td{padding:20px 0 20px 20px;border-bottom:1px solid var(--hair-018,rgba(26,24,21,0.18));
   font-family:var(--font-sans);font-size:0.875rem;letter-spacing:0.02em;color:var(--c-text);}
 .table-std th:first-child,.table-std td:first-child{padding-left:0;}
+/* Tabla de medidas: 572px en seis columnas, Talla 92 y cinco de 96, como el lienzo. Anchos como
+   sugerencia de reparto automático, no rejilla fija: cuando la tabla mide menos, cada columna cede
+   hasta su contenido, y sólo parte la cabecera por debajo de 1200. */
+.tabla-medidas th{width:96px;}
+.tabla-medidas th:first-child{width:92px;}
+/* Como en el lienzo, sin relleno lateral: las cifras van a la derecha de su columna y el aire es lo que
+   sobra de ella. El relleno de 20px vuelve por debajo de 767, donde la tabla se desplaza sin partir. */
+.tabla-medidas thead th,.tabla-medidas tbody td{padding-left:0;}
+@media (max-width:767px){
+  .tabla-medidas thead th+th,.tabla-medidas tbody td+td{padding-left:20px;}
+}
 .table-std tbody td.al-right{text-align:right;}
 .table-std tbody td.al-strong{color:var(--c-ink);}
 @media (max-width:767px){
@@ -321,14 +396,17 @@ h1,h2{font-family:var(--font-display);font-weight:400;line-height:0.98;letter-sp
 /* 12,5px como el lienzo, no los 13 de .card3-body: «La prenda vuelve sin usar y con etiqueta» mide
    226px a 13px y su pista 222 con una barra de 15px, así que partía la línea. */
 .site-footer .card3-body{font-size:0.78125rem;}
+/* El filete del pie va de raíl a raíl (108 → 1332), no de cristal a cristal: vivía en el contenedor
+   con relleno y cruzaba la página entera, y la línea legal de debajo, sin tope, se iba a x=144 a
+   1920. Ahora las dos van dentro del mismo contenedor. */
 .footer-top{display:grid;grid-template-columns:minmax(180px,300px) 1fr;column-gap:56px;
-  align-items:start;padding-bottom:64px;border-bottom:1px solid var(--hair-020);}
+  align-items:start;padding-bottom:76px;border-bottom:1px solid var(--hair-020);}
 .footer-marca{font-family:var(--font-sans);font-weight:500;font-size:0.875rem;letter-spacing:0.42em;
   text-transform:uppercase;color:var(--c-ink);}
 .footer-addr{font-family:var(--font-sans);font-weight:400;font-size:0.75rem;line-height:1.85;
   letter-spacing:0.02em;color:var(--c-text);padding-top:20px;}
-.footer-bottom{padding:26px var(--pad-x) 44px var(--pad-x);}
-.footer-bottom p{font-family:var(--font-sans);font-weight:400;font-size:0.6875rem;letter-spacing:0.1em;
+.footer-bottom{padding:26px 0 44px 0;}
+.footer-bottom p{font-family:var(--font-sans);font-weight:400;font-size:0.6875rem;letter-spacing:0.14em;
   line-height:2;color:var(--c-text);}
 .footer-bottom a{color:var(--c-text);border-bottom:1px solid var(--hair-030);}
 @media (max-width:1024px){.footer-top{grid-template-columns:1fr;row-gap:40px;}}
@@ -359,6 +437,11 @@ h1,h2{font-family:var(--font-display);font-weight:400;line-height:0.98;letter-sp
   .cart-row .cart-remove{grid-column:2;grid-row:3;}
 }
 .summary-box{border-top:1px solid var(--hair-042);margin-top:8px;padding-top:22px;}
+/* Resumen del carro en la pista estrecha: su rótulo y su filete a la altura de la cabecera de la
+   tabla, para que las dos líneas de 0,42 queden a la misma cota. */
+.cart-titulo{font-family:var(--font-sans);font-size:0.625rem;letter-spacing:0.18em;text-transform:uppercase;
+  color:var(--c-text);padding-bottom:13px;border-bottom:1px solid var(--hair-042);}
+.summary-box-carro{border-top:none;margin-top:0;padding-top:12px;}
 .summary-row{display:flex;justify-content:space-between;padding:9px 0;font-family:var(--font-sans);
   font-size:0.8125rem;color:var(--c-text);}
 .summary-row.al-total{border-top:1px solid var(--hair-030);margin-top:8px;padding-top:18px;
@@ -450,9 +533,9 @@ main{display:block;}
 <main>
 <div class="page" id="portada" data-title="Marzo — moda de fibra natural, tirada corta">
 
-  <section class="section" style="padding-top:56px;">
-    <div class="container row2" style="align-items:end;">
-      <p class="eyebrow">Sin temporada<br>Once piezas en catálogo</p>
+  <section class="section-hero">
+    <div class="container row2">
+      <p class="eyebrow eyebrow-hero">Sin temporada<br>Once piezas en catálogo</p>
       <h1 class="h-hero">El mismo abrigo durante diez inviernos.</h1>
     </div>
   </section>
@@ -475,7 +558,7 @@ main{display:block;}
           <div><dt>Telar</dt><dd>Béjar</dd></div>
           <div><dt>Se cose en</dt><dd>Toledo</dd></div>
         </dl>
-        <p class="price-lg" style="padding-top:34px;">385,00&nbsp;€</p>
+        <p class="price-md" style="padding-top:34px;">385,00&nbsp;€</p>
         <a href="#ficha" class="eyebrow link-ink" style="display:inline-block;margin-top:26px;color:var(--c-ink);">Ver la ficha</a>
       </div>
       <img src="../img/marzo-abrigo.webp" alt="Abrigo Sagra de lana merina sin teñir, largo hasta media pantorrilla, contra un muro de yeso al sol" style="aspect-ratio:820/1180;object-fit:cover;object-position:50% 54%;">
@@ -597,21 +680,21 @@ main{display:block;}
 
   <p class="breadcrumb"><a href="#portada">Marzo</a> &nbsp;·&nbsp; <span>El registro</span></p>
 
-  <section class="section-tight">
-    <div class="container row2" style="align-items:end;">
+  <section class="section-head">
+    <div class="container row2 al-base">
       <p class="eyebrow">Once piezas<br>Sin temporada</p>
       <h1 class="h-page">El registro</h1>
     </div>
   </section>
 
-  <section class="section-tight">
+  <section class="section-lead">
     <div class="container row2">
       <div></div>
       <p class="lead">Aquí no hay rejilla de fotografías: hay una tabla. Referencia, fibra, gramaje, el pueblo donde se tejió y el precio, en ese orden, porque es el orden en que se lee una prenda antes de comprarla. Una fotografía no dice cuánto pesa un paño ni si va a durar diez inviernos; esta lista sí.</p>
     </div>
   </section>
 
-  <section class="section" id="listado">
+  <section class="section-main" id="listado">
     <div class="container row2">
       <p class="eyebrow">11 piezas en catálogo<br>Ordenadas por referencia<br>Sin filtros, sin color de acento</p>
       <div class="register">
@@ -716,10 +799,10 @@ main{display:block;}
     </div>
   </section>
 
-  <section class="section">
+  <section class="section-head">
     <div class="container row2">
       <div></div>
-      <p class="copy">Cada referencia lleva su ficha con la composición, el gramaje y la tabla de tallas. Sólo el Abrigo Sagra tiene ficha propia por ahora: el resto de la temporada se sube pieza a pieza.</p>
+      <p class="copy copy-medida">Cada referencia lleva su ficha con la composición, el gramaje y la tabla de tallas. Sólo el Abrigo Sagra tiene ficha propia por ahora: el resto de la temporada se sube pieza a pieza.</p>
     </div>
   </section>
 
@@ -728,14 +811,14 @@ main{display:block;}
 
   <p class="breadcrumb"><a href="#categoria">El registro</a> &nbsp;·&nbsp; <span>Abrigo Sagra</span></p>
 
-  <section class="section-tight">
-    <div class="container row2" style="align-items:end;">
+  <section class="section-head">
+    <div class="container row2 al-base">
       <p class="eyebrow">Ref. LM-620<br>Doce en el taller</p>
       <h1 class="h-page">Abrigo Sagra</h1>
     </div>
   </section>
 
-  <section class="section-tight">
+  <section class="section-lead">
     <div class="container row2">
       <div></div>
       <p class="lead">Recto, sin entretela en el cuerpo, cortado a un largo que pasa la rodilla. El paño es tan denso que la prenda se sostiene sola: no hay estructura dentro, sólo lana batanada. Un botón de corozo a la altura de la cintura y nada más. Está pensado para llevarse abierto casi siempre.</p>
@@ -743,7 +826,7 @@ main{display:block;}
   </section>
 
   <!-- ÚNICA ROTURA DE RETÍCULA de esta página: la fotografía principal sangra por la derecha. -->
-  <section class="section">
+  <section class="section-main">
     <div class="bleed bleed-ficha">
       <div class="bleed-datos">
         <p class="price-lg">385,00&nbsp;€</p>
@@ -757,9 +840,9 @@ main{display:block;}
           <button type="button" class="size-cell" aria-pressed="false" data-aviso="Quedan tres en la talla 42">42</button>
           <button type="button" class="size-cell" disabled aria-label="44, agotada">44</button>
         </div>
-        <p class="copy" style="padding-top:14px;">La 44 vuelve en noviembre. <a href="#medidas" class="link-ink">Medidas de la prenda</a></p>
+        <p class="nota" style="padding-top:14px;">La 44 vuelve en noviembre. <a href="#medidas" class="link-ink">Medidas de la prenda</a></p>
 
-        <a href="#carro" class="btn" style="width:100%;max-width:300px;margin-top:30px;">Añadir a la cesta</a>
+        <a href="#carro" class="btn btn-300" style="margin-top:30px;">Añadir a la cesta</a>
         <p class="stock" id="aviso-talla" aria-live="polite" style="padding-top:14px;">Quedan cuatro en la talla 40</p>
 
         <p class="copy" style="padding-top:24px;">Envío en 48&nbsp;h · 4,90&nbsp;€<br>Gratis a partir de 150,00&nbsp;€<br>Devolución 30 días, recogida incluida</p>
@@ -789,7 +872,7 @@ main{display:block;}
         <h2 class="h-section">La caída</h2>
         <p class="copy" style="padding-top:22px;">La espalda va de una pieza, sin costura central. El hombro es caído tres centímetros sobre el hueso, y eso es lo que hace que el paño baje recto en vez de quebrarse.</p>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;column-gap:32px;align-items:start;">
+      <div class="par par-fotos">
         <figure class="figure">
           <img src="../img/marzo-espalda.webp" alt="El abrigo visto por detrás: la costura de hombro y la caída del paño sobre la espalda" class="photo-contained" style="aspect-ratio:416/520;">
           <figcaption>Espalda · hombro caído</figcaption>
@@ -837,7 +920,7 @@ main{display:block;}
         </svg>
 
         <div>
-          <table class="table-std">
+          <table class="table-std tabla-medidas">
             <thead>
               <tr><th>Talla</th><th class="al-right">A · Hombro</th><th class="al-right">B · Pecho</th><th class="al-right">C · Largo</th><th class="al-right">D · Manga</th><th class="al-right">E · Bajo</th></tr>
             </thead>
@@ -876,7 +959,7 @@ main{display:block;}
         <h2 class="h-section">Cuidado</h2>
         <p class="copy" style="padding-top:22px;">La lana sin teñir se ensucia menos de lo que la gente cree. Lo que la estropea es lavarla.</p>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;column-gap:44px;align-items:start;">
+      <div class="par">
         <p class="lead">Cepillo de cerda natural en seco después de cada uso, siempre en el sentido del pelo. Airear a la sombra veinticuatro horas antes de guardar. Limpieza en seco sólo cuando de verdad haga falta, que no será cada invierno.</p>
         <p class="lead">No planchar sobre la lana: vapor a veinte centímetros y secar colgado. Percha ancha, de madera. Si aparece una polilla, escríbenos antes de tocar nada: el zurcido lo hacemos aquí y casi nunca se ve.</p>
       </div>
@@ -912,14 +995,15 @@ main{display:block;}
 
   <p class="breadcrumb"><a href="#portada">Marzo</a> &nbsp;·&nbsp; <span>Cesta</span></p>
 
-  <section class="section-tight">
+  <section class="section-head">
     <div class="container">
       <h1 class="h-page">Tu cesta</h1>
     </div>
   </section>
 
   <section class="section-tight">
-    <div class="container" style="max-width:1024px;">
+    <div class="container pago-rejilla">
+      <div>
       <div class="cart-head">
         <span>Prenda</span><span class="al-right">Precio</span><span>Cantidad</span><span class="al-right">Subtotal</span><span></span>
       </div>
@@ -948,12 +1032,17 @@ main{display:block;}
 
       <p class="lead" id="carro-vacio" hidden style="padding-top:28px;">Tu cesta está vacía. <a href="#categoria" class="link-ink">Ver el registro</a></p>
 
-      <div class="summary-box" id="carro-resumen" style="max-width:380px;margin-left:auto;">
+      </div>
+
+      <div id="carro-resumen">
+        <p class="cart-titulo">Resumen</p>
+      <div class="summary-box summary-box-carro">
         <div class="summary-row"><span>Subtotal</span><span id="carro-subtotal">550,00&nbsp;€</span></div>
         <div class="summary-row"><span>Envío</span><span id="carro-envio">Gratis · superas 150,00&nbsp;€</span></div>
         <div class="summary-row al-total"><span>Total</span><span id="carro-total">550,00&nbsp;€</span></div>
         <a href="#pago" class="btn btn-block" style="margin-top:26px;">Continuar al pago</a>
         <p style="text-align:center;padding-top:18px;"><a href="#categoria" class="eyebrow link-ink" style="color:var(--c-ink);">Seguir comprando</a></p>
+      </div>
       </div>
     </div>
   </section>
@@ -963,7 +1052,7 @@ main{display:block;}
 
   <p class="breadcrumb"><a href="#carro">Cesta</a> &nbsp;·&nbsp; <span>Pago</span></p>
 
-  <section class="section-tight">
+  <section class="section-head">
     <div class="container">
       <h1 class="h-page">Finalizar compra</h1>
     </div>
@@ -1023,10 +1112,11 @@ main{display:block;}
 </div>
 <div class="page" id="pedido-recibido" data-title="Pedido confirmado — Marzo">
 
-  <section class="section" style="padding-top:80px;">
-    <div class="container medida-720">
-      <p class="eyebrow">Pedido n.º MZ-20948</p>
-      <h1 class="h-page" style="padding-top:10px;">Gracias. Va camino del taller.</h1>
+  <section class="section-head">
+    <div class="container row2">
+      <p class="eyebrow eyebrow-titular">Pedido n.º MZ-20948</p>
+      <div>
+      <h1 class="h-page">Gracias. Va camino del taller.</h1>
       <p class="lead" style="padding-top:26px;">Hemos mandado la confirmación a tu correo con el número de pedido y el resumen de lo comprado. En cuanto salga de Toledo llega un segundo correo con el número de seguimiento.</p>
 
       <dl class="dl-rows" style="padding-top:44px;max-width:480px;">
@@ -1036,9 +1126,10 @@ main{display:block;}
         <div><dt>Forma de pago</dt><dd>Tarjeta</dd></div>
       </dl>
 
-      <div style="display:flex;gap:20px;flex-wrap:wrap;padding-top:40px;">
+      <div class="botonera" style="padding-top:40px;">
         <a href="#categoria" class="btn">Volver a la tienda</a>
         <a href="#mi-cuenta" class="btn-outline">Ver mi cuenta</a>
+      </div>
       </div>
     </div>
   </section>
@@ -1048,7 +1139,7 @@ main{display:block;}
 
   <p class="breadcrumb"><a href="#portada">Marzo</a> &nbsp;·&nbsp; <span>Mi cuenta</span></p>
 
-  <section class="section-tight">
+  <section class="section-head">
     <div class="container">
       <h1 class="h-page">Mi cuenta</h1>
     </div>
@@ -1097,14 +1188,14 @@ main{display:block;}
 
   <p class="breadcrumb"><a href="#portada">Marzo</a> &nbsp;·&nbsp; <span>La casa</span></p>
 
-  <section class="section-tight">
-    <div class="container row2" style="align-items:end;">
+  <section class="section-head">
+    <div class="container row2 al-base">
       <p class="eyebrow">Taller propio<br>Toledo, desde&nbsp;2014</p>
       <h1 class="h-page">Paramos antes de que deje de tener sentido.</h1>
     </div>
   </section>
 
-  <section class="section-tight">
+  <section class="section-lead">
     <div class="container row2">
       <div></div>
       <p class="lead">Nueve personas trabajan en Marzo, todas en el mismo taller de Toledo. No hay segunda fábrica ni un taller externo que absorba los picos de pedidos: cuando la tirada de un patrón se agota, se acaba, y el patrón siguiente no llega hasta que el anterior deja de tener sentido. Eso hace que algún año no haya abrigo nuevo. Preferimos eso a sacar uno que no aporte nada.</p>
@@ -1134,7 +1225,7 @@ main{display:block;}
         <h2 class="h-section">Por qué tan pocas</h2>
         <p class="copy" style="padding-top:22px;">Once patrones en catálogo no es una estrategia de escasez. Es lo que caben nueve personas cosiendo a mano cada dobladillo.</p>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;column-gap:44px;align-items:start;">
+      <div class="par">
         <p class="lead">Una tirada larga necesita una cadena de montaje, y una cadena de montaje necesita que cada persona repita el mismo gesto todo el día. Aquí cada operaria hace una prenda de principio a fin, corte incluido, y eso pone un techo natural: no se puede coser más rápido sin coser peor.</p>
         <p class="lead">Cuando un patrón se agota lo retiramos en vez de reponerlo con el mismo corte y un tejido más barato, que es lo que suele pasar. El patrón vuelve, si vuelve, con el mismo paño que la primera vez o no vuelve.</p>
       </div>
@@ -1148,7 +1239,7 @@ main{display:block;}
         <h2 class="h-section">De dónde sale cada hilo</h2>
         <p class="copy" style="padding-top:22px;">Compramos hilo y tejido, nunca prenda hecha. Cada etapa tiene un sitio y un nombre.</p>
       </div>
-      <dl class="dl-rows">
+      <dl class="dl-rows dl-rows-lg">
         <div><dt>Hilatura</dt><dd>Béjar, Salamanca — lana merina y alpaca</dd></div>
         <div><dt>Tisaje</dt><dd>Bocairent y Alcoi — algodón en telar de pinza</dd></div>
         <div><dt>Tinte</dt><dd>Rubia y gualda, cuando la fibra lo pide</dd></div>
@@ -1188,21 +1279,21 @@ main{display:block;}
 
   <p class="breadcrumb"><a href="#portada">Marzo</a> &nbsp;·&nbsp; <span>Contacto</span></p>
 
-  <section class="section-tight">
-    <div class="container row2" style="align-items:end;">
+  <section class="section-head">
+    <div class="container row2 al-base">
       <p class="eyebrow">Antes de comprar<br>O después</p>
       <h1 class="h-page">Escríbenos</h1>
     </div>
   </section>
 
-  <section class="section-tight">
+  <section class="section-lead">
     <div class="container row2">
       <div></div>
       <p class="lead">Sin chat automático ni línea 900. Contestamos desde el taller, casi siempre el mismo día laborable, y si la duda es de talla o de arreglos normalmente contesta la persona que va a coser la respuesta.</p>
     </div>
   </section>
 
-  <section class="section" id="formulario">
+  <section class="section-main" id="formulario">
     <div class="container row2">
       <div>
         <p class="small-label" style="font-size:.6875rem;letter-spacing:.24em;color:var(--c-ink);padding-bottom:20px;border-bottom:1px solid var(--hair-022);">El taller</p>
@@ -1215,7 +1306,7 @@ main{display:block;}
         </dl>
       </div>
 
-      <form id="form-contacto" style="max-width:620px;">
+      <form id="form-contacto" class="medida-form">
         <div class="field-row2">
           <label class="field"><span class="field-label">Nombre</span><input type="text" name="nombre" required autocomplete="name" placeholder="Nombre y apellidos"></label>
           <label class="field"><span class="field-label">Correo</span><input type="email" name="correo" required autocomplete="email" placeholder="tu@correo.com"></label>
@@ -1231,10 +1322,10 @@ main{display:block;}
           <span>He leído y acepto la <a href="#privacidad" class="link-ink" style="color:var(--c-ink);">política de privacidad</a>. Marzo usa estos datos sólo para responder.</span>
         </label>
 
-        <button type="submit" class="btn" style="margin-top:34px;">Enviar mensaje</button>
+        <button type="submit" class="btn btn-240" style="margin-top:34px;">Enviar mensaje</button>
       </form>
 
-      <div id="contacto-enviado" role="status" tabindex="-1" hidden style="max-width:620px;">
+      <div id="contacto-enviado" role="status" tabindex="-1" hidden class="medida-form">
         <p class="small-label" style="font-size:.6875rem;letter-spacing:.24em;color:var(--c-ink);padding-bottom:20px;border-bottom:1px solid var(--hair-022);">Mensaje enviado</p>
         <p class="lead" style="padding-top:24px;">Gracias. Lo lee alguien del taller y contesta desde taller@marzo.es, casi siempre el mismo día laborable.</p>
         <p style="padding-top:24px;"><a href="#categoria" class="eyebrow link-ink" style="color:var(--c-ink);">Volver al registro</a></p>
@@ -1271,8 +1362,9 @@ main{display:block;}
 
   <p class="breadcrumb"><a href="#portada">Marzo</a> &nbsp;·&nbsp; <span>Condiciones de venta y envíos</span></p>
 
-  <section class="section-tight">
-    <div class="container" style="max-width:868px;">
+  <section class="section-head">
+    <div class="container">
+     <div class="columna-texto">
       <h1 class="h-page" style="font-size:clamp(2rem,1.2rem+3.5vw,3.75rem);">Condiciones de venta y envíos</h1>
       <p class="lead" style="padding-top:26px;">Estas condiciones rigen cualquier compra hecha en marzo.es a Marzo Taller S.L. Al confirmar un pedido las aceptas junto con la <a href="#privacidad" class="link-ink">política de privacidad</a>.</p>
 
@@ -1290,6 +1382,7 @@ main{display:block;}
 
       <h2 class="h-section" style="font-size:1.625rem;padding-top:64px;">Garantías</h2>
       <p class="copy-lg" style="padding-top:18px;">Toda prenda tiene la garantía legal de conformidad de tres años desde la entrega. Los arreglos de dobladillo, mangas y forro son gratuitos mientras la prenda exista; una reparación por rotura o polilla se presupuesta antes de tocar nada y nunca supera los 40,00&nbsp;€.</p>
+     </div>
     </div>
   </section>
 
@@ -1298,8 +1391,9 @@ main{display:block;}
 
   <p class="breadcrumb"><a href="#portada">Marzo</a> &nbsp;·&nbsp; <span>Aviso legal</span></p>
 
-  <section class="section-tight">
-    <div class="container" style="max-width:868px;">
+  <section class="section-head">
+    <div class="container">
+     <div class="columna-texto">
       <h1 class="h-page" style="font-size:clamp(2rem,1.2rem+3.5vw,3.75rem);">Aviso legal</h1>
       <p class="lead" style="padding-top:26px;">Estructura y aspecto de esta página los pone la Plantilla. El texto entero se redacta con los datos reales del titular en el sitio del cliente, con <em>wordpress-legal</em>. Lo de aquí describe a la marca ficticia Marzo para mostrar cómo queda.</p>
 
@@ -1323,6 +1417,7 @@ main{display:block;}
 
       <h2 class="h-section" style="font-size:1.625rem;padding-top:64px;">Legislación aplicable</h2>
       <p class="copy-lg" style="padding-top:18px;">Estas condiciones se rigen por la legislación española. Para cualquier controversia, las partes se someten a los juzgados y tribunales de Toledo, salvo que la normativa de consumo aplicable disponga otro fuero.</p>
+     </div>
     </div>
   </section>
 
@@ -1331,8 +1426,9 @@ main{display:block;}
 
   <p class="breadcrumb"><a href="#portada">Marzo</a> &nbsp;·&nbsp; <span>Privacidad</span></p>
 
-  <section class="section-tight">
-    <div class="container" style="max-width:868px;">
+  <section class="section-head">
+    <div class="container">
+     <div class="columna-texto">
       <h1 class="h-page" style="font-size:clamp(2rem,1.2rem+3.5vw,3.75rem);">Política de privacidad</h1>
       <p class="lead" style="padding-top:26px;">Estructura y aspecto de esta página los pone la Plantilla. El texto entero, con el responsable real y sus finalidades, se redacta en el sitio del cliente con <em>wordpress-legal</em>. Lo de aquí describe a la marca ficticia Marzo.</p>
 
@@ -1353,6 +1449,7 @@ main{display:block;}
 
       <h2 class="h-section" style="font-size:1.625rem;padding-top:64px;">Conservación</h2>
       <p class="copy-lg" style="padding-top:18px;">Los datos de un pedido se conservan mientras exista obligación legal, fiscal o de garantía; los del formulario de contacto, hasta un año después de la última respuesta si no se convierten en pedido.</p>
+     </div>
     </div>
   </section>
 
@@ -1361,8 +1458,9 @@ main{display:block;}
 
   <p class="breadcrumb"><a href="#portada">Marzo</a> &nbsp;·&nbsp; <span>Cookies</span></p>
 
-  <section class="section-tight">
-    <div class="container" style="max-width:868px;">
+  <section class="section-head">
+    <div class="container">
+     <div class="columna-texto">
       <h1 class="h-page" style="font-size:clamp(2rem,1.2rem+3.5vw,3.75rem);">Política de cookies</h1>
       <p class="lead" style="padding-top:26px;">Una cookie es un fichero pequeño que el sitio guarda en tu navegador. Aquí se listan sólo las que marzo.es carga de verdad; el sitio del cliente se audita con <em>wordpress-legal</em> antes de publicar esta página, para que la lista nunca prometa menos de lo que carga.</p>
 
@@ -1377,6 +1475,7 @@ main{display:block;}
 
       <h2 class="h-section" style="font-size:1.625rem;padding-top:64px;">Cómo cambiar tu elección</h2>
       <p class="copy-lg" style="padding-top:18px;">Puedes aceptar o rechazar las cookies opcionales desde el aviso que aparece en la primera visita, y volver a abrirlo en cualquier momento desde el enlace del pie de página. También puedes borrar las cookies ya guardadas desde los ajustes de tu navegador.</p>
+     </div>
     </div>
   </section>
 
@@ -1384,13 +1483,15 @@ main{display:block;}
 <div class="page" id="404" data-title="Página no encontrada — Marzo">
 
   <section class="section" style="padding-top:120px;padding-bottom:120px;">
-    <div class="container medida-620">
-      <p class="eyebrow">Error 404</p>
-      <h1 class="h-page" style="padding-top:10px;">Esta página no está en el registro.</h1>
+    <div class="container row2">
+      <p class="eyebrow eyebrow-titular">Error 404</p>
+      <div>
+      <h1 class="h-page">Esta página no está en el registro.</h1>
       <p class="lead" style="padding-top:22px;">El enlace puede haber cambiado, o la prenda que buscabas ya no está en catálogo. El registro completo sigue en su sitio.</p>
-      <div style="display:flex;gap:20px;flex-wrap:wrap;padding-top:36px;">
+      <div class="botonera" style="padding-top:36px;">
         <a href="#portada" class="btn">Volver a la portada</a>
         <a href="#categoria" class="btn-outline">Ver el registro</a>
+      </div>
       </div>
     </div>
   </section>
@@ -1402,7 +1503,8 @@ main{display:block;}
      PIE — fuera de las páginas, igual que la cabecera.
      ════════════════════════════════════════════════════════════════════════════════════════════ -->
 <footer class="site-footer">
-  <div class="container footer-top">
+  <div class="container">
+  <div class="footer-top">
     <div>
       <p class="footer-marca">Marzo</p>
       <p class="footer-addr">Calle del Locum, 4<br>45001 Toledo<br>Taller abierto con cita</p>
@@ -1429,6 +1531,7 @@ main{display:block;}
       <a href="#cookies">Cookies</a> ·
       <a href="#condiciones-venta-envios">Condiciones de venta y envíos</a>
     </p>
+  </div>
   </div>
 </footer>
 
