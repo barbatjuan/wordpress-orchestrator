@@ -131,10 +131,17 @@ assumed.
 | Martian Mono | `martian-mono-latin.woff2` | `wght 400..500` | 400 500 | SIL OFL 1.1 | `d0be3a78a854bcea` | 23,556 |
 | Cormorant Garamond | `cormorant-garamond-latin.woff2` | `wght 300..500` | 300 500 | SIL OFL 1.1 | `d80df8ff5aecd299` | 37,640 |
 | Cormorant Garamond *italic* | `cormorant-garamond-italic-latin.woff2` | `wght 300..500` | 300 500 | SIL OFL 1.1 | `6f2f5c3b1abc3d0b` | 39,260 |
+| Anton | `anton-latin.woff2` | none (static) | 400 | SIL OFL 1.1 | `d0fa07ff63dd60cb` | 18,612 |
+| Barlow 400 | `barlow-400-latin.woff2` | none (static) | 400 | SIL OFL 1.1 | `b0a8ad37ac45f5fb` | 22,196 |
+| Barlow 500 | `barlow-500-latin.woff2` | none (static) | 500 | SIL OFL 1.1 | `cd759df8ef9efc98` | 22,008 |
+| Barlow 600 | `barlow-600-latin.woff2` | none (static) | 600 | SIL OFL 1.1 | `4b52ddd4836b592d` | 22,772 |
+| Barlow Condensed 500 | `barlow-condensed-500-latin.woff2` | none (static) | 500 | SIL OFL 1.1 | `460f141ec8f6c9a1` | 21,424 |
+| Barlow Condensed 600 | `barlow-condensed-600-latin.woff2` | none (static) | 600 | SIL OFL 1.1 | `215a93c696f44203` | 22,308 |
 
-**862,984 bytes raw / 1,150,668 base64** for the whole set: the first seven
-families are 294,308 bytes, the seven added for the shop Plantillas 491,776, and Cormorant
-Garamond, added for the yoga Plantilla `amalia-salvia`, 76,900. No single
+**992,304 bytes raw / 1,323,100 base64** for the whole set: the first seven
+families are 294,308 bytes, the seven added for the shop Plantillas 491,776, Cormorant
+Garamond, added for the yoga Plantilla `amalia-salvia`, 76,900, and Anton, Barlow and Barlow
+Condensed, added for the gym Plantilla `forja`, 129,320. No single
 file pays all of it: each page embeds only the families it names. Newsreader alone is 278,872
 bytes for roman and italic, because both carry the optical-size axis; a Plantilla that
 uses it should embed only the styles it actually sets.
@@ -157,6 +164,9 @@ uses it should embed only the styles it actually sets.
 | Instrument Sans | `instrumentsans-OFL.txt` | Copyright 2022 The Instrument Sans Project Authors (https://github.com/Instrument/instrument-sans) |
 | Martian Mono | `martianmono-OFL.txt` | Copyright 2021 The Martian Mono Project Authors (https://github.com/evilmartians/mono) |
 | Cormorant Garamond | `cormorantgaramond-OFL.txt` | Copyright 2015 the Cormorant Project Authors (github.com/CatharsisFonts/Cormorant) |
+| Anton | `anton-OFL.txt` | Copyright 2020 The Anton Project Authors (https://github.com/googlefonts/AntonFont.git) |
+| Barlow | `barlow-OFL.txt` | Copyright 2017 The Barlow Project Authors (https://github.com/jpt/barlow) |
+| Barlow Condensed | `barlowcondensed-OFL.txt` | Copyright 2017 The Barlow Project Authors (https://github.com/jpt/barlow) |
 
 Archivo and Archivo Expanded share one notice because they are one family.
 
@@ -187,6 +197,12 @@ was actually shipped.
 | `martian-mono-latin.woff2` | https://fonts.gstatic.com/s/martianmono/v6/2V0PKIcADoYhV6w87xrTKjs4CYElh_VS9YA4TlTnaTq9wQ.woff2 |
 | `cormorant-garamond-latin.woff2` | https://fonts.gstatic.com/s/cormorantgaramond/v21/co3bmX5slCNuHLi8bLeY9MK7whWMhyjYqXtK.woff2 |
 | `cormorant-garamond-italic-latin.woff2` | https://fonts.gstatic.com/s/cormorantgaramond/v21/co3ZmX5slCNuHLi8bLeY9MK7whWMhyjYrEtImSo.woff2 |
+| `anton-latin.woff2` | https://fonts.gstatic.com/s/anton/v27/1Ptgg87LROyAm3Kz-C8.woff2 |
+| `barlow-400-latin.woff2` | https://fonts.gstatic.com/s/barlow/v13/7cHpv4kjgoGqM7E_DMs5.woff2 |
+| `barlow-500-latin.woff2` | https://fonts.gstatic.com/s/barlow/v13/7cHqv4kjgoGqM7E3_-gs51os.woff2 |
+| `barlow-600-latin.woff2` | https://fonts.gstatic.com/s/barlow/v13/7cHqv4kjgoGqM7E30-8s51os.woff2 |
+| `barlow-condensed-500-latin.woff2` | https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B4-Lwz3bWuQ.woff2 |
+| `barlow-condensed-600-latin.woff2` | https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B4873z3bWuQ.woff2 |
 
 Licence texts came from `raw.githubusercontent.com/google/fonts/main/ofl/<dir>/OFL.txt`.
 

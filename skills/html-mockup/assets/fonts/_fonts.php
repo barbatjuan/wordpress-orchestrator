@@ -90,6 +90,16 @@ function nm_font_registry() {
 			array( 'file' => 'cormorant-garamond-latin.woff2',        'weight' => '300 500', 'style' => 'normal', 'stretch' => null ),
 			array( 'file' => 'cormorant-garamond-italic-latin.woff2', 'weight' => '300 500', 'style' => 'italic', 'stretch' => null ),
 		) ),
+		'Anton'             => array( 'file' => 'anton-latin.woff2',             'weight' => '400',     'stretch' => null ),
+		'Barlow'            => array( 'faces' => array(
+			array( 'file' => 'barlow-400-latin.woff2', 'weight' => '400', 'style' => 'normal', 'stretch' => null ),
+			array( 'file' => 'barlow-500-latin.woff2', 'weight' => '500', 'style' => 'normal', 'stretch' => null ),
+			array( 'file' => 'barlow-600-latin.woff2', 'weight' => '600', 'style' => 'normal', 'stretch' => null ),
+		) ),
+		'Barlow Condensed'  => array( 'faces' => array(
+			array( 'file' => 'barlow-condensed-500-latin.woff2', 'weight' => '500', 'style' => 'normal', 'stretch' => null ),
+			array( 'file' => 'barlow-condensed-600-latin.woff2', 'weight' => '600', 'style' => 'normal', 'stretch' => null ),
+		) ),
 		'IBM Plex Mono'     => array( 'faces' => array(
 			array( 'file' => 'ibm-plex-mono-400-latin.woff2', 'weight' => '400', 'style' => 'normal', 'stretch' => null ),
 			array( 'file' => 'ibm-plex-mono-500-latin.woff2', 'weight' => '500', 'style' => 'normal', 'stretch' => null ),

@@ -432,6 +432,19 @@ if ( isset( $reg['Cormorant Garamond'] ) ) {
 	ok( false !== strpos( $css, "font-family:'Cormorant Garamond';font-style:normal;font-weight:300 500;" ) && false !== strpos( $css, "font-family:'Cormorant Garamond';font-style:italic;font-weight:300 500;" ), 'fonts: both Cormorant faces declare 300 500, the range the variable files hold' );
 }
 
+/* The gym Plantilla `forja` sets Anton for display and Barlow / Barlow Condensed for everything
+   else. Google serves Barlow as STATIC files, one per weight, so each weight is its own face. */
+foreach ( array( 'Anton' => 1, 'Barlow' => 3, 'Barlow Condensed' => 2 ) as $fam => $n ) {
+	ok( isset( $reg[ $fam ] ), "fonts: `$fam` is registered" );
+	if ( isset( $reg[ $fam ] ) ) {
+		ok( $n === $caras_de( nm_font_faces( array( $fam ) ) ), "fonts: $fam emits $n face(s), one per static file" );
+	}
+}
+if ( isset( $reg['Barlow'] ) ) {
+	$css = nm_font_faces( array( 'Barlow' ) );
+	ok( false !== strpos( $css, 'font-weight:400;' ) && false !== strpos( $css, 'font-weight:500;' ) && false !== strpos( $css, 'font-weight:600;' ), 'fonts: the three Barlow faces declare 400, 500 and 600, the weights their files hold' );
+}
+
 $fr = nm_font_faces( array( 'Fraunces' ) );
 ok( 1 === $caras_de( $fr ), 'fonts: a single-face family still emits exactly one face' );
 ok( false !== strpos( $fr, "font-family:'Fraunces';font-style:normal;font-weight:400 700;font-display:swap;" ), 'fonts: the single-face output keeps the exact shape it had before multi-face support' );
