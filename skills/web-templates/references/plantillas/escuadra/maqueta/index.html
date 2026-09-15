@@ -66,7 +66,7 @@
   --fs-h2:          clamp(1.625rem,1.229rem + 1.69vw,  2.75rem);   /* h2 de sección mayor: 26px → 44px */
   --fs-h3:          clamp(1.375rem,1.155rem + 0.939vw, 2rem);      /* h3 de subsección: 22px → 32px */
   --fs-price-total: clamp(1.625rem,1.361rem + 1.127vw, 2.375rem);  /* total del salón: 26px → 38px */
-  --fs-price-lg:    clamp(1.375rem,1.199rem + 0.751vw, 1.875rem);  /* precio de ficha: 22px → 30px */
+  --fs-price-lg:    clamp(1.1875rem,1.1215rem + 0.2817vw, 1.375rem) /* 19px a 375 → 22px a 1440: la escala del lienzo, donde Banco Vado va a 19 y Estante Tramo a 22. Antes llegaba a 30 y el precio no cabía en su columna */;  /* precio de ficha: 22px → 30px */
   --sp-section:     clamp(2.75rem, 1.43rem  + 5.634vw, 6.5rem);    /* ritmo vertical mayor: 44px → 104px */
   --sp-tight:       clamp(2.5rem,  1.972rem + 2.254vw, 4rem);      /* ritmo vertical menor: 40px → 64px */
 
@@ -512,7 +512,7 @@ main{display:block;}
       <div style="flex:0 0 160px;"><div class="cota"></div><p class="mono" style="font-size:0.8125rem;margin-top:9px;">110 × 40 × 45</p><p class="copy" style="font-size:0.75rem;margin-top:4px;">centímetros</p></div>
       <div style="flex:0 0 120px;"><p class="mono" style="font-size:0.8125rem;">1 bulto</p><p class="copy" style="font-size:0.75rem;margin-top:4px;">de 18 kg</p></div>
       <div style="flex:0 0 120px;"><p class="mono" style="font-size:0.8125rem;">18 min</p><p class="copy" style="font-size:0.75rem;margin-top:4px;">de montaje</p></div>
-      <div style="flex:0 0 110px;text-align:right;"><a href="#ficha" class="price-lg" style="display:block;">129,00&nbsp;€</a></div>
+      <div style="flex:0 0 auto;text-align:right;"><a href="#ficha" class="price-lg" style="display:block;">129,00&nbsp;€</a></div>
     </div>
 
     <div class="split" style="margin-top:56px;">

@@ -1,5 +1,5 @@
 ---
-hash: sha256:0755a3a60d84b6cebe40f8d45c51679ddcd902f57a92939f120f45f31e7b6a55
+hash: sha256:67c4f34b327756ac9d93ff8622057ef6222bbfddd346fbe8838940257e75d547
 fecha: 2026-09-15
 juez_b: profesional
 autojuzgado: sí
