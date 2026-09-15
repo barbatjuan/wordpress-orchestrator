@@ -423,6 +423,15 @@ if ( isset( $reg['IBM Plex Mono'] ) ) {
 	ok( $b['raw'] === filesize( $fonts_dir . '/ibm-plex-mono-400-latin.woff2' ) + filesize( $fonts_dir . '/ibm-plex-mono-500-latin.woff2' ), 'fonts: nm_font_bytes counts every face of a family, not only the first file' );
 }
 
+/* Cormorant Garamond arrives for the second yoga direction (`amalia-salvia`), which sets its
+   display serif light and in italic: one variable file per style, 300..500, like Newsreader. */
+ok( isset( $reg['Cormorant Garamond'] ), 'fonts: `Cormorant Garamond` is registered' );
+if ( isset( $reg['Cormorant Garamond'] ) ) {
+	$css = nm_font_faces( array( 'Cormorant Garamond' ) );
+	ok( 2 === $caras_de( $css ), 'fonts: Cormorant Garamond emits two faces, roman and italic' );
+	ok( false !== strpos( $css, "font-family:'Cormorant Garamond';font-style:normal;font-weight:300 500;" ) && false !== strpos( $css, "font-family:'Cormorant Garamond';font-style:italic;font-weight:300 500;" ), 'fonts: both Cormorant faces declare 300 500, the range the variable files hold' );
+}
+
 $fr = nm_font_faces( array( 'Fraunces' ) );
 ok( 1 === $caras_de( $fr ), 'fonts: a single-face family still emits exactly one face' );
 ok( false !== strpos( $fr, "font-family:'Fraunces';font-style:normal;font-weight:400 700;font-display:swap;" ), 'fonts: the single-face output keeps the exact shape it had before multi-face support' );

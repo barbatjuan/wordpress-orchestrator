@@ -86,6 +86,10 @@ function nm_font_registry() {
 			array( 'file' => 'newsreader-latin.woff2',        'weight' => '200 500', 'style' => 'normal', 'stretch' => null ),
 			array( 'file' => 'newsreader-italic-latin.woff2', 'weight' => '200 500', 'style' => 'italic', 'stretch' => null ),
 		) ),
+		'Cormorant Garamond' => array( 'faces' => array(
+			array( 'file' => 'cormorant-garamond-latin.woff2',        'weight' => '300 500', 'style' => 'normal', 'stretch' => null ),
+			array( 'file' => 'cormorant-garamond-italic-latin.woff2', 'weight' => '300 500', 'style' => 'italic', 'stretch' => null ),
+		) ),
 		'IBM Plex Mono'     => array( 'faces' => array(
 			array( 'file' => 'ibm-plex-mono-400-latin.woff2', 'weight' => '400', 'style' => 'normal', 'stretch' => null ),
 			array( 'file' => 'ibm-plex-mono-500-latin.woff2', 'weight' => '500', 'style' => 'normal', 'stretch' => null ),

@@ -129,9 +129,12 @@ assumed.
 | IBM Plex Mono 500 | `ibm-plex-mono-500-latin.woff2` | none (static) | 500 | SIL OFL 1.1 | `01d285447409c8a5` | 14,888 |
 | Instrument Sans | `instrument-sans-latin.woff2` | `wght 400..600` | 400 600 | SIL OFL 1.1 | `2ee17598a98d8a59` | 30,092 |
 | Martian Mono | `martian-mono-latin.woff2` | `wght 400..500` | 400 500 | SIL OFL 1.1 | `d0be3a78a854bcea` | 23,556 |
+| Cormorant Garamond | `cormorant-garamond-latin.woff2` | `wght 300..500` | 300 500 | SIL OFL 1.1 | `d80df8ff5aecd299` | 37,640 |
+| Cormorant Garamond *italic* | `cormorant-garamond-italic-latin.woff2` | `wght 300..500` | 300 500 | SIL OFL 1.1 | `6f2f5c3b1abc3d0b` | 39,260 |
 
-**786,084 bytes raw / 1,048,112 base64** for the whole set: the first seven
-families are 294,308 bytes, the seven added for the shop Plantillas 491,776. No single
+**862,984 bytes raw / 1,150,668 base64** for the whole set: the first seven
+families are 294,308 bytes, the seven added for the shop Plantillas 491,776, and Cormorant
+Garamond, added for the yoga Plantilla `amalia-salvia`, 76,900. No single
 file pays all of it: each page embeds only the families it names. Newsreader alone is 278,872
 bytes for roman and italic, because both carry the optical-size axis; a Plantilla that
 uses it should embed only the styles it actually sets.
@@ -153,6 +156,7 @@ uses it should embed only the styles it actually sets.
 | IBM Plex Mono | `ibmplexmono-OFL.txt` | Copyright © 2017 IBM Corp. with Reserved Font Name "Plex" |
 | Instrument Sans | `instrumentsans-OFL.txt` | Copyright 2022 The Instrument Sans Project Authors (https://github.com/Instrument/instrument-sans) |
 | Martian Mono | `martianmono-OFL.txt` | Copyright 2021 The Martian Mono Project Authors (https://github.com/evilmartians/mono) |
+| Cormorant Garamond | `cormorantgaramond-OFL.txt` | Copyright 2015 the Cormorant Project Authors (github.com/CatharsisFonts/Cormorant) |
 
 Archivo and Archivo Expanded share one notice because they are one family.
 
@@ -181,6 +185,8 @@ was actually shipped.
 | `ibm-plex-mono-500-latin.woff2` | https://fonts.gstatic.com/s/ibmplexmono/v20/-F6qfjptAgt5VM-kVkqdyU8n3twJwlBFgg.woff2 |
 | `instrument-sans-latin.woff2` | https://fonts.gstatic.com/s/instrumentsans/v4/pxiTypc9vsFDm051Uf6KVwgkfoSxQ0GsQv8ToedPibnr0SZe1Q.woff2 |
 | `martian-mono-latin.woff2` | https://fonts.gstatic.com/s/martianmono/v6/2V0PKIcADoYhV6w87xrTKjs4CYElh_VS9YA4TlTnaTq9wQ.woff2 |
+| `cormorant-garamond-latin.woff2` | https://fonts.gstatic.com/s/cormorantgaramond/v21/co3bmX5slCNuHLi8bLeY9MK7whWMhyjYqXtK.woff2 |
+| `cormorant-garamond-italic-latin.woff2` | https://fonts.gstatic.com/s/cormorantgaramond/v21/co3ZmX5slCNuHLi8bLeY9MK7whWMhyjYrEtImSo.woff2 |
 
 Licence texts came from `raw.githubusercontent.com/google/fonts/main/ofl/<dir>/OFL.txt`.
 
