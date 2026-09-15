@@ -137,11 +137,13 @@ assumed.
 | Barlow 600 | `barlow-600-latin.woff2` | none (static) | 600 | SIL OFL 1.1 | `4b52ddd4836b592d` | 22,772 |
 | Barlow Condensed 500 | `barlow-condensed-500-latin.woff2` | none (static) | 500 | SIL OFL 1.1 | `460f141ec8f6c9a1` | 21,424 |
 | Barlow Condensed 600 | `barlow-condensed-600-latin.woff2` | none (static) | 600 | SIL OFL 1.1 | `215a93c696f44203` | 22,308 |
+| Archivo Black | `archivo-black-latin.woff2` | none (static) | 400 | SIL OFL 1.1 | `25f33e61cf995abd` | 18,604 |
 
-**992,304 bytes raw / 1,323,100 base64** for the whole set: the first seven
+**1,010,908 bytes raw / 1,347,908 base64** for the whole set: the first seven
 families are 294,308 bytes, the seven added for the shop Plantillas 491,776, Cormorant
-Garamond, added for the yoga Plantilla `amalia-salvia`, 76,900, and Anton, Barlow and Barlow
-Condensed, added for the gym Plantilla `forja`, 129,320. No single
+Garamond, added for the yoga Plantilla `amalia-salvia`, 76,900, Anton, Barlow and Barlow
+Condensed, added for the gym Plantilla `forja`, 129,320, and Archivo Black, for its model B
+`forja-fucsia`, 18,604. No single
 file pays all of it: each page embeds only the families it names. Newsreader alone is 278,872
 bytes for roman and italic, because both carry the optical-size axis; a Plantilla that
 uses it should embed only the styles it actually sets.
@@ -167,6 +169,7 @@ uses it should embed only the styles it actually sets.
 | Anton | `anton-OFL.txt` | Copyright 2020 The Anton Project Authors (https://github.com/googlefonts/AntonFont.git) |
 | Barlow | `barlow-OFL.txt` | Copyright 2017 The Barlow Project Authors (https://github.com/jpt/barlow) |
 | Barlow Condensed | `barlowcondensed-OFL.txt` | Copyright 2017 The Barlow Project Authors (https://github.com/jpt/barlow) |
+| Archivo Black | `archivoblack-OFL.txt` | Copyright 2017 The Archivo Black Project Authors (https://github.com/Omnibus-Type/ArchivoBlack) |
 
 Archivo and Archivo Expanded share one notice because they are one family.
 
@@ -203,6 +206,7 @@ was actually shipped.
 | `barlow-600-latin.woff2` | https://fonts.gstatic.com/s/barlow/v13/7cHqv4kjgoGqM7E30-8s51os.woff2 |
 | `barlow-condensed-500-latin.woff2` | https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B4-Lwz3bWuQ.woff2 |
 | `barlow-condensed-600-latin.woff2` | https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B4873z3bWuQ.woff2 |
+| `archivo-black-latin.woff2` | https://fonts.gstatic.com/s/archivoblack/v23/HTxqL289NzCGg4MzN6KJ7eW6CYyF_g.woff2 |
 
 Licence texts came from `raw.githubusercontent.com/google/fonts/main/ofl/<dir>/OFL.txt`.
 

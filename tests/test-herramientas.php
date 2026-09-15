@@ -433,8 +433,9 @@ if ( isset( $reg['Cormorant Garamond'] ) ) {
 }
 
 /* The gym Plantilla `forja` sets Anton for display and Barlow / Barlow Condensed for everything
-   else. Google serves Barlow as STATIC files, one per weight, so each weight is its own face. */
-foreach ( array( 'Anton' => 1, 'Barlow' => 3, 'Barlow Condensed' => 2 ) as $fam => $n ) {
+   else; its model B, `forja-fucsia`, sets Archivo Black. Google serves Barlow as STATIC files,
+   one per weight, so each weight is its own face. */
+foreach ( array( 'Anton' => 1, 'Barlow' => 3, 'Barlow Condensed' => 2, 'Archivo Black' => 1 ) as $fam => $n ) {
 	ok( isset( $reg[ $fam ] ), "fonts: `$fam` is registered" );
 	if ( isset( $reg[ $fam ] ) ) {
 		ok( $n === $caras_de( nm_font_faces( array( $fam ) ) ), "fonts: $fam emits $n face(s), one per static file" );
