@@ -98,6 +98,46 @@ acción de la ficha quedaba al 67% de profundidad. Reordenar el contenedor por p
 nativo (`order`), y sirve; pero comprueba dónde acaba: reordenado seguía a dos pantallas de
 distancia. La pregunta no es «¿está antes?», es «¿se ve sin bajar?».
 
+## Documento y apilado
+
+**Una maqueta sin `<!doctype html>` se pinta en modo de compatibilidad.** Diez de trece maquetas de la
+biblioteca empezaban por `<title>`: abiertas solas, o dentro del visor de la Mesa, que las carga tal
+cual en un `iframe`, el navegador aplicaba sus reglas de compatibilidad —alto de las líneas alrededor
+de una imagen en línea, fuentes de las tablas, alturas en porcentaje— y el barrido las medía así. Al
+añadirlo en Lumière y MARZO se movieron entre 5 y 20px de alto, sin ningún desborde nuevo: nada que
+un número en verde delatara. La primera línea de toda maqueta es `<!doctype html>`.
+
+**Una base de flex en píxeles se convierte en alto cuando la fila pasa a columna.** `flex:1 1 260px`
+reparte ancho mientras el contenedor es una fila; con `flex-direction:column` en un punto de ruptura,
+esa misma base se mide en el eje principal, que ahora es vertical, y el hijo reserva 260px de alto
+aunque su contenido ocupe 73. Ni desborda ni falla contraste: deja huecos vacíos. Medido en Lumière
+a 430: 195px entre la descripción de un ritual y su precio, 163px bajo la marca del pie, 128px en el
+panel del bono; con la base en `auto`, Inicio pasó de 15722 a 11829px y La carta de 10757 a 6109. La
+regla: cada contenedor que cambia de dirección en un punto de ruptura devuelve `flex-basis:auto` a
+todos sus hijos en ese mismo bloque, y una columna fija que se apila lleva `width` con
+`flex-shrink:0`, nunca una base. Se comprueba recorriendo el DOM: ningún hijo visible de un flex en
+columna tiene una base computada en píxeles.
+
+**Un empuje con `margin-left:auto` puesto en un elemento que se oculta deja la hamburguesa a mitad
+de barra.** En Lumière el empuje vivía en la navegación de escritorio, que desaparece por debajo de
+1024: la hamburguesa acababa en x=236 de 410. El empuje va en el grupo que queda visible en todos
+los anchos.
+
+**Una banda a sangre que se apila recupera el margen del lado que perdió.** MARZO quitaba el relleno
+derecho para que la foto tocara el borde, y al pasar a una columna los datos y sus filetes tocaban
+el borde de la pantalla (margen medido: 0px), y a 1280 el botón acababa exactamente donde empezaba
+la foto. Entre texto y foto va siempre un hueco de columna, y en una columna el relleno vuelve a
+los dos lados.
+
+**Un relleno en porcentaje dentro de un `max-width` hace la página más estrecha en la pantalla más
+ancha.** El 7,5&nbsp;% se resuelve contra el contenedor de 1280, 96px por lado, dentro de una columna
+de 620px: el 404 de MARZO medía 428px a 1280 y más a 768. Dentro de una medida topada, el relleno
+lateral es fijo o se aplica fuera del tope.
+
+**Un `<details>` cerrado devuelve cajas fantasma.** Al comparar rectángulos de texto para buscar
+solapes, las respuestas plegadas de una FAQ aparecen encima de la pregunta siguiente aunque no se
+pintan. Toda medida de solape filtra con `elemento.checkVisibility()` antes de comparar.
+
 ## Contenido
 
 **Un teléfono de relleno delata la maqueta entera.** `+34 952 00 00 00` aparecía cinco veces. Un
