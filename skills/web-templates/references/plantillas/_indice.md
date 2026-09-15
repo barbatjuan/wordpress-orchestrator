@@ -51,6 +51,7 @@ Una carpeta por slug, y dentro siempre lo mismo:
   `Nav`, `Pie` y su `MANIFIESTO.md`
 - `references/plantillas/delao/maqueta/` — `index.html`
 - `references/plantillas/delao/img/` — doce `.webp`
+- `references/plantillas/delao/veredicto.md`
 
 ## marzo
 
@@ -60,6 +61,7 @@ Una carpeta por slug, y dentro siempre lo mismo:
   `canvas.json` y su `MANIFIESTO.md`
 - `references/plantillas/marzo/maqueta/` — `index.html`
 - `references/plantillas/marzo/img/` — nueve `.webp`
+- `references/plantillas/marzo/veredicto.md`
 
 ## barro
 
@@ -70,6 +72,7 @@ Una carpeta por slug, y dentro siempre lo mismo:
 - `references/plantillas/barro/maqueta/` — `index.html`
 - `references/plantillas/barro/img/` — treinta `.webp`, de los que sólo diez están en el manifiesto y
   se usan; los otros veinte son huérfanos sin procedencia recuperable y no se tocan
+- `references/plantillas/barro/veredicto.md`
 
 ## cadencia
 
@@ -79,6 +82,7 @@ Una carpeta por slug, y dentro siempre lo mismo:
   `Contacto`, `canvas.json` y su `MANIFIESTO.md`
 - `references/plantillas/cadencia/maqueta/` — `index.html`
 - `references/plantillas/cadencia/img/` — ocho `.webp`
+- `references/plantillas/cadencia/veredicto.md`
 
 ## escuadra
 
@@ -88,6 +92,7 @@ Una carpeta por slug, y dentro siempre lo mismo:
   `Contacto`, `canvas.json` y su `MANIFIESTO.md`
 - `references/plantillas/escuadra/maqueta/` — `index.html`
 - `references/plantillas/escuadra/img/` — dieciséis `.webp`
+- `references/plantillas/escuadra/veredicto.md`
 
 ## aranda
 
@@ -97,6 +102,7 @@ Una carpeta por slug, y dentro siempre lo mismo:
   `canvas.json` y su `MANIFIESTO.md`
 - `references/plantillas/aranda/maqueta/` — `index.html`
 - `references/plantillas/aranda/img/` — diez `.webp`
+- `references/plantillas/aranda/veredicto.md`
 
 ## lumiere
 
@@ -106,6 +112,7 @@ Una carpeta por slug, y dentro siempre lo mismo:
   `canvas.json` y su `MANIFIESTO.md`
 - `references/plantillas/lumiere/maqueta/` — `index.html`
 - `references/plantillas/lumiere/img/` — diez `.webp`
+- `references/plantillas/lumiere/veredicto.md`
 
 ## terrazza
 
@@ -115,6 +122,7 @@ Una carpeta por slug, y dentro siempre lo mismo:
   `canvas.json` y su `MANIFIESTO.md`
 - `references/plantillas/terrazza/maqueta/` — `index.html`
 - `references/plantillas/terrazza/img/` — siete `.webp`
+- `references/plantillas/terrazza/veredicto.md`
 
 ## bajura
 
@@ -124,6 +132,7 @@ Una carpeta por slug, y dentro siempre lo mismo:
   `canvas.json` y su `MANIFIESTO.md`
 - `references/plantillas/bajura/maqueta/` — `index.html`
 - `references/plantillas/bajura/img/` — siete `.webp`
+- `references/plantillas/bajura/veredicto.md`
 
 ## corte
 
@@ -133,6 +142,7 @@ Una carpeta por slug, y dentro siempre lo mismo:
   `canvas.json` y su `MANIFIESTO.md`
 - `references/plantillas/corte/maqueta/` — `index.html`
 - `references/plantillas/corte/img/` — nueve `.webp`
+- `references/plantillas/corte/veredicto.md`
 
 ## tueste
 
@@ -142,3 +152,4 @@ Una carpeta por slug, y dentro siempre lo mismo:
   `canvas.json` y su `MANIFIESTO.md`
 - `references/plantillas/tueste/maqueta/` — `index.html`
 - `references/plantillas/tueste/img/` — cinco `.webp`
+- `references/plantillas/tueste/veredicto.md`

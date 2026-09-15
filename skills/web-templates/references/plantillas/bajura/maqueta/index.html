@@ -148,6 +148,13 @@ h1,h2,h3{font-family:var(--font-display);font-weight:800;letter-spacing:-0.025em
 .chip{display:inline-flex;align-items:center;height:42px;padding:0 20px;border-radius:999px;
   font-size:0.9375rem;border:1px solid var(--hair-32);background:transparent;color:var(--c-ink);cursor:pointer;}
 .chip[aria-pressed="true"]{background:var(--c-accent);color:var(--c-on-accent);border-color:var(--c-accent);font-weight:600;}
+/* Selector de chips. La maquetación vivía en un style= en línea, que no puede llevar punto de
+   ruptura, y el primer arreglo lo tapó con !important. Vive aquí, en su clase: flex con salto de
+   línea en escritorio y, por debajo de 767, dos columnas fijas, para que cuatro chips en un hueco
+   estrecho queden 2+2 y nunca 3 y uno solo (medido con barrido.mjs). En Elementor es un contenedor
+   con dirección, hueco y columnas por punto de ruptura: controles nativos, sin CSS a medida. */
+.chip-group{display:flex;gap:10px;flex-wrap:wrap;}
+@media (max-width:767px){.chip-group{display:grid;grid-template-columns:repeat(2,max-content);}}
 
 /* ──────────────────────────────────────── filas de especie ────────────────────────────────── */
 /* El listado de la subasta es DIV, no TABLE: seis columnas de ancho fijo (330+210+230+180+152px
@@ -544,7 +551,7 @@ main{display:block;}
 
       <div style="margin-top:26px;">
         <div class="eyebrow" style="margin-bottom:12px;">Cómo la quieres</div>
-        <div data-chip-group style="display:flex;gap:10px;flex-wrap:wrap;">
+        <div class="chip-group" data-chip-group>
           <button type="button" class="chip" aria-pressed="true">Entera</button>
           <button type="button" class="chip" aria-pressed="false">Eviscerada</button>
           <button type="button" class="chip" aria-pressed="false">En lomos</button>

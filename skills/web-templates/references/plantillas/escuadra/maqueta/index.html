@@ -496,8 +496,16 @@ main{display:block;}
     <span class="eyebrow">Almacenaje</span>
     <img class="placa" src="../img/escuadra-banco.webp" alt="Banco bajo de contrachapado de abedul contra una pared de yeso, con la tapa entreabierta y unas zapatillas al lado" style="width:100%;height:auto;aspect-ratio:1224/460;object-fit:cover;margin-top:24px;">
 
-    <div style="padding-top:24px;border-top:1px solid var(--hair-016);margin-top:22px;display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start;">
-      <div style="flex:1 1 480px;min-width:0;">
+    <!-- DERIVATION FIX: the lienzo's five-column spec row (Escuadra.dc.html, "Almacenaje" section)
+         is fixed widths summing exactly to the section's content width, no gap, no wrap, no grow —
+         the maqueta added a responsive gap and a flex:1 (grow) on the description, and the grow
+         eats the room the price column needed, dropping "129,00 €" onto its own line ALONE at 1280
+         (barrido.mjs H, portada@1280). Capping the description to its own basis instead of letting
+         it grow, and tightening the gap slightly, restores the lienzo's one-row fit without
+         reintroducing a fixed width that would overflow at narrower widths — flex-wrap still
+         protects 768/430, which were never broken. -->
+    <div style="padding-top:24px;border-top:1px solid var(--hair-016);margin-top:22px;display:flex;flex-wrap:wrap;gap:18px;align-items:flex-start;">
+      <div style="flex:0 1 480px;min-width:0;">
         <h3 class="h3">Banco Vado</h3>
         <p class="copy-lg" style="margin-top:14px;max-width:34em;">Un cajón con tapa a la altura de sentarse. Aguanta 120 kg encima y dentro caben dos edredones o el calzado de una casa entera.</p>
       </div>

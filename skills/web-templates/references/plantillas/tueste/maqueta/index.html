@@ -157,6 +157,13 @@ h1,h2,h3{font-family:var(--font-display);font-weight:700;letter-spacing:-0.02em;
 .chip{display:inline-flex;align-items:center;height:42px;padding:0 20px;border-radius:999px;
   font-size:0.9375rem;border:1px solid var(--hair-28);background:transparent;color:var(--c-ink);cursor:pointer;}
 .chip[aria-pressed="true"]{background:var(--c-accent);color:var(--c-white);border-color:var(--c-accent);font-weight:500;}
+/* Selector de chips. La maquetación vivía en un style= en línea, que no puede llevar punto de
+   ruptura, y el primer arreglo lo tapó con !important. Vive aquí, en su clase: flex con salto de
+   línea en escritorio y, por debajo de 767, dos columnas fijas, para que cuatro chips en un hueco
+   estrecho queden 2+2 y nunca 3 y uno solo (medido con barrido.mjs). En Elementor es un contenedor
+   con dirección, hueco y columnas por punto de ruptura: controles nativos, sin CSS a medida. */
+.chip-group{display:flex;gap:10px;flex-wrap:wrap;}
+@media (max-width:767px){.chip-group{display:grid;grid-template-columns:repeat(2,max-content);}}
 
 /* ──────────────────────────────────────── filas y filetes ─────────────────────────────────── */
 .row{display:flex;align-items:center;gap:clamp(1.25rem,1vw + 1rem,2rem);padding:28px 0;border-top:1px solid var(--hair-20);}
@@ -400,7 +407,7 @@ main{display:block;}
     <div style="margin-top:44px;display:flex;gap:clamp(2rem,4vw,5.5rem);flex-wrap:wrap;">
       <div>
         <div class="eyebrow" style="text-transform:none;letter-spacing:0;margin-bottom:14px;">Cada cuánto llega</div>
-        <div data-chip-group style="display:flex;gap:10px;flex-wrap:wrap;">
+        <div class="chip-group" data-chip-group>
           <button type="button" class="chip" aria-pressed="false">Cada 2 semanas</button>
           <button type="button" class="chip" aria-pressed="true">Cada mes</button>
           <button type="button" class="chip" aria-pressed="false">Cada 2 meses</button>
@@ -408,7 +415,7 @@ main{display:block;}
       </div>
       <div>
         <div class="eyebrow" style="text-transform:none;letter-spacing:0;margin-bottom:14px;">Cómo lo mueles</div>
-        <div data-chip-group style="display:flex;gap:10px;flex-wrap:wrap;">
+        <div class="chip-group" data-chip-group>
           <button type="button" class="chip" aria-pressed="true">En grano</button>
           <button type="button" class="chip" aria-pressed="false">Filtro</button>
           <button type="button" class="chip" aria-pressed="false">Italiana</button>
@@ -668,7 +675,7 @@ main{display:block;}
       </div>
 
       <div style="margin-top:36px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;">
-        <div data-chip-group style="display:flex;gap:10px;flex-wrap:wrap;">
+        <div class="chip-group" data-chip-group>
           <button type="button" class="chip" aria-pressed="false">Cada 2 semanas</button>
           <button type="button" class="chip" aria-pressed="true">Cada mes</button>
           <button type="button" class="chip" aria-pressed="false">Cada 2 meses</button>

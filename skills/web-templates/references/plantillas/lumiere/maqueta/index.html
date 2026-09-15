@@ -174,6 +174,13 @@ header.site{position:sticky;top:0;z-index:50;background:var(--c-bg);border-botto
 
 /* ══════════════════════════════════════ zonas (inicio y rituales) ══════════════════════════════════════ */
 .carta-cabecera{padding-block-end:0}
+/* DERIVATION FIX: the lienzo's leyenda is width:fit-content with NO wrap at all (Rituales.dc.html)
+   — a single row by design; the maqueta added flex-wrap so it survives real mobile widths, which
+   is correct, but four facts plus its own 22px side padding do not fit one 768px-wide line no
+   matter how tight the gap gets — the 4th fact drops onto its own line ALONE (768 only — 430
+   already settles into an even 2×2, and 1280 already fits on one line, matching the lienzo). A
+   fixed two-column grid, scoped to the same range that already breaks, turns that into a clean
+   2+2 without touching the one-line desktop layout the lienzo actually specifies. */
 .leyenda-bono{display:flex;flex-wrap:wrap;align-items:center;gap:16px 26px;margin-top:var(--sp-m);padding:16px 22px;background:var(--c-bg-tint);border-radius:var(--radius)}
 .leyenda-bono span{font-size:.8125rem;color:var(--c-text)}
 .leyenda-bono span:first-child{font-weight:600;color:var(--c-ink)}
@@ -385,8 +392,18 @@ footer.site{background:var(--c-bg-tint);margin-top:var(--sp-xxl)}
 .pie-marca{flex:1 1 260px}
 .pie-marca b{font-family:var(--font-display);font-size:1.5rem;letter-spacing:.05em;color:var(--c-ink)}
 .pie-marca p{margin-top:14px;font-size:.875rem;line-height:1.6;color:var(--c-text-muted);max-width:28rem}
-.pie-cols{flex:2 1 480px;display:flex;flex-wrap:wrap;gap:var(--sp-xl)}
-.pie-col{flex:1 1 140px}
+/* DERIVATION FIX: the lienzo's footer holds La carta/Bonos/Contacto as flat siblings of the brand
+   block in one unwrapped justify-content:space-between row (confirmed by reading Lumiere.dc.html);
+   the maqueta nests them (plus La casa, a real 4th column the site needs for Nosotros/legal links
+   that the static lienzo never had to route) inside .pie-cols, sharing a row with .pie-marca. A
+   flex-wrap:wrap of four 140px columns does not reliably fit the ~480-720px this group is left
+   with between 768px and 1280px, dropping the 4th column onto its own line (barrido.mjs H, 430/768:
+   fine once .pie-top stacks; 768 and 1280: an orphan). A fixed column-count grid removes the
+   overflow-driven wrap entirely — 2 columns below 1024px (where .pie-cols shares its row with
+   .pie-marca and has the least room), 4 at 1024px and up — so four items are always exactly two
+   full rows or one full row, never three-then-one. */
+.pie-cols{flex:2 1 480px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--sp-l)}
+.pie-col{min-width:0}
 .pie-col-titulo{font-size:.875rem;font-weight:600;color:var(--c-ink)}
 .pie-col a,.pie-col span{display:block;margin-top:12px;font-size:.875rem;color:var(--c-text-muted)}
 .pie-col a:first-of-type{margin-top:14px}
@@ -404,6 +421,8 @@ footer.site{background:var(--c-bg-tint);margin-top:var(--sp-xxl)}
   .legal-body{grid-template-columns:minmax(0,1fr)}
   .legal-index{position:static;margin-bottom:var(--sp-m)}
   .cookies-tabla>div{grid-template-columns:7rem minmax(0,1fr) 5rem 5rem;font-size:.75rem}
+  .pie-cols{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .leyenda-bono{display:grid;grid-template-columns:repeat(2,max-content)}
 }
 @media (max-width:767px){
   :root{--header-h:64px}
