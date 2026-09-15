@@ -59,7 +59,7 @@ propio Objetivo.
 | `ritual-bono` | `lumiere` | corporate | `materia` | en la biblioteca |
 | `reservar-mesa` | `terrazza` | corporate | `lujo-oscuro` | en la biblioteca |
 | `clase-de-prueba` | `amalia` · `amalia-salvia` (dos direcciones del mismo encargo) | corporate | `editorial` | en la biblioteca |
-| `clase-de-prueba` | `forja` | corporate | `directo` | en la biblioteca |
+| `clase-de-prueba` | `forja` · `forja-fucsia` (dos modelos del mismo encargo) | corporate | `directo` | en la biblioteca |
 | `servicios-captacion` | sin plantilla | — | — | ruta a medida |
 | `tienda-talla` | `marzo` | ecommerce | `materia` | en la biblioteca |
 | `tienda-lote` | `barro` | ecommerce | `lujo-oscuro` | en la biblioteca |
