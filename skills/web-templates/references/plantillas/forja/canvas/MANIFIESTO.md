@@ -39,8 +39,9 @@ autoridad de esos anchos.
 ## Cambios hechos al lienzo antes de derivar
 
 - **Suelo.** `html, body` con el fondo de tinta además del envoltorio, que ahora lleva `data-suelo`.
-- **Sin expresión nativa, quitado.** La marquesina animada `om-marquee` pasa a banda estática con las ocho
-  disciplinas (Elementor no tiene marquesina nativa, ni en Pro; ver la ficha). El `backdrop-filter` y la
+- **Marquesina, conservada.** La marquesina `om-marquee` sigue en una fila y en bucle, como se exportó: el
+  usuario la pidió así. Es la única regla de CSS a medida de la plantilla (ver la ficha).
+- **Sin expresión nativa, quitado.** El `backdrop-filter` y la
   transparencia de la cabecera (opaca). El `overflow-x: hidden` del envoltorio, que dejaba sin pegar la
   cabecera. La regla de impresión con `!important`.
 - **Rejillas.** Las `repeat(auto-fit, minmax(…))` pasan a columnas fijas por sección (cifras 4, box 4,
@@ -61,10 +62,9 @@ autoridad de esos anchos.
   registrada. Teléfono de relleno `+34 910 000 000` sustituido. Precios con espacio duro antes del «€».
 - **Enlaces.** Todas las llamadas a la prueba y las de los planes llevan al formulario de Contacto
   (`Contacto.dc.html#reservar`); la banda final apuntaba a sí misma. «Hablar con un coach» iba a Planes y va a
-  Contacto. «Ver planes» a Planes. Correo y teléfono a `mailto:`/`tel:`. Los enlaces del pie a Instagram y YouTube
-  llevan a la banda de la prueba de inicio y WhatsApp a Contacto, como decidió la segunda exportación del
-  lienzo (que sólo cambió esos enlaces en El box, Disciplinas, Coaches, Planes y Contacto): ningún enlace
-  sale a una red que no existe.
+  Contacto. «Ver planes» a Planes. Correo y teléfono a `mailto:`/`tel:`. La segunda exportación del lienzo llevó
+  Instagram y YouTube del pie a la banda de la prueba; en la maqueta son texto con el nombre de la cuenta y
+  WhatsApp lleva a Contacto, para que un enlace llamado como una red no lleve a otra parte de la página.
 - **Formulario.** Nombre y correo obligatorios, teléfono opcional, casilla de privacidad obligatoria antes del
   botón (antes, una frase «al enviar aceptas»).
 - **Contenido nuevo: horario semanal** en `Disciplinas.dc.html`, en lugar del bloque de recuperación que

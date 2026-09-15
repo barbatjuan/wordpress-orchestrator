@@ -11,6 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow+Condensed:wght@500;600&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet" />
 <style>
+  @keyframes om-marquee { from { transform:translateX(0); } to { transform:translateX(-50%); } }
   html, body { margin:0; padding:0; background:#0A0A0A; }
   body { color:#F2F2F0; -webkit-font-smoothing:antialiased; }
   * { box-sizing:border-box; }
@@ -66,8 +67,15 @@
   </section>
 
   <!-- MARQUESINA -->
-  <section style="padding:26px 10vw;background:#D9FF00">
-    <p style="max-width:1440px;margin:0 auto;font-family:Anton,Impact,sans-serif;font-size:40px;line-height:1.2;letter-spacing:.01em;text-transform:uppercase;text-align:center;text-wrap:balance;color:#0A0A0A">Fuerza / Metcon / Halterofilia / Gimnástico / Endurance / Movilidad / Iniciación / Open box</p>
+  <section style="padding:22px 0;background:#D9FF00;overflow:hidden">
+    <div style="display:flex;width:max-content;animation:om-marquee 26s linear infinite">
+      <div style="display:flex;align-items:center;gap:40px;padding-right:40px;font-family:Anton,Impact,sans-serif;font-size:40px;text-transform:uppercase;color:#0A0A0A;letter-spacing:.01em">
+        <span>Fuerza</span><span style="color:rgba(10,10,10,.35)">/</span><span>Metcon</span><span style="color:rgba(10,10,10,.35)">/</span><span>Halterofilia</span><span style="color:rgba(10,10,10,.35)">/</span><span>Gimnástico</span><span style="color:rgba(10,10,10,.35)">/</span><span>Endurance</span><span style="color:rgba(10,10,10,.35)">/</span><span>Movilidad</span><span style="color:rgba(10,10,10,.35)">/</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:40px;padding-right:40px;font-family:Anton,Impact,sans-serif;font-size:40px;text-transform:uppercase;color:#0A0A0A;letter-spacing:.01em">
+        <span>Fuerza</span><span style="color:rgba(10,10,10,.35)">/</span><span>Metcon</span><span style="color:rgba(10,10,10,.35)">/</span><span>Halterofilia</span><span style="color:rgba(10,10,10,.35)">/</span><span>Gimnástico</span><span style="color:rgba(10,10,10,.35)">/</span><span>Endurance</span><span style="color:rgba(10,10,10,.35)">/</span><span>Movilidad</span><span style="color:rgba(10,10,10,.35)">/</span>
+      </div>
+    </div>
   </section>
 
   <!-- CONTADORES -->

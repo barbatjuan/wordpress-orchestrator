@@ -10,7 +10,7 @@ fuentes: [anton, barlow-condensed, barlow]
 canvas_url: ""
 variantes: {}
 html_widgets_max: 0
-css_custom_max: 0
+css_custom_max: 1
 ---
 
 # Forja Box · llenar un horario de clases duras, empezando por una gratis
@@ -173,7 +173,7 @@ nativa.
 |---|---|---|---|
 | Cabecera | Plantilla de cabecera del Theme Builder: contenedor flex + Encabezado «Forja Box» (la palabra en ácido va en el logotipo SVG) + Menú de navegación + Botón | Cabecera global del Theme Builder: Menú + Botón | Opaca, pegajosa con Efectos de movimiento. Bajo 1024, el desplegable del menú es el único conmutador; el botón «Prueba gratis» sigue visible en todos los anchos |
 | `hero` | Contenedor rejilla `1.15fr .85fr`: contenedor fila (Divisor 34×2&nbsp;px + Encabezado) + Encabezado H1 (la línea en ácido, Encabezado aparte si el color de palabra cuenta como CSS) + Editor de texto + dos Botones · Imagen 3/4 con borde | Fila 2 columnas: Texto + Botón ×2 · Imagen | Una columna bajo 767 |
-| `banda-disciplinas` | Contenedor con fondo ácido: Encabezado centrado con las ocho disciplinas separadas por «/» | Sección con fondo: Texto | **La marquesina animada se quitó**: Elementor no tiene marquesina nativa (tampoco Pro; el Carrusel de bucle avanza por diapositivas, no en bucle continuo) y Divi tampoco. Queda estática |
+| `banda-disciplinas` | Contenedor con fondo ácido y desbordamiento oculto + contenedor fila con las ocho disciplinas (Encabezados separados por «/») duplicado para el bucle | Sección con fondo: Texto en una fila | **Marquesina en una fila, en bucle, como el lienzo: decisión del usuario.** No hay widget nativo de marquesina dentro de la página (el «Ticker» de Elementor Pro es una barra flotante, no una sección; el Carrusel de bucle avanza por diapositivas), así que es la única regla de CSS a medida de la plantilla: un `@keyframes` de desplazamiento sobre el contenedor fila, sin animación con movimiento reducido |
 | `cifras` | Contenedor rejilla de 4 (2 bajo 767): 4 Contadores con sufijo «+» en el primero | 4 Contadores numéricos; «420+» como Texto (el módulo sólo admite «%») | La animación del número es la del widget |
 | `disciplinas-inicio`, `disciplinas-lista` | Cabecera flex (Encabezado + Editor de texto) + contenedor rejilla de 4 (2 bajo 1024, 1 bajo 767) con borde superior e izquierdo; cada tarjeta, contenedor con borde derecho e inferior: Encabezado (número) + Encabezado + Editor de texto + Encabezado (meta) | Blurbs en fila de 4 con borde | Al pasar: fondo `#141414` y Sombra de caja interior de 3&nbsp;px ácida, controles nativos de estado. Nunca el hueco de 1&nbsp;px sobre fondo |
 | `regla-casa` | Contenedor con imagen de fondo `forja-clase-completa` + superposición de fondo en degradado (`.72 → .86`) + contenedor centrado: Encabezado + Encabezado H2 + Editor de texto | Sección con fondo y degradado: Texto | Alto mínimo `clamp(540, 64vw, 780)`; sin alto mínimo bajo 767 |
@@ -188,12 +188,13 @@ nativa.
 | `gracias-cuerpo` | Encabezados + rejilla de 3 pasos con bordes + dos Botones | Texto + Blurbs + Botones | |
 | `aviso-legal-cuerpo`, `privacidad-cuerpo`, `cookies-cuerpo` | Contenedor rejilla: contenedor pegajoso (sólo escritorio) con lista de anclas + columna de Encabezados y Editores de texto; fichas de datos y tabla de cookies como filas de contenedores con borde | Texto con anclas | Bajo 767 cada fila de cookies se apila con su etiqueta visible (visibilidad por punto de ruptura). Textos ficticios: se reescriben con `wordpress-legal` |
 | `error-cuerpo` | Plantilla «404» del Theme Builder: Encabezados + Editor de texto + tres Botones | Plantilla 404 | |
-| Pie | Plantilla de pie del Theme Builder: rejilla `1.4fr 1fr 1fr 1fr` (2 bajo 1024) + fila inferior con borde y Menú legal | Pie global | Instagram y YouTube llevan a la banda de la prueba de inicio y WhatsApp a Contacto, como en el lienzo: ningún enlace sale a una red que no existe |
+| Pie | Plantilla de pie del Theme Builder: rejilla `1.4fr 1fr 1fr 1fr` (2 bajo 1024) + fila inferior con borde y Menú legal | Pie global | Instagram y YouTube son texto con el nombre de la cuenta (en el sitio, Iconos sociales con las URL del cliente) y WhatsApp lleva a Contacto: ningún enlace de red lleva a otra parte de la página |
 
-**Techo declarado: cero widgets HTML y cero reglas de CSS a medida.** Una sección que no quepa en esta tabla
-se rediseña; no se abre una excepción sin escribirla aquí.
+**Techo declarado: cero widgets HTML y una regla de CSS a medida**, la de la marquesina de `banda-disciplinas`,
+que el usuario pidió conservar en una fila y en bucle. Cualquier otra sección que no quepa en esta tabla se
+rediseña; no se abre otra excepción sin escribirla aquí.
 
-**Quitado del lienzo por no tener expresión nativa:** la marquesina en bucle `om-marquee`, el
+**Quitado del lienzo por no tener expresión nativa:** el
 `backdrop-filter` y la transparencia de la cabecera, el `overflow-x: hidden` del envoltorio, las rejillas
 `auto-fit` y las dibujadas con hueco sobre fondo de línea, y la monoespaciada de sistema.
 Se quedan porque sí la tienen: la animación de entrada, el filete interior al pasar por una disciplina, la
