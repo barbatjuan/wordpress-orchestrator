@@ -16,6 +16,14 @@ sin veredicto vigente, la plantilla no se ofrece a un cliente.
 | `bajura` · BAJURA | `subasta-diaria` | `tecnologico` | ecommerce | portada · categoría · ficha de producto · carro · pago · pedido recibido · mi cuenta · la marca · contacto · condiciones de venta y envíos · aviso legal · privacidad · cookies · 404 | sin veredicto |
 | `corte` · Corte Nueve | `prenda-a-medida` | `materia` | ecommerce | portada · categoría · ficha de producto · carro · pago · pedido recibido · mi cuenta · la marca · contacto · condiciones de venta y envíos · aviso legal · privacidad · cookies · 404 | sin veredicto |
 | `tueste` · Tueste Norte | `suscripcion` | `editorial` | ecommerce | portada · categoría · ficha de producto · carro · pago · pedido recibido · mi cuenta · la marca · contacto · condiciones de venta y envíos · aviso legal · privacidad · cookies · 404 | sin veredicto |
+| `amalia` · Amalia Yoga | `clase-de-prueba` | `editorial` | corporate | inicio · filosofía · planes · clase · diario · entrada · contacto · gracias · aviso legal · privacidad · cookies · 404 | sin veredicto |
+| `amalia-salvia` · Amalia · Sala verde | `clase-de-prueba` | `editorial` | corporate | inicio · filosofía · planes · clase · diario · entrada · contacto · gracias · aviso legal · privacidad · cookies · 404 | sin veredicto |
+
+**`amalia` y `amalia-salvia` son las dos direcciones de un mismo encargo** —el mismo estudio, el
+mismo texto y las mismas doce páginas—, una en papel crudo y terracota con cabecera horizontal y
+otra en verde con carril lateral y slider. Comparten Objetivo, tipo y, medido eje por eje en los dos
+lienzos, Enfoque. Se ofrecen como alternativa entre sí para un mismo cliente, nunca como dos
+plantillas distintas de la biblioteca.
 
 **Las once plantillas tienen su juego completo de páginas** derivado en `maqueta/index.html` —
 `delao`, `aranda`, `lumiere` y `terrazza` con diez, y `marzo`, `barro`, `cadencia`, `escuadra`, `tueste`,
@@ -24,7 +32,9 @@ cliente: una maqueta que nadie ha mirado es una carpeta de ficheros que pasa los
 
 **El margen de página no es el mismo en todas, y es a propósito.** `delao`, `marzo`, `barro`,
 `cadencia` y `escuadra` usan el 7,5&nbsp;% del estándar de la casa; `lumiere` usa 6,667&nbsp;%,
-`aranda` 5&nbsp;%, `corte` 6,667&nbsp;%, `bajura` 4,444&nbsp;%, `terrazza` 3,333&nbsp;% y `tueste` 10&nbsp;%, medidos en sus lienzos y declarados en sus fichas con su
+`aranda` 5&nbsp;%, `corte` 6,667&nbsp;%, `bajura` 4,444&nbsp;%, `terrazza` 3,333&nbsp;%, `tueste` 10&nbsp;%,
+`amalia` 4&nbsp;vw con carril de 1280&nbsp;px y `amalia-salvia` 4&nbsp;% junto a un carril lateral de 250&nbsp;px con la
+medida topada en 1120&nbsp;px, medidos en sus lienzos y declarados en sus fichas con su
 razón. Once plantillas con el
 mismo margen serían once plantillas hechas por la misma mano.
 
@@ -153,3 +163,22 @@ Una carpeta por slug, y dentro siempre lo mismo:
 - `references/plantillas/tueste/maqueta/` — `index.html`
 - `references/plantillas/tueste/img/` — cinco `.webp`
 - `references/plantillas/tueste/veredicto.md`
+
+## amalia
+
+- `references/plantillas/amalia/ficha.md`
+- `references/plantillas/amalia/manifiesto-imagenes.md`
+- `references/plantillas/amalia/canvas/` — `Amalia`, `HeroA`, `canvas.json` y su `MANIFIESTO.md`
+- `references/plantillas/amalia/maqueta/` — `index.html`
+- `references/plantillas/amalia/img/` — diecinueve `.webp`
+- `references/plantillas/amalia/veredicto.md`
+
+## amalia-salvia
+
+- `references/plantillas/amalia-salvia/ficha.md`
+- `references/plantillas/amalia-salvia/manifiesto-imagenes.md`
+- `references/plantillas/amalia-salvia/canvas/` — `AmaliaSalvia`, `HeroCentrado`, `canvas.json` y su
+  `MANIFIESTO.md`
+- `references/plantillas/amalia-salvia/maqueta/` — `index.html`
+- `references/plantillas/amalia-salvia/img/` — veintidós `.webp`
+- `references/plantillas/amalia-salvia/veredicto.md`

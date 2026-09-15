@@ -27,6 +27,7 @@ distintos.
 | `pedir-cita` | Llevar a pedir cita en una consulta sanitaria donde el freno es el miedo al procedimiento: duración, sesiones, anestesia, quién lo hace | Clínica dental, dermatología, fisioterapia, podología, veterinaria; medicina estética con acto médico (toxina, hilos, láser vascular); número de colegiado, consentimiento |
 | `urgencia-hoy` | Que quien llega con un problema ahora llame o vaya ya, sin tener que leer | Guardia, 24 horas, cerrajería, fontanería, grúa, veterinaria de urgencia; «hoy», «en media hora», zona de cobertura |
 | `tarifa-taller` | Quitar el miedo al precio desconocido publicando importes por trabajo | Taller mecánico, chapa, neumáticos, reparación técnica; «precio cerrado», «presupuesto antes de tocar nada» |
+| `clase-de-prueba` | Llenar un horario semanal de clases en grupo pagado por cuota mensual; la conversión es la clase de prueba gratuita y la secundaria, el correo de quien pide una guía gratuita | Estudio de yoga, pilates de suelo, meditación, danza, barre, escalada, artes marciales; «primera clase gratis», horario semanal, cuota, «sin permanencia», profesoras con nombre, sala y directo |
 
 ### Ecommerce
 
@@ -57,6 +58,7 @@ propio Objetivo.
 | `stock-ocasion` | `aranda` | corporate | `tecnologico` | en la biblioteca |
 | `ritual-bono` | `lumiere` | corporate | `materia` | en la biblioteca |
 | `reservar-mesa` | `terrazza` | corporate | `lujo-oscuro` | en la biblioteca |
+| `clase-de-prueba` | `amalia` · `amalia-salvia` (dos direcciones del mismo encargo) | corporate | `editorial` | en la biblioteca |
 | `servicios-captacion` | sin plantilla | — | — | ruta a medida |
 | `tienda-talla` | `marzo` | ecommerce | `materia` | en la biblioteca |
 | `tienda-lote` | `barro` | ecommerce | `lujo-oscuro` | en la biblioteca |
@@ -88,6 +90,9 @@ del veredicto para no quedarse vieja; se lee siempre del índice.
      unas cuarenta propiedades elegidas por zona no es ninguna de las dos.
    - `ritual-bono` frente a `pedir-cita`: si hay acto médico y colegiado, `pedir-cita`.
    - `plan-fases` frente a `suscripcion`: el plan termina; la suscripción no.
+   - `clase-de-prueba` frente a `suscripcion`: un horario y una sala a los que se acude frente a una
+     entrega que llega a casa. Frente a `pedir-cita`: si hay diagnóstico o tratamiento individual,
+     `pedir-cita`. Frente a `plan-fases`: la cuota de clases no termina.
    - `tienda-lote` frente a `catalogo-amplio`: la procedencia frente al precio y la medida.
    - `tienda-talla` frente a `equipo-por-uso`: la prenda por su talla frente al conjunto por su uso.
    - `a-medida` frente a cualquier tienda: si el precio no se sabe hasta configurar, no hay carro.

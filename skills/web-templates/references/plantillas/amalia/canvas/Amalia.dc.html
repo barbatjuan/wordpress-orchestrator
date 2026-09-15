@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Archivo:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+  html, body { margin: 0; padding: 0; background: #F6F2EA; }
+  * { box-sizing: border-box; }
+  a { color: #1E1B16; text-decoration: none; }
+  a:hover { color: #9E5535; }
+  input::placeholder, textarea::placeholder { color: #70685B; }
+  @keyframes rise { from { opacity: 0; transform: translateY(18px) } to { opacity: 1; transform: translateY(0) } }
+</style>
+</helmet>
+<div data-suelo="1" style="background: #F6F2EA; color: #1E1B16; font-family: Archivo, Helvetica, sans-serif;">
+
+  <header style="position: sticky; top: 0; z-index: 20; display: flex; align-items: baseline; justify-content: space-between; gap: 32px; padding: 22px max(clamp(20px, 4vw, 64px), calc((100% - 1280px) / 2)); background: #F6F2EA; border-bottom: 1px solid #DED5C6;">
+    <a href="#" onClick="{{ goHome }}" style="font-family: 'Instrument Serif', Georgia, serif; font-size: 25px; letter-spacing: .01em;">Amalia<span style="color: #9E5535;">.</span></a>
+    <nav style="display: flex; flex-wrap: wrap; gap: clamp(16px, 2.2vw, 38px); font-size: 13px; letter-spacing: .1em; text-transform: uppercase;">
+      <a href="#" onClick="{{ goFilosofia }}">Filosofía</a>
+      <a href="#" onClick="{{ goPlanes }}">Planes</a>
+      <a href="#" onClick="{{ goDiario }}">Diario</a>
+      <a href="#" onClick="{{ goContacto }}">Contacto</a>
+    </nav>
+    <a href="#" onClick="{{ goReservar }}" style="font-size: 13px; letter-spacing: .1em; text-transform: uppercase; border-bottom: 1px solid #9E5535; padding-bottom: 3px; color: #9E5535; white-space: nowrap;">Clase de prueba</a>
+  </header>
+
+  <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+  <main>
+    <section style="position: relative; display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr); gap: clamp(24px, 5vw, 72px); align-items: end; padding: clamp(40px, 8vh, 104px) max(clamp(20px, 4vw, 64px), calc((100% - 1280px) / 2)) 0;">
+      <div style="position: relative; animation: rise 1.1s cubic-bezier(.2,.7,.2,1) both;">
+        <p style="display: flex; align-items: center; gap: 14px; margin: 0 0 clamp(20px, 4vh, 40px); font-size: 12px; letter-spacing: .22em; text-transform: uppercase; color: #70685B;">
+          <span style="display: block; width: 46px; height: 1px; background: #C9A88E;"></span>
+          Estudio y sala online · Madrid
+        </p>
+        <h1 style="margin: 0; font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; font-size: clamp(50px, 8.4vw, 148px); line-height: .92; letter-spacing: -.02em; text-wrap: pretty;">
+          Volver al<br />
+          <span style="font-style: italic; color: #9E5535;">ritmo</span> de tu<br />
+          respiración
+        </h1>
+        <p style="max-width: 46ch; margin: clamp(24px, 4vh, 40px) 0 0; font-size: clamp(15px, 1.2vw, 18px); line-height: 1.65; font-weight: 300; color: #4A443A; text-wrap: pretty;">
+          Práctica lenta, guiada y sin prisa. Vinyasa, hatha y restaurativo en nuestra sala de Chamberí, o en directo desde donde estés.
+        </p>
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin-top: clamp(28px, 5vh, 48px);">
+          <a href="#" onClick="{{ goReservar }}" style="padding: 17px 30px; border-radius: 999px; background: #1E1B16; color: #F6F2EA; font-size: 13px; letter-spacing: .12em; text-transform: uppercase; transition: background .35s ease, transform .35s ease;" style-hover="background: #9E5535; color: #F6F2EA; transform: translateY(-2px)">Reserva tu primera clase</a>
+          <a href="#newsletter" style="padding: 17px 26px; border-radius: 999px; border: 1px solid #D6CCBB; font-size: 13px; letter-spacing: .12em; text-transform: uppercase; transition: border-color .35s ease, background .35s ease;" style-hover="border-color: #1E1B16; background: #EFE8DC">Guía de 7 días</a>
+        </div>
+      </div>
+      <div style="position: relative; animation: rise 1.3s .15s cubic-bezier(.2,.7,.2,1) both;">
+        <div style="position: relative; aspect-ratio: 3 / 4.1; border-radius: 240px 240px 12px 12px; overflow: hidden; background: repeating-linear-gradient(115deg, #E7DDCD 0 12px, #EFE7D9 12px 24px);">
+          <span style="position: absolute; left: 50%; bottom: 22px; transform: translateX(-50%); font-family: ui-monospace, Menlo, monospace; font-size: 11px; letter-spacing: .06em; color: #70685B; background: #F6F2EA; padding: 7px 11px; border-radius: 4px; white-space: nowrap;">amalia-hero · práctica en la sala</span>
+        </div>
+        <div style="display: flex; align-items: baseline; gap: 12px; margin-top: 20px; padding-top: 18px; border-top: 1px solid #DED5C6;">
+          <span style="font-family: 'Instrument Serif', Georgia, serif; font-size: 42px; line-height: 1;">14</span>
+          <span style="font-size: 12px; line-height: 1.5; letter-spacing: .06em; text-transform: uppercase; color: #70685B;">clases semanales<br />presenciales y en directo</span>
+        </div>
+      </div>
+    </section>
+
+    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: clamp(18px, 3.5vw, 56px); margin-top: clamp(40px, 7vh, 88px); padding: 22px max(clamp(20px, 4vw, 64px), calc((100% - 1280px) / 2)); border-top: 1px solid #DED5C6; border-bottom: 1px solid #DED5C6; font-size: 12px; letter-spacing: .16em; text-transform: uppercase; color: #70685B;">
+      <span>Vinyasa suave</span>
+      <span>Hatha</span>
+      <span>Restaurativo</span>
+      <span>Pranayama</span>
+      <span>Yoga nidra</span>
+      <span style="margin-left: auto; color: #9E5535;">Primera clase gratuita</span>
+    </div>
+
+    <section data-reveal="1" style="display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: clamp(28px, 6vw, 88px); align-items: start; padding: clamp(64px, 12vh, 140px) max(clamp(20px, 4vw, 64px), calc((100% - 1280px) / 2));">
+      <div style="position: sticky; top: 120px;">
+        <p style="margin: 0 0 22px; font-size: 12px; letter-spacing: .22em; text-transform: uppercase; color: #70685B;">01 — Filosofía</p>
+        <div style="position: relative; aspect-ratio: 4 / 5; border-radius: 12px; overflow: hidden; background: repeating-linear-gradient(105deg, #E7DDCD 0 12px, #EFE7D9 12px 24px);">
+          <span style="position: absolute; left: 16px; bottom: 16px; font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: #70685B; background: #F6F2EA; padding: 6px 10px; border-radius: 4px;">amalia-filosofia · Amalia</span>
+        </div>
+      </div>
+      <div>
+        <h2 style="margin: 0; max-width: 24ch; font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; font-size: clamp(34px, 4.6vw, 76px); line-height: 1.04; letter-spacing: -.015em;">
+          No enseñamos posturas. Enseñamos a <span style="font-style: italic; color: #9E5535;">quedarse</span>.
+        </h2>
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(20px, 3vw, 48px); margin-top: clamp(32px, 5vh, 56px);">
+          <p style="margin: 0; font-size: 16px; line-height: 1.75; font-weight: 300; color: #4A443A; text-wrap: pretty;">
+            Amalia abrió la sala en 2016 después de doce años practicando en Mysore y Lisboa. La idea era simple: un espacio sin espejos, sin música alta y sin competir con la persona de la esterilla de al lado.
+          </p>
+          <p style="margin: 0; font-size: 16px; line-height: 1.75; font-weight: 300; color: #4A443A; text-wrap: pretty;">
+            Cada clase empieza con diez minutos de respiración y termina con savasana largo. Los grupos son de ocho personas como máximo, para que haya tiempo de corregir a cada una sin interrumpir el ritmo.
+          </p>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: clamp(36px, 6vh, 64px);">
+          <div style="padding: 26px 22px 26px 0;">
+            <p style="margin: 0; font-family: 'Instrument Serif', Georgia, serif; font-size: 40px; line-height: 1;">8</p>
+            <p style="margin: 8px 0 0; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: #70685B;">personas por clase</p>
+          </div>
+          <div style="padding: 26px 22px; border-left: 1px solid #DED5C6;">
+            <p style="margin: 0; font-family: 'Instrument Serif', Georgia, serif; font-size: 40px; line-height: 1;">10</p>
+            <p style="margin: 8px 0 0; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: #70685B;">años de sala</p>
+          </div>
+          <div style="padding: 26px 22px; border-left: 1px solid #DED5C6;">
+            <p style="margin: 0; font-family: 'Instrument Serif', Georgia, serif; font-size: 40px; line-height: 1;">640</p>
+            <p style="margin: 8px 0 0; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: #70685B;">alumnas desde 2016</p>
+          </div>
+        </div>
+        <a href="#" onClick="{{ goFilosofia }}" style="display: inline-block; margin-top: clamp(28px, 4vh, 44px); font-size: 13px; letter-spacing: .12em; text-transform: uppercase; border-bottom: 1px solid #C9A88E; padding-bottom: 4px; transition: border-color .35s ease;" style-hover="border-color: #9E5535">Leer la historia completa</a>
+      </div>
+    </section>
+
+    <section id="clases" data-reveal="1" style="padding: clamp(56px, 10vh, 120px) max(clamp(20px, 4vw, 64px), calc((100% - 1280px) / 2)); background: #EFE8DC;">
+      <div style="display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 24px; padding-bottom: clamp(28px, 4vh, 48px); border-bottom: 1px solid #DED5C6;">
+        <div>
+          <p style="margin: 0 0 18px; font-size: 12px; letter-spacing: .22em; text-transform: uppercase; color: #70685B;">02 — Clases</p>
+          <h2 style="margin: 0; max-width: 20ch; font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; font-size: clamp(32px, 4.2vw, 68px); line-height: 1.05;">Seis formas de bajar el ritmo</h2>
+        </div>
+        <p style="max-width: 34ch; margin: 0; font-size: 15px; line-height: 1.7; font-weight: 300; color: #4A443A;">Todas las clases existen en sala y en directo por vídeo. Si no puedes asistir, la grabación queda disponible siete días.</p>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(20px, 2.5vw, 34px); margin-top: clamp(32px, 5vh, 56px);">
+        <sc-for list="{{ clases }}" as="c" hint-placeholder-count="6">
+          <a href="#" onClick="{{ c.abrir }}" style="display: flex; flex-direction: column; gap: 16px; padding: 26px 24px 30px; background: #F6F2EA; border: 1px solid #E3DACB; border-radius: 4px; transition: transform .4s cubic-bezier(.2,.7,.2,1), border-color .4s ease;" style-hover="transform: translateY(-6px); border-color: #C9A88E">
+            <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px;">
+              <span style="font-family: Archivo, Helvetica, sans-serif; font-variant-numeric: tabular-nums; font-size: 12px; font-weight: 500; letter-spacing: .08em; color: #9E5535;">{{ c.num }}</span>
+              <span style="font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: #70685B;">{{ c.nivel }}</span>
+            </div>
+            <h3 style="margin: 0; font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; font-size: 30px; line-height: 1.1;">{{ c.nombre }}</h3>
+            <p style="margin: 0; font-size: 14.5px; line-height: 1.7; font-weight: 300; color: #4A443A; text-wrap: pretty;">{{ c.texto }}</p>
+            <p style="display: flex; justify-content: space-between; gap: 12px; margin: auto 0 0; padding-top: 18px; border-top: 1px solid #E3DACB; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: #70685B;"><span>{{ c.duracion }}</span><span style="color: #9E5535;">Ver clase →</span></p>
+          </a>
+        </sc-for>
+      </div>
+    </section>
+
+    <section data-reveal="1" style="padding: clamp(64px, 12vh, 140px) max(clamp(20px, 4vw, 64px), calc((100% - 1280px) / 2));">
+      <div style="display: flex; align-items: center; gap: 18px; margin-bottom: clamp(30px, 5vh, 52px);">
+        <p style="margin: 0; font-size: 12px; letter-spacing: .22em; text-transform: uppercase; color: #70685B;">03 — Equipo</p>
+        <span style="flex: 1; height: 1px; background: #DED5C6;"></span>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(20px, 3vw, 44px);">
+        <sc-for list="{{ equipo }}" as="p" hint-placeholder-count="3">
+          <article>
+            <div style="position: relative; aspect-ratio: 3 / 4; overflow: hidden; border-radius: 4px; background: repeating-linear-gradient(105deg, #E7DDCD 0 12px, #EFE7D9 12px 24px);">
+              <span style="position: absolute; left: 14px; bottom: 14px; font-family: ui-monospace, Menlo, monospace; font-size: 10.5px; color: #70685B; background: #F6F2EA; padding: 6px 9px; border-radius: 3px;">{{ p.slug }} · {{ p.nombre }}</span>
+            </div>
+            <h3 style="margin: 18px 0 6px; font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; font-size: 26px;">{{ p.nombre }}</h3>
+            <p style="margin: 0 0 12px; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: #9E5535;">{{ p.rol }}</p>
+            <p style="margin: 0; font-size: 14.5px; line-height: 1.7; font-weight: 300; color: #4A443A; text-wrap: pretty;">{{ p.bio }}</p>
+          </article>
+        </sc-for>
+      </div>
+    </section>
+
+    <section data-reveal="1" style="padding: clamp(56px, 10vh, 120px) max(clamp(20px, 4vw, 64px), calc((100% - 1280px) / 2)); background: #1E1B16; color: #F6F2EA;">
+      <div style="display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 28px;">
+        <div>
+          <p style="margin: 0 0 18px; font-size: 12px; letter-spacing: .22em; text-transform: uppercase; color: #9A9083;">04 — Planes</p>
+          <h2 style="margin: 0; max-width: 22ch; font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; font-size: clamp(32px, 4.2vw, 68px); line-height: 1.05;">Sin contratos. Cancela cuando quieras.</h2>
+        </div>
+        <div style="display: flex; align-items: center; gap: 4px; padding: 5px; border: 1px solid #3A352C; border-radius: 999px;">
+          <button onClick="{{ setMensual }}" style="{{ btnMensual }}">Mensual</button>
+          <button onClick="{{ setAnual }}" style="{{ btnAnual }}">Anual · −15%</button>
+        </div>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: clamp(34px, 6vh, 60px); border: 1px solid #3A352C;">
+        <sc-for list="{{ planes }}" as="pl" hint-placeholder-count="3">
+          <article style="{{ pl.articuloOscuro }}">
+            <div>
+              <h3 style="margin: 0 0 8px; font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; font-size: 28px;">{{ pl.nombre }}</h3>
+              <p style="{{ pl.paraOscuro }}">{{ pl.para }}</p>
+            </div>
+            <p style="margin: 0; display: flex; align-items: baseline; gap: 8px;">
+              <span style="font-family: 'Instrument Serif', Georgia, serif; font-size: 54px; line-height: 1;">{{ pl.precio }}</span>
+              <span style="font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: #9A9083;">{{ pl.periodo }}</span>
+            </p>
+            <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 11px; font-size: 14px; font-weight: 300; color: #D8D0C4;">
+              <sc-for list="{{ pl.incluye }}" as="it" hint-placeholder-count="4">
+                <li style="display: flex; gap: 11px; align-items: baseline;"><span style="color: #C9825C;">—</span>{{ it }}</li>
+              </sc-for>
+            </ul>
+            <a href="#" onClick="{{ goReservar }}" style="{{ pl.ctaOscuro }}" style-hover="background: #9E5535; border-color: #9E5535">{{ pl.cta }}</a>
+          </article>
+        </sc-for>
+      </div>
+    </section>
+
+    <section data-reveal="1" style="padding: clamp(64px, 12vh, 140px) max(clamp(20px, 4vw, 64px), calc((100% - 1280px) / 2));">
+      <div style="display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: clamp(30px, 5vh, 52px);">
+        <div>
+          <p style="margin: 0 0 18px; font-size: 12px; letter-spacing: .22em; text-transform: uppercase; color: #70685B;">05 — Diario</p>
+          <h2 style="margin: 0; font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; font-size: clamp(32px, 4.2vw, 68px); line-height: 1.05;">Lecturas para la esterilla</h2>
+        </div>
+        <a href="#" onClick="{{ goDiario }}" style="font-size: 13px; letter-spacing: .12em; text-transform: uppercase; border-bottom: 1px solid #C9A88E; padding-bottom: 4px;">Ver todo el diario</a>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(20px, 3vw, 44px);">
+        <sc-for list="{{ posts }}" as="po" hint-placeholder-count="3">
+          <a href="#" onClick="{{ po.abrir }}" style="display: block;">
+            <div style="position: relative; aspect-ratio: 4 / 3; overflow: hidden; border-radius: 4px; background: repeating-linear-gradient(105deg, #E7DDCD 0 12px, #EFE7D9 12px 24px);">
+              <span style="position: absolute; left: 14px; bottom: 14px; font-family: ui-monospace, Menlo, monospace; font-size: 10.5px; color: #70685B; background: #F6F2EA; padding: 6px 9px; border-radius: 3px;">{{ po.slug }} · artículo</span>
+            </div>
+            <p style="margin: 16px 0 8px; font-size: 11.5px; letter-spacing: .14em; text-transform: uppercase; color: #70685B;">{{ po.meta }}</p>
+            <h3 style="margin: 0; font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; font-size: 25px; line-height: 1.22; text-wrap: pretty;">{{ po.titulo }}</h3>
+          </a>
+        </sc-for>
+      </div>
+    </section>
+
+    <section id="newsletter" data-reveal="1" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(28px, 5vw, 80px); align-items: center; margin: 0 max(clamp(20px, 4vw, 64px), calc((100% - 1280px) / 2)); padding: clamp(40px, 8vh, 88px) clamp(24px, 4vw, 64px); background: #EFE8DC; border-radius: 6px;">
+      <div>
+        <p style="margin: 0 0 18px; display: flex; align-items: center; gap: 14px; font-size: 12px; letter-spacing: .22em; text-transform: uppercase; color: #70685B;">
+          <span style="display: block; width: 46px; height: 1px; background: #C9A88E;"></span>
+          Guía gratuita
+        </p>
+        <h2 style="margin: 0; max-width: 20ch; font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; font-size: clamp(30px, 3.8vw, 58px); line-height: 1.06;">Siete días de práctica corta, en tu correo</h2>
+        <p style="max-width: 44ch; margin: 22px 0 0; font-size: 15.5px; line-height: 1.7; font-weight: 300; color: #4A443A; text-wrap: pretty;">Una secuencia de quince minutos por día, con audio guiado. Sin promociones diarias: escribimos una vez al mes.</p>
+      </div>
+      <form onSubmit="{{ onSubmit }}" style="display: flex; flex-direction: column; gap: 14px;">
+        <input type="text" required placeholder="Tu nombre" style="padding: 17px 18px; border: 1px solid #8A8377; border-radius: 3px; background: #F6F2EA; font-family: Archivo, Helvetica, sans-serif; font-size: 15px; color: #1E1B16;" />
+        <input type="email" required placeholder="Tu correo" style="padding: 17px 18px; border: 1px solid #8A8377; border-radius: 3px; background: #F6F2EA; font-family: Archivo, Helvetica, sans-serif; font-size: 15px; color: #1E1B16;" />
+        <label style="display: flex; gap: 12px; align-items: flex-start; font-size: 12.5px; line-height: 1.6; font-weight: 300; color: #4A443A;">
+          <input type="checkbox" required style="margin-top: 3px; accent-color: #9E5535;" />
+          <span>Acepto la política de privacidad. Escribimos una vez al mes y puedes darte de baja en un clic.</span>
+        </label>
+        <button type="submit" style="padding: 17px 24px; border: none; border-radius: 3px; background: #1E1B16; color: #F6F2EA; font-family: Archivo, Helvetica, sans-serif; font-size: 12.5px; letter-spacing: .14em; text-transform: uppercase; cursor: pointer; transition: background .35s ease;" style-hover="background: #9E5535">{{ estadoForm }}</button>
+      </form>
+    </section>
+
+    <section data-reveal="1" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(28px, 4vw, 64px); padding: clamp(64px, 12vh, 140px) max(clamp(20px, 4vw, 64px), calc((100% - 1280px) / 2)) clamp(48px, 8vh, 96px);">
+      <div>
+        <p style="margin: 0 0 18px; font-size: 12px; letter-spacing: .22em; text-transform: uppercase; color: #70685B;">06 — Visítanos</p>
+        <h2 style="margin: 0 0 clamp(26px, 4vh, 40px); font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; font-size: clamp(32px, 4.2vw, 62px); line-height: 1.05;">Calle Trafalgar 18,<br />bajo izquierda</h2>
+        <div style="display: grid; border-bottom: 1px solid #DED5C6;">
+          <sc-for list="{{ horario }}" as="h" hint-placeholder-count="4">
+            <div style="display: flex; justify-content: space-between; gap: 20px; padding: 15px 2px; border-top: 1px solid #DED5C6; font-size: 14.5px; font-weight: 300;">
+              <span style="letter-spacing: .06em; text-transform: uppercase; font-size: 12px; color: #70685B; padding-top: 3px;">{{ h.dia }}</span>
+              <span style="text-align: right; color: #4A443A;">{{ h.horas }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 28px; margin-top: 28px; font-size: 15px; font-weight: 300; color: #4A443A;">
+          <a href="mailto:hola@amaliayoga.es">hola@amaliayoga.es</a>
+          <a href="tel:+34914472618">914 47 26 18</a>
+        </div>
+      </div>
+      <div style="position: relative; min-height: 340px; border-radius: 6px; overflow: hidden; background: repeating-linear-gradient(115deg, #E7DDCD 0 14px, #EFE7D9 14px 28px);">
+        <span style="position: absolute; left: 18px; bottom: 18px; font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: #70685B; background: #F6F2EA; padding: 7px 11px; border-radius: 4px;">dirección + widget Google Maps · Chamberí</span>
+      </div>
+    </section>
+  </main>
+  </sc-if>
+
+  <sc-if value="{{ isFilosofia }}" hint-placeholder-val="{{ false }}">
+  <main>
+    <section style="display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, .6fr); gap: clamp(28px, 5vw, 72px); align-items: end; padding: clamp(48px, 9vh, 112px) max(clamp(20px, 4vw, 64px), calc((100% - 1280px) / 2)) clamp(36px, 6vh, 64px); border-bottom: 1px solid #DED5C6;">
+      <div>
+      <p style="margin: 0 0 clamp(20px, 4vh, 36px); font-size: 12px; letter-spacing: .22em; text-transform: uppercase; color: #70685B;">Filosofía</p>
+      <h1 style="margin: 0; max-width: 18ch; font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; font-size: clamp(40px, 6.4vw, 118px); line-height: .98; letter-spacing: -.02em; animation: rise 1s both;">
+        Diez minutos de <span style="font-style: italic; color: #9E5535;">silencio</span> antes de la primera postura
+      </h1>
+      </div>
+      <p style="margin: 0; padding-left: clamp(0px, 1.5vw, 26px); border-left: 1px solid #DED5C6; font-size: clamp(15px, 1.2vw, 18px); line-height: 1.7; font-weight: 300; color: #4A443A; text-wrap: pretty;">Una sala sin espejos, grupos de ocho y clases que empiezan sentadas. Cada una de esas decisiones tiene un motivo, y aquí están.</p>
+    </section>
+    <section style="display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: clamp(28px, 5vw, 72px); align-items: center; padding: clamp(48px, 9vh, 104px) max(clamp(20px, 4vw, 64px), calc((100% - 1280px) / 2));">
+      <div style="display: flex; flex-direction: column; gap: 22px;">
+        <p style="margin: 0; font-family: 'Instrument Serif', Georgia, serif; font-size: clamp(22px, 2.2vw, 30px); line-height: 1.4; color: #1E1B16;">La sala no tiene espejos. Es la primera cosa que nota todo el mundo al entrar.</p>
+        <p style="margin: 0; font-size: 16px; line-height: 1.78; font-weight: 300; color: #4A443A; text-wrap: pretty;">Practicar mirándose corrige la forma, pero rompe la atención. Preferimos que la corrección llegue de una mano en la espalda y de una indicación en voz baja. Por eso los grupos son pequeños y las clases largas.</p>
+        <p style="margin: 0; font-size: 16px; line-height: 1.78; font-weight: 300; color: #4A443A; text-wrap: pretty;">Amalia estudió ashtanga en Mysore entre 2009 y 2013, y se formó en yoga restaurativo en Lisboa. La sala de Trafalgar abrió en 2016 con doce esterillas prestadas y una lista de espera de cuatro personas.</p>
+      </div>
+      <div style="position: relative; aspect-ratio: 4 / 3; border-radius: 6px; overflow: hidden; background: repeating-linear-gradient(105deg, #E7DDCD 0 12px, #EFE7D9 12px 24px);">
+        <span style="position: absolute; left: 16px; bottom: 16px; font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: #70685B; background: #F6F2EA; padding: 6px 10px; border-radius: 4px;">amalia-filosofia · manos en mudra</span>
+      </div>
+    </section>
+    <section style="padding: clamp(48px, 9vh, 104px) max(clamp(20px, 4vw, 64px), calc((100% - 1280px) / 2)); background: #EFE8DC;">
+      <h2 style="margin: 0 0 clamp(30px, 5vh, 52px); font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; font-size: clamp(28px, 3.4vw, 52px);">Cómo trabajamos</h2>
+      <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(20px, 3vw, 44px);">
+        <sc-for list="{{ principios }}" as="pr" hint-placeholder-count="4">
+          <div style="padding-top: 22px; border-top: 1px solid #D6CCBB;">
+            <p style="margin: 0 0 14px; font-family: Archivo, Helvetica, sans-serif; font-variant-numeric: tabular-nums; font-size: 12px; font-weight: 500; letter-spacing: .08em; color: #9E5535;">{{ pr.num }}</p>
+            <h3 style="margin: 0 0 12px; font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; font-size: 24px;">{{ pr.titulo }}</h3>
+            <p style="margin: 0; font-size: 14.5px; line-height: 1.72; font-weight: 300; color: #4A443A; text-wrap: pretty;">{{ pr.texto }}</p>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+    <section style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 24px; padding: clamp(48px, 9vh, 104px) max(clamp(20px, 4vw, 64px), calc((100% - 1280px) / 2));">
+      <h2 style="margin: 0; max-width: 22ch; font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; font-size: clamp(28px, 3.6vw, 56px); line-height: 1.08;">Tu primera clase corre por nuestra cuenta</h2>
+      <a href="#" onClick="{{ goPlanes }}" style="padding: 17px 30px; border-radius: 999px; background: #1E1B16; color: #F6F2EA; font-size: 13px; letter-spacing: .12em; text-transform: uppercase; transition: background .35s ease;" style-hover="background: #9E5535">Ver planes y horarios</a>
+    </section>
+  </main>
+  </sc-if>
+
+  <sc-if value="{{ isPlanes }}" hint-placeholder-val="{{ false }}">
+  <main>
+    <section style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: clamp(24px, 4vw, 64px); align-items: end; padding: clamp(48px, 9vh, 104px) max(clamp(20px, 4vw, 64px), calc((100% - 1280px) / 2)) clamp(36px, 6vh, 60px); border-bottom: 1px solid #DED5C6;">
+      <div>
+        <p style="margin: 0 0 clamp(20px, 4vh, 36px); font-size: 12px; letter-spacing: .22em; text-transform: uppercase; color: #70685B;">Planes</p>
+        <h1 style="margin: 0; max-width: 20ch; font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; font-size: clamp(40px, 6vw, 106px); line-height: .98; letter-spacing: -.02em; animation: rise 1s both;">Elige cuánto quieres practicar</h1>
+      </div>
+      <div style="display: flex; align-items: center; gap: 4px; padding: 5px; border: 1px solid #D6CCBB; border-radius: 999px; justify-self: start;">
+        <button onClick="{{ setMensual }}" style="{{ btnMensualClaro }}">Mensual</button>
+        <button onClick="{{ setAnual }}" style="{{ btnAnualClaro }}">Anual · −15%</button>
+      </div>
+    </section>
+    <section style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin: clamp(40px, 7vh, 80px) max(clamp(20px, 4vw, 64px), calc((100% - 1280px) / 2)); border: 1px solid #DED5C6;">
+      <sc-for list="{{ planes }}" as="pl" hint-placeholder-count="3">
+        <article style="{{ pl.articuloClaro }}">
+          <div>
+            <h3 style="margin: 0 0 8px; font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; font-size: 28px;">{{ pl.nombre }}</h3>
+            <p style="{{ pl.paraClaro }}">{{ pl.para }}</p>
+          </div>
+          <p style="margin: 0; display: flex; align-items: baseline; gap: 8px;">
+            <span style="font-family: 'Instrument Serif', Georgia, serif; font-size: 54px; line-height: 1;">{{ pl.precio }}</span>
+            <span style="font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: #70685B;">{{ pl.periodo }}</span>
+          </p>
+          <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 11px; font-size: 14px; font-weight: 300; color: #4A443A;">
+            <sc-for list="{{ pl.incluye }}" as="it" hint-placeholder-count="4">
+              <li style="display: flex; gap: 11px; align-items: baseline;"><span style="color: #9E5535;">—</span>{{ it }}</li>
+            </sc-for>
+          </ul>
+          <a href="#" onClick="{{ goReservar }}" style="{{ pl.ctaClaro }}" style-hover="background: #9E5535; border-color: #9E5535; color: #F6F2EA">{{ pl.cta }}</a>
+        </article>
+      </sc-for>
+    </section>
+    <section id="horario" style="padding: clamp(8px, 2vh, 24px) max(clamp(20px, 4vw, 64px), calc((100% - 1280px) / 2)) clamp(48px, 9vh, 104px);">
+      <div style="display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: clamp(28px, 5vh, 48px);">
+        <div>
+          <p style="margin: 0 0 18px; font-size: 12px; letter-spacing: .22em; text-transform: uppercase; color: #70685B;">Horario</p>
+          <h2 style="margin: 0; font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; font-size: clamp(30px, 3.6vw, 54px); line-height: 1.06;">Catorce clases a la semana</h2>
+        </div>
+        <p style="max-width: 40ch; margin: 0; font-size: 15px; line-height: 1.7; font-weight: 300; color: #4A443A;">Todas en sala y en directo, con la misma profesora. La clase de prueba se puede reservar en cualquiera de ellas.</p>
+      </div>
+      <div style="border-bottom: 1px solid #DED5C6;">
+        <sc-for list="{{ semana }}" as="d" hint-placeholder-count="7">
+          <div style="display: grid; grid-template-columns: 160px minmax(0, 1fr); gap: 24px; align-items: baseline; padding: 18px 0; border-top: 1px solid #DED5C6;">
+            <span style="font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: #70685B;">{{ d.dia }}</span>
+            <div style="display: flex; flex-wrap: wrap; gap: 10px 40px;">
+              <sc-for list="{{ d.clases }}" as="k" hint-placeholder-count="2">
+                <a href="#" onClick="{{ k.abrir }}" style="display: flex; align-items: baseline; gap: 12px;"><span style="font-variant-numeric: tabular-nums; font-size: 14px; font-weight: 500; color: #9E5535;">{{ k.hora }}</span><span style="font-family: 'Instrument Serif', Georgia, serif; font-size: 22px;">{{ k.nombre }}</span><span style="font-size: 13px; font-weight: 300; color: #70685B;">{{ k.profesora }}</span></a>
+              </sc-for>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+    <section style="display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: clamp(28px, 5vw, 72px); padding: clamp(48px, 9vh, 104px) max(clamp(20px, 4vw, 64px), calc((100% - 1280px) / 2)); background: #EFE8DC;">
+      <h2 style="margin: 0; font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; font-size: clamp(30px, 3.6vw, 54px); line-height: 1.06;">Preguntas<br />frecuentes</h2>
+      <div style="display: flex; flex-direction: column;">
+        <sc-for list="{{ faq }}" as="f" hint-placeholder-count="4">
+          <div style="padding: 24px 0; border-top: 1px solid #D6CCBB;">
+            <h3 style="margin: 0 0 10px; font-size: 16px; font-weight: 500; letter-spacing: .01em;">{{ f.q }}</h3>
+            <p style="margin: 0; max-width: 60ch; font-size: 14.5px; line-height: 1.72; font-weight: 300; color: #4A443A; text-wrap: pretty;">{{ f.a }}</p>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+  </main>
+  </sc-if>
+
+  <sc-if value="{{ isDiario }}" hint-placeholder-val="{{ false }}">
+  <main>
+    <section style="padding: clamp(48px, 9vh, 104px) max(clamp(20px, 4vw, 64px), calc((100% - 1280px) / 2)) clamp(32px, 5vh, 56px); border-bottom: 1px solid #DED5C6;">
+      <p style="margin: 0 0 clamp(20px, 4vh, 36px); font-size: 12px; letter-spacing: .22em; text-transform: uppercase; color: #70685B;">Diario</p>
+      <h1 style="margin: 0; max-width: 22ch; font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; font-size: clamp(40px, 6vw, 106px); line-height: .98; letter-spacing: -.02em; animation: rise 1s both;">Notas sobre práctica, respiración y descanso</h1>
+      <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: clamp(28px, 4vh, 44px);">
+        <sc-for list="{{ categoriasUI }}" as="cat" hint-placeholder-count="7">
+          <button onClick="{{ cat.elegir }}" style="{{ cat.estilo }}" style-hover="border-color: #9E5535">{{ cat.nombre }}</button>
+        </sc-for>
+      </div>
+    </section>
+    <section style="padding: clamp(40px, 7vh, 88px) max(clamp(20px, 4vw, 64px), calc((100% - 1280px) / 2));">
+      <sc-if value="{{ verDestacada }}" hint-placeholder-val="{{ true }}">
+      <a href="#" onClick="{{ destacada.abrir }}" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(24px, 4vw, 56px); align-items: center; padding-bottom: clamp(40px, 6vh, 72px); border-bottom: 1px solid #DED5C6;">
+        <div style="position: relative; aspect-ratio: 4 / 3; border-radius: 6px; overflow: hidden; background: repeating-linear-gradient(105deg, #E7DDCD 0 12px, #EFE7D9 12px 24px);">
+          <span style="position: absolute; left: 16px; bottom: 16px; font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: #70685B; background: #F6F2EA; padding: 6px 10px; border-radius: 4px;">amalia-entrada-destacada · destacada</span>
+        </div>
+        <div>
+          <p style="margin: 0 0 14px; font-size: 11.5px; letter-spacing: .14em; text-transform: uppercase; color: #9E5535;">Destacado · Respiración</p>
+          <h2 style="margin: 0 0 16px; font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; font-size: clamp(28px, 3.4vw, 50px); line-height: 1.1; text-wrap: pretty;">Por qué contamos la exhalación el doble que la inhalación</h2>
+          <p style="margin: 0; max-width: 50ch; font-size: 15.5px; line-height: 1.72; font-weight: 300; color: #4A443A; text-wrap: pretty;">Una explicación corta del ritmo 1:2 y de cuándo conviene abandonarlo. Seis minutos de lectura.</p>
+        </div>
+      </a>
+      </sc-if>
+      <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(22px, 3vw, 44px); margin-top: clamp(40px, 6vh, 72px);">
+        <sc-for list="{{ postsFiltrados }}" as="po" hint-placeholder-count="6">
+          <a href="#" onClick="{{ po.abrir }}" style="display: block;">
+            <div style="position: relative; aspect-ratio: 4 / 3; border-radius: 4px; overflow: hidden; background: repeating-linear-gradient(105deg, #E7DDCD 0 12px, #EFE7D9 12px 24px);">
+              <span style="position: absolute; left: 14px; bottom: 14px; font-family: ui-monospace, Menlo, monospace; font-size: 10.5px; color: #70685B; background: #F6F2EA; padding: 6px 9px; border-radius: 3px;">{{ po.slug }} · artículo</span>
+            </div>
+            <p style="margin: 15px 0 8px; font-size: 11.5px; letter-spacing: .14em; text-transform: uppercase; color: #70685B;">{{ po.meta }}</p>
+            <h3 style="margin: 0; font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; font-size: 24px; line-height: 1.22; text-wrap: pretty;">{{ po.titulo }}</h3>
+          </a>
+        </sc-for>
+      </div>
+    </section>
+  </main>
+  </sc-if>
+
+
+  <sc-if value="{{ isClase }}" hint-placeholder-val="{{ false }}">
+  <main>
+    <section style="display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr); gap: clamp(28px, 5vw, 72px); align-items: end; padding: clamp(40px, 7vh, 88px) max(clamp(20px, 4vw, 64px), calc((100% - 1280px) / 2)) clamp(36px, 6vh, 60px); border-bottom: 1px solid #DED5C6;">
+      <div>
+        <p style="margin: 0 0 clamp(18px, 3vh, 32px); display: flex; align-items: center; gap: 12px; font-size: 12px; letter-spacing: .22em; text-transform: uppercase; color: #70685B;">
+          <a href="#" onClick="{{ goClases }}" style="color: #70685B;">Clases</a>
+          <span style="color: #70685B;">/</span>
+          <span style="color: #9E5535;">{{ claseActual.num }}</span>
+        </p>
+        <h1 style="margin: 0; font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; font-size: clamp(40px, 6vw, 104px); line-height: .98; letter-spacing: -.02em; animation: rise 1s both;">{{ claseActual.nombre }}</h1>
+        <p style="max-width: 46ch; margin: clamp(22px, 4vh, 36px) 0 0; font-size: clamp(15px, 1.2vw, 18px); line-height: 1.7; font-weight: 300; color: #4A443A; text-wrap: pretty;">{{ claseActual.texto }}</p>
+      </div>
+      <div style="display: grid; border: 1px solid #DED5C6; border-radius: 4px; overflow: hidden;">
+        <div style="display: flex; justify-content: space-between; gap: 16px; padding: 15px 18px; font-size: 14px; font-weight: 300;"><span style="font-size: 11.5px; letter-spacing: .12em; text-transform: uppercase; color: #70685B;">Duración</span><span style="color: #4A443A;">{{ claseActual.duracion }}</span></div>
+        <div style="display: flex; justify-content: space-between; gap: 16px; padding: 15px 18px; border-top: 1px solid #DED5C6; font-size: 14px; font-weight: 300;"><span style="font-size: 11.5px; letter-spacing: .12em; text-transform: uppercase; color: #70685B;">Nivel</span><span style="color: #4A443A;">{{ claseActual.nivel }}</span></div>
+        <div style="display: flex; justify-content: space-between; gap: 16px; padding: 15px 18px; border-top: 1px solid #DED5C6; font-size: 14px; font-weight: 300;"><span style="font-size: 11.5px; letter-spacing: .12em; text-transform: uppercase; color: #70685B;">Profesora</span><span style="color: #4A443A;">{{ claseActual.profesora }}</span></div>
+        <div style="display: flex; justify-content: space-between; gap: 16px; padding: 15px 18px; border-top: 1px solid #DED5C6; font-size: 14px; font-weight: 300;"><span style="font-size: 11.5px; letter-spacing: .12em; text-transform: uppercase; color: #70685B;">Horario</span><span style="text-align: right; color: #4A443A;">{{ claseActual.horas }}</span></div>
+      </div>
+    </section>
+
+    <section style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(28px, 5vw, 72px); padding: clamp(44px, 8vh, 96px) max(clamp(20px, 4vw, 64px), calc((100% - 1280px) / 2));">
+      <div style="display: flex; flex-direction: column; gap: 22px;">
+        <sc-for list="{{ claseActual.cuerpo }}" as="p" hint-placeholder-count="2">
+          <p style="margin: 0; font-size: 16px; line-height: 1.78; font-weight: 300; color: #4A443A; text-wrap: pretty;">{{ p }}</p>
+        </sc-for>
+        <p style="margin: 8px 0 0; padding-top: 20px; border-top: 1px solid #DED5C6; font-size: 14.5px; line-height: 1.7; font-weight: 300; color: #4A443A;"><span style="display: block; margin-bottom: 8px; font-size: 11.5px; letter-spacing: .14em; text-transform: uppercase; color: #9E5535;">Qué llevar</span>{{ claseActual.llevar }}</p>
+      </div>
+      <div style="position: relative; aspect-ratio: 4 / 3.2; border-radius: 6px; overflow: hidden; background: repeating-linear-gradient(105deg, #E7DDCD 0 12px, #EFE7D9 12px 24px);">
+        <span style="position: absolute; left: 16px; bottom: 16px; font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: #70685B; background: #F6F2EA; padding: 6px 10px; border-radius: 4px;">{{ claseActual.slug }} · {{ claseActual.nombre }}</span>
+      </div>
+    </section>
+
+    <section style="padding: clamp(44px, 8vh, 96px) max(clamp(20px, 4vw, 64px), calc((100% - 1280px) / 2)); background: #EFE8DC;">
+      <h2 style="margin: 0 0 clamp(28px, 5vh, 48px); font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; font-size: clamp(28px, 3.4vw, 52px);">Cómo va la sesión</h2>
+      <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(20px, 3vw, 40px);">
+        <sc-for list="{{ claseActual.estructura }}" as="e" hint-placeholder-count="4">
+          <div style="padding-top: 20px; border-top: 1px solid #D6CCBB;">
+            <h3 style="margin: 0 0 10px; font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; font-size: 23px;">{{ e.t }}</h3>
+            <p style="margin: 0; font-size: 14px; line-height: 1.7; font-weight: 300; color: #4A443A;">{{ e.d }}</p>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+
+    <section style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 22px; padding: clamp(44px, 8vh, 96px) max(clamp(20px, 4vw, 64px), calc((100% - 1280px) / 2));">
+      <h2 style="margin: 0; max-width: 22ch; font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; font-size: clamp(28px, 3.4vw, 52px); line-height: 1.08;">Prueba esta clase sin pagar la primera vez</h2>
+      <div style="display: flex; flex-wrap: wrap; gap: 14px;">
+        <a href="#" onClick="{{ goReservar }}" style="padding: 17px 30px; border-radius: 999px; background: #1E1B16; color: #F6F2EA; font-size: 13px; letter-spacing: .12em; text-transform: uppercase; transition: background .35s ease;" style-hover="background: #9E5535">Reservar plaza</a>
+        <a href="#" onClick="{{ goClases }}" style="padding: 17px 26px; border-radius: 999px; border: 1px solid #D6CCBB; font-size: 13px; letter-spacing: .12em; text-transform: uppercase; transition: border-color .35s ease;" style-hover="border-color: #1E1B16">Ver todas las clases</a>
+      </div>
+    </section>
+
+    <section style="padding: 0 max(clamp(20px, 4vw, 64px), calc((100% - 1280px) / 2)) clamp(48px, 8vh, 96px);">
+      <div style="display: flex; align-items: center; gap: 18px; margin-bottom: clamp(24px, 4vh, 40px);">
+        <p style="margin: 0; font-size: 12px; letter-spacing: .22em; text-transform: uppercase; color: #70685B;">Otras clases</p>
+        <span style="flex: 1; height: 1px; background: #DED5C6;"></span>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 1px;">
+        <sc-for list="{{ otrasClases }}" as="c" hint-placeholder-count="5">
+          <a href="#" onClick="{{ c.abrir }}" style="display: flex; flex-direction: column; gap: 8px; padding: 22px 20px; background: #F6F2EA; box-shadow: 0 0 0 1px #DED5C6; transition: background .3s ease;" style-hover="background: #EFE8DC">
+            <span style="font-family: Archivo, Helvetica, sans-serif; font-variant-numeric: tabular-nums; font-size: 12px; font-weight: 500; letter-spacing: .08em; color: #9E5535;">{{ c.num }}</span>
+            <span style="font-family: 'Instrument Serif', Georgia, serif; font-size: 22px;">{{ c.nombre }}</span>
+            <span style="font-size: 11.5px; letter-spacing: .1em; text-transform: uppercase; color: #70685B;">{{ c.duracion }}</span>
+          </a>
+        </sc-for>
+      </div>
+    </section>
+  </main>
+  </sc-if>
+
+  <sc-if value="{{ isPost }}" hint-placeholder-val="{{ false }}">
+  <main>
+    <article>
+      <section style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(28px, 5vw, 72px); align-items: end; padding: clamp(36px, 6vh, 76px) max(clamp(20px, 4vw, 64px), calc((100% - 1280px) / 2)) clamp(28px, 4vh, 44px);">
+        <div>
+          <p style="margin: 0 0 clamp(18px, 3vh, 30px); display: flex; flex-wrap: wrap; align-items: center; gap: 12px; font-size: 12px; letter-spacing: .18em; text-transform: uppercase; color: #70685B;">
+            <a href="#" onClick="{{ goDiario }}" style="color: #70685B;">Diario</a>
+            <span style="color: #70685B;">/</span>
+            <span style="color: #9E5535;">{{ postActual.categoria }}</span>
+          </p>
+          <h1 style="margin: 0; max-width: 20ch; font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; font-size: clamp(36px, 5.2vw, 86px); line-height: 1; letter-spacing: -.018em; text-wrap: pretty; animation: rise 1s both;">{{ postActual.titulo }}</h1>
+        </div>
+        <p style="margin: 0; max-width: 42ch; padding-left: clamp(0px, 1.5vw, 26px); border-left: 1px solid #DED5C6; font-family: 'Instrument Serif', Georgia, serif; font-size: clamp(19px, 1.6vw, 26px); line-height: 1.42; color: #4A443A; text-wrap: pretty;">{{ postActual.entradilla }}</p>
+      </section>
+
+      <section style="padding: 0 max(clamp(20px, 4vw, 64px), calc((100% - 1280px) / 2));">
+        <div style="position: relative; aspect-ratio: 16 / 6.5; border-radius: 6px; overflow: hidden; background: repeating-linear-gradient(105deg, #E7DDCD 0 14px, #EFE7D9 14px 28px);">
+          <span style="position: absolute; left: 18px; bottom: 18px; font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: #70685B; background: #F6F2EA; padding: 7px 11px; border-radius: 4px;">{{ postActual.slug }} · destacada</span>
+        </div>
+      </section>
+
+      <section style="display: flex; flex-wrap: wrap; gap: clamp(32px, 5vw, 80px); padding: clamp(34px, 6vh, 68px) max(clamp(20px, 4vw, 64px), calc((100% - 1280px) / 2)) clamp(44px, 7vh, 88px);">
+        <aside style="flex: 0 1 230px; display: flex; flex-direction: column; gap: 26px; align-self: start; position: sticky; top: 108px;">
+          <div style="display: flex; gap: 14px; align-items: center;">
+            <span title="{{ postActual.avatar }}" style="flex: 0 0 48px; width: 48px; height: 48px; border-radius: 50%; background: repeating-linear-gradient(105deg, #E7DDCD 0 6px, #EFE7D9 6px 12px);"></span>
+            <span style="display: block; font-size: 13.5px; line-height: 1.45; color: #4A443A;"><span style="display: block; font-weight: 500; color: #1E1B16;">{{ postActual.autora }}</span>Profesora en la sala</span>
+          </div>
+          <div style="display: grid; gap: 10px; padding-top: 18px; border-top: 1px solid #DED5C6; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: #70685B;">
+            <span>{{ postActual.fecha }}</span>
+            <span>{{ postActual.meta }}</span>
+          </div>
+          <a href="#" onClick="{{ goReservar }}" style="padding: 14px 18px; text-align: center; border: 1px solid #D6CCBB; border-radius: 3px; font-size: 11.5px; letter-spacing: .12em; text-transform: uppercase; transition: background .3s ease, border-color .3s ease;" style-hover="background: #EFE8DC; border-color: #1E1B16">Clase de prueba gratis</a>
+        </aside>
+
+        <div style="flex: 1 1 420px; min-width: 0; max-width: 68ch; display: flex; flex-direction: column; gap: 24px;">
+          <p style="margin: 0; font-size: 17.5px; line-height: 1.78; font-weight: 300; color: #332F28; text-wrap: pretty;"><span style="float: left; margin: 6px 14px 0 0; font-family: 'Instrument Serif', Georgia, serif; font-size: 74px; line-height: .78; color: #9E5535;">{{ postActual.inicial }}</span>{{ postActual.primeroResto }}</p>
+          <sc-for list="{{ postActual.resto }}" as="p" hint-placeholder-count="2">
+            <p style="margin: 0; font-size: 17px; line-height: 1.8; font-weight: 300; color: #332F28; text-wrap: pretty;">{{ p }}</p>
+          </sc-for>
+          <blockquote style="margin: clamp(10px, 2vh, 22px) 0; padding: 26px 0 26px 26px; border-top: 1px solid #DED5C6; border-bottom: 1px solid #DED5C6; border-left: 2px solid #9E5535; font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: clamp(22px, 2.1vw, 31px); line-height: 1.34; color: #1E1B16;">{{ postActual.cita }}</blockquote>
+          <sc-for list="{{ postActual.cierre }}" as="p" hint-placeholder-count="1">
+            <p style="margin: 0; font-size: 17px; line-height: 1.8; font-weight: 300; color: #332F28; text-wrap: pretty;">{{ p }}</p>
+          </sc-for>
+          <div style="display: flex; flex-wrap: wrap; gap: 14px; margin-top: clamp(14px, 3vh, 26px); padding-top: 26px; border-top: 1px solid #DED5C6;">
+            <a href="#" onClick="{{ goDiario }}" style="padding: 15px 26px; border-radius: 999px; border: 1px solid #D6CCBB; font-size: 12.5px; letter-spacing: .12em; text-transform: uppercase; transition: border-color .35s ease;" style-hover="border-color: #1E1B16">Volver al diario</a>
+            <a href="#" onClick="{{ goReservar }}" style="padding: 15px 26px; border-radius: 999px; background: #1E1B16; color: #F6F2EA; font-size: 12.5px; letter-spacing: .12em; text-transform: uppercase; transition: background .35s ease;" style-hover="background: #9E5535">Reservar clase de prueba</a>
+          </div>
+        </div>
+      </section>
+
+      <section style="padding: clamp(44px, 8vh, 92px) max(clamp(20px, 4vw, 64px), calc((100% - 1280px) / 2)); background: #EFE8DC;">
+        <div style="display: flex; align-items: center; gap: 18px; margin-bottom: clamp(24px, 4vh, 40px);">
+          <p style="margin: 0; font-size: 12px; letter-spacing: .22em; text-transform: uppercase; color: #70685B;">Seguir leyendo</p>
+          <span style="flex: 1; height: 1px; background: #D6CCBB;"></span>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(20px, 3vw, 40px);">
+          <sc-for list="{{ otrasEntradas }}" as="o" hint-placeholder-count="3">
+            <a href="#" onClick="{{ o.abrir }}" style="display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 20px; align-items: center; padding: 18px; background: #F6F2EA; border-radius: 4px; box-shadow: 0 0 0 1px #E3DACB; transition: box-shadow .35s ease;" style-hover="box-shadow: 0 0 0 1px #C9A88E">
+              <span title="{{ o.slug }}" style="display: block; aspect-ratio: 1; border-radius: 3px; background: repeating-linear-gradient(105deg, #E7DDCD 0 10px, #EFE7D9 10px 20px);"></span>
+              <span style="display: block;">
+                <span style="display: block; margin-bottom: 8px; font-size: 11.5px; letter-spacing: .14em; text-transform: uppercase; color: #70685B;">{{ o.meta }}</span>
+                <span style="display: block; font-family: 'Instrument Serif', Georgia, serif; font-size: 22px; line-height: 1.22; color: #1E1B16;">{{ o.titulo }}</span>
+              </span>
+            </a>
+          </sc-for>
+        </div>
+      </section>
+    </article>
+  </main>
+  </sc-if>
+
+  <sc-if value="{{ isContacto }}" hint-placeholder-val="{{ false }}">
+  <main>
+    <section style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(28px, 5vw, 72px); align-items: end; padding: clamp(40px, 7vh, 88px) max(clamp(20px, 4vw, 64px), calc((100% - 1280px) / 2)) clamp(32px, 5vh, 56px); border-bottom: 1px solid #DED5C6;">
+      <div>
+        <p style="margin: 0 0 clamp(18px, 3vh, 32px); font-size: 12px; letter-spacing: .22em; text-transform: uppercase; color: #70685B;">Contacto</p>
+        <h1 style="margin: 0; max-width: 18ch; font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; font-size: clamp(40px, 6vw, 104px); line-height: .98; letter-spacing: -.02em; animation: rise 1s both;">Ven a ver la <span style="font-style: italic; color: #9E5535;">sala</span></h1>
+      </div>
+      <p style="margin: 0; max-width: 42ch; padding-left: clamp(0px, 1.5vw, 26px); border-left: 1px solid #DED5C6; font-size: clamp(15px, 1.2vw, 18px); line-height: 1.7; font-weight: 300; color: #4A443A; text-wrap: pretty;">Escríbenos y respondemos el mismo día, de lunes a viernes. Si prefieres pasarte sin avisar, estamos en Trafalgar 18 en los horarios de clase.</p>
+    </section>
+
+    <section id="reservar" style="display: flex; flex-wrap: wrap; gap: clamp(32px, 5vw, 80px); padding: clamp(40px, 7vh, 88px) max(clamp(20px, 4vw, 64px), calc((100% - 1280px) / 2));">
+      <form onSubmit="{{ onSubmitContacto }}" style="flex: 1 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 18px;">
+        <h2 style="margin: 0 0 6px; font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; font-size: clamp(26px, 2.8vw, 40px);">Reserva o escríbenos</h2>
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px;">
+          <label><span style="display: block; margin-bottom: 8px; font-size: 11.5px; letter-spacing: .14em; text-transform: uppercase; color: #70685B;">Nombre</span><input type="text" required placeholder="Nombre y apellidos" style="padding: 16px 16px; border: 1px solid #8A8377; border-radius: 3px; background: #F6F2EA; font-family: Archivo, Helvetica, sans-serif; font-size: 15px; color: #1E1B16; width: 100%;" /></label>
+          <label><span style="display: block; margin-bottom: 8px; font-size: 11.5px; letter-spacing: .14em; text-transform: uppercase; color: #70685B;">Correo</span><input type="email" required placeholder="tucorreo@ejemplo.com" style="padding: 16px 16px; border: 1px solid #8A8377; border-radius: 3px; background: #F6F2EA; font-family: Archivo, Helvetica, sans-serif; font-size: 15px; color: #1E1B16; width: 100%;" /></label>
+          <label><span style="display: block; margin-bottom: 8px; font-size: 11.5px; letter-spacing: .14em; text-transform: uppercase; color: #70685B;">Teléfono (opcional)</span><input type="tel" placeholder="600 00 00 00" style="padding: 16px 16px; border: 1px solid #8A8377; border-radius: 3px; background: #F6F2EA; font-family: Archivo, Helvetica, sans-serif; font-size: 15px; color: #1E1B16; width: 100%;" /></label>
+          <label><span style="display: block; margin-bottom: 8px; font-size: 11.5px; letter-spacing: .14em; text-transform: uppercase; color: #70685B;">Motivo</span>
+            <select style="padding: 16px 16px; border: 1px solid #8A8377; border-radius: 3px; background: #F6F2EA; font-family: Archivo, Helvetica, sans-serif; font-size: 15px; color: #1E1B16; width: 100%;">
+              <sc-for list="{{ motivos }}" as="m" hint-placeholder-count="5">
+                <option>{{ m }}</option>
+              </sc-for>
+            </select>
+          </label>
+        </div>
+        <label><span style="display: block; margin-bottom: 8px; font-size: 11.5px; letter-spacing: .14em; text-transform: uppercase; color: #70685B;">Mensaje</span><textarea rows="6" placeholder="Cuéntanos si has practicado antes, qué horario te viene bien o cualquier lesión que debamos tener en cuenta." style="padding: 16px 16px; border: 1px solid #8A8377; border-radius: 3px; background: #F6F2EA; font-family: Archivo, Helvetica, sans-serif; font-size: 15px; color: #1E1B16; width: 100%; resize: vertical; line-height: 1.6;"></textarea></label>
+        <label style="display: flex; gap: 12px; align-items: flex-start; font-size: 13.5px; line-height: 1.6; font-weight: 300; color: #4A443A;">
+          <input type="checkbox" required style="margin-top: 3px; accent-color: #9E5535;" />
+          <span>He leído la política de privacidad y acepto el tratamiento de mis datos para responder a esta consulta.</span>
+        </label>
+        <button type="submit" style="align-self: start; padding: 17px 32px; border: none; border-radius: 999px; background: #1E1B16; color: #F6F2EA; font-family: Archivo, Helvetica, sans-serif; font-size: 12.5px; letter-spacing: .14em; text-transform: uppercase; cursor: pointer; transition: background .35s ease;" style-hover="background: #9E5535">{{ estadoContacto }}</button>
+      </form>
+
+      <aside style="flex: 0 1 300px; display: flex; flex-direction: column; gap: 26px;">
+        <div>
+          <p style="margin: 0 0 12px; font-size: 11.5px; letter-spacing: .14em; text-transform: uppercase; color: #9E5535;">La sala</p>
+          <p style="margin: 0; font-family: 'Instrument Serif', Georgia, serif; font-size: 26px; line-height: 1.25;">Calle Trafalgar 18,<br />bajo izquierda<br />28010 Madrid</p>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 10px; padding-top: 20px; border-top: 1px solid #DED5C6; font-size: 15px; font-weight: 300;">
+          <a href="mailto:hola@amaliayoga.es">hola@amaliayoga.es</a>
+          <a href="tel:+34914472618">914 47 26 18</a>
+          <span>WhatsApp 644 21 83 90</span>
+        </div>
+        <div style="display: grid; gap: 1px; padding-top: 20px; border-top: 1px solid #DED5C6;">
+          <sc-for list="{{ horario }}" as="h" hint-placeholder-count="4">
+            <div style="display: flex; flex-direction: column; gap: 4px; padding: 11px 0; font-size: 14px; font-weight: 300;">
+              <span style="font-size: 11.5px; letter-spacing: .1em; text-transform: uppercase; color: #70685B;">{{ h.dia }}</span>
+              <span style="color: #4A443A;">{{ h.horas }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </aside>
+    </section>
+
+    <section style="padding: 0 max(clamp(20px, 4vw, 64px), calc((100% - 1280px) / 2)) clamp(44px, 7vh, 88px);">
+      <div style="position: relative; min-height: 380px; border-radius: 6px; overflow: hidden; background: repeating-linear-gradient(115deg, #E7DDCD 0 14px, #EFE7D9 14px 28px);">
+        <span style="position: absolute; left: 18px; bottom: 18px; font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: #70685B; background: #F6F2EA; padding: 7px 11px; border-radius: 4px;">dirección + widget Google Maps · Trafalgar 18, Chamberí</span>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(20px, 3vw, 40px); margin-top: clamp(28px, 5vh, 48px);">
+        <sc-for list="{{ llegar }}" as="l" hint-placeholder-count="4">
+          <div style="padding-top: 20px; border-top: 1px solid #DED5C6;">
+            <h3 style="margin: 0 0 10px; font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; font-size: 23px;">{{ l.t }}</h3>
+            <p style="margin: 0; font-size: 14px; line-height: 1.7; font-weight: 300; color: #4A443A; text-wrap: pretty;">{{ l.d }}</p>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+
+    <section style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 22px; padding: clamp(44px, 8vh, 92px) max(clamp(20px, 4vw, 64px), calc((100% - 1280px) / 2)); background: #EFE8DC;">
+      <h2 style="margin: 0; max-width: 22ch; font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; font-size: clamp(28px, 3.4vw, 52px); line-height: 1.08;">¿Prefieres empezar directamente?</h2>
+      <div style="display: flex; flex-wrap: wrap; gap: 14px;">
+        <a href="#" onClick="{{ goReservar }}" style="padding: 17px 30px; border-radius: 999px; background: #1E1B16; color: #F6F2EA; font-size: 13px; letter-spacing: .12em; text-transform: uppercase; transition: background .35s ease;" style-hover="background: #9E5535">Reservar clase de prueba</a>
+        <a href="#" onClick="{{ goClases }}" style="padding: 17px 26px; border-radius: 999px; border: 1px solid #D6CCBB; font-size: 13px; letter-spacing: .12em; text-transform: uppercase; transition: border-color .35s ease;" style-hover="border-color: #1E1B16">Ver las clases</a>
+      </div>
+    </section>
+  </main>
+  </sc-if>
+
+  <footer style="display: grid; grid-template-columns: minmax(0, 1.4fr) repeat(3, minmax(0, 1fr)); gap: clamp(28px, 4vw, 56px); padding: clamp(48px, 8vh, 96px) max(clamp(20px, 4vw, 64px), calc((100% - 1280px) / 2)) 34px; background: #1E1B16; color: #F6F2EA;">
+    <div>
+      <p style="margin: 0 0 16px; font-family: 'Instrument Serif', Georgia, serif; font-size: 30px;">Amalia<span style="color: #C9825C;">.</span></p>
+      <p style="margin: 0; max-width: 28ch; font-size: 14px; line-height: 1.7; font-weight: 300; color: #A89E90;">Estudio de yoga en Chamberí, Madrid. Clases presenciales y en directo.</p>
+    </div>
+    <div>
+      <p style="margin: 0 0 16px; font-size: 11.5px; letter-spacing: .16em; text-transform: uppercase; color: #8C8274;">Navegación</p>
+      <div style="display: flex; flex-direction: column; gap: 10px; font-size: 14px; font-weight: 300;">
+        <a href="#" onClick="{{ goHome }}" style="color: #D8D0C4;">Inicio</a>
+        <a href="#" onClick="{{ goFilosofia }}" style="color: #D8D0C4;">Filosofía</a>
+        <a href="#" onClick="{{ goPlanes }}" style="color: #D8D0C4;">Planes</a>
+        <a href="#" onClick="{{ goDiario }}" style="color: #D8D0C4;">Diario</a>
+        <a href="#" onClick="{{ goContacto }}" style="color: #D8D0C4;">Contacto</a>
+      </div>
+    </div>
+    <div>
+      <p style="margin: 0 0 16px; font-size: 11.5px; letter-spacing: .16em; text-transform: uppercase; color: #8C8274;">Contacto</p>
+      <div style="display: flex; flex-direction: column; gap: 10px; font-size: 14px; font-weight: 300;">
+        <a href="mailto:hola@amaliayoga.es" style="color: #D8D0C4;">hola@amaliayoga.es</a>
+        <a href="tel:+34914472618" style="color: #D8D0C4;">914 47 26 18</a>
+        <span style="color: #A89E90;">Trafalgar 18, Madrid</span>
+      </div>
+    </div>
+    <div>
+      <p style="margin: 0 0 16px; font-size: 11.5px; letter-spacing: .16em; text-transform: uppercase; color: #8C8274;">Síguenos</p>
+      <div style="display: flex; flex-direction: column; gap: 10px; font-size: 14px; font-weight: 300;">
+        <span style="color: #D8D0C4;">Instagram · @amalia.yoga</span>
+        <span style="color: #D8D0C4;">Spotify · Amalia, sala</span>
+        <a href="#newsletter" onClick="{{ goGuia }}" style="color: #D8D0C4;">Guía de 7 días</a>
+      </div>
+    </div>
+    <div style="grid-column: 1 / -1; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px; margin-top: clamp(24px, 4vh, 44px); padding-top: 22px; border-top: 1px solid #3A352C; font-size: 12px; color: #8C8274;">
+      <span>© 2026 Amalia Yoga</span>
+      <span style="display: flex; gap: 22px;"><a href="#" style="color: #8C8274;">Privacidad</a><a href="#" style="color: #8C8274;">Cookies</a><a href="#" style="color: #8C8274;">Aviso legal</a></span>
+    </div>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;animarAlScroll&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Comportamiento&quot;}}">
+class Component extends DCLogic {
+  state = { page: "home", periodo: "mensual", enviado: false, claseSel: 0, postSel: 0, enviadoContacto: false, categoria: "Todo" };
+
+  openClase(i) {
+    return (e) => {
+      if (e) e.preventDefault();
+      this.setState({ page: "clase", claseSel: i }, () => window.scrollTo(0, 0));
+    };
+  }
+  openPost(i) {
+    return (e) => {
+      if (e) e.preventDefault();
+      this.setState({ page: "post", postSel: i }, () => window.scrollTo(0, 0));
+    };
+  }
+
+  componentDidMount() {
+    if (this.props.animarAlScroll === false) return;
+    const nodes = Array.from(document.querySelectorAll("[data-reveal]"));
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) {
+          e.target.style.opacity = "1";
+          e.target.style.transform = "none";
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.08, rootMargin: "0px 0px -8% 0px" });
+    nodes.forEach((n) => {
+      const r = n.getBoundingClientRect();
+      if (r.top > window.innerHeight * 0.9) {
+        n.style.transition = "opacity .9s cubic-bezier(.2,.7,.2,1), transform .9s cubic-bezier(.2,.7,.2,1)";
+        n.style.opacity = "0";
+        n.style.transform = "translateY(26px)";
+        io.observe(n);
+      }
+    });
+    this._io = io;
+  }
+  componentWillUnmount() { if (this._io) this._io.disconnect(); }
+
+  go(page) {
+    return (e) => {
+      if (e) e.preventDefault();
+      this.setState({ page }, () => window.scrollTo(0, 0));
+    };
+  }
+
+  // Abre una página y baja hasta un punto dentro de ella (la reserva, las clases, la guía).
+  goA(page, id) {
+    return (e) => {
+      if (e) e.preventDefault();
+      this.setState({ page }, () => {
+        const el = document.getElementById(id);
+        if (el) el.scrollIntoView(); else window.scrollTo(0, 0);
+      });
+    };
+  }
+
+  pill(activo, claro) {
+    const on = claro ? "background: #1E1B16; color: #F6F2EA;" : "background: #F6F2EA; color: #1E1B16;";
+    const off = claro ? "background: transparent; color: #4A443A;" : "background: transparent; color: #A89E90;";
+    return "padding: 11px 20px; border: none; border-radius: 999px; cursor: pointer; font-family: Archivo, Helvetica, sans-serif; font-size: 11.5px; letter-spacing: .13em; text-transform: uppercase; transition: background .3s ease, color .3s ease; white-space: nowrap; " + (activo ? on : off);
+  }
+
+  // Estilos de cada plan: el destacado («Lo más elegido») lleva el rótulo en acento, fondo alterno en claro
+  // y el botón relleno. Los separadores son el borde izquierdo de cada plan, no un hueco sobre un fondo.
+  estilosPlan(i, destacado) {
+    const base = "display: flex; flex-direction: column; gap: 20px; padding: 34px 28px 30px;";
+    const cta = "margin-top: auto; padding: 15px 22px; text-align: center; border-radius: 999px; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; transition: background .35s ease, border-color .35s ease, color .35s ease;";
+    return {
+      articuloOscuro: base + " background: #1E1B16;" + (i ? " border-left: 1px solid #3A352C;" : ""),
+      articuloClaro: base + (destacado ? " background: #EFE8DC;" : " background: #F6F2EA;") + (i ? " border-left: 1px solid #DED5C6;" : ""),
+      paraOscuro: "margin: 0; font-size: 13px; line-height: 1.6; font-weight: 300; color: " + (destacado ? "#C9825C;" : "#A89E90;"),
+      paraClaro: "margin: 0; font-size: 13px; line-height: 1.6; font-weight: 300; color: " + (destacado ? "#9E5535;" : "#70685B;"),
+      ctaOscuro: cta + " color: #F6F2EA;" + (destacado ? " border: 1px solid #9E5535; background: #9E5535;" : " border: 1px solid #4A443A;"),
+      ctaClaro: cta + " border: 1px solid #1E1B16;" + (destacado ? " background: #1E1B16; color: #F6F2EA;" : "")
+    };
+  }
+
+  renderVals() {
+    const { page, periodo, enviado, categoria } = this.state;
+    const anual = periodo === "anual";
+    const eur = (n) => n + " €";
+    const precio = (m) => eur(anual ? Math.round(m * 12 * 0.85) : m);
+    const per = anual ? "al año" : "al mes";
+
+    const clasesData = [
+      { num: "01", slug: "amalia-clase-1", nombre: "Vinyasa suave", nivel: "Todos los niveles", texto: "Secuencias encadenadas a ritmo lento, con transiciones explicadas postura a postura.", duracion: "75 min · lun, mié, vie", profesora: "Nuria Sáez", horas: "Lunes, miércoles y viernes · 09:00 y 19:00",
+        cuerpo: ["El vinyasa encadena posturas con la respiración. Aquí lo hacemos despacio: cada transición se explica antes de repetirla, y nadie pasa a la siguiente variante hasta que la anterior se sostiene sin tensión.", "La clase sube de intensidad durante los primeros cuarenta minutos y baja en los últimos veinte. Termina con savasana de diez minutos."],
+        llevar: "Ropa cómoda y calcetines para el final. Esterilla y material los prestamos.",
+        estructura: [{ t: "Respiración", d: "10 min sentadas, ujjayi y observación" }, { t: "Saludos", d: "15 min de calentamiento encadenado" }, { t: "Serie de pie", d: "30 min, con variantes por nivel" }, { t: "Suelo y savasana", d: "20 min de descenso y descanso" }] },
+      { num: "02", slug: "amalia-clase-2", nombre: "Hatha", nivel: "Iniciación", texto: "Posturas sostenidas y tiempo para entender la alineación sin prisa por avanzar.", duracion: "60 min · mar, jue", profesora: "Amalia Ferrer", horas: "Martes y jueves · 07:30 y 20:00",
+        cuerpo: ["La clase de referencia si empiezas. Las posturas se sostienen entre cinco y ocho respiraciones, con tiempo para corregir y para preguntar.", "No hay secuencia fija: cada mes trabajamos un grupo de posturas y volvemos sobre ellas hasta que dejan de costar."],
+        llevar: "Nada. Si tienes una lesión, avísanos al reservar para adaptar la sesión.",
+        estructura: [{ t: "Respiración", d: "10 min de entrada y atención" }, { t: "Alineación", d: "20 min sobre el grupo del mes" }, { t: "Posturas sostenidas", d: "20 min con apoyo de bloques" }, { t: "Savasana", d: "10 min con manta" }] },
+      { num: "03", slug: "amalia-clase-3", nombre: "Restaurativo", nivel: "Todos los niveles", texto: "Seis posturas en una hora, con mantas y bloques. Para semanas duras.", duracion: "60 min · miércoles", profesora: "Amalia Ferrer", horas: "Miércoles · 21:00",
+        cuerpo: ["Seis posturas en sesenta minutos. El cuerpo se coloca sobre mantas, bloques y cinturones para que los músculos no tengan que trabajar y el sistema nervioso pueda bajar de revoluciones.", "Es la clase que recomendamos cuando alguien llega agotado y cree que no puede con una sesión normal."],
+        llevar: "Un jersey o calcetines: al no haber esfuerzo, el cuerpo se enfría.",
+        estructura: [{ t: "Entrada", d: "10 min tumbadas, respiración larga" }, { t: "Tres posturas de apertura", d: "25 min con soportes" }, { t: "Tres posturas de cierre", d: "15 min de torsión y flexión" }, { t: "Savasana", d: "10 min con peso en los ojos" }] },
+      { num: "04", slug: "amalia-clase-4", nombre: "Pranayama", nivel: "Con experiencia", texto: "Trabajo exclusivo de respiración, sentadas. Recomendado tras tres meses de práctica.", duracion: "45 min · sábados", profesora: "Nuria Sáez", horas: "Sábados · 10:00",
+        cuerpo: ["Cuarenta y cinco minutos sentadas, sin posturas. Trabajamos ritmos de respiración, retenciones cortas y observación, en progresión de semana a semana.", "Pedimos algo de recorrido previo porque estar sentada quieta ese tiempo requiere una base."],
+        llevar: "Un cojín firme si prefieres el tuyo.",
+        estructura: [{ t: "Postura sentada", d: "10 min de colocación" }, { t: "Ritmo 1:2", d: "15 min de exhalación larga" }, { t: "Retenciones", d: "10 min, progresión suave" }, { t: "Silencio", d: "10 min sin indicación" }] },
+      { num: "05", slug: "amalia-clase-5", nombre: "Yoga nidra", nivel: "Todos los niveles", texto: "Relajación guiada tumbada, sin esfuerzo físico. Última clase del domingo.", duracion: "50 min · domingos", profesora: "Dani Otero", horas: "Domingos · 10:00 y 11:00",
+        cuerpo: ["Nidra se practica tumbada y tapada, siguiendo una voz que recorre el cuerpo. No hay que hacer nada, ni siquiera mantenerse despierta.", "Es la sesión más pedida por quien duerme mal. También se puede seguir en directo desde casa, y suele funcionar mejor así."],
+        llevar: "Manta propia si la quieres, y ropa con la que estarías en el sofá.",
+        estructura: [{ t: "Colocación", d: "10 min hasta estar cómoda" }, { t: "Recorrido corporal", d: "20 min guiados" }, { t: "Visualización", d: "15 min" }, { t: "Vuelta", d: "5 min sin prisa" }] },
+      { num: "06", slug: "amalia-clase-6", nombre: "Sesión 1:1", nivel: "A medida", texto: "Una hora contigo sola, para adaptar la práctica a una lesión o a un objetivo concreto.", duracion: "60 min · cita previa", profesora: "Amalia Ferrer", horas: "A convenir, de lunes a viernes",
+        cuerpo: ["Una hora individual. La primera media hora es conversación y observación; la segunda, práctica adaptada a lo que haya aparecido.", "Al terminar te enviamos una secuencia corta por escrito para practicar en casa entre sesiones."],
+        llevar: "Informes médicos si hay una lesión o un embarazo en curso.",
+        estructura: [{ t: "Conversación", d: "15 min sobre historia y molestias" }, { t: "Observación", d: "15 min de movimiento" }, { t: "Práctica adaptada", d: "25 min" }, { t: "Cierre", d: "5 min y secuencia para casa" }] }
+    ];
+
+    // Siete entradas, de la más reciente a la más antigua. Cada tarjeta abre SU entrada.
+    const entradasData = [
+      { slug: "amalia-entrada-destacada", avatar: "amalia-avatar", meta: "Respiración · 6 min", categoria: "Respiración", fecha: "4 de septiembre de 2026", autora: "Amalia Ferrer",
+        titulo: "Por qué contamos la exhalación el doble que la inhalación",
+        entradilla: "El ritmo 1:2 aparece en casi todas nuestras clases. No es un adorno: cambia lo que hace el cuerpo en los diez minutos siguientes.",
+        cuerpo: ["Cuando alargas la exhalación por encima de la inhalación, el pulso baja. Es el efecto más repetible de todo lo que hacemos en la sala, y es el motivo por el que empezamos siempre sentadas antes de la primera postura.",
+          "En la práctica lo contamos así: cuatro tiempos al entrar el aire, ocho al soltarlo. Si ocho resulta forzado, se trabaja con seis. La regla es que la cuenta no genere ansiedad: si aparece prisa, se acorta.",
+          "El ritmo 1:2 no sirve para todo. Antes de un esfuerzo, o si llegas con la energía por el suelo, conviene lo contrario: respiración pareja o inhalación algo más larga. Alargar la exhalación durante media hora puede dejarte demasiado plana para el resto del día."],
+        cita: "Si la cuenta genera prisa, la cuenta está mal. Se acorta y se sigue.",
+        cierre: ["Lo practicamos en las clases de hatha y en pranayama, y es lo primero que enseñamos en las sesiones individuales. Diez respiraciones bastan para notar la diferencia."] },
+      { slug: "amalia-diario-5", avatar: "amalia-avatar", meta: "Práctica · 5 min", categoria: "Práctica", fecha: "28 de agosto de 2026", autora: "Amalia Ferrer",
+        titulo: "Una secuencia corta para septiembre",
+        entradilla: "Quince minutos para volver a la esterilla después del verano, sin pretender recuperar en una semana lo que se ha soltado en dos meses.",
+        cuerpo: ["Empieza sentada, con cinco minutos de respiración: cuatro tiempos al inhalar y seis al exhalar. Si la cuenta se atasca, vuelve a cuatro y cuatro.",
+          "Sigue con tres rondas lentas de gato y vaca, una postura del niño sostenida un minuto y dos saludos al sol sin saltos. Cada transición, al ritmo de una respiración completa.",
+          "Termina tumbada con las piernas apoyadas en la pared durante cinco minutos. Es la postura que más pide el cuerpo después de un día de pie o de muchas horas sentada."],
+        cita: "La vuelta no se mide en posturas. Se mide en días seguidos.",
+        cierre: ["Repítela cada mañana durante una semana antes de volver a clase. La guía de siete días sigue esta misma idea, con un audio para cada sesión."] },
+      { slug: "amalia-diario-1", avatar: "amalia-equipo-nuria", meta: "Práctica · 4 min", categoria: "Práctica", fecha: "21 de agosto de 2026", autora: "Nuria Sáez",
+        titulo: "Qué llevar a tu primera clase (casi nada)",
+        entradilla: "La lista real es corta. Todo lo demás está en la sala, y prestarlo es parte de que puedas venir a probar sin gastar.",
+        cuerpo: ["Ropa con la que puedas doblarte sin pensar en ella, y calcetines para el final. Nada más. Esterilla, bloques, cinturones y mantas los prestamos, y se limpian entre clases.",
+          "Ven quince minutos antes de la primera sesión. Ese cuarto de hora es para contarnos si tienes alguna lesión, elegir un sitio en la sala y colocar el material sin agobio.",
+          "Sobre comer: mejor con el estómago ligero, dos horas antes si es una comida completa. Y agua, aunque en clase apenas se bebe: las pausas rompen el ritmo más de lo que ayudan."],
+        cita: "Si dudas entre venir con lo puesto o no venir, ven con lo puesto.",
+        cierre: ["Si es tu primera vez, reserva la clase de hatha de martes o jueves. Es la que está pensada para empezar, y la primera es gratuita."] },
+      { slug: "amalia-diario-2", avatar: "amalia-equipo-dani", meta: "Descanso · 8 min", categoria: "Descanso", fecha: "7 de agosto de 2026", autora: "Dani Otero",
+        titulo: "Savasana no es el final: es la clase",
+        entradilla: "Diez minutos tumbadas sin hacer nada parecen el premio al final del esfuerzo. En la sala los tratamos como la parte que más trabajo pide.",
+        cuerpo: ["Savasana es la única postura en la que no hay nada que corregir desde fuera. Por eso cuesta: sin una indicación a la que agarrarse, la cabeza vuelve a la lista de tareas en menos de un minuto.",
+          "Lo que buscamos en esos diez minutos es que el cuerpo registre lo que ha pasado en la clase. La respiración se alarga sola, el pulso baja y los músculos que han sostenido las posturas dejan de vigilar.",
+          "Hay tres cosas que ayudan: taparse aunque no haga frío, apoyar la cabeza sobre una manta doblada y dejar que los pies caigan hacia fuera. Y una que no ayuda nada: mirar el reloj."],
+        cita: "En savasana no hay nada que hacer bien. Solo quedarse.",
+        cierre: ["Todas nuestras clases terminan con savasana largo, también las de la mañana. Si necesitas irte antes, avísanos al empezar y te colocamos cerca de la puerta."] },
+      { slug: "amalia-diario-3", avatar: "amalia-equipo-nuria", meta: "Anatomía · 7 min", categoria: "Anatomía", fecha: "24 de julio de 2026", autora: "Nuria Sáez",
+        titulo: "Las caderas no se abren: se sueltan",
+        entradilla: "«Abrir caderas» es la frase más repetida en cualquier clase de yoga, y describe mal lo que pasa. Lo que cambia es cuánto dejan de apretar los músculos que rodean la articulación.",
+        cuerpo: ["La cadera es una articulación profunda y estable, pensada para cargar peso. Su rango de movimiento depende de la forma de los huesos, que no cambia con la práctica, y de la tensión de los músculos que la cruzan, que sí cambia.",
+          "Por eso dos personas igual de constantes llegan a posturas muy distintas. Empujar la rodilla hacia el suelo en mariposa no gana rango: traslada la tensión a la rodilla, que es justo la articulación que no queremos cargar.",
+          "En clase trabajamos las caderas con posturas sostenidas y apoyos. Un bloque bajo cada muslo permite que el músculo suelte en lugar de defenderse, y en tres o cuatro semanas el cambio se nota más que con cualquier empujón."],
+        cita: "El rango que ganas empujando lo pierdes al día siguiente. El que ganas soltando se queda.",
+        cierre: ["Si notas pinchazos en la ingle o en la cara externa de la rodilla, dilo antes de empezar. En hatha y en restaurativo adaptamos la postura con soportes."] },
+      { slug: "amalia-diario-4", avatar: "amalia-equipo-dani", meta: "Sala · 3 min", categoria: "Sala", fecha: "10 de julio de 2026", autora: "Dani Otero",
+        titulo: "Cómo funcionan nuestras clases en directo",
+        entradilla: "La clase en directo es la misma que se da en la sala, a la misma hora y con la misma profesora. Esto es lo que necesitas para seguirla desde casa.",
+        cuerpo: ["Retransmitimos con dos cámaras: una fija con la sala completa y otra cerca de la profesora para las explicaciones. No hace falta instalar nada; el enlace llega por correo media hora antes y se abre en el navegador.",
+          "Tu cámara puede estar apagada. Si la enciendes, Dani la ve durante la clase y avisa a la profesora cuando algo se puede corregir de palabra. Nadie más te ve.",
+          "Hace falta un espacio del largo de una esterilla y algo de pared libre. Los bloques y el cinturón se pueden sustituir por dos libros gruesos y el cinturón de un albornoz."],
+        cita: "La clase no se adapta a la pantalla. La pantalla se coloca para que veas la clase.",
+        cierre: ["La grabación queda disponible siete días en los planes Sala y Completa. La primera clase en directo también es gratuita, igual que en la sala."] },
+      { slug: "amalia-diario-6", avatar: "amalia-avatar", meta: "Lecturas · 6 min", categoria: "Lecturas", fecha: "26 de junio de 2026", autora: "Amalia Ferrer",
+        titulo: "Cuatro lecturas que recomendamos en la sala",
+        entradilla: "No son manuales de posturas. Son las cuatro lecturas que más veces hemos prestado de la estantería de la entrada, y el motivo de cada una.",
+        cuerpo: ["La primera es un atlas de anatomía para no especialistas, con dibujos grandes y poco texto. Sirve para entender por qué una postura se nota en un sitio y no en otro, sin aprender nombres de músculos.",
+          "La segunda es un ensayo breve sobre el sueño y el descanso. La recomendamos a quien llega a yoga nidra porque duerme mal, para que sepa qué puede esperar de la clase y qué no.",
+          "Las otras dos son de respiración: un cuaderno práctico con ejercicios cortos ordenados por semanas, y una traducción comentada de textos clásicos sobre pranayama que conviene leer despacio y con lápiz."],
+        cita: "Un libro no corrige una postura. Ayuda a entender la corrección cuando llega.",
+        cierre: ["Los cuatro están en la estantería de la sala y se prestan quince días. Pregunta en la entrada: apuntamos el préstamo en una libreta."] }
+    ];
+
+    const clases = clasesData.map((c, i) => Object.assign({}, c, { abrir: this.openClase(i) }));
+    const entradas = entradasData.map((e, i) => Object.assign({}, e, { abrir: this.openPost(i) }));
+    const claseActual = clasesData[this.state.claseSel] || clasesData[0];
+    const sel = entradasData[this.state.postSel] ? this.state.postSel : 0;
+    const postActual = Object.assign({}, entradasData[sel], {
+      primero: entradasData[sel].cuerpo[0],
+      resto: entradasData[sel].cuerpo.slice(1),
+      inicial: entradasData[sel].cuerpo[0].slice(0, 1),
+      primeroResto: entradasData[sel].cuerpo[0].slice(1)
+    });
+    // «Seguir leyendo»: las tres siguientes, en ciclo; nunca la que se está leyendo.
+    const otrasEntradas = [1, 2, 3].map((k) => entradas[(sel + k) % entradas.length]);
+    // «Otras clases»: las cinco que no son la abierta.
+    const otrasClases = clases.filter((_, i) => i !== this.state.claseSel);
+
+    // Horario semanal: catorce clases, las mismas horas que dice cada ficha de clase.
+    const k = (i, hora) => ({ hora, nombre: clasesData[i].nombre, profesora: clasesData[i].profesora, abrir: this.openClase(i) });
+    const semana = [
+      { dia: "Lunes", clases: [k(0, "09:00"), k(0, "19:00")] },
+      { dia: "Martes", clases: [k(1, "07:30"), k(1, "20:00")] },
+      { dia: "Miércoles", clases: [k(0, "09:00"), k(0, "19:00"), k(2, "21:00")] },
+      { dia: "Jueves", clases: [k(1, "07:30"), k(1, "20:00")] },
+      { dia: "Viernes", clases: [k(0, "09:00"), k(0, "19:00")] },
+      { dia: "Sábado", clases: [k(3, "10:00")] },
+      { dia: "Domingo", clases: [k(4, "10:00"), k(4, "11:00")] }
+    ];
+
+    const nombresCategoria = ["Todo", "Práctica", "Respiración", "Descanso", "Anatomía", "Sala", "Lecturas"];
+    const categoriasUI = nombresCategoria.map((n) => ({
+      nombre: n,
+      elegir: () => this.setState({ categoria: n }),
+      estilo: "padding: 9px 16px; border-radius: 999px; font-family: Archivo, Helvetica, sans-serif; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; cursor: pointer; transition: border-color .3s ease; " +
+        (categoria === n ? "border: 1px solid #1E1B16; background: #1E1B16; color: #F6F2EA;" : "border: 1px solid #D6CCBB; background: transparent; color: #4A443A;")
+    }));
+    const postsFiltrados = entradas.slice(1).filter((e) => categoria === "Todo" || e.categoria === categoria);
+
+    return {
+      isHome: page === "home",
+      isFilosofia: page === "filosofia",
+      isPlanes: page === "planes",
+      isDiario: page === "diario",
+      isClase: page === "clase",
+      isPost: page === "post",
+      isContacto: page === "contacto",
+      goContacto: this.go("contacto"),
+      goReservar: this.goA("contacto", "reservar"),
+      goClases: this.goA("home", "clases"),
+      goGuia: this.goA("home", "newsletter"),
+      onSubmitContacto: (e) => { e.preventDefault(); this.setState({ enviadoContacto: true }); },
+      estadoContacto: this.state.enviadoContacto ? "Mensaje enviado" : "Enviar mensaje",
+      motivos: ["Reservar clase de prueba", "Dudas sobre los planes", "Sesión individual 1:1", "Empresas y grupos", "Otra cosa"],
+      llegar: [
+        { t: "Metro", d: "Quevedo (L2) e Iglesia (L1), a cinco minutos andando" },
+        { t: "Autobús", d: "Líneas 3, 37 y 149 en la calle Trafalgar" },
+        { t: "Bici", d: "Estación de BiciMAD a una manzana del portal" },
+        { t: "Portal", d: "Bajo izquierda, sin escalones. Timbre: Amalia Yoga" }
+      ],
+      goHome: this.go("home"),
+      goFilosofia: this.go("filosofia"),
+      goPlanes: this.go("planes"),
+      goDiario: this.go("diario"),
+      setMensual: () => this.setState({ periodo: "mensual" }),
+      setAnual: () => this.setState({ periodo: "anual" }),
+      btnMensual: this.pill(!anual, false),
+      btnAnual: this.pill(anual, false),
+      btnMensualClaro: this.pill(!anual, true),
+      btnAnualClaro: this.pill(anual, true),
+      onSubmit: (e) => { e.preventDefault(); this.setState({ enviado: true }); },
+      estadoForm: enviado ? "Revisa tu correo" : "Enviar la guía",
+
+      clases,
+      otrasClases,
+      claseActual,
+      postActual,
+      destacada: entradas[0],
+      verDestacada: categoria === "Todo" || categoria === entradas[0].categoria,
+      otrasEntradas,
+      semana,
+      categoriasUI,
+      postsFiltrados,
+      equipo: [
+        { slug: "amalia-equipo-amalia", nombre: "Amalia Ferrer", rol: "Fundadora · Hatha y restaurativo", bio: "Formada en Mysore y en Lisboa. Da clase desde 2011 y dirige la sala desde 2016." },
+        { slug: "amalia-equipo-nuria", nombre: "Nuria Sáez", rol: "Vinyasa y pranayama", bio: "Viene de la danza contemporánea. Sus clases trabajan el ritmo y la transición entre posturas." },
+        { slug: "amalia-equipo-dani", nombre: "Dani Otero", rol: "Yoga nidra · Online", bio: "Lleva la sala en directo y las grabaciones. Especializado en descanso y sueño." }
+      ],
+      // «Suelta» no cambia con el conmutador: es la clase suelta, y su bono de 10 lleva el mismo −15 % que el
+      // plan anual (160 € → 136 €). Antes pasaba a 130 €, un −18,75 % que no era el anunciado.
+      planes: [
+        Object.assign({ nombre: "Suelta", para: "Para probar sin compromiso", precio: eur(16), periodo: "por clase", incluye: ["Una clase presencial o en directo", "Reserva hasta 2 h antes", "Préstamo de esterilla y material", "Bono de 10 clases por 136 €, sin caducidad"], cta: "Reservar clase" }, this.estilosPlan(0, false)),
+        Object.assign({ nombre: "Sala", para: "Lo más elegido", precio: precio(64), periodo: per, incluye: ["Ocho clases presenciales al mes", "Acceso completo a la sala online", "Grabaciones durante 7 días", "Un taller mensual incluido"], cta: "Empezar con Sala" }, this.estilosPlan(1, true)),
+        Object.assign({ nombre: "Completa", para: "Práctica diaria", precio: precio(89), periodo: per, incluye: ["Clases presenciales ilimitadas", "Sala online y archivo completo", "Una sesión 1:1 al trimestre", "Prioridad en retiros"], cta: "Empezar con Completa" }, this.estilosPlan(2, false))
+      ],
+      posts: [entradas[0], entradas[1], entradas[2]],
+      horario: [
+        { dia: "Lunes a jueves", horas: "07:30 – 10:30 · 17:30 – 22:00" },
+        { dia: "Viernes", horas: "07:30 – 10:30 · 17:30 – 20:30" },
+        { dia: "Sábado", horas: "09:30 – 13:00" },
+        { dia: "Domingo", horas: "09:30 – 12:00 (nidra)" }
+      ],
+      principios: [
+        { num: "01", titulo: "Grupos de ocho", texto: "Ocho esterillas y no más. Cada persona recibe al menos una corrección por clase." },
+        { num: "02", titulo: "Sin espejos ni música alta", texto: "La atención va hacia dentro. La voz de quien guía tiene que oírse sin esfuerzo." },
+        { num: "03", titulo: "Savasana largo", texto: "Diez minutos finales, siempre. Es la parte que más cuesta y la que más sostiene." },
+        { num: "04", titulo: "La misma clase, en casa", texto: "Todo lo presencial existe en directo, con la misma profesora y el mismo horario." }
+      ],
+      faq: [
+        { q: "Nunca he hecho yoga. ¿Puedo empezar aquí?", a: "Sí. Hatha e iniciación están pensadas para eso, y la primera clase es gratuita para que pruebes sin pagar nada." },
+        { q: "¿Hace falta llevar esterilla?", a: "No. Prestamos esterilla, bloques, cinturón y mantas. Si prefieres la tuya, hay taquillas en la entrada." },
+        { q: "¿Puedo cambiar o cancelar mi plan?", a: "Cuando quieras, desde tu cuenta, sin penalización. El cambio se aplica en el siguiente ciclo de facturación." },
+        { q: "¿Las clases en directo se graban?", a: "Todas. La grabación queda disponible siete días para los planes Sala y Completa." }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>
