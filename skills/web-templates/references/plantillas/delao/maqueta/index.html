@@ -1,3 +1,4 @@
+<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Inmobiliaria de la O — Villas y áticos de autor en Marbella</title>
@@ -107,9 +108,22 @@
                      calc(var(--n-sec) / var(--fs-base) * 1rem + (var(--n-sec-cap) - var(--n-sec)) * var(--fluid)),
                      calc(var(--n-sec-cap) * 1px));
 
-  --container-max:1280px;
-  --content-width:clamp(1140px, 85vw, 100vw);
-  --pad-x-mobile:20px; --pad-x-tablet:32px; --pad-x-desktop:5%;
+  /* ── EL RAÍL. Una sola expresión desde 430 hasta el infinito, y la dicta la lámina: TODAS sus
+     bandas —cabecera, secciones y pie— son `max-width:1440px; margin:0 auto; padding:0 40px`, o
+     sea 40px de margen y 1360px de contenido a 1440. La maqueta lo tenía partido en dos mecanismos
+     que se sumaban —un `max-width` del 85vw MÁS un relleno del 5%— y el porcentaje del relleno no
+     se resuelve contra la caja topada sino contra su contenedor, que es la PANTALLA: 108+72=180px
+     de raíl a 1440 contra los 40 de la lámina, y el contenido en 1080 contra 1360. Sin tope
+     superior, además: a 1920 el raíl se iba a 240 y el contenido a 1440, más ancho que la lámina.
+     La forma correcta es la de lumière: un `max()` entre el margen de página y la mitad de lo que
+     sobra sobre el ancho de la lámina. Por debajo de 1440 manda el margen, escrito como FRACCIÓN
+     —2,778% da exactamente los 40px de la lámina a 1440— con suelo de 20px para el móvil; por
+     encima manda el tope, y el contenido se queda clavado en 1360 crezca lo que crezca la pantalla.
+     En Elementor son dos controles nativos del contenedor: «ancho de contenido: en caja, 1360» y
+     el relleno lateral del propio contenedor. ── */
+  --ancho-lienzo:1360px;
+  --margen-pagina:clamp(20px, 2.778%, 40px);
+  --carril:max(var(--margen-pagina), calc((100% - var(--ancho-lienzo)) / 2));
   /* El canvas no dibuja UN SOLO radio en 381 KB de CSS: la esquina viva es su firma. La receta
      del ancla manda sobre la tabla de defaults, así que los cinco radios van a 0. */
   --radius-card:0; --radius-button:0; --radius-image:0; --radius-input:0; --radius-container:0;
@@ -165,9 +179,10 @@ h3{font-size:min(var(--fs-h3),16cqi);line-height:1.15;letter-spacing:-.005em}
    medir fit-content y los márgenes se comen el resto. Con `container-type:inline-size` encima, ese
    fit-content se calcula IGNORANDO el contenido — medido, el `.wrap` del hero salió a 190,5px, sus
    pistas `1.45fr 1fr` a `0px 137px`, y el h1 a `font-size: 0px`, porque su guardián `23cqi` mide un
-   contenedor de ancho cero. Página válida, CSS válido, titular invisible. */
-.wrap{width:100%;max-width:var(--content-width);margin-inline:auto;
-      padding-inline:var(--pad-x-desktop);container-type:inline-size}
+   contenedor de ancho cero. Página válida, CSS válido, titular invisible. El tope ya NO se escribe
+   aquí como `max-width` + margen automático: lo lleva el propio raíl, así que no hay dos mecanismos
+   que sumar ni margen automático que pueda desactivar un estirado. */
+.wrap{width:100%;padding-inline:var(--carril);container-type:inline-size}
 section{padding-block:var(--sp-section)}
 /* Un `bleedband` es la banda: el color llega al cristal y el `.wrap` de dentro recupera el ancho
    de contenido. La clase vive SOLO en un <section>; un item de rejilla que reclama el canalón es
@@ -222,7 +237,7 @@ section{padding-block:var(--sp-section)}
    contenedor en Elementor, así que sería CSS a mano en el build. Un color sólido sí lo es. */
 header.site{position:sticky;top:0;z-index:50;background:var(--c-bg);
             border-bottom:var(--hair) solid var(--c-border)}
-.barra{max-width:var(--content-width);margin-inline:auto;padding-inline:var(--pad-x-desktop);
+.barra{padding-inline:var(--carril);
        height:var(--header-h);display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:32px}
 .marca{display:flex;flex-direction:column;gap:3px;justify-self:start;min-width:0}
 .marca b{font-family:var(--font-primary);font-weight:400;font-size:19px;line-height:1;letter-spacing:.01em}
@@ -287,8 +302,8 @@ header.site{position:sticky;top:0;z-index:50;background:var(--c-bg);
       color-mix(in srgb,var(--c-bg) 78%,transparent) 38%,
       color-mix(in srgb,var(--c-bg) 28%,transparent) 70%,
       color-mix(in srgb,var(--c-bg) 6%,transparent) 100%)}
-.hero-pautas{position:absolute;inset:0;z-index:2;pointer-events:none;max-width:var(--content-width);
-      margin-inline:auto;padding-inline:var(--pad-x-desktop);display:grid;grid-template-columns:repeat(4,1fr)}
+.hero-pautas{position:absolute;inset:0;z-index:2;pointer-events:none;
+      padding-inline:var(--carril);display:grid;grid-template-columns:repeat(4,1fr)}
 .hero-pautas i{border-left:var(--hair) solid color-mix(in srgb,var(--c-text) 9%,transparent)}
 .hero-pautas i:last-child{border-right:var(--hair) solid color-mix(in srgb,var(--c-text) 9%,transparent)}
 .hero-grid{position:relative;z-index:3;display:grid;grid-template-columns:1.45fr 1fr;gap:64px;align-items:end}
@@ -341,12 +356,24 @@ header.site{position:sticky;top:0;z-index:50;background:var(--c-bg);
 .cta-copy .eyebrow{color:var(--c-accent-on-inverse)}
 .cta-copy p{max-width:46ch;color:var(--c-on-inverse-muted);line-height:1.8;text-wrap:pretty}
 .cta-acciones{display:flex;flex-wrap:wrap;gap:16px;align-items:center;margin-top:8px}
-.cta-foto{width:100%;max-width:100%;min-width:0;height:100%;min-height:420px;object-fit:cover}
+/* `height:100%` NO RESUELVE en una fila de rejilla de alto automático, y una foto VERTICAL lo
+   convierte en un bulto. `delao-cta.webp` es 800×1067 (3:4): al no resolver el porcentaje, la
+   imagen se dimensionaba por su proporción intrínseca —632,5×843,7 a 1440— y era ELLA la que
+   fijaba el alto de la fila, así que la banda medía 843,7px contra los 536,1 de la lámina, donde
+   quien manda es el texto y la foto sólo lo cubre. Ni desbordaba ni fallaba contraste: sólo era
+   307px más alta de lo dibujado, y crecía con la pantalla. `height:0` deja la contribución
+   intrínseca de la imagen en cero mientras se miden las pistas, y `min-height:100%` se resuelve
+   después, contra el área de rejilla YA definida por la columna de texto. En el build nativo esto
+   no se escribe: el widget Imagen vive dentro de su propio contenedor, que es el que se estira. */
+.cta-foto{width:100%;max-width:100%;min-width:0;height:0;min-height:100%;object-fit:cover}
 
 .resenas{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--hair);background:var(--c-border)}
-/* EL MISMO TIPO DE JUNTA SE ESPACIA IGUAL. Medido: 224px de aire antes de la banda de
-   valoración contra 112px antes del pie, dos juntas equivalentes a 2:1. Un solo token. */
-.sec-junta{padding-block-end:var(--sp-2xl)}
+/* Aquí vivía `.sec-junta{padding-block-end:var(--sp-2xl)}`: una clase que NINGÚN elemento del
+   documento llevaba, y cuyo único declarante apuntaba a `--sp-2xl`, un token que no existe —el de
+   la casa es `--sp-xxl`—, así que la declaración entera se invalidaba en tiempo de valor computado.
+   Regla muerta por partida doble, y del tipo que engaña al leer el fichero: parece que el ritmo
+   entre bandas está resuelto cuando no lo toca nadie. El ritmo lo lleva `--sp-section` en
+   `section{}`, y es el mismo para las diez páginas. */
 .resena{container-type:inline-size;background:var(--c-bg);padding:44px 36px;display:flex;
         flex-direction:column;gap:26px;justify-content:space-between}
 .resena blockquote{font-family:var(--font-primary);font-size:clamp(1.15rem,1.6vw,1.3125rem);
@@ -356,7 +383,17 @@ header.site{position:sticky;top:0;z-index:50;background:var(--c-bg);
 .resena figcaption span{font-size:12px;color:var(--c-text-muted)}
 
 /* ─────────────────────────────────────────── PROPIEDADES ──────────────────────────────────── */
+/* DOS VARIANTES, Y LAS DOS LAS DIBUJA LA LÁMINA. La cabecera partida de /propiedades —y la del 404,
+   que copia su estructura— es `1.4fr 1fr` y NO lleva filete, porque debajo entra la banda oscura de
+   búsqueda. La de /nosotros y /contacto es `1.5fr 1fr` con 44px de aire y un filete de cierre, y de
+   ahí la heredan las cinco páginas derivadas. Medido a 1440: la pista de texto mide 756px con 1.4 y
+   777,6 con 1.5, y las SEIS cabeceras con filete llevaban la proporción de /propiedades más un
+   `style=` en línea repetido seis veces con el relleno y el borde. Un `style=` en línea no puede
+   llevar punto de corte, así que no puede maquetar, y seis copias de la misma declaración son
+   seis contenedores ajustados a mano en el build en vez de uno reutilizado. */
 .pag-head{display:grid;grid-template-columns:1.4fr 1fr;gap:64px;align-items:end}
+.pag-head--filete{grid-template-columns:1.5fr 1fr;padding-bottom:44px;
+                  border-bottom:var(--hair) solid var(--c-border)}
 .pag-head-copy{container-type:inline-size;display:flex;flex-direction:column;gap:20px}
 .toolbar{display:flex;justify-content:space-between;align-items:center;gap:24px;padding-bottom:20px;
          border-bottom:var(--hair) solid var(--c-border)}
@@ -650,7 +687,9 @@ footer.site{background:var(--c-surface-inverse);color:var(--c-on-inverse)}
      1024 para que una URL o una palabra larga no abra scroll horizontal. Los headings quedan
      exentos arriba, con su guardián `cqi`. */
   body{overflow-wrap:anywhere}
-  .wrap,.barra,.hero-pautas{padding-inline:var(--pad-x-tablet)}
+  /* El raíl NO se reescribe aquí: `clamp(20px, 2.778%, 40px)` ya baja solo —28,4px a 1024, 21,3px a
+     768, 20px de suelo a 430— y una fracción continua es justo lo que impide que aparezca un tercer
+     margen entre los dos puntos de corte. */
   /* `1fr auto 1fr` obliga a que las dos columnas exteriores midan lo mismo, y a 768 eso
      estrangula la del logo hasta convertirla en una tira de letras. Aquí el logo y el CTA
      miden su contenido y el menú se queda con lo que sobra; el teléfono se retira, porque
@@ -704,6 +743,12 @@ footer.site{background:var(--c-surface-inverse);color:var(--c-on-inverse)}
   .legal-body{grid-template-columns:minmax(0,1fr);gap:var(--sp-l)}
   .indice{position:static;max-width:31em}
 
+  /* El mapa del aside es 4/3 mientras vive en una columna de 530px (397px de alto, como la lámina).
+     Apilado a ancho completo esa misma proporción da 725×544 a 768: media pantalla de plantilla de
+     mapa como última cosa antes del pie. Se le pone la proporción del otro mapa de la maqueta, el
+     de la ficha, que ya es 16/9 — 725×408 — y así los dos mapas se comportan igual por debajo de
+     1024. Proporción por punto de corte: control nativo del contenedor. */
+  .mapa-aside{aspect-ratio:16/9}
   .mosaico{grid-template-columns:1fr;grid-template-rows:auto;height:auto}
   .mosaico > :first-child{grid-row:auto}
   .mosaico img{aspect-ratio:16/9;height:auto}
@@ -718,7 +763,6 @@ footer.site{background:var(--c-surface-inverse);color:var(--c-on-inverse)}
 
 @media (max-width:767px){
   :root{--header-h:66px}
-  .wrap,.barra,.hero-pautas{padding-inline:var(--pad-x-mobile)}
 
   /* LA NAVEGACIÓN MÓVIL REAL: bajo 767 el menú es un control de divulgación con aria-expanded,
      y el CTA NO baja a una segunda fila — se queda en la barra, a la izquierda del disparador. */
@@ -738,7 +782,7 @@ footer.site{background:var(--c-surface-inverse);color:var(--c-on-inverse)}
   .barra .btn{padding:12px 14px;min-height:44px;letter-spacing:.14em;font-size:9.5px;white-space:nowrap}
   .menu-movil{display:block;border-top:var(--hair) solid var(--c-border);background:var(--c-bg)}
   .menu-movil[hidden]{display:none}
-  .menu-movil a{display:block;padding:18px var(--pad-x-mobile);font-size:12px;font-weight:500;
+  .menu-movil a{display:block;padding:18px var(--carril);font-size:12px;font-weight:500;
       letter-spacing:.2em;text-transform:uppercase;border-bottom:var(--hair) solid var(--c-border)}
   .menu-movil a[aria-current=page]{color:var(--c-accent)}
   .menu-movil .tel-movil{display:block;text-transform:none;letter-spacing:.06em;font-size:14px;
@@ -1230,7 +1274,7 @@ footer.site{background:var(--c-surface-inverse);color:var(--c-on-inverse)}
 
   <section style="padding-block-end:0">
     <div class="wrap">
-      <div class="pag-head" style="padding-bottom:44px;border-bottom:1px solid var(--c-border)">
+      <div class="pag-head pag-head--filete">
         <div class="pag-head-copy">
           <span class="eyebrow">Casa fundada en 2004</span>
           <h1>Pocas casas, mucho tiempo en cada una</h1>
@@ -1344,7 +1388,7 @@ footer.site{background:var(--c-surface-inverse);color:var(--c-on-inverse)}
 
   <section style="padding-block-end:0">
     <div class="wrap">
-      <div class="pag-head" style="padding-bottom:44px;border-bottom:1px solid var(--c-border)">
+      <div class="pag-head pag-head--filete">
         <div class="pag-head-copy">
           <span class="eyebrow">Contacto</span>
           <h1>Hablemos de su casa</h1>
@@ -1373,6 +1417,14 @@ footer.site{background:var(--c-surface-inverse);color:var(--c-on-inverse)}
           <label>
             <span>Correo electrónico</span>
             <input type="email" name="correo" autocomplete="email" required>
+          </label>
+          <!-- ESTE CIERRE FALTABA, y el analizador de HTML no lo suple: `<label>` no autocierra
+               como `<p>` o `<li>`, así que «Motivo» se convertía en HIJO de «Correo electrónico».
+               La rejilla de dos columnas se quedaba con TRES items en vez de cuatro —fila llena,
+               fila con una celda vacía— y encima el `<label>` anidado ata la etiqueta «Motivo» al
+               campo de correo: pulsar el rótulo del desplegable enfocaba el email. Ni desbordaba,
+               ni fallaba contraste, y el comentario de la media query de 1024 afirma «4 campos en
+               2 columnas» sobre un DOM que tenía 3. -->
           <label>
             <span>Motivo</span>
             <select name="motivo">
@@ -1425,7 +1477,7 @@ footer.site{background:var(--c-surface-inverse);color:var(--c-on-inverse)}
 
   <section style="padding-block-end:0">
     <div class="wrap">
-      <div class="pag-head" style="padding-bottom:44px;border-bottom:1px solid var(--c-border)">
+      <div class="pag-head pag-head--filete">
         <div class="pag-head-copy">
           <span class="eyebrow">Consulta recibida</span>
           <h1>Gracias. Ya la estamos leyendo</h1>
@@ -1485,7 +1537,7 @@ footer.site{background:var(--c-surface-inverse);color:var(--c-on-inverse)}
 
   <section style="padding-block-end:0">
     <div class="wrap">
-      <div class="pag-head" style="padding-bottom:44px;border-bottom:1px solid var(--c-border)">
+      <div class="pag-head pag-head--filete">
         <div class="pag-head-copy">
           <span class="eyebrow">Información legal</span>
           <h1>Aviso legal</h1>
@@ -1609,7 +1661,7 @@ footer.site{background:var(--c-surface-inverse);color:var(--c-on-inverse)}
 
   <section style="padding-block-end:0">
     <div class="wrap">
-      <div class="pag-head" style="padding-bottom:44px;border-bottom:1px solid var(--c-border)">
+      <div class="pag-head pag-head--filete">
         <div class="pag-head-copy">
           <span class="eyebrow">Información legal</span>
           <h1>Política de privacidad</h1>
@@ -1801,7 +1853,7 @@ footer.site{background:var(--c-surface-inverse);color:var(--c-on-inverse)}
 
   <section style="padding-block-end:0">
     <div class="wrap">
-      <div class="pag-head" style="padding-bottom:44px;border-bottom:1px solid var(--c-border)">
+      <div class="pag-head pag-head--filete">
         <div class="pag-head-copy">
           <span class="eyebrow">Información legal</span>
           <h1>Política de cookies</h1>
@@ -2179,8 +2231,13 @@ footer.site{background:var(--c-surface-inverse);color:var(--c-on-inverse)}
   // AL CARGAR CON `#pr-derechos`, EL NAVEGADOR HACE SU PROPIO SALTO AL FRAGMENTO DESPUÉS de este
   // script, y lo hace sin descontar la cabecera: medido, el apartado quedaba en y=0, tapado. Se
   // repite el salto propio una vez terminada la carga.
+  // Y PASA IGUAL CUANDO EL FRAGMENTO ES UNA PÁGINA, que es el caso corriente de un enlace
+  // compartido: `#ficha` es también el id de su `<div class="page">`, así que el navegador salta
+  // ahí y deja la página desplazada 79px —el alto de la cabecera—, con la barra de migas entera
+  // debajo de una cabecera pegajosa y OPACA. La condición sobraba: `mostrar()` ya sabe qué hacer en
+  // los dos casos, saltar al destino descontando la cabecera o volver arriba del todo.
   window.addEventListener('load', function(){
-    if (resolver(location.hash).destino) { setTimeout(function(){ mostrar(location.hash); }, 0); }
+    setTimeout(function(){ mostrar(location.hash); }, 0);
   });
 })();
 </script>

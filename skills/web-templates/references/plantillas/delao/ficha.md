@@ -68,6 +68,25 @@ Elementor, sin un solo widget HTML y sin CSS a medida. Los colores y las tipogra
 en los ajustes globales del sitio, no en reglas: eso es lo que hace alcanzable el techo de
 cero. Divi queda declarado pero **no validado**, igual que en el resto del framework.
 
+### El raíl: 2,778 % con tope en 1360 px
+
+**Margen de página declarado: `clamp(20px, 2,778 %, 40px)`, con el contenido topado en 1360 px.**
+Es la ley de composición de la lámina, no una preferencia: las siete láminas escriben TODAS sus
+bandas —cabecera, secciones y pie— como `max-width:1440px; margin:0 auto; padding:0 40px`, o sea
+40 px de margen y 1360 px de contenido sobre un artboard de 1440. El 2,778 % da exactamente esos
+40 px a 1440 y sigue siendo fracción entre los dos puntos de corte (28,4 px a 1024, 21,3 px a 768,
+20 px de suelo a 430), que es lo que impide que aparezca un tercer margen donde no hay punto de
+corte. Por encima de 1440 manda el tope y el margen crece solo: 160 px a 1680, 280 px a 1920.
+
+Es un margen MÁS ESTRECHO que el 7,5 % de la casa, y a propósito: el objetivo es una cartera corta
+en la que la fotografía llega casi al cristal y la rejilla de tres piezas mide 453 px por tarjeta.
+Un 7,5 % dejaría la misma página con 1224 px de contenido y tarjetas de 407, que es otra plantilla.
+El barrido lo confirma a tres anchos y no señala nada al cristal.
+
+En nativo son dos controles del contenedor y ninguna regla: **Diseño › Ancho de contenido: En caja,
+1360 px** (el tope) y **Relleno lateral del contenedor** (el margen), con su valor por punto de
+corte. No hay `max-width` en una clase ni margen automático que un item de rejilla pueda desactivar.
+
 | Sección | Elementor (nativo) | Divi | Nota |
 |---|---|---|---|
 | Cabecera con menú | Plantilla de cabecera del Theme Builder: contenedor flex + Logotipo + Menú de navegación + Botón | Theme Builder | El menú nativo ya trae el desplegable móvil; no se dibuja a mano |
@@ -76,8 +95,8 @@ cero. Divi queda declarado pero **no validado**, igual que en el resto del frame
 | Panel de cifras | Contenedor flex con borde izquierdo + dos contenedores de texto | Módulo de texto | El filete es el borde del contenedor |
 | Banda de búsqueda | Contenedor de fondo invertido + campos del formulario nativo | Módulo de formulario | Es el conmutador `hero: buscador` cuando se activa |
 | Rejilla de propiedades | Contenedor rejilla, hueco 1px, fondo entintado; cada tarjeta un contenedor con Imagen + Encabezado + Texto | Fila + módulos | El hueco dibuja la línea. Columnas por punto de ruptura con los controles nativos |
-| Banda oscura de valoración | Contenedor a dos columnas 1.15fr/1fr con fondo de tinta + Botón + enlace de teléfono | Sección de dos columnas | El segundo destino es un enlace `tel:`, no un segundo botón |
-| Cabecera partida de página interior | Contenedor rejilla 1.5fr/1fr | Fila 2 columnas | Compartida por todas las internas, las de sistema incluidas |
+| Banda oscura de valoración | Contenedor a dos columnas 1.15fr/1fr con fondo de tinta + Botón + enlace de teléfono; la foto es un widget Imagen con Ajuste del objeto «Cubrir» dentro de la segunda columna | Sección de dos columnas | El segundo destino es un enlace `tel:`, no un segundo botón. **Quien fija el alto de la banda es la columna de texto, nunca la foto**: `delao-cta.webp` es vertical (800×1067) y en la maqueta llegó a estirar la banda a 843,7 px contra los 536,1 de la lámina. En Elementor no hay nada que escribir —el widget vive en su propio contenedor, que se estira solo—; en la maqueta, que no lleva ese contenedor, la imagen se escribe `height:0;min-height:100%` para no aportar su alto intrínseco al medir la fila |
+| Cabecera partida de página interior | Contenedor rejilla 1.5fr/1fr con 44 px de relleno inferior y borde inferior | Fila 2 columnas | Compartida por todas las internas, las de sistema incluidas. **Dos variantes, y las dos las dibuja la lámina**: con filete (1.5fr/1fr) en /nosotros, /contacto y las cinco derivadas; sin filete y a 1.4fr/1fr en /propiedades y el 404, porque debajo entra la banda oscura de búsqueda y un filete sobre una banda a sangre son dos cierres seguidos |
 | Barra de filtros | Contenedor flex + campos nativos, pegajosa arriba | Módulo de formulario | Apila por debajo de 900 con el control nativo |
 | Mosaico de la ficha | Contenedor rejilla 2fr/1fr + Imagen | Galería | Colapsa a una columna por debajo de 767 |
 | Tabla de características | Widget Lista de iconos o Tabla | Módulo de texto | Diez filas clave-valor; incluye certificado energético y gastos |
