@@ -70,11 +70,11 @@ temperatura y la primera pantalla no enseña ni un precio.
 | Cabecera | Theme Builder: contenedor flex con un grupo marca + menú a la izquierda y utilidades + `woocommerce-menu-cart` a la derecha | |
 | Tres cifras | Contenedor flex de tres contenedores + dos Encabezado cada uno | |
 | Barras de intensidad | Contenedor flex de diez contenedores de 9 × 14 con color de fondo | Nativo pero verboso. Alternativa: una imagen por nivel |
-| Lista de sesiones | Loop Grid con Loop Item de una fila | Duración, temperatura e intensidad como campos del producto. **No verificado** qué campo nativo las guarda |
+| Lista de sesiones | Loop Grid con Loop Item de una fila | Duración, temperatura e intensidad como campos del producto. **No verificado** qué campo nativo las guarda. **Son dos rejillas, no una**: el extracto de portada reparte 436/180/180/250/178 y sin fila de cabecera, y el catálogo 436/150/160/250/228 con ella. En Elementor, dos Loop Item distintos con anchos personalizados en porcentaje |
 | Equipo como producto | **Producto simple** de WooCommerce con su propio SKU y precio de equipo | Un producto agrupado nativo muestra las prendas con sus precios pero **no aplica descuento de conjunto**: el 214,00 € frente a 234,00 € sólo es nativo si el equipo es un producto propio |
 | Ficha: galería | `woocommerce-product-images` | |
 | Ficha: compra | `woocommerce-product-price` + `woocommerce-product-add-to-cart` | |
-| Tabla de tallas | Contenedores flex por fila | |
+| Tabla de tallas | Contenedores flex por fila | Cinco columnas IGUALES, 20 % cada una, reparto fijo: el automático las dejaba en 274/440/803 y ningún raíl interior coincidía con el de la lámina (352/597/842). Por debajo de 768 la tabla se desplaza dentro de su contenedor |
 | Pie | Theme Builder | |
 
 ## Páginas
@@ -100,8 +100,17 @@ precisamente el defecto que `paginas-obligatorias.md` vino a cerrar.
 
 El diseño sigue siendo el canvas de `canvas/`, la autoridad — todo cambio empieza ahí y baja después a
 la maqueta, nunca al revés. `maqueta/index.html` ya existe: un único fichero autocontenido, con los
-dos puntos de ruptura que Elementor expresa, 1024 y 767, y el margen de página en fracción (7,5%) en
-vez de píxel fijo para que aguante entre los dos.
+dos puntos de ruptura que Elementor expresa, 1024 y 767.
+
+**El raíl y el techo de contenido.** El margen de página es la fracción **7,5 %**, topada en 108px, y
+el contenido está topado en **1224px** — los dos números que el lienzo dibuja a 1440. Se escriben en
+un solo valor, `max(clamp(20px, 7.5%, 108px), (100% − 1224px) / 2)`, aplicado como relleno lateral de
+la banda. Nativo: contenedor «en caja» de 1224 con relleno lateral porcentual y tope. La versión
+anterior lo escribía como `max-width:1440px` + margen automático + `padding:0 7.5%`, y el porcentaje
+se resolvía contra el CRISTAL y no contra el contenedor topado: por encima de 1440 el contenido
+ENCOGÍA —1224 a 1440, 1188 a 1680, 1152 a 1920— y con él la fotografía de portada. Las medidas cortas
+(carro, pedido, legales, 404) llevan su tope **en el bloque y alineado a la izquierda**, no en la
+banda: centradas abrían un segundo raíl 208–410px a la derecha del resto de la maqueta.
 
 **Qué se dibujó y qué se construyó desde los tokens.** Los cinco artboards se tradujeron sección por
 sección — mismo orden, mismo texto, mismos tokens — a una escala tipográfica fluida entre 375 y

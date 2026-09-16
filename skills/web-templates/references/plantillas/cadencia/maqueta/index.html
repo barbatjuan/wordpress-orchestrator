@@ -31,8 +31,9 @@
    CADENCIA — maqueta derivada del lienzo (canvas/Cadencia.dc.html, CadenciaPieza.dc.html,
    Categoria.dc.html, LaMarca.dc.html, Contacto.dc.html). Tokens de color y tipo medidos en
    ficha.md; la escala fluida interpola entre 375 y 1440 (slope · yAxisIntersection), sólo
-   1024 y 767 en @media — nunca un tercer punto de ruptura. Margen de página 7,5% (108px a
-   1440) en TODAS las anchuras: nunca un píxel fijo. Suelo frío medido: ver ficha.md § Paleta
+   1024 y 767 en @media — nunca un tercer punto de ruptura. Margen de página 7,5% topado en
+   108px y contenido topado en 1224: un solo raíl a cualquier ancho, y por encima de 1440 crece
+   el margen, nunca encoge el contenido. Suelo frío medido: ver ficha.md § Paleta
    medida. El naranja mide, nunca es color de letra — por eso el token se llama `--c-border`
    y no `--c-accent`: sus dos únicos usos son un fondo de 9×14 (barra encendida) y un
    `border-bottom` bajo texto que sigue siendo `--c-ink`.
@@ -49,8 +50,20 @@
   --font-sans:'Archivo','Helvetica Neue',Arial,sans-serif;
   --font-mono:'IBM Plex Mono',ui-monospace,monospace;
 
+  /* ── UN SOLO RAÍL. El lienzo dibuja 1224px de contenido entre dos márgenes de 108 a 1440: el
+     margen es la FRACCIÓN 7,5 % y 1224 es el TOPE. Escrito como `max-width:1440px` + `margin:0
+     auto` + `padding:0 7.5%`, el porcentaje se resolvía contra el CRISTAL y no contra el
+     contenedor topado, así que por encima de 1440 el contenido ENCOGÍA: 1224 a 1440, 1188 a
+     1680, 1152 a 1920 — y con él la foto de portada, de 1224 a 1152. El carril lo resuelve en un
+     solo valor: relleno lateral, nunca tope + margen automático, que son dos mecanismos que hay
+     que sumar. El tope de la fracción (108px) impide que el margen siga creciendo mientras el
+     contenido ya está fijo. ── */
   --pad-x:7.5%;
-  --container-max:1440px;
+  --contenido-max:1224px;
+  --carril:max(clamp(20px, var(--pad-x), 108px), calc((100% - var(--contenido-max)) / 2));
+  /* Hueco de columna del lienzo: 80px a 1440, 32 a 375. Antes `clamp(2rem,1vw + 3rem,5rem)`,
+     cuyo máximo de 80 no se alcanzaba hasta 3200px de pantalla: a 1440 daba 62,4. */
+  --gap-col:clamp(2rem, 0.944rem + 4.507vw, 5rem);
 
   --hair-014:rgba(233,238,242,0.14);
   --hair-016:rgba(233,238,242,0.16);
@@ -65,9 +78,15 @@
   --fs-h1-piece: clamp(1.875rem, 1.523rem + 1.502vw, 2.875rem); /* h1 de ficha: 30px → 46px */
   --fs-h2:       clamp(1.625rem, 1.317rem + 1.315vw, 2.5rem);   /* h2 de sección: 26px → 40px */
   --fs-h3:       clamp(1.25rem,  1.118rem + 0.563vw, 1.625rem); /* nombre de sesión: 20px → 26px */
+  --fs-h3-cat:   clamp(1.25rem,  1.115rem + 0.578vw, 1.5rem);   /* nombre en el catálogo: 20 → 24 */
+  --fs-h2-s:     clamp(1.5rem,   1.236rem + 1.127vw, 2.25rem);  /* h2 de ficha: 24px → 36px */
+  --fs-lead-md:  clamp(1.375rem, 1.199rem + 0.751vw, 1.875rem); /* entradilla de portada: 22 → 30 */
   --fs-price-lg: clamp(1.375rem, 1.199rem + 0.751vw, 1.875rem); /* precio grande: 22px → 30px */
   --sp-section:  clamp(3.5rem,   2.444rem + 4.507vw, 6.5rem);   /* ritmo vertical: 56px → 104px */
+  --sp-hero:     clamp(3rem,     2.120rem + 3.756vw, 5.5rem);   /* primera banda: 48px → 88px */
   --sp-tight:    clamp(2.5rem,   1.972rem + 2.254vw, 4rem);     /* ritmo corto: 40px → 64px */
+  --sp-section-s:clamp(3.25rem,  2.393rem + 3.662vw, 6rem);     /* ritmo de ficha: 52px → 96px */
+  --sp-xtight:   clamp(1.75rem,  1.363rem + 1.653vw, 2.75rem);  /* primera banda de ficha: 28 → 44 */
 
   --ease:cubic-bezier(.22,1,.36,1);
 }
@@ -75,7 +94,11 @@
 /* ─────────────────────────────────────────── base ─────────────────────────────────────────── */
 *{box-sizing:border-box;}
 html,body{margin:0;padding:0;background:var(--c-bg);}
-body{font-family:var(--font-sans);font-weight:400;color:var(--c-ink);font-size:16px;line-height:1.6;
+/* La interlínea del cuerpo es `normal`, como la deja el lienzo: cada bloque de lectura declara la
+   suya y todo lo demás —dato monoespaciado, rótulo, precio, celda de tabla, titular— se queda en la
+   del tipo. Con 1.6 heredado, un h3 de 26px medía 41,6px de caja en vez de 28,6 y cada fila de
+   sesión crecía 13px; en la ficha, los dos h3 de 32 pasaban de 36,5 a 51,2. */
+body{font-family:var(--font-sans);font-weight:400;color:var(--c-ink);font-size:16px;line-height:normal;
      -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
 img{display:block;max-width:100%;}
 a{color:inherit;text-decoration:none;}
@@ -95,9 +118,20 @@ fieldset{border:none;}
 .logo,.btn,.btn-outline{white-space:nowrap;}
 
 /* ─────────────────────────────────────────── layout ───────────────────────────────────────── */
-.container{max-width:var(--container-max);margin:0 auto;padding:0 var(--pad-x);}
+.container{width:100%;padding-inline:var(--carril);}
+/* Una medida topada vive DENTRO del carril y se alinea a la izquierda, que es como la dibuja el
+   lienzo: `max-width:640 / 780 / 820 / 868px` escritos sobre el propio bloque, nunca sobre la
+   banda. Al ponerla en el contenedor con `max-width` + margen automático, el bloque se centraba y
+   abría un SEGUNDO raíl — 208px a la derecha en el carro y el pedido, 286 en las cuatro legales,
+   410 en el 404 — a todos los anchos. Nativo: ancho personalizado del elemento. */
+.medida-lectura > *{max-width:868px;}
+.medida-media   > *{max-width:720px;}
+.medida-corta   > *{max-width:620px;}
 .section{padding-top:var(--sp-section);}
+.section-hero{padding-top:var(--sp-hero);}
+.section-s{padding-top:var(--sp-section-s);}
 .section-tight{padding-top:var(--sp-tight);}
+.section-xtight{padding-top:var(--sp-xtight);}
 .scroll-x{overflow-x:auto;}
 
 /* ─────────────────────────────────────────── tipos ────────────────────────────────────────── */
@@ -106,11 +140,14 @@ fieldset{border:none;}
 .h-page{font-size:var(--fs-h1);font-weight:600;line-height:1.05;letter-spacing:-0.028em;}
 .h-piece{font-size:var(--fs-h1-piece);font-weight:600;line-height:1.06;letter-spacing:-0.026em;}
 .h-section{font-size:var(--fs-h2);font-weight:600;line-height:1.1;letter-spacing:-0.022em;}
-.h3{font-size:var(--fs-h3);font-weight:600;letter-spacing:-0.012em;}
+/* El lienzo no usa un solo h2: 40px en portada y marca, 36px en la ficha. */
+.h-section-s{font-size:var(--fs-h2-s);font-weight:600;line-height:1.1;letter-spacing:-0.022em;}
+.h3{font-size:var(--fs-h3);font-weight:600;line-height:1.1;letter-spacing:-0.012em;}
+.h3-lead{font-size:clamp(1.375rem,1.1rem + 1.1vw,2rem);font-weight:600;line-height:1.14;letter-spacing:-0.018em;}
 .lead{font-size:1rem;line-height:1.74;color:var(--c-text);max-width:40em;}
-.lead-md{font-size:1.375rem;line-height:1.34;letter-spacing:-0.008em;color:var(--c-ink);}
+.lead-md{font-size:var(--fs-lead-md);line-height:1.34;letter-spacing:-0.014em;color:var(--c-ink);}
 .copy{font-size:0.875rem;line-height:1.7;color:var(--c-text);}
-.copy-lg{font-size:0.9375rem;line-height:1.78;color:var(--c-text);}
+.copy-lg{font-size:0.9375rem;line-height:1.76;color:var(--c-text);}
 
 .breadcrumb{font-family:var(--font-mono);font-size:0.6875rem;letter-spacing:0.1em;color:var(--c-text);}
 .breadcrumb a{color:var(--c-text);}
@@ -126,11 +163,11 @@ fieldset{border:none;}
 /* ─────────────────────────────────────────── botones y enlaces ────────────────────────────── */
 .btn{display:inline-flex;align-items:center;justify-content:center;height:56px;padding:0 32px;
   background:var(--c-ink);color:var(--c-bg);font-family:var(--font-sans);font-weight:600;
-  font-size:0.8125rem;letter-spacing:0.06em;border:none;cursor:pointer;}
+  font-size:0.875rem;letter-spacing:0.06em;border:none;cursor:pointer;}
 .btn-block{display:flex;width:100%;}
 .btn-outline{display:inline-flex;align-items:center;justify-content:center;height:56px;padding:0 32px;
   background:transparent;color:var(--c-ink);font-family:var(--font-sans);font-weight:600;
-  font-size:0.8125rem;letter-spacing:0.06em;border:1px solid var(--hair-035);cursor:pointer;}
+  font-size:0.875rem;letter-spacing:0.06em;border:1px solid var(--hair-035);cursor:pointer;}
 .link-accent{color:var(--c-ink);border-bottom:1px solid var(--c-border);}
 .link-ver{display:inline-block;margin-top:12px;padding-bottom:4px;font-size:0.6875rem;
   letter-spacing:0.14em;text-transform:uppercase;border-bottom:1px solid var(--c-border);}
@@ -159,16 +196,20 @@ fieldset{border:none;}
 /* ─────────────────────────────────────────── listas de datos ──────────────────────────────── */
 .dl-rows > div{display:flex;justify-content:space-between;align-items:baseline;gap:16px;
   padding:11px 0;border-bottom:1px solid var(--hair-014);}
-.dl-rows dt{font-family:var(--font-mono);font-size:0.65625rem;letter-spacing:0.14em;
-  text-transform:uppercase;color:var(--c-text);}
+/* El lienzo escribe estas etiquetas en monoespaciada de 13px, en caja baja y sin espaciado: a
+   10,5px en versalitas la lista de datos dejaba de leerse como el dato que es. */
+.dl-rows dt{font-family:var(--font-mono);font-size:0.8125rem;color:var(--c-text);}
 .dl-rows dd{font-size:0.8125rem;letter-spacing:0.01em;color:var(--c-ink);text-align:right;}
 .dl-stacked > div{padding:11px 0;border-bottom:1px solid var(--hair-014);}
 .dl-stacked dt{display:block;font-family:var(--font-mono);font-size:0.65625rem;letter-spacing:0.14em;
   text-transform:uppercase;color:var(--c-text);}
-.dl-stacked dd{display:block;font-size:0.8125rem;line-height:1.6;color:var(--c-ink);padding-top:5px;}
+.dl-stacked dd{display:block;font-size:0.8125rem;color:var(--c-ink);padding-top:5px;}
 
 /* ─────────────────────────────────────────── tablas ────────────────────────────────────────── */
 .table-std{min-width:640px;}
+/* La tabla de tallas del lienzo son cinco columnas iguales de 244/245px. En reparto automático
+   salían 274/440/803: los raíles interiores de la tabla no coincidían con nada. */
+.table-tallas{table-layout:fixed;}
 .table-std th,.table-std td{text-align:left;padding:13px 14px 13px 0;border-bottom:1px solid var(--hair-014);font-size:0.8125rem;}
 .table-std th{font-family:var(--font-mono);font-size:0.6875rem;letter-spacing:0.14em;
   text-transform:uppercase;color:var(--c-text);border-bottom:1px solid var(--hair-030);}
@@ -176,13 +217,21 @@ fieldset{border:none;}
 .al-strong{color:var(--c-ink);}
 
 /* ─────────────────────────────────────────── filas de sesión / catálogo ───────────────────── */
-.cat-head{display:flex;gap:16px;padding-bottom:14px;border-bottom:1px solid var(--hair-042);}
+/* Las columnas del listado son las del lienzo, en fracción del contenido y SIN hueco: el aire lo
+   da el relleno de cada columna, igual que el `max-width:392px` que el lienzo pone dentro de los
+   436 de la primera. Con bases en píxeles más un hueco de 16, los cuatro raíles interiores caían
+   entre 58 y 130px a la derecha de lo dibujado. Y el extracto de portada no es el catálogo: el
+   lienzo dibuja 436/180/180/250/178 en la portada y 436/150/160/250/228 en la categoría. */
+.cat-head{display:flex;padding-bottom:14px;border-bottom:1px solid var(--hair-042);}
 .cat-head span{font-family:var(--font-mono);font-size:0.625rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--c-text);}
-.cat-head .ch-name{flex:1 1 320px;}
-.cat-head .ch-dur{flex:0 0 110px;}
-.cat-head .ch-temp{flex:0 0 130px;}
-.cat-head .ch-int{flex:0 0 200px;}
-.cat-head .ch-price{flex:0 0 170px;text-align:right;}
+.cat-head .ch-name{flex:0 0 35.621%;min-width:0;}
+.cat-head .ch-dur{flex:0 0 14.706%;min-width:0;}
+.cat-head .ch-temp{flex:0 0 14.706%;min-width:0;}
+.cat-head .ch-int{flex:0 0 20.425%;min-width:0;}
+.cat-head .ch-price{flex:0 0 14.542%;min-width:0;text-align:right;}
+#listado .cat-head .ch-dur{flex-basis:12.255%;}
+#listado .cat-head .ch-temp{flex-basis:13.072%;}
+#listado .cat-head .ch-price{flex-basis:18.627%;}
 
 .cat-group-head{display:flex;align-items:baseline;justify-content:space-between;padding-bottom:14px;
   margin-top:56px;border-bottom:1px solid var(--hair-030);}
@@ -190,25 +239,33 @@ fieldset{border:none;}
   text-transform:uppercase;color:var(--c-ink);}
 .cat-group-head span{font-family:var(--font-mono);font-size:0.6875rem;letter-spacing:0.08em;color:var(--c-text);}
 
-.cat-row{display:flex;align-items:flex-start;gap:16px;padding:30px 0;border-bottom:1px solid var(--hair-014);}
-.cat-row .cr-name{flex:1 1 320px;min-width:0;}
+.cat-row{display:flex;align-items:flex-start;padding:34px 0;border-bottom:1px solid var(--hair-014);}
+.cat-row .cr-name{flex:0 0 35.621%;min-width:0;padding-right:32px;}
 .cat-row .cr-name .h3{display:block;}
 .cat-row .cr-name .copy{margin-top:10px;}
 .cat-row .cr-note{display:block;font-family:var(--font-mono);font-size:0.65625rem;letter-spacing:0.14em;
   text-transform:uppercase;color:var(--c-text);padding-top:9px;}
-.cat-row .cr-dur{flex:0 0 110px;font-size:0.8125rem;color:var(--c-text);padding-top:5px;}
-.cat-row .cr-temp{flex:0 0 130px;font-size:0.8125rem;color:var(--c-text);padding-top:5px;}
-.cat-row .cr-int{flex:0 0 200px;padding-top:3px;}
+.cat-row .cr-dur{flex:0 0 14.706%;min-width:0;padding-right:16px;font-size:0.8125rem;color:var(--c-text);padding-top:6px;}
+.cat-row .cr-temp{flex:0 0 14.706%;min-width:0;padding-right:16px;font-size:0.8125rem;color:var(--c-text);padding-top:6px;}
+.cat-row .cr-int{flex:0 0 20.425%;min-width:0;padding-right:16px;padding-top:4px;}
 .cat-row .cr-int .cr-int-label{font-size:0.6875rem;letter-spacing:0.1em;color:var(--c-text);margin-top:9px;}
-.cat-row .cr-price{flex:0 0 170px;text-align:right;}
-.cat-row .cr-price .price-lg{font-size:1.125rem;}
+.cat-row .cr-price{flex:0 0 14.542%;min-width:0;text-align:right;}
+.cat-row .cr-price .price-lg{font-size:1.1875rem;}
+/* Catálogo: fila más ancha en el precio y más estrecha en los dos datos. */
+#listado .cat-row{padding:30px 0;}
+#listado .cat-row .cr-dur{flex-basis:12.255%;}
+#listado .cat-row .cr-temp{flex-basis:13.072%;}
+#listado .cat-row .cr-price{flex-basis:18.627%;}
+#listado .cat-row .cr-price .price-lg{font-size:1.125rem;}
+#listado .cat-row .cr-name .h3{font-size:var(--fs-h3-cat);}
 @media(max-width:1024px){
   .cat-head{display:none;}
   .cat-row{flex-wrap:wrap;row-gap:12px;}
-  .cat-row .cr-name{flex:1 1 100%;}
-  .cat-row .cr-dur,.cat-row .cr-temp{flex:0 0 calc(50% - 8px);}
-  .cat-row .cr-int{flex:1 1 100%;}
-  .cat-row .cr-price{flex:1 1 100%;text-align:left;}
+  .cat-row .cr-name{flex:1 1 100%;padding-right:0;}
+  .cat-row .cr-dur,.cat-row .cr-temp,
+  #listado .cat-row .cr-dur,#listado .cat-row .cr-temp{flex:0 0 50%;}
+  .cat-row .cr-int{flex:1 1 100%;padding-right:0;}
+  .cat-row .cr-price,#listado .cat-row .cr-price{flex:1 1 100%;text-align:left;}
 }
 
 /* Fila de prenda suelta (sin columna de intensidad): mismo idioma, una columna menos. */
@@ -225,10 +282,13 @@ fieldset{border:none;}
 }
 
 /* ─────────────────────────────────────────── composiciones de sección ─────────────────────── */
-.hero-split{display:flex;gap:clamp(2rem,1vw + 3rem,5rem);align-items:flex-start;}
-.hero-split .hs-main{flex:1 1 600px;min-width:0;}
-.hero-split .hs-side{flex:1 1 320px;min-width:0;max-width:396px;}
-@media(max-width:1024px){.hero-split{flex-direction:column;} .hero-split .hs-side{max-width:100%;}}
+/* 748 + 80 + 396 = 1224. Las columnas van en fracción del contenido (396/1224 = 32,353 %) para
+   que la proporción del lienzo aguante entre 1024 y 1224, donde no hay tope que la sostenga. */
+.hero-split{display:flex;gap:var(--gap-col);align-items:flex-start;}
+.hero-split .hs-main{flex:1 1 0;min-width:0;}
+.hero-split .hs-side{flex:0 0 32.353%;min-width:0;max-width:32.353%;}
+@media(max-width:1024px){.hero-split{flex-direction:column;}
+  .hero-split .hs-side{flex:1 1 auto;max-width:100%;}}
 
 .hero-stats{display:flex;margin-top:44px;border-top:1px solid var(--hair-022);flex-wrap:wrap;}
 .hero-stats > div{flex:1 1 33%;padding:20px 24px 20px 0;font-family:var(--font-mono);}
@@ -240,13 +300,22 @@ fieldset{border:none;}
 
 .photo-wide{width:100%;height:auto;object-fit:cover;}
 
-.two-col-text{display:flex;gap:80px;align-items:flex-start;}
-.two-col-text .tc-head{flex:0 0 300px;}
-.two-col-text .tc-body{display:grid;grid-template-columns:1fr 1fr;column-gap:52px;flex:1;min-width:0;}
+/* DOS composiciones, no una. El lienzo dibuja el rótulo estrecho (300px) SÓLO en «Un rango mal
+   medido» de la marca; en la portada y en la tabla de tallas el titular ocupa 596 y el texto 548.
+   Con una sola clase para las tres, el h2 de portada caía en 300px y se partía en tres líneas
+   contra las dos del lienzo: ese aplanamiento es lo que el juez leyó como biblioteca de
+   componentes. `min-width:0` en las dos columnas: un hijo flex no baja de su `min-content`. */
+.two-col-text{display:flex;gap:var(--gap-col);align-items:flex-start;}
+.two-col-text .tc-head{flex:0 0 24.51%;min-width:0;}
+.two-col-text .tc-body p{font-size:1rem;line-height:1.74;}
+.two-col-text .tc-body{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:52px;flex:1 1 0;min-width:0;}
+.two-col-wide{display:flex;gap:var(--gap-col);align-items:baseline;}
+.two-col-wide .tc-head{flex:0 0 48.693%;min-width:0;}
+.two-col-wide .tc-body{flex:1 1 0;min-width:0;}
 @media(max-width:1024px){
-  .two-col-text{flex-direction:column;gap:28px;}
-  .two-col-text .tc-head{flex:none;}
-  .two-col-text .tc-body{grid-template-columns:1fr;row-gap:24px;}
+  .two-col-text,.two-col-wide{flex-direction:column;gap:28px;}
+  .two-col-text .tc-head,.two-col-wide .tc-head{flex:1 1 auto;}
+  .two-col-text .tc-body{grid-template-columns:minmax(0,1fr);row-gap:24px;}
 }
 
 .pair-img{display:flex;gap:32px;}
@@ -255,13 +324,20 @@ fieldset{border:none;}
 .pair-img figcaption{font-family:var(--font-mono);font-size:0.75rem;letter-spacing:0.06em;color:var(--c-text);padding-top:14px;}
 @media(max-width:767px){.pair-img{flex-direction:column;}}
 
-.detail-split{display:flex;gap:80px;align-items:center;}
-.detail-split img{flex:0 0 clamp(220px,30vw,480px);width:clamp(220px,30vw,480px);aspect-ratio:1/1;object-fit:cover;}
-.detail-split .txt{flex:1;min-width:0;}
-@media(max-width:1024px){.detail-split{flex-direction:column;gap:32px;} .detail-split img{width:100%;flex:none;}}
+/* 480 + 80 + 664 = 1224. Con `clamp(220px,30vw,480px)` la foto medía 432 a 1440 —el máximo no se
+   alcanzaba hasta 1600— y seguía CRECIENDO hasta 480 a 1920 mientras el contenido ya estaba fijo
+   en 1224: la misma foto pasaba del 35 % al 42 % de la columna según el monitor. La fracción no
+   tiene ese problema porque se mide contra la columna, no contra el cristal. */
+.detail-split{display:flex;gap:var(--gap-col);align-items:center;}
+.detail-split img{flex:0 0 39.216%;width:39.216%;max-width:39.216%;aspect-ratio:1/1;object-fit:cover;}
+.detail-split .txt{flex:1 1 0;min-width:0;}
+@media(max-width:1024px){.detail-split{flex-direction:column;gap:32px;}
+  .detail-split img{width:100%;max-width:100%;flex:1 1 auto;}}
 
+/* 596 + 32 + 596. El `width:596px` no llegaba a aplicarse nunca —`max-width:44%` lo recortaba a
+   538,5 a 1440 y a 506,9 a 1920— y la foto quedaba 57px por debajo de lo dibujado. */
 .split-img-text{display:flex;gap:32px;align-items:flex-start;}
-.split-img-text img{width:596px;max-width:44%;flex:0 0 44%;aspect-ratio:596/400;object-fit:cover;}
+.split-img-text img{flex:0 0 48.693%;width:48.693%;max-width:48.693%;aspect-ratio:596/400;object-fit:cover;}
 .split-img-text .txt{flex:1 1 0;min-width:0;}
 @media(max-width:1024px){.split-img-text{flex-direction:column;} .split-img-text img{width:100%;max-width:100%;flex:none;}}
 
@@ -273,9 +349,12 @@ fieldset{border:none;}
 @media(max-width:1024px){.row3{flex-wrap:wrap;row-gap:36px;} .row3 > *{flex:1 1 45%;}}
 @media(max-width:767px){.row3 > *{flex:1 1 100%;}}
 
+/* 384 + 32 + 384 + 32 + 392 = 1224. Mismo defecto que arriba: el `width:384px` no se aplicaba
+   nunca porque `max-width:27%` daba 330,5, y con él se iba 107px a la izquierda el raíl de la
+   columna de compra (833 en vez de 940). */
 .ficha-gallery{display:flex;gap:32px;align-items:flex-start;}
-.fg-img{width:384px;max-width:27%;flex:0 0 27%;aspect-ratio:384/512;object-fit:cover;}
-.fg-info{flex:1 1 320px;min-width:280px;}
+.fg-img{flex:0 0 31.373%;width:31.373%;max-width:31.373%;aspect-ratio:384/512;object-fit:cover;}
+.fg-info{flex:1 1 0;min-width:0;}
 @media(max-width:1024px){
   .ficha-gallery{flex-wrap:wrap;}
   .fg-img{flex:0 0 calc(50% - 16px);max-width:calc(50% - 16px);}
@@ -287,24 +366,33 @@ fieldset{border:none;}
 .two-col-equal > *{flex:1 1 0;min-width:0;}
 @media(max-width:1024px){.two-col-equal{flex-direction:column;gap:56px;}}
 
-.piece-row{display:flex;align-items:flex-start;gap:16px;padding:24px 0;border-bottom:1px solid var(--hair-014);}
-.piece-row .pc-ref{flex:0 0 100px;padding-top:4px;font-family:var(--font-mono);font-size:0.75rem;letter-spacing:0.08em;color:var(--c-text);}
-.piece-row .pc-info{flex:1 1 260px;min-width:0;}
-.piece-row .pc-info h3{font-size:1.0625rem;font-weight:600;}
-.piece-row .pc-info p{font-size:0.8125rem;line-height:1.7;color:var(--c-text);margin-top:8px;}
-.piece-row .pc-spec{flex:0 0 150px;padding-top:5px;font-family:var(--font-mono);font-size:0.75rem;color:var(--c-text);}
-.piece-row .pc-price{flex:0 0 130px;text-align:right;padding-top:4px;font-family:var(--font-mono);font-size:0.875rem;}
+/* 132 + 452 + 200 + 200 + 240 = 1224, sin hueco. */
+.piece-row{display:flex;align-items:flex-start;padding:28px 0;border-bottom:1px solid var(--hair-014);}
+.piece-row .pc-ref{flex:0 0 10.784%;min-width:0;padding:5px 16px 0 0;font-family:var(--font-mono);font-size:0.75rem;letter-spacing:0.08em;color:var(--c-text);}
+.piece-row .pc-info{flex:0 0 36.928%;min-width:0;padding-right:32px;}
+.piece-row .pc-info h3{font-size:1.25rem;font-weight:600;}
+.piece-row .pc-info p{font-size:0.875rem;line-height:1.7;color:var(--c-text);margin-top:8px;}
+.piece-row .pc-spec{flex:0 0 16.340%;min-width:0;padding:5px 16px 0 0;font-family:var(--font-mono);font-size:0.8125rem;color:var(--c-text);}
+.piece-row .pc-price{flex:0 0 19.608%;min-width:0;text-align:right;padding-top:4px;font-family:var(--font-mono);font-size:0.9375rem;}
 @media(max-width:1024px){
   .piece-row{flex-wrap:wrap;row-gap:8px;}
-  .piece-row .pc-ref{flex:0 0 100%;}
-  .piece-row .pc-info{flex:1 1 100%;}
-  .piece-row .pc-spec{flex:0 0 calc(50% - 8px);}
-  .piece-row .pc-price{flex:0 0 calc(50% - 8px);}
+  .piece-row .pc-ref{flex:0 0 100%;padding-right:0;}
+  .piece-row .pc-info{flex:0 0 100%;padding-right:0;}
+  .piece-row .pc-spec{flex:0 0 50%;}
+  .piece-row .pc-price{flex:0 0 50%;}
 }
 
 /* ─────────────────────────────────────────── carro y pago ─────────────────────────────────── */
-.cart-head{display:flex;justify-content:space-between;padding-bottom:14px;border-bottom:1px solid var(--hair-042);
+/* La cabecera del carro reparte EXACTAMENTE como la fila. Con `space-between` los rótulos caían
+   donde sobraba sitio y no sobre su columna; a 1024 de ancho topado casi no se veía, con el carril
+   entero (1224) el rótulo «Precio» quedaba a 555px de su precio. */
+.cart-head{display:flex;gap:16px;padding-bottom:14px;border-bottom:1px solid var(--hair-042);
   font-family:var(--font-mono);font-size:0.6875rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--c-text);}
+.cart-head .chd-piece{flex:1 1 300px;min-width:0;}
+.cart-head .chd-unit{flex:0 0 110px;min-width:0;text-align:right;}
+.cart-head .chd-qty{flex:0 0 102px;min-width:0;}
+.cart-head .chd-subtotal{flex:0 0 110px;min-width:0;text-align:right;}
+.cart-head .chd-remove{flex:0 0 70px;min-width:0;}
 .cart-row{display:flex;align-items:center;gap:16px;padding:24px 0;border-bottom:1px solid var(--hair-014);}
 .cart-row .cart-piece{flex:1 1 300px;min-width:0;}
 .cart-row .cart-piece .maker{font-size:1.0625rem;font-weight:600;display:block;}
@@ -312,7 +400,7 @@ fieldset{border:none;}
 .cart-row .cart-unit,.cart-row .cart-subtotal{flex:0 0 110px;text-align:right;font-family:var(--font-mono);font-size:0.875rem;}
 .cart-row .cart-remove{flex:0 0 70px;text-align:right;font-family:var(--font-mono);font-size:0.75rem;color:var(--c-text);
   background:none;border:none;cursor:pointer;padding:0;}
-.qty-stepper{display:flex;align-items:center;border:1px solid var(--hair-030);width:fit-content;}
+.qty-stepper{display:flex;align-items:center;border:1px solid var(--hair-030);flex:0 0 102px;width:102px;}
 .qty-stepper button{width:32px;height:32px;background:none;border:none;color:var(--c-ink);font-size:0.9375rem;cursor:pointer;}
 .qty-stepper span{width:36px;text-align:center;font-family:var(--font-mono);font-size:0.8125rem;}
 @media(max-width:1024px){
@@ -323,13 +411,35 @@ fieldset{border:none;}
   .cart-row .cart-subtotal{flex:1 1 auto;text-align:right;}
   .cart-row .cart-remove{flex:0 0 auto;}
 }
+/* La composición —columnas, bases de flex, anchos— vive en clases con sus puntos de ruptura.
+   Un `style=` en línea no puede llevar uno, así que no puede maquetar: era el ancho fijo de
+   `flex:0 0 320px;width:320px` del aside de contacto, 54px por dentro del raíl del lienzo. */
+.contacto-split{display:flex;gap:var(--gap-col);align-items:flex-start;flex-wrap:wrap;}
+.contacto-split .cs-datos{flex:0 0 27.778%;min-width:0;}
+.contacto-split .cs-form{flex:0 0 48.693%;min-width:0;}
+@media(max-width:1024px){
+  .contacto-split .cs-datos{flex:0 0 32%;}
+  .contacto-split .cs-form{flex:1 1 0;}
+}
+@media(max-width:767px){
+  .contacto-split{flex-direction:column;}
+  .contacto-split .cs-datos,.contacto-split .cs-form{flex:1 1 auto;width:100%;}
+}
+.pago-split{display:flex;gap:var(--gap-col);align-items:flex-start;flex-wrap:wrap;}
+.pago-split .ps-form{flex:1 1 0;min-width:0;max-width:700px;}
+.pago-split .ps-resumen{flex:0 0 31.046%;min-width:0;}
+@media(max-width:767px){
+  .pago-split{flex-direction:column;}
+  .pago-split .ps-form,.pago-split .ps-resumen{flex:1 1 auto;width:100%;max-width:100%;}
+}
+.btn-row{display:flex;gap:20px;flex-wrap:wrap;}
 .summary-box{border-top:1px solid var(--hair-042);padding-top:22px;}
 .summary-row{display:flex;justify-content:space-between;padding:9px 0;font-family:var(--font-mono);font-size:0.875rem;color:var(--c-text);}
 .summary-row.al-total{border-top:1px solid var(--hair-030);margin-top:8px;padding-top:18px;font-size:1.0625rem;color:var(--c-ink);}
 
 /* ─────────────────────────────────────────── cabecera ──────────────────────────────────────── */
 .site-header{border-bottom:1px solid var(--hair-014);}
-.header-inner{max-width:var(--container-max);margin:0 auto;padding:26px var(--pad-x);
+.header-inner{padding:26px var(--carril);
   display:flex;align-items:baseline;justify-content:space-between;}
 .brand-group{display:flex;align-items:baseline;gap:56px;}
 .logo{display:flex;align-items:baseline;gap:14px;font-size:1.1875rem;font-weight:700;letter-spacing:0.26em;color:var(--c-ink);}
@@ -339,7 +449,9 @@ fieldset{border:none;}
 .nav-desktop a[aria-current]{color:var(--c-ink);font-weight:500;}
 .utility-group{display:flex;gap:26px;align-items:baseline;}
 .utility-group a{font-family:var(--font-mono);font-size:0.75rem;letter-spacing:0.06em;color:var(--c-text);}
-.cart-link{color:var(--c-ink) !important;}
+/* Especificidad, no `!important`: `.utility-group a` (0,1,1) le ganaba a `.cart-link` (0,1,0), y
+   la regla vieja lo tapaba con una marca que ninguna herramienta nativa sabe escribir. */
+.utility-group a.cart-link{color:var(--c-ink);}
 .burger{display:none;width:44px;height:44px;background:none;border:none;cursor:pointer;position:relative;flex-shrink:0;}
 .burger-lines,.burger-lines::before,.burger-lines::after{content:'';display:block;width:22px;height:1px;
   background:var(--c-ink);position:absolute;left:11px;top:50%;transition:transform .2s var(--ease),opacity .2s var(--ease);}
@@ -348,7 +460,7 @@ fieldset{border:none;}
 .burger[aria-expanded="true"] .burger-lines{background:transparent;}
 .burger[aria-expanded="true"] .burger-lines::before{transform:translateY(0) rotate(45deg);}
 .burger[aria-expanded="true"] .burger-lines::after{transform:translateY(0) rotate(-45deg);}
-.menu-movil{padding:0 var(--pad-x) 24px;}
+.menu-movil{padding:0 var(--carril) 24px;}
 .menu-movil a{display:block;padding:14px 0;border-bottom:1px solid var(--hair-014);font-size:1rem;}
 .menu-movil a[aria-current]{color:var(--c-ink);font-weight:500;border-bottom-color:var(--c-border);}
 @media(max-width:1024px){
@@ -421,7 +533,7 @@ main{display:block;}
      ════════════════════════════════════════════════════════════════════════════════════════════ -->
 <div class="page" id="portada" data-title="CADENCIA — ropa técnica para entrenar en frío">
 
-  <section class="section-tight">
+  <section class="section-hero">
     <div class="container">
       <p class="eyebrow">Temporada fría · 2026</p>
       <div class="hero-split" style="margin-top:28px;">
@@ -435,14 +547,14 @@ main{display:block;}
         </div>
         <div class="hs-side">
           <p class="lead-md">Probamos cada prenda a la intemperie, no en cámara climática.</p>
-          <p class="copy" style="margin-top:18px;">Lo que no aguanta la sesión no entra en el catálogo.</p>
+          <p class="lead" style="margin-top:18px;">Lo que no aguanta la sesión no entra en el catálogo.</p>
           <div class="swatch-block">
             <p class="eyebrow">Cómo se mide una sesión</p>
             <div class="barras" style="margin-top:16px;">
               <span class="barra on"></span><span class="barra on"></span><span class="barra on"></span><span class="barra on"></span><span class="barra on"></span><span class="barra on"></span><span class="barra on"></span><span class="barra on"></span><span class="barra lite"></span><span class="barra lite"></span>
             </div>
             <p class="mono" style="font-size:0.75rem;letter-spacing:0.08em;color:var(--c-text);margin-top:12px;">Intensidad 8 de 10</p>
-            <p class="copy" style="margin-top:16px;">Duración, rango de temperatura e intensidad. Las tres cifras van en cada sesión del catálogo, y son las que deciden qué te pones.</p>
+            <p class="copy-lg" style="margin-top:16px;">Duración, rango de temperatura e intensidad. Las tres cifras van en cada sesión del catálogo, y son las que deciden qué te pones.</p>
           </div>
         </div>
       </div>
@@ -453,17 +565,14 @@ main{display:block;}
   <!-- ── Las sesiones (extracto) ── -->
   <section class="section" id="las-sesiones">
     <div class="container">
-      <div class="two-col-text">
+      <div class="two-col-wide">
         <div class="tc-head">
           <h2 class="h-section">Se compra la sesión, no la prenda.</h2>
         </div>
-        <p class="lead" style="max-width:none;">Cada equipo está pensado para una duración, un rango de temperatura y una intensidad concretos. Si tu sesión no está aquí, escríbenos y la montamos.</p>
+        <p class="copy-lg tc-body">Cada equipo está pensado para una duración, un rango de temperatura y una intensidad concretos. Si tu sesión no está aquí, escríbenos y la montamos.</p>
       </div>
 
-      <div style="margin-top:56px;">
-        <div class="cat-head">
-          <span class="ch-name">Sesión</span><span class="ch-dur">Duración</span><span class="ch-temp">Temperatura</span><span class="ch-int">Intensidad</span><span class="ch-price">Precio</span>
-        </div>
+      <div style="margin-top:56px;border-top:1px solid var(--hair-022);">
 
         <a href="#ficha" class="cat-row">
           <div class="cr-name"><span class="h3">Fondo largo en frío</span><p class="copy">Camiseta térmica Cercedilla, cortavientos Navacerrada y malla larga Fuenfría.</p></div>
@@ -508,7 +617,7 @@ main{display:block;}
     <div class="container">
       <img class="photo-wide" src="../img/cadencia-sala.webp" alt="Sala de entrenamiento con paredes de yeso desnudas, suelo de madera gastada, una máquina de remo y una torre de discos" style="aspect-ratio:1224/460;">
       <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:12px;padding-top:20px;border-top:1px solid var(--hair-014);margin-top:20px;">
-        <p class="copy" style="max-width:756px;">La sala de Valsaín en enero, a 14&nbsp;°C. No se calienta a propósito: media España entrena en naves sin climatizar y la ropa tiene que funcionar ahí.</p>
+        <p class="copy-lg" style="max-width:756px;">La sala de Valsaín en enero, a 14&nbsp;°C. No se calienta a propósito: media España entrena en naves sin climatizar y la ropa tiene que funcionar ahí.</p>
         <p class="mono" style="font-size:0.75rem;letter-spacing:0.1em;color:var(--c-text);">VALSAÍN · ENE 2026</p>
       </div>
     </div>
@@ -585,7 +694,7 @@ main{display:block;}
      ════════════════════════════════════════════════════════════════════════════════════════════ -->
 <div class="page" id="ficha" data-title="Fondo largo en frío — CADENCIA">
 
-  <section class="section-tight">
+  <section class="section-xtight">
     <div class="container">
       <p class="breadcrumb"><a href="#portada">CADENCIA</a><span class="sep">/</span><a href="#categoria">Sesiones</a><span class="sep">/</span><span class="al-current">Fondo largo en frío</span></p>
 
@@ -617,9 +726,9 @@ main{display:block;}
   </section>
 
   <!-- ── Qué lleva ── -->
-  <section class="section">
+  <section class="section-s">
     <div class="container">
-      <h2 class="h-section">Las tres prendas.</h2>
+      <h2 class="h-section-s">Las tres prendas.</h2>
       <div style="margin-top:40px;border-top:1px solid var(--hair-022);">
         <div class="piece-row">
           <span class="pc-ref">CA-240</span>
@@ -647,17 +756,17 @@ main{display:block;}
   </section>
 
   <!-- ── La prueba ── -->
-  <section class="section">
+  <section class="section-s">
     <div class="container two-col-equal">
       <div>
         <p class="eyebrow">Por qué se venden juntas</p>
-        <h3 class="h3" style="font-size:clamp(1.375rem,1.1rem + 1.1vw,2rem);margin-top:18px;">La térmica sola se enfría en las bajadas.</h3>
+        <h3 class="h3-lead" style="margin-top:18px;">La térmica sola se enfría en las bajadas.</h3>
         <p class="copy-lg" style="margin-top:18px;">A 6&nbsp;°C y con viento, una térmica de 240&nbsp;g sin cortavientos pierde en dos minutos de bajada lo que ha tardado veinte en generar. Y un cortavientos sin nada debajo empapa la espalda al primer repecho.</p>
         <p class="copy-lg" style="margin-top:14px;">Las tres se probaron como conjunto porque es como se usan. Vendidas por separado suman 234,00&nbsp;€; el equipo baja a 214,00&nbsp;€ porque nos ahorra las devoluciones de quien compró sólo una.</p>
       </div>
       <div>
         <p class="eyebrow">La prueba</p>
-        <h3 class="h3" style="font-size:clamp(1.375rem,1.1rem + 1.1vw,2rem);margin-top:18px;">Once salidas antes de venderlo.</h3>
+        <h3 class="h3-lead" style="margin-top:18px;">Once salidas antes de venderlo.</h3>
         <p class="copy-lg" style="margin-top:18px;">Este equipo salió once veces por el puerto de la Fuenfría entre noviembre y febrero, con dos corredores de complexión distinta. Estos son los datos que anotamos.</p>
         <dl class="dl-rows mono" style="margin-top:26px;">
           <div><dt>Salidas</dt><dd>11</dd></div>
@@ -672,14 +781,14 @@ main{display:block;}
   </section>
 
   <!-- ── Tallas ── -->
-  <section class="section" id="tallas">
+  <section class="section-s" id="tallas">
     <div class="container">
-      <div class="two-col-text">
-        <div class="tc-head"><h2 class="h-section">La talla se elige por el pecho.</h2></div>
-        <p class="lead" style="max-width:none;">Medidas de la prenda en centímetros, no del cuerpo. Si estás entre dos, la térmica va justa y el cortavientos holgado: coge la menor para la primera y la mayor para el segundo.</p>
+      <div class="two-col-wide">
+        <div class="tc-head"><h2 class="h-section-s">La talla se elige por el pecho.</h2></div>
+        <p class="copy-lg tc-body">Medidas de la prenda en centímetros, no del cuerpo. Si estás entre dos, la térmica va justa y el cortavientos holgado: coge la menor para la primera y la mayor para el segundo.</p>
       </div>
       <div class="scroll-x" style="margin-top:40px;">
-        <table class="table-std">
+        <table class="table-std table-tallas">
           <thead>
             <tr><th>Talla</th><th>Pecho</th><th>Largo espalda</th><th>Manga</th><th>Cintura malla</th></tr>
           </thead>
@@ -706,7 +815,7 @@ main{display:block;}
     <div class="container">
       <p class="breadcrumb"><a href="#portada">CADENCIA</a><span class="sep">/</span><span class="al-current">Sesiones</span></p>
       <p class="eyebrow" style="margin-top:26px;">Catálogo completo · nueve sesiones</p>
-      <h1 class="h-page" style="margin-top:22px;max-width:20ch;">Cada fila es una sesión, no una prenda.</h1>
+      <h1 class="h-page" style="margin-top:22px;max-width:min(100%,820px);">Cada fila es una sesión, no una prenda.</h1>
       <p class="lead" style="margin-top:24px;">Duración, rango de temperatura e intensidad deciden antes que el corte o el color. Agrupadas por lo que vas a salir a hacer: fondo en carretera, sala, remo o alta montaña. Si tu sesión no está aquí, escríbenos y la montamos.</p>
     </div>
   </section>
@@ -815,8 +924,8 @@ main{display:block;}
   </section>
 
   <section class="section-tight">
-    <div class="container" style="max-width:1024px;">
-      <div class="cart-head"><span>Sesión</span><span class="al-right">Precio</span><span>Cantidad</span><span class="al-right">Subtotal</span><span></span></div>
+    <div class="container">
+      <div class="cart-head"><span class="chd-piece">Sesión</span><span class="chd-unit">Precio</span><span class="chd-qty">Cantidad</span><span class="chd-subtotal">Subtotal</span><span class="chd-remove"></span></div>
 
       <div class="cart-row">
         <div class="cart-piece">
@@ -859,8 +968,8 @@ main{display:block;}
   </section>
 
   <section class="section-tight">
-    <div class="container" style="display:flex;gap:clamp(2rem,1vw + 2rem,3.5rem);flex-wrap:wrap;">
-      <form style="flex:1 1 480px;min-width:0;max-width:700px;">
+    <div class="container pago-split">
+      <form class="ps-form">
         <p class="eyebrow">Datos de envío</p>
         <div style="padding-top:26px;">
           <div class="field-row2">
@@ -890,7 +999,7 @@ main{display:block;}
         <a href="#pedido-recibido" class="btn" style="margin-top:30px;">Confirmar pedido</a>
       </form>
 
-      <div style="flex:1 1 320px;max-width:380px;">
+      <div class="ps-resumen">
         <p class="eyebrow">Tu pedido</p>
         <dl class="dl-rows" style="padding-top:16px;">
           <div><dt>Fondo largo en frío</dt><dd>214,00&nbsp;€</dd></div>
@@ -910,7 +1019,7 @@ main{display:block;}
 <div class="page" id="pedido-recibido" data-title="Pedido confirmado — CADENCIA">
 
   <section class="section" style="padding-top:clamp(3.5rem,2.5rem + 3vw,7.5rem);">
-    <div class="container" style="max-width:720px;">
+    <div class="container medida-media">
       <p class="eyebrow">Pedido n.º CD-51204</p>
       <h1 class="h-page" style="margin-top:10px;">Gracias. Tu equipo sale mañana del banco.</h1>
       <p class="lead" style="margin-top:26px;max-width:none;">Hemos mandado la confirmación a tu correo con el número de pedido y el resumen de lo comprado. El paquete sale de Valsaín en cuanto pasa el último control de banco.</p>
@@ -922,7 +1031,7 @@ main{display:block;}
         <div><dt>Forma de pago</dt><dd>Tarjeta</dd></div>
       </dl>
 
-      <div style="display:flex;gap:20px;flex-wrap:wrap;padding-top:40px;">
+      <div class="btn-row" style="padding-top:40px;">
         <a href="#categoria" class="btn">Volver a la tienda</a>
         <a href="#mi-cuenta" class="btn-outline">Ver mi cuenta</a>
       </div>
@@ -984,7 +1093,7 @@ main{display:block;}
     <div class="container">
       <p class="breadcrumb"><a href="#portada">CADENCIA</a><span class="sep">/</span><span class="al-current">El banco</span></p>
       <p class="eyebrow" style="margin-top:26px;">El banco de pruebas · Valsaín, Segovia</p>
-      <h1 class="h-page" style="margin-top:22px;max-width:18ch;">El banco decide antes que el diseño.</h1>
+      <h1 class="h-page" style="margin-top:22px;max-width:min(100%,780px);">El banco decide antes que el diseño.</h1>
       <p class="lead" style="margin-top:24px;">CADENCIA no dibuja un patrón y lo prueba después: nace en el banco, con datos de retención de humedad, secado y roce, y sólo pasa a producción si aguanta la sesión para la que se pensó. Lo que no aguanta, no entra en el catálogo.</p>
     </div>
   </section>
@@ -1047,14 +1156,14 @@ main{display:block;}
     <div class="container">
       <p class="breadcrumb"><a href="#portada">CADENCIA</a><span class="sep">/</span><span class="al-current">Contacto</span></p>
       <p class="eyebrow" style="margin-top:26px;">Antes de comprar · o después</p>
-      <h1 class="h-page" style="margin-top:22px;max-width:18ch;">Cuéntanos la sesión, te decimos el equipo.</h1>
+      <h1 class="h-page" style="margin-top:22px;max-width:min(100%,780px);">Cuéntanos la sesión, te decimos el equipo.</h1>
       <p class="lead" style="margin-top:24px;">Sin línea 900 ni chat automático. Escribe la duración, el rango de temperatura y la intensidad que buscas, y respondemos con el equipo exacto o con lo que falta probar. Contestamos en día laborable, casi siempre el mismo día.</p>
     </div>
   </section>
 
   <section class="section" id="formulario">
-    <div class="container" style="display:flex;gap:clamp(2rem,1vw + 2rem,5rem);flex-wrap:wrap;">
-      <div style="flex:0 0 320px;width:320px;">
+    <div class="container contacto-split">
+      <div class="cs-datos">
         <p class="eyebrow">El banco</p>
         <dl class="dl-stacked" style="padding-top:20px;">
           <div><dt>Dirección</dt><dd>Camino del Puerto, 3<br>40109 Valsaín (Segovia)</dd></div>
@@ -1065,7 +1174,7 @@ main{display:block;}
         </dl>
       </div>
 
-      <form style="flex:1 1 480px;min-width:0;max-width:596px;">
+      <form class="cs-form">
         <div class="field-row2">
           <label class="field"><span class="field-label">Nombre</span><input type="text" placeholder="Nombre y apellidos"></label>
           <label class="field"><span class="field-label">Correo</span><input type="email" placeholder="tu@correo.com"></label>
@@ -1121,7 +1230,7 @@ main{display:block;}
 <div class="page" id="condiciones-venta-envios" data-title="Condiciones de venta y envíos — CADENCIA">
 
   <section class="section-tight">
-    <div class="container" style="max-width:868px;">
+    <div class="container medida-lectura">
       <p class="breadcrumb"><a href="#portada">CADENCIA</a><span class="sep">/</span><span class="al-current">Condiciones de venta y envíos</span></p>
       <h1 class="h-page" style="margin-top:18px;font-size:clamp(2rem,1.2rem + 3.5vw,3.75rem);">Condiciones de venta y envíos</h1>
       <p class="lead" style="margin-top:26px;max-width:none;">Estas condiciones rigen cualquier compra hecha en cadencia.es a CADENCIA S.L. Al confirmar un pedido las aceptas junto con la <a href="#privacidad" class="link-accent">política de privacidad</a>.</p>
@@ -1148,7 +1257,7 @@ main{display:block;}
 <div class="page" id="aviso-legal" data-title="Aviso legal — CADENCIA">
 
   <section class="section-tight">
-    <div class="container" style="max-width:868px;">
+    <div class="container medida-lectura">
       <p class="breadcrumb"><a href="#portada">CADENCIA</a><span class="sep">/</span><span class="al-current">Aviso legal</span></p>
       <h1 class="h-page" style="margin-top:18px;font-size:clamp(2rem,1.2rem + 3.5vw,3.75rem);">Aviso legal</h1>
       <p class="lead" style="margin-top:26px;max-width:none;">Estructura y aspecto de esta página los pone la Plantilla. El texto entero se redacta con los datos reales del titular en el sitio del cliente, con <em>wordpress-legal</em>. Lo de aquí describe a la marca ficticia CADENCIA para mostrar cómo queda.</p>
@@ -1181,7 +1290,7 @@ main{display:block;}
 <div class="page" id="privacidad" data-title="Política de privacidad — CADENCIA">
 
   <section class="section-tight">
-    <div class="container" style="max-width:868px;">
+    <div class="container medida-lectura">
       <p class="breadcrumb"><a href="#portada">CADENCIA</a><span class="sep">/</span><span class="al-current">Privacidad</span></p>
       <h1 class="h-page" style="margin-top:18px;font-size:clamp(2rem,1.2rem + 3.5vw,3.75rem);">Política de privacidad</h1>
       <p class="lead" style="margin-top:26px;max-width:none;">Estructura y aspecto de esta página los pone la Plantilla. El texto entero, con el responsable real y sus finalidades, se redacta en el sitio del cliente con <em>wordpress-legal</em>. Lo de aquí describe a la marca ficticia CADENCIA.</p>
@@ -1211,7 +1320,7 @@ main{display:block;}
 <div class="page" id="cookies" data-title="Política de cookies — CADENCIA">
 
   <section class="section-tight">
-    <div class="container" style="max-width:868px;">
+    <div class="container medida-lectura">
       <p class="breadcrumb"><a href="#portada">CADENCIA</a><span class="sep">/</span><span class="al-current">Cookies</span></p>
       <h1 class="h-page" style="margin-top:18px;font-size:clamp(2rem,1.2rem + 3.5vw,3.75rem);">Política de cookies</h1>
       <p class="lead" style="margin-top:26px;max-width:none;">Una cookie es un fichero pequeño que el sitio guarda en tu navegador. Aquí se listan sólo las que cadencia.es carga de verdad; el sitio del cliente se audita con <em>wordpress-legal</em> antes de publicar esta página, para que la lista nunca prometa menos de lo que carga.</p>
@@ -1238,11 +1347,11 @@ main{display:block;}
 <div class="page" id="404" data-title="Página no encontrada — CADENCIA">
 
   <section class="section" style="padding-top:clamp(4rem,3rem + 4vw,7.5rem);padding-bottom:clamp(4rem,3rem + 4vw,7.5rem);">
-    <div class="container" style="max-width:620px;">
+    <div class="container medida-corta">
       <p class="eyebrow">Error 404</p>
       <h1 class="h-page" style="margin-top:10px;">Esta sesión ya no está en el catálogo.</h1>
       <p class="lead" style="margin-top:22px;max-width:none;">El enlace puede haber cambiado, o el equipo que buscabas se retiró tras el banco de pruebas y no ha vuelto con la siguiente temporada. El catálogo completo sigue en su sitio.</p>
-      <div style="display:flex;gap:20px;flex-wrap:wrap;padding-top:36px;">
+      <div class="btn-row" style="padding-top:36px;">
         <a href="#portada" class="btn">Volver a la portada</a>
         <a href="#categoria" class="btn-outline">Ver las sesiones</a>
       </div>
