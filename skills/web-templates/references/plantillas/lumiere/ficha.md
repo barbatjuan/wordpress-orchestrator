@@ -68,9 +68,10 @@ todo lo demás se ha decidido para que las tres no lean como la misma mano:
   «acento» para `materia` en `marzo`.
 - **Recorte y colocación de fotografía.** Sólo el hero de Inicio y la foto del producto llegan al
   borde; el resto va dentro del carril. En el hero el titular se apoya sobre la zona clara de la foto,
-  sin velo (peor píxel medido 4,79:1 entre 1025 y 2560), y el panel del bono flota a la derecha, como
-  en el lienzo; por debajo de 1024 el texto sale de la foto y se apila. Es lo contrario de un
-  tratamiento a sangre con velo oscuro a todo el ancho.
+  sin velo (peor píxel medido 4,79:1 entre 1025 y 2560) y **nada se superpone al borde de la
+  fotografía**: los cuatro rituales más pedidos viven en una banda entintada debajo, no en una tarjeta
+  volada; por debajo de 1024 el texto sale de la foto y se apila. Es lo contrario de un tratamiento a
+  sangre con velo oscuro a todo el ancho.
 - **Cómo se construye una lista.** Las quince filas de la carta son espacio en blanco y un filete
   fino — nunca una tabla con celdas ni tarjetas de fotografía por fila.
 
@@ -132,7 +133,8 @@ encima de 1440 el contenido se centra y no crece. Los rellenos verticales son lo
 | Sección | Elementor (nativo) | Nota |
 |---|---|---|
 | Cabecera | Plantilla de cabecera del Theme Builder: contenedor flex en caja de 1312px, relleno lateral 4,444&nbsp;% + Logotipo (texto) + Menú de navegación + Botón | El menú nativo trae el desplegable móvil. Sin teléfono en la barra de escritorio, como las láminas; el teléfono vive en el menú móvil |
-| Hero de Inicio | Imagen a ancho completo (640px de alto) + contenedor siguiente con margen superior −640px: contenedor de texto (Encabezado + Editor de texto) y contenedor con sombra (panel de precios, 136px más abajo, franja entintada como último hijo y sin relleno inferior) | Texto sobre la foto como `Lumiere.dc.html`, SIN velo: relleno izquierdo = carril + 192px (13,333&nbsp;% hasta 1440), así el titular cae siempre sobre la pared, a la derecha de la escalera. Entradilla y datos en tinta `#2A1B1F`. Peor píxel 4,79:1 de 1025 a 2560 (`scrim.php`, línea a línea); el titular, la entradilla y sus márgenes bajan con el ancho por debajo de 1440 para no llegar al rulo de la camilla. Por debajo de 1024, margen 0: se apila bajo la foto |
+| Hero de Inicio | Imagen a ancho completo (640px de alto) + contenedor siguiente con margen superior −640px: sólo el contenedor de texto (Encabezado + Editor de texto) | Texto sobre la foto como `Lumiere.dc.html`, SIN velo: relleno izquierdo = carril + 192px (13,333&nbsp;% hasta 1440), así el titular cae siempre sobre la pared, a la derecha de la escalera. Entradilla y datos en tinta `#2A1B1F`. Peor píxel 4,79:1 de 1025 a 2560 (`scrim.php`, línea a línea); el titular, la entradilla y sus márgenes bajan con el ancho por debajo de 1440 para no llegar al rulo de la camilla. Por debajo de 1024, margen 0: se apila bajo la foto. **Sin panel flotante**: nada se superpone al borde de la fotografía |
+| Los cuatro más pedidos (bajo el hero) | Contenedor de fondo entintado a ancho completo, en caja de 1248px: fila de cabecera (Encabezado + Editor de texto) con filete inferior + una fila por ritual (Encabezado + Editor de texto + dos Encabezados alineados a la derecha, columnas de 300 / libre / 84 / 108px) + Editor de texto de cierre con el enlace subrayado | Se lee como la carta de la casa: filete fino y aire, nunca celdas con borde. Bajo 1024 el nombre se lleva su línea y efecto, minutos y precio bajan debajo. Ni sombra, ni esquina redondeada, ni solape con la foto — ver «Procedencia» |
 | Manifiesto | Contenedor flex de dos columnas (620px y 500px bajada 54px, hueco 80): Encabezado + Editor de texto con lista | Pasa a columna bajo 1024 |
 | Banda de zona (Inicio) | Contenedor flex: Imagen (460×400) + contenedor de filas; cada fila, Encabezado + Editor de texto + dos Encabezados de precio (columna de 108px de ancho) | Filas separadas por 26px de hueco, sin filete, como la lámina. Bajo 1024 pasa a columna con la imagen primero (`order`) y los hijos a tamaño automático |
 | Zona de La carta | Contenedor por zona: fila de cabecera (Imagen 128×96 + Encabezado + Editor de texto, filete inferior) + lista de filas a todo el ancho; cada fila, contenedor flex con texto (ancho máx. 660px) y columna de precio de 140px de ancho | Como `Rituales.dc.html`: lista, no panel de dos columnas. Bajo 767 la fila pasa a columna y la miniatura a 96×72 |
@@ -199,6 +201,19 @@ remedida en esta misma pasada), 3835, 2584, 2463 y 1578 — ver `canvas/MANIFIES
 que ellas fijan para las cinco de sistema, con los dos puntos de ruptura de la casa (1024 y 767) y el
 margen de página como fracción (6,667&nbsp;%, medida — ver más arriba), nunca en píxel fijo. Fuentes
 embebidas como `data:` woff2 leídas de `skills/html-mockup/assets/fonts/_fonts.php`, nunca tecleadas.
+
+**La tarjeta flotante de precio del hero se desmontó: era la pieza que delataba la misma mano.** Un
+juez ciego, mirando portadas sueltas sin saber que formaban una biblioteca, emparejó `lumiere` con
+`tueste` por compartir una tarjeta de precio de esquinas redondeadas volada sobre el borde de la
+fotografía, con botón sólido y enlace de texto secundario al lado. En `tueste` esa tarjeta se queda —
+allí sostiene el hero y su veredicto la justifica—. Aquí los mismos cuatro rituales bajan a **una
+banda entintada a todo el ancho, bajo la foto, leída como la carta de la casa** (nombre, efecto,
+minutos, precio; filete fino y aire, nunca celdas), y «Ver la carta» pasa a ser un enlace subrayado
+dentro de una frase, no un enlace pegado a un botón — porque el ADN ya dice que una lista se
+construye con espacio en blanco y que la carta se lee como una carta, y esta era la única lista de la
+plantilla que no obedecía. Cambió el lienzo (`Lumiere.dc.html`, la autoridad) y la maqueta a la vez;
+ni la paleta, ni el par tipográfico, ni las demás bandas se tocaron. El panel del bono, que cabalga
+el borde de su banda entintada y no el de una fotografía, no entra en el cambio.
 
 **Sin veredicto todavía.** La geometría está derivada del margen medido de la portada, el contraste
 de los quince pares de `:root` pasa `color.php --maqueta` (0 fallos) y `empaquetar.php` empaqueta la

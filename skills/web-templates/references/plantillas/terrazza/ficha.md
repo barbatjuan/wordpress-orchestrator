@@ -161,7 +161,7 @@ solo widget HTML y sin CSS a medida.
 |---|---|---|
 | Franja de utilidad | Contenedor flex de fondo oscuro, ancho completo | Dos de sus tres datos se ocultan por debajo de 1024 con el control nativo de visibilidad responsive; el teléfono queda siempre visible |
 | Cabecera con menú | Plantilla de cabecera del Theme Builder: Logotipo (texto) + Menú de navegación + Botón | El menú nativo trae el desplegable móvil |
-| Hero de inicio | Contenedor de texto (Encabezado + Editor de texto) + contenedor flex de campos **de 1044px en caja** (Encabezado + Editor de texto por campo, de sólo lectura) + Botón | Sin formulario real en el hero — el hero nunca lleva el formulario de captura, va en la banda de cierre. El panel lleva el ancho medido del lienzo (168+220+148+192 de campos y 316 de botón): repartido en fracciones se estiraba con la pantalla |
+| Hero de inicio | Contenedor de texto (Encabezado + Editor de texto) + **frase de reserva**: contenedor flex con ajuste de línea que alterna Editor de texto (la prosa) y contenedores con sólo borde inferior (los cuatro huecos) + Botón en su propio contenedor, debajo | Sin formulario real en el hero — el hero nunca lleva el formulario de captura, va en la banda de cierre. Los huecos son contenedores con borde inferior de 2px en bronce, control nativo de borde; nunca un campo de formulario de sólo lectura. El botón va debajo y a su ancho: ni a ancho completo ni al final de una fila |
 | Banda de foto a sangre | Imagen a ancho completo | La del comedor recorta por **50 % 58 %**, no por el centro: control nativo «Posición del objeto» del widget Imagen, no CSS a medida |
 | La carta (listado con precio) | Contenedor rejilla de 2 columnas; cada grupo, Encabezado + filas de Editor de texto/enlace + filete + Encabezado de precio | El filete punteado es el borde inferior de un contenedor vacío, control nativo |
 | Menús cerrados | Contenedor flex de 2 columnas: Encabezado + Encabezado de precio + Editor de texto + lista | Columna única por debajo de 1024 con el control nativo de dirección |
@@ -274,6 +274,19 @@ franja —cabecera con el nombre de la casa, los cuatro enlaces principales y «
 mismo idioma oscuro y dorado. `maqueta/index.html` reproduce esa cabecera de dos franjas en las diez
 páginas, la portada incluida, porque la cabecera vive fuera de los contenedores de página y es una
 sola para todo el sitio. Es una pieza estructural que faltaba, no una decisión de composición nueva.
+
+**La barra de reserva del hero se rediseñó: era la pieza que delataba la misma mano.** Un juez
+ciego, mirando las portadas de la biblioteca sin saber que lo eran, agrupó `terrazza`, `delao` y
+`aranda` por compartir una fila de columnas con etiqueta en versalita arriba, valor en negrita
+debajo y botón sólido a ancho completo pegado al borde derecho —«Reservar mesa», «Buscar», «Ver 34
+coches»—. Se pide lo mismo (personas, día, hora, zona) con otra anatomía: **una frase con cuatro
+huecos subrayados en bronce, «Mesa para 2 comensales el viernes 18 de septiembre a las 21:00 en la
+sala de abajo», y el botón debajo, a su ancho** — porque en un asador la mesa se pide hablando, y
+el subrayado en bronce ya es la interfaz que el ADN declara (precios, CTA, enlaces), no un campo de
+formulario prestado de un buscador. Sin columnas, sin versalitas y sin botón pegado al carril
+derecho no queda pieza compartida que reconocer. Cambió el lienzo (`Terrazza.dc.html`, la autoridad)
+y la maqueta a la vez; ni la paleta, ni el par tipográfico, ni las demás bandas se tocaron. La banda
+de bronce del cierre no entra en el cambio: es una rejilla de 2×2 con el botón debajo, otra pieza.
 
 **La página más débil es Nosotros, y es por la fotografía, no por el texto.** De las siete
 fotografías, sólo `terrazza-chef` retrata a una persona con nombre — Álex Ibáñez, ya presente en la

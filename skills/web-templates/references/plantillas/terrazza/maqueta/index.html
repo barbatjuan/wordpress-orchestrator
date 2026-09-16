@@ -127,7 +127,7 @@ h3{font-size:var(--fs-h3);font-weight:300}
 .menu-precio,.menu-etq,.menu-lista span,
 .drink-cab span,.vino-fila span,.sala-nombre,
 .cifra .num,.cifra .etq,.persona .cargo,
-.panel-campo .etq,.panel-campo .val,.panel-precio-top span,.panel-fila span,
+.panel-precio-top span,.panel-fila span,
 .info-card-titulo,.info-filas .etq,.paso .n,
 .footer-marca,.footer-col-titulo,.footer-lista a,.footer-legal,
 .legal-fecha,.legal-indice a{line-height:var(--lh-etiqueta)}
@@ -205,20 +205,21 @@ section{padding-block:var(--sp-section)}
 .hero{padding:78px var(--page-margin) 66px}
 .hero h1{margin-top:26px;line-height:.98;letter-spacing:-.025em;font-size:var(--fs-h1-hero)}
 .hero .lede{margin-top:26px;max-width:60ch;font-size:var(--fs-lede-hero);font-weight:300;line-height:1.6}
-/* El panel de reserva del lienzo mide 1044px en total —168+220+148+192 de campos y 316 de botón—
-   y NO el ancho de la banda. Con `flex:1 1 150px` en los campos y `1 1 220px` en el botón se
-   estiraba a los 1344 de contenido a 1440 y a los 1824 que había a 1920: cuatro campos enormes y
-   un botón de 420px. Ahora reparte el ancho del lienzo en las mismas proporciones y se topa en
-   1044. Nativo: contenedor de ancho 1044 «en caja» con cinco columnas de porcentaje fijo. */
-.panel-reserva{display:flex;align-items:stretch;gap:0;margin-top:46px;width:100%;max-width:1044px;flex-wrap:wrap}
-.panel-campo{background:var(--c-bg-alt);border:1px solid var(--c-border);border-right:none;padding:12px 18px 13px;min-width:0}
-.panel-campo-personas{flex:0 1 168px}
-.panel-campo-dia{flex:0 1 220px}
-.panel-campo-hora{flex:0 1 148px}
-.panel-campo-zona{flex:0 1 192px}
-.panel-campo .etq{display:block;font-size:.65625rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--c-accent)}
-.panel-campo .val{display:block;margin-top:5px;font-size:1rem;color:var(--c-ink)}
-.panel-reserva .btn{border:1px solid var(--c-border);flex:0 1 316px;min-height:68px;height:auto;min-width:0}
+/* La reserva NO es una barra de campos. La fila de cinco columnas que había aquí —etiqueta en
+   versalita arriba, valor debajo y botón sólido a ancho completo pegado al borde derecho— es la
+   misma pieza que arman `delao` y `aranda` en su portada, y por ella un juez ciego que no sabía
+   que eran una biblioteca agrupó las tres como obra de la misma mano. Los cuatro datos son los
+   mismos; lo que cambia es la anatomía: una frase con cuatro huecos subrayados en bronce —como se
+   pide una mesa hablando— y el botón debajo, a su ancho, no al final de la fila. Sin etiqueta en
+   versalita, sin columnas y sin botón pegado al carril derecho no queda pieza que reconocer.
+   Nativo: contenedor flex con ajuste de línea que alterna Editor de texto (la prosa) y contenedores
+   con borde inferior (los huecos), y un Botón debajo, en su propio contenedor. */
+.frase-reserva{display:flex;flex-wrap:wrap;align-items:baseline;gap:14px 9px;margin-top:44px;max-width:1060px;
+               font-family:var(--font-display);font-size:clamp(1.25rem, .95rem + .92vw, 1.6875rem);
+               font-weight:300;line-height:1.45;color:var(--c-text-muted)}
+.frase-reserva .hueco{padding:0 2px 4px;border-bottom:2px solid var(--c-accent);color:var(--c-ink)}
+.frase-reserva-cta{margin-top:30px}
+.frase-reserva-cta .btn{min-height:60px;padding:0 42px;font-size:1rem}
 .hero-nota{margin-top:18px;font-size:.84375rem;line-height:var(--lh-etiqueta);color:var(--c-text-muted)}
 
 /* El lienzo recorta esta fotografía por 50% 58%, no por el centro: bajando el encuadre entran las
@@ -555,9 +556,7 @@ footer.site{padding-top:66px}
   .formulario{flex-basis:auto;max-width:none}
   .info-columna,.info-card{width:100%}
   .cierre-texto{width:100%}
-  .panel-reserva{max-width:none}
-  .panel-campo-personas,.panel-campo-dia,.panel-campo-hora,.panel-campo-zona{flex:1 1 150px}
-  .panel-reserva .btn{flex:1 1 220px}
+  .frase-reserva{max-width:none;gap:12px 8px}
   .legal-grid{grid-template-columns:minmax(0,1fr)}
   .legal-indice{position:static;display:flex;flex-wrap:wrap;gap:4px 18px;padding-bottom:1.5rem;border-bottom:1px solid var(--c-border)}
   .legal-indice a{padding:4px 0;border-left:none}
@@ -628,13 +627,17 @@ footer.site{padding-top:66px}
     <p class="eyebrow">Brasa de encina y arroz de secano · desde&nbsp;1998</p>
     <h1>Casa Terrazza</h1>
     <p class="lede">Una carta corta que cambia los martes, una parrilla que no se apaga y los precios donde tienen que estar: a la vista, antes de que preguntes.</p>
-    <div class="panel-reserva">
-      <div class="panel-campo panel-campo-personas"><span class="etq">Personas</span><span class="val">2 comensales</span></div>
-      <div class="panel-campo panel-campo-dia"><span class="etq">Día</span><span class="val">Viernes 18 de septiembre</span></div>
-      <div class="panel-campo panel-campo-hora"><span class="etq">Hora</span><span class="val">21:00</span></div>
-      <div class="panel-campo panel-campo-zona"><span class="etq">Zona</span><span class="val">Sala de abajo</span></div>
-      <a class="btn btn-accent" href="#contacto">Reservar mesa</a>
+    <div class="frase-reserva">
+      <span>Mesa para</span>
+      <span class="hueco">2 comensales</span>
+      <span>el</span>
+      <span class="hueco">viernes 18 de septiembre</span>
+      <span>a las</span>
+      <span class="hueco">21:00</span>
+      <span>en la</span>
+      <span class="hueco">sala de abajo</span>
     </div>
+    <div class="frase-reserva-cta"><a class="btn btn-accent" href="#contacto">Reservar mesa</a></div>
     <p class="hero-nota">Quedan tres mesas para el viernes a las 21:00. Grupos de más de ocho, por teléfono. La barra no reserva: se entra y ya está.</p>
   </section>
 

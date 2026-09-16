@@ -196,24 +196,33 @@ header.site{position:sticky;top:0;z-index:50;background:var(--c-bg);border-botto
 .hero-copy h1{font-size:clamp(2.375rem, 6.6vw - 33px, 3.875rem);line-height:1.05;letter-spacing:-.02em}
 .hero-copy .lede{margin-top:min(20px, 1.389vw);max-width:560px;font-size:clamp(1rem, 1.25vw, 1.125rem);font-weight:300;line-height:1.55;color:var(--c-ink)}
 .hero-datos{margin-top:min(16px, 1.111vw);font-size:.84375rem;font-weight:500;line-height:1.3;letter-spacing:.02em;color:var(--c-ink)}
-.hero-panel{flex:0 1 472px;min-width:0;margin-top:136px;background:var(--c-bg-float);border-radius:var(--radius);box-shadow:0 26px 64px rgba(42,27,31,.18);padding:34px 34px 0}
-.hero-panel-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
-.hero-panel-head h2{font-size:1.5rem;letter-spacing:0}
-.hero-panel-head span{font-size:.75rem;font-weight:500;color:var(--c-text-faint);white-space:nowrap}
-.hero-panel-nota{margin-top:10px;font-size:.84375rem;line-height:1.5;color:var(--c-text-muted)}
-.panel-filas{display:flex;flex-direction:column;gap:22px;margin-top:26px}
-.panel-fila{display:flex;align-items:flex-start;justify-content:space-between;gap:20px}
-.panel-fila-info{flex-grow:1;min-width:0}
-.panel-fila-nombre{font-family:var(--font-display);font-size:1.1875rem;line-height:1.25;color:var(--c-ink)}
-.panel-fila-desc{margin-top:3px;font-size:.8125rem;line-height:1.45;color:var(--c-text-muted)}
-.panel-fila-precio{text-align:right;flex-shrink:0}
-.panel-fila-min{font-size:.78125rem;line-height:1.25;color:var(--c-text-faint)}
-.panel-fila-eur{font-size:1.125rem;font-weight:600;line-height:1.25;color:var(--c-ink)}
-/* La franja es el último hijo del panel y el panel no lleva relleno inferior: la franja llega al borde,
-   como el `margin-bottom:-30px` de la lámina, sin margen negativo vertical. */
-.panel-cta{margin:28px -34px 0;padding:20px 34px 24px;background:var(--c-bg-tint);border-radius:0 0 var(--radius) var(--radius);display:flex;align-items:center;justify-content:space-between;gap:16px}
-.panel-cta span{font-size:.875rem;line-height:1.45;color:var(--c-text)}
-.panel-cta a{font-size:.875rem;font-weight:600;color:var(--c-accent);white-space:nowrap}
+
+/* ═════════════════════════════ los cuatro más pedidos (bajo el hero) ═════════════════════════════ */
+/* Aquí había una tarjeta flotante de precio: esquinas redondeadas, sombra larga, volada sobre el borde
+   derecho de la fotografía, y en su franja inferior un enlace de texto al lado de la acción. Es la
+   misma pieza que `tueste` apoya en el borde de su hero, y por ella un juez ciego que no sabía que
+   estaba viendo una biblioteca agrupó las dos plantillas como obra de la misma mano. En `tueste` la
+   tarjeta se queda —allí sostiene el hero y su veredicto la justifica—; aquí se desmonta.
+   Los mismos cuatro rituales bajan a una BANDA ENTINTADA a todo el ancho, debajo de la foto, leída
+   como la carta de la casa: nombre, efecto, minutos y precio en cuatro columnas, filete fino entre
+   filas y aire, que es como el ADN manda construir una lista. «Ver la carta» es un enlace subrayado
+   dentro de una frase, no un enlace secundario pegado a un botón. Ni sombra, ni esquina redondeada,
+   ni solape con la fotografía: no queda tarjeta que reconocer.
+   Nativo: contenedor de fondo entintado en caja de 1248px + fila de cabecera con filete inferior +
+   una fila por ritual (Encabezado + Editor de texto + dos Encabezados alineados a la derecha). */
+.pedidos{background:var(--c-bg-tint);padding-block:46px 48px}
+.pedidos-head{display:flex;align-items:baseline;justify-content:space-between;gap:32px;padding-bottom:20px;
+              border-bottom:var(--hair) solid var(--c-border)}
+.pedidos-head h2{font-size:clamp(1.375rem, 1.05rem + 1vw, 1.75rem);font-weight:300;letter-spacing:-.01em}
+.pedidos-head span{font-size:.875rem;line-height:1.45;color:var(--c-text)}
+.pedidos-fila{display:flex;align-items:baseline;gap:32px;padding:20px 0;border-bottom:var(--hair) solid var(--c-border-soft)}
+.pedidos-fila:last-of-type{border-bottom:none}
+.pedidos-nombre{flex:0 0 300px;min-width:0;font-family:var(--font-display);font-size:1.375rem;line-height:1.25;color:var(--c-ink)}
+.pedidos-efecto{flex:1 1 auto;min-width:0;font-size:.9375rem;line-height:1.5;color:var(--c-text)}
+.pedidos-min{flex:0 0 84px;text-align:right;font-size:.875rem;line-height:1.25;color:var(--c-text-faint)}
+.pedidos-eur{flex:0 0 108px;text-align:right;font-size:1.1875rem;font-weight:600;line-height:1.25;color:var(--c-ink)}
+.pedidos-pie{margin-top:26px;font-size:.9375rem;line-height:1.6;color:var(--c-text)}
+.pedidos-pie a{font-weight:600;color:var(--c-accent);text-decoration:underline;text-underline-offset:3px}
 
 /* ══════════════════════════════════════ manifiesto ══════════════════════════════════════ */
 /* Lámina: 620px de titular, 80 de hueco, 500 de texto bajado 54px; 152px bajo la foto, 116 debajo. */
@@ -538,10 +547,18 @@ footer.site{background:var(--c-bg)}
      bases de flex vuelven a auto y el desplazamiento de 192px desaparece. */
   .hero-foto{height:auto;aspect-ratio:16/9;max-width:100%;min-width:0}
   .hero-capa{flex-direction:column;align-items:stretch;min-height:0;margin-top:0;padding-block:var(--sp-xl) 0;padding-inline:var(--carril)}
-  .hero-copy,.hero-panel{flex-basis:auto}
+  .hero-copy{flex-basis:auto}
   .hero-copy .lede{max-width:36rem;margin-top:20px}
   .hero-datos{margin-top:16px}
-  .hero-panel{margin-top:var(--sp-l);max-width:34rem}
+  /* La banda de precios: el nombre se lleva su propia línea y efecto, minutos y precio van debajo.
+     Con las cuatro columnas en fila, a 768 el efecto se quedaba en 78px —cuatro líneas de dos
+     palabras— porque nombre, minutos y precio suman 492 de los 666 de contenido. */
+  .pedidos-head{flex-direction:column;align-items:flex-start;gap:10px}
+  .pedidos-fila{flex-wrap:wrap;gap:8px 24px}
+  .pedidos-nombre{flex:1 1 100%}
+  .pedidos-efecto{flex:1 1 55%}
+  .pedidos-min{flex:0 1 auto;margin-left:auto}
+  .pedidos-eur{flex:0 0 auto}
   /* Manifiesto, zonas, panel del bono y producto: fila → columna, bases a auto. */
   .manifiesto{flex-direction:column;gap:var(--sp-m)}
   .manifiesto-titular,.manifiesto-copy{flex-basis:auto}
@@ -581,8 +598,6 @@ footer.site{background:var(--c-bg)}
   .cta-header{display:none}
   .promesas,.bono-grid,.equipo{grid-template-columns:minmax(0,1fr)}
   .persona--baja,.persona--media{padding-top:0}
-  .hero-panel{padding:24px 22px 0}
-  .panel-cta{margin-inline:-22px;padding-inline:22px}
   .zona{padding:var(--sp-m)}
   .zona-media img{height:220px}
   .bono-panel{padding:var(--sp-m)}
@@ -653,36 +668,39 @@ footer.site{background:var(--c-bg)}
         <p class="lede">Trabajamos por rituales: cada uno dice con qué sales, cuánto dura y cuánto cuesta. Y se compran en bono.</p>
         <p class="hero-datos">Chamberí, Madrid · Cuatro cabinas · Bonos de 5, 8 y 10 sesiones</p>
       </div>
-      <div class="hero-panel">
-        <div class="hero-panel-head">
-          <h2>Los cuatro más pedidos</h2>
-          <span>sesión suelta</span>
-        </div>
-        <p class="hero-panel-nota">Precio de una sesión. En bono baja entre un 10&nbsp;% y un 15&nbsp;%.</p>
-        <div class="panel-filas">
-          <div class="panel-fila">
-            <div class="panel-fila-info"><div class="panel-fila-nombre">Luz Fría</div><div class="panel-fila-desc">Sales con el poro cerrado y la piel mate.</div></div>
-            <div class="panel-fila-precio"><div class="panel-fila-min">60 min</div><div class="panel-fila-eur tab-nums">68,00&nbsp;€</div></div>
-          </div>
-          <div class="panel-fila">
-            <div class="panel-fila-info"><div class="panel-fila-nombre">Descarga</div><div class="panel-fila-desc">Sales sin el nudo del trapecio.</div></div>
-            <div class="panel-fila-precio"><div class="panel-fila-min">50 min</div><div class="panel-fila-eur tab-nums">58,00&nbsp;€</div></div>
-          </div>
-          <div class="panel-fila">
-            <div class="panel-fila-info"><div class="panel-fila-nombre">Láser piernas enteras</div><div class="panel-fila-desc">Sales con las dos piernas hechas en media hora.</div></div>
-            <div class="panel-fila-precio"><div class="panel-fila-min">25 min</div><div class="panel-fila-eur tab-nums">95,00&nbsp;€</div></div>
-          </div>
-          <div class="panel-fila">
-            <div class="panel-fila-info"><div class="panel-fila-nombre">Manicura rusa</div><div class="panel-fila-desc">Sales con la uña limpia tres semanas.</div></div>
-            <div class="panel-fila-precio"><div class="panel-fila-min">75 min</div><div class="panel-fila-eur tab-nums">42,00&nbsp;€</div></div>
-          </div>
-        </div>
-        <div class="panel-cta">
-          <span>La carta completa son 15 rituales en cuatro zonas.</span>
-          <a href="#rituales">Ver la carta</a>
-        </div>
-      </div>
     </div>
+  </section>
+
+  <section class="pedidos carril">
+    <div class="pedidos-head">
+      <h2>Los cuatro más pedidos</h2>
+      <span>Precio de una sesión suelta. En bono baja entre un 10&nbsp;% y un 15&nbsp;%.</span>
+    </div>
+    <div class="pedidos-fila">
+      <div class="pedidos-nombre">Luz Fría</div>
+      <div class="pedidos-efecto">Sales con el poro cerrado y la piel mate.</div>
+      <div class="pedidos-min">60 min</div>
+      <div class="pedidos-eur tab-nums">68,00&nbsp;€</div>
+    </div>
+    <div class="pedidos-fila">
+      <div class="pedidos-nombre">Descarga</div>
+      <div class="pedidos-efecto">Sales sin el nudo del trapecio.</div>
+      <div class="pedidos-min">50 min</div>
+      <div class="pedidos-eur tab-nums">58,00&nbsp;€</div>
+    </div>
+    <div class="pedidos-fila">
+      <div class="pedidos-nombre">Láser piernas enteras</div>
+      <div class="pedidos-efecto">Sales con las dos piernas hechas en media hora.</div>
+      <div class="pedidos-min">25 min</div>
+      <div class="pedidos-eur tab-nums">95,00&nbsp;€</div>
+    </div>
+    <div class="pedidos-fila">
+      <div class="pedidos-nombre">Manicura rusa</div>
+      <div class="pedidos-efecto">Sales con la uña limpia tres semanas.</div>
+      <div class="pedidos-min">75 min</div>
+      <div class="pedidos-eur tab-nums">42,00&nbsp;€</div>
+    </div>
+    <p class="pedidos-pie">La carta completa son 15 rituales en cuatro zonas. <a href="#rituales">Ver la carta</a></p>
   </section>
 
   <section class="manifiesto carril">
