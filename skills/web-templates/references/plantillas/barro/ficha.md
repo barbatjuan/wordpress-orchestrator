@@ -76,14 +76,20 @@ WooCommerce, sin widget HTML y sin CSS a medida.
 
 | Sección | Elementor (nativo) | Nota |
 |---|---|---|
-| Cabecera | Plantilla de cabecera del Theme Builder + `woocommerce-menu-cart` | |
-| Banda de tres productos | Contenedor flex de 1440 sin hueco + tres Imagen de 480 | Contenedor a ancho completo, sin relleno |
-| Pies de la banda | Contenedor flex + tres contenedores de 480 con relleno lateral de 108 + Encabezado + Editor de texto + Botón de texto | El subrayado verde es el borde inferior del botón |
-| Las dos casas | Contenedor flex de dos Imagen de 720 + pies con el mismo relleno | |
-| Ficha: compra | `woocommerce-product-title` + `woocommerce-product-price` + `woocommerce-product-add-to-cart` | |
+| Cabecera | Plantilla de cabecera del Theme Builder + `woocommerce-menu-cart` | Relleno lateral = el raíl de página, igual que el contenido |
+| Banda de tres productos | Contenedor flex sin hueco + tres Imagen de 480 | **Ancho máximo 1440, centrado**, sin relleno — no a ancho de pantalla |
+| Pies de la banda | Contenedor flex (máx. 1440, centrado) + tres contenedores de 480 con relleno lateral de 108 + Encabezado + Editor de texto + Botón de texto | El subrayado verde es el borde inferior del botón |
+| Las dos casas | Contenedor flex (máx. 1440, centrado) de dos Imagen de 720 + pies con el mismo relleno | |
+| El taller (banda a sangre) | Contenedor flex (máx. 1440, centrado) + Imagen al 50 % con tope de 720 + contenedor de texto con hueco de 96 y relleno derecho de 108 | La foto toca el borde de la lámina por la izquierda; la columna lleva rótulo, titular, párrafo, lista y firma |
+| Banda de luz de una foto | Imagen a ancho de contenedor, **máx. 1440, centrada** | Sin el tope, a 1920 se dibujaba por encima de los píxeles del original |
+| Ficha: compra | `woocommerce-product-title` + `woocommerce-product-price` + `woocommerce-product-add-to-cart` | Contenedor de 400 autorizado a encoger, no ancho fijo |
 | Ficha: rejilla de especificaciones | Contenedor rejilla de 4 × 3 con relleno lateral de 80 + doce contenedores con borde | La regla cruza los 1440; el texto cae en 108 |
-| Migas | `woocommerce-breadcrumb` | |
-| Pie | Plantilla de pie del Theme Builder | |
+| Migas | `woocommerce-breadcrumb` | Mismo raíl que el contenido: el relleno lateral es el de página, no un porcentaje suyo |
+| Páginas de sistema con medida propia | Ancho máximo del contenedor HIJO: carro 808, legales 652, pedido recibido 504, página 404 → 404 | El tope va en el bloque y el bloque se queda pegado al raíl. Ni un `max-width` sobre la banda que lleva el relleno (el porcentaje se resolvería contra la pantalla), ni un techo menor en la banda (la banda se centraría y el bloque se saldría del raíl) |
+| Párrafo colgado de la retícula (portada, categoría ×2, la marca, contacto) | Editor de texto con margen izquierdo en %: 51,96 % (sangrado 636) o 42,16 % (sangrado 516), a 0 desde 1024 | Sin contenedor espaciador vacío: el lienzo lo dibuja con un div vacío, el build no lo necesita |
+| La marca: dos columnas de texto | Contenedor rejilla de 2 × 1, una sola columna desde 767 | Estaba en línea y no podía llevar punto de ruptura |
+| Botón secundario | Botón con fondo transparente y borde | Mismo alto y misma letra que el principal: van siempre en pareja |
+| Pie | Plantilla de pie del Theme Builder | Mismo raíl que el contenido |
 
 ## Páginas
 
@@ -110,6 +116,26 @@ El diseño sigue siendo el canvas de `canvas/`, la autoridad — todo cambio emp
 la maqueta, nunca al revés. `maqueta/index.html` ya existe: un único fichero autocontenido, con los dos
 puntos de ruptura que Elementor expresa, 1024 y 767, y el margen de página en fracción (7,5%) en vez de
 píxel fijo para que aguante entre los dos.
+
+**Techo de composición declarado: 1224px de contenido, 1440px de lámina.** El margen de página es
+`max(7,5 %, (100 % − 1224px) / 2)`. Por debajo de 1440 manda la fracción —7,5 % por lado, los 108px del
+lienzo— y no cambia nada. El cruce cae exactamente en 1440, así que por encima manda el centrado: el
+contenido se queda en los 1224px que el lienzo compone y el resto de la pantalla es margen. Medido, la
+fracción sube a 13,6 % a 1680 y a 18,1 % a 1920, y el ancho de contenido deja de encogerse: antes medía
+1224 a 1440 pero 1188 a 1680 y 1152 a 1920, porque el 7,5 % se resolvía contra la PANTALLA dentro de una
+caja topada a 1440. Las bandas a sangre llevan su propio techo, `--lienzo` = 1440: en el lienzo miden la
+lámina entera, y sin el techo la fotografía de portada se dibujaba a 1920px desde un original de 1600.
+El margen creciente por encima de 1440 no es descuido: es el hueco de centrado de una composición que
+está dibujada a un ancho y no a todos.
+
+**Un solo raíl, y las medidas estrechas topadas en el bloque.** Las catorce páginas arrancan en la
+misma vertical a cada ancho: 32,25px a 430, 96 a 1280, 108 a 1440, 348 a 1920. Los únicos raíles
+secundarios son los que dibuja el lienzo —la columna de texto de la banda a sangre a 816 (foto de 720
+más 96 de hueco) y la rejilla interior de la ficha a 148— y guardan su distancia al raíl de página a
+cualquier ancho: 708px y 40px, a 1280 y a 1920 igual. Donde una página compone sobre una medida más
+estrecha (carro, legales, recibo, 404) el tope va en el BLOQUE, no en la banda; bajar el techo de la
+banda la centra y saca al bloque del raíl, que es como la tabla del carro acabó 208px a la derecha
+del titular de su propia página.
 
 **Qué se tradujo y qué se construyó a partir de los tokens.** Los cinco artboards se tradujeron
 sección por sección —mismo orden, mismo texto, mismos tokens— a una escala tipográfica fluida entre

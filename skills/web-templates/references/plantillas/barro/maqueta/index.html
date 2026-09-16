@@ -1,3 +1,4 @@
+<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Barro — maqueta</title>
@@ -31,7 +32,9 @@
    LaMarca.dc.html, Contacto.dc.html). Los tokens de color y tipo son los medidos en ficha.md; la
    escala fluida interpola entre 375 y 1440 con la fórmula estándar (slope · yAxisIntersection),
    nunca un tercer punto de ruptura — sólo 1024 y 767 en @media, como exige el contrato de
-   derivación. El margen de página es 7,5% (108px a 1440) en TODAS las anchuras: nunca un píxel fijo.
+   derivación. El margen de página es 7,5% (108px a 1440) hasta la anchura del lienzo, y a partir de
+   ahí el hueco de centrado de una composición de 1224px: ver `--pad-x` y ficha.md § Techo de
+   composición. Nunca un píxel fijo, y nunca un porcentaje suelto dentro de una caja topada.
    Suelo oscuro medido: ver ficha.md § Paleta medida.
    ════════════════════════════════════════════════════════════════════════════════════════════ */
 
@@ -45,8 +48,20 @@
   --font-display:'Newsreader',Georgia,serif;
   --font-sans:'Schibsted Grotesk','Helvetica Neue',Arial,sans-serif;
 
-  --pad-x:7.5%;
-  --container-max:1440px;
+  /* ── UN SOLO RAÍL A CUALQUIER ANCHO ──
+     Por debajo de 1440 manda la fracción de página (7,5 % = 108px a 1440, el margen del lienzo);
+     por encima manda el centrado, y el contenido se queda en los 1224px que el lienzo compone
+     (1440 − 108 × 2). El cruce cae EXACTAMENTE en 1440, así que nada por debajo de la anchura del
+     lienzo se mueve un píxel. Antes era `7.5%` a secas: dentro de una caja topada a 1440 el
+     porcentaje se resuelve contra la PANTALLA, así que el contenido medía 1224px a 1440, 1188 a
+     1680 y 1152 a 1920 — la página se estrechaba en la pantalla más ancha. Es el defecto escrito
+     en defectos-de-derivacion.md § Documento y apilado.
+     `--lienzo` es la otra mitad: hasta ahí llegan las bandas a sangre, que en el lienzo miden la
+     lámina entera. Sin ese techo la fotografía de portada se dibujaba a 1920 desde 1600px de
+     original. */
+  --lienzo:1440px;
+  --contenido-max:1224px;
+  --pad-x:max(7.5%, calc((100% - var(--contenido-max)) / 2));
 
   --hair-014:rgba(237,231,218,0.14);
   --hair-016:rgba(237,231,218,0.16);
@@ -72,7 +87,11 @@
 /* ─────────────────────────────────────────── base ─────────────────────────────────────────── */
 *{box-sizing:border-box;}
 html,body{margin:0;padding:0;background:var(--c-bg);}
-body{font-family:var(--font-sans);font-weight:400;color:var(--c-ink);font-size:16px;line-height:1.6;
+/* SIN interlínea global: el lienzo no declara ninguna en `x-dc`, la pone elemento a elemento y deja
+   `normal` todo lo demás. Un `line-height:1.6` en `body` lo heredaban 586 elementos de las catorce
+   rutas —rótulos, precios, enlaces de menú, dt/dd, celdas de tabla, pie— y engordaba cada página:
+   la portada medía 611px más que su lámina. Las clases de texto corrido llevan la suya. */
+body{font-family:var(--font-sans);font-weight:400;color:var(--c-ink);font-size:16px;
      -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
 img{display:block;max-width:100%;}
 a{color:inherit;text-decoration:none;}
@@ -90,9 +109,21 @@ em{font-style:italic;}
 .logo,.nav-desktop a,.menu-movil a,.btn,.btn-outline,.price,.price-lg,.eyebrow{
   overflow-wrap:normal;word-break:normal;}
 .logo,.btn,.btn-outline{white-space:nowrap;}
+/* Referencias e importes de tabla: cadenas cortas en cajas estrechas. A 430 «BR-40218» se partía
+   por su propio guion, y un número de pedido en dos líneas se lee como un error. */
+.table-std td.al-strong,.table-std td.al-right{white-space:nowrap;}
 
 /* ─────────────────────────────────────────── layout ───────────────────────────────────────── */
-.container{max-width:var(--container-max);margin:0 auto;padding:0 var(--pad-x);}
+/* El contenedor ya NO se topa a sí mismo: el tope vive en el relleno, que es a la vez margen de
+   página y hueco de centrado. Así la miga, el pie y los pies de las bandas a sangre caen en el
+   mismo raíl sin repetir el tope en cada uno.
+   La expresión se escribe AQUÍ y no se toma de `--pad-x` a propósito: el valor de una propiedad
+   personalizada se resuelve en el elemento donde se DECLARA, así que `--pad-x` (declarada en
+   `:root`) ya lleva dentro el techo de página, y un `--contenido-max` puesto en esta misma caja
+   por una clase `.medida-*` no la recalcularía. Escrita en la declaración del relleno, la
+   sustitución ocurre en el contenedor y la clase sí manda. Medido antes de darse cuenta: las
+   condiciones de venta leían a 163 caracteres por línea con su techo de 868 puesto y sin efecto. */
+.container{width:100%;padding:0 var(--pad-x);}
 .section{padding-top:var(--sp-section);}
 .section-tight{padding-top:calc(var(--sp-section) * .48);}
 .alt-band{background:var(--c-bg-alt);}
@@ -111,26 +142,85 @@ em{font-style:italic;}
 .row3{display:grid;grid-template-columns:repeat(3,1fr);column-gap:30px;align-items:start;}
 @media (max-width:1024px){.row3{grid-template-columns:1fr;row-gap:36px;}}
 
-/* Banda a sangre: el hijo de la derecha toca el borde del cristal. Rompe el margen UNA vez por
-   página, nunca más — ver ficha.md § ADN. */
-.bleed{width:100%;padding-left:var(--pad-x);padding-right:0;display:flex;align-items:flex-start;}
-.bleed > :first-child{width:300px;flex:0 0 300px;}
-.bleed img{flex:1;min-width:0;width:100%;height:auto;aspect-ratio:720/640;object-fit:cover;display:block;}
+/* Párrafo colgado de la segunda mitad de la retícula, con el sangrado que dibuja el lienzo: 636px
+   en la portada y en la marca, 516 en las dos notas de la categoría y en contacto. Iba con la fila
+   de etiqueta (300 + 56), así que los cinco caían en 464 en vez de en 744 y 624 — entre 160 y 280px
+   fuera de sitio. En FRACCIÓN de la medida (636/1224 y 516/1224) para que aguante entre los dos
+   puntos de ruptura, y al margen desde 1024, donde ya no hay retícula de la que colgar.
+   Sustituye a un `<div></div>` vacío por instancia: un ancho no justifica un div, y en el build
+   nativo cada uno de esos cinco sería un contenedor de más. */
+.sangrado-636{margin-left:51.96%;max-width:548px;}
+.sangrado-516{margin-left:42.16%;max-width:560px;}
+@media (max-width:1024px){.sangrado-636,.sangrado-516{margin-left:0;max-width:none;}}
+
+/* Fila de dos columnas que se reparten y se apilan solas, y las tres medidas que usa la ficha.
+   La de compra mide 400 mientras quepa y ENCOGE cuando no: con `flex:0 0 400px` no encogía nunca
+   y la ficha desbordaba 2px a 430 — medido, no supuesto. En Elementor es un ancho de 400 con el
+   contenedor autorizado a encoger, no un ancho fijo. Un ancho en `style=` no puede llevar punto de
+   ruptura, así que no puede maquetar: ver defectos-de-derivacion.md § Fondos y rejillas. */
+.fila-2col{display:flex;flex-wrap:wrap;column-gap:clamp(2rem,1vw + 2rem,8.125rem);row-gap:2rem;}
+
+/* Dos columnas de texto que se apilan. Estaba en línea, y un `style=` no puede llevar punto de
+   ruptura: a 430 seguían siendo dos columnas de tres o cuatro palabras por línea. */
+.dos-columnas{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:44px;align-items:start;}
+@media (max-width:767px){.dos-columnas{grid-template-columns:1fr;row-gap:24px;}}
+.col-compra{flex:1 1 400px;max-width:400px;min-width:0;}
+.col-ancha{flex:1 1 480px;max-width:694px;min-width:0;}
+.col-estrecha{flex:1 1 320px;max-width:400px;min-width:0;}
+
+/* Medidas más estrechas que la de página: el carro, las cuatro legales, el recibo y el 404.
+   El tope va en el BLOQUE, no en la banda, y el bloque se queda PEGADO AL RAÍL: «la medida de
+   lectura se topa en el bloque de texto, no en la banda» (mockup-guide.md). Así el titular, la
+   miga, el bloque estrecho y el pie de una misma página arrancan todos en la misma vertical.
+   Las dos formas que NO valen, las dos medidas aquí:
+     · `max-width` sobre la caja que ya lleva el relleno de página → el porcentaje se resuelve
+       contra la pantalla y la caja se come su propio contenido: a 1920 el aviso legal daba 172px
+       de texto dentro de 868, y el recibo 24px dentro de 720.
+     · Bajar el techo de la banda → la banda se centra y el bloque se va del raíl: la tabla del
+       carro quedaba 208px a la derecha del titular de su propia página, y era el único bloque de
+       la página fuera del raíl. Dos lectores ciegos lo leyeron como error.
+   Los valores son la MEDIDA DE TEXTO, no la caja: la del aviso legal medía 868 de caja y 652 de
+   texto. En Elementor es el ancho máximo del contenedor hijo, no una regla nueva. */
+.medida-carro > *{max-width:808px;}
+.medida-legal > *{max-width:652px;}
+.medida-recibo > *{max-width:504px;}
+.medida-corta > *{max-width:404px;}
+
+/* La columna de datos de contacto mide 380 mientras quepa. Un ancho fijo en `style=` no puede
+   llevar punto de ruptura: a 430 se comía el margen derecho de la página (17,75px de 32,25). */
+.col-datos{flex:0 0 380px;width:380px;min-width:0;}
+.col-form{flex:1 1 480px;min-width:0;max-width:620px;}
+@media (max-width:767px){.col-datos{width:100%;flex:none;}}
+
+/* Banda a sangre: la fotografía toca el borde de la lámina por la IZQUIERDA y la columna de texto
+   cuelga a su derecha, como la dibuja el lienzo (foto 720×640 a x=0, columna de 516 a x=816).
+   Rompe el margen UNA vez por página, nunca más — ver ficha.md § ADN.
+   La foto va al 50 %, que son los 720 del lienzo a 1440 y encoge por debajo en vez de aplastar la
+   columna de texto contra el margen. */
+.bleed{max-width:var(--lienzo);margin-inline:auto;display:flex;align-items:flex-start;column-gap:96px;}
+.bleed img{width:50%;flex:0 0 50%;max-width:720px;min-width:0;height:auto;
+           aspect-ratio:720/640;object-fit:cover;display:block;}
+/* Se selecciona por TIPO, no por posición: con `:last-child` una lámina que traiga la foto al final
+   deja su columna de texto sin raíl y el párrafo acaba tocando el cristal. Medido en «El taller» de
+   la marca antes de darle la vuelta al orden: tinta a x=0 a 1280 y a 1440. */
+.bleed > div{flex:1;min-width:0;padding-right:var(--pad-x);padding-top:8px;}
 @media (max-width:1024px){
-  .bleed{flex-direction:column;padding-left:var(--pad-x);padding-right:var(--pad-x);row-gap:24px;}
-  .bleed > :first-child{width:100%;flex:none;}
-  .bleed img{aspect-ratio:16/10;}
+  .bleed{flex-direction:column;column-gap:0;row-gap:24px;padding-left:var(--pad-x);padding-right:var(--pad-x);}
+  .bleed img{width:100%;flex:none;max-width:none;aspect-ratio:16/10;}
+  .bleed > div{padding-right:0;}
 }
 
-/* Banda de luz: fotografía a los 1440 enteros, sin margen a ningún lado. */
+/* Banda de luz: fotografía a la lámina entera. El techo es la lámina, no la pantalla: sin él,
+   `barro-rincon` (1600px de original) se dibujaba a 1920 y `barro-mesa` (1200px) a 1920. */
+.light-band{max-width:var(--lienzo);margin-inline:auto;}
 .light-band img{width:100%;height:auto;display:block;}
 .light-rule{height:1px;background:var(--c-border);}
 
 /* Estante iluminado: tres fotografías de producto pegadas borde con borde, con su pie a 108 de
    su propia columna (no de la foto) — ver defectos-de-derivacion.md § Canvas y artboards. */
-.shelf-imgs{display:flex;width:100%;}
+.shelf-imgs{display:flex;width:100%;max-width:var(--lienzo);margin-inline:auto;}
 .shelf-imgs img{flex:1;aspect-ratio:1/1;object-fit:cover;min-width:0;}
-.shelf-cards{display:flex;width:100%;}
+.shelf-cards{display:flex;width:100%;max-width:var(--lienzo);margin-inline:auto;}
 .shelf-cards > article{flex:1;min-width:0;padding:38px var(--pad-x) 0;}
 @media (max-width:1024px){
   .shelf-imgs{flex-direction:column;}
@@ -140,9 +230,9 @@ em{font-style:italic;}
 @media (max-width:1024px){.shelf-imgs img{aspect-ratio:16/11;}}
 
 /* Dos casas / dos columnas iguales a sangre lateral. */
-.split2-imgs{display:flex;width:100%;}
+.split2-imgs{display:flex;width:100%;max-width:var(--lienzo);margin-inline:auto;}
 .split2-imgs img{flex:1;aspect-ratio:720/520;object-fit:cover;min-width:0;}
-.split2-cards{display:flex;width:100%;}
+.split2-cards{display:flex;width:100%;max-width:var(--lienzo);margin-inline:auto;}
 .split2-cards > article{flex:1;min-width:0;padding:36px var(--pad-x) 0;}
 @media (max-width:1024px){
   .split2-imgs{flex-direction:column;}
@@ -181,15 +271,18 @@ h1,h2{font-family:var(--font-display);font-weight:300;letter-spacing:-0.02em;tex
 .btn{display:inline-flex;align-items:center;justify-content:center;height:58px;padding:0 32px;
      background:var(--c-ink);color:var(--c-bg);font-family:var(--font-sans);font-weight:500;
      font-size:0.8125rem;letter-spacing:0.16em;text-transform:uppercase;border:none;border-radius:2px;cursor:pointer;}
-.btn-outline{display:inline-flex;align-items:center;justify-content:center;height:56px;padding:0 30px;
+/* Mismo alto y mismo tamaño de letra que `.btn`: los dos aparecen SIEMPRE uno al lado del otro (el
+   404 y el pedido recibido), y medían 58 y 56 con 13px y 12px de letra. «Dos controles adyacentes
+   de tamaños distintos delatan que nadie los midió» — defectos-de-derivacion.md § Controles. */
+.btn-outline{display:inline-flex;align-items:center;justify-content:center;height:58px;padding:0 30px;
      background:transparent;color:var(--c-ink);font-family:var(--font-sans);font-weight:400;
-     font-size:0.75rem;letter-spacing:0.16em;text-transform:uppercase;border:1px solid var(--hair-035);
+     font-size:0.8125rem;letter-spacing:0.16em;text-transform:uppercase;border:1px solid var(--hair-035);
      border-radius:2px;cursor:pointer;}
 .btn-block{width:100%;}
 
 /* ─────────────────────────────────────────── cabecera ─────────────────────────────────────── */
 .site-header{width:100%;background:var(--c-bg);border-bottom:1px solid var(--hair-014);}
-.header-inner{max-width:var(--container-max);margin:0 auto;padding:0 var(--pad-x);height:var(--header-h);
+.header-inner{width:100%;padding:0 var(--pad-x);height:var(--header-h);
               display:flex;align-items:center;}
 .logo{font-family:var(--font-display);font-weight:400;font-size:1.3125rem;letter-spacing:0.44em;
       color:var(--c-ink);font-variation-settings:'opsz' 20;}
@@ -243,7 +336,12 @@ h1,h2{font-family:var(--font-display);font-weight:300;letter-spacing:-0.02em;tex
 @media (max-width:767px){
   .cat-row{flex-direction:column;align-items:flex-start;gap:10px;}
   .cat-row .cat-maker-wrap{flex-direction:column;gap:6px;}
-  .cat-row .maker{width:auto;}
+  /* `flex:none` además de `width:auto`: aquí la fila pasa a columna, y una base de 220px en píxeles
+     se mide entonces en el eje VERTICAL — 220px de alto reservados bajo un nombre de dos líneas.
+     Medido a 430: ~210px de hueco negro en cada una de las diez filas, más de 2000px de nada.
+     Es el defecto de Lumière, en defectos-de-derivacion.md § Documento y apilado: todo hijo de un
+     flex que cambia de dirección devuelve su base a auto en ese mismo bloque. */
+  .cat-row .maker{width:auto;flex:none;}
   .cat-row .cat-piece-wrap{width:100%;justify-content:space-between;}
 }
 
@@ -255,6 +353,11 @@ h1,h2{font-family:var(--font-display);font-weight:300;letter-spacing:-0.02em;tex
 .dl-rows dd{font-family:var(--font-sans);font-size:0.875rem;line-height:1.5;letter-spacing:0.008em;
   color:var(--c-ink);text-align:right;font-variant-numeric:tabular-nums;}
 .dl-stacked > div{padding:14px 0;border-top:1px solid var(--hair-014);}
+/* Un rótulo con filete inferior seguido de una lista cuya primera fila trae filete superior dibuja
+   DOS filetes paralelos con una banda muerta en medio. Medido en «Coordinación» de contacto a 430
+   y a 768. Manda el del rótulo; la primera fila de la lista entra sin el suyo. */
+.small-label + .dl-stacked > div:first-child,
+.small-label + .dl-rows > div:first-child{border-top:none;}
 .dl-stacked dt{display:block;font-family:var(--font-sans);font-size:0.6875rem;letter-spacing:0.16em;
   text-transform:uppercase;color:var(--c-text);}
 .dl-stacked dd{display:block;font-family:var(--font-sans);font-size:0.9375rem;line-height:1.6;
@@ -268,7 +371,9 @@ h1,h2{font-family:var(--font-display);font-weight:300;letter-spacing:-0.02em;tex
 .dl-grid dd{font-size:1rem;line-height:1.6;color:var(--c-ink);margin-top:10px;}
 .dl-grid dd span{color:var(--c-text);}
 @media (max-width:1024px){.dl-grid{grid-template-columns:repeat(2,1fr);} .dl-grid > div:nth-child(2n+1){border-left:none;} .dl-grid > div:nth-child(2n){border-left:1px solid var(--hair-014);}}
-@media (max-width:767px){.dl-grid{grid-template-columns:1fr;} .dl-grid > div{border-left:none !important;}}
+/* `:nth-child(n)` iguala la especificidad de la regla de 1024 (`:nth-child(2n)`) y gana por orden.
+   Antes esto era un `!important`, que es la forma de perder una pelea de especificidad sin verla. */
+@media (max-width:767px){.dl-grid{grid-template-columns:1fr;} .dl-grid > div:nth-child(n){border-left:none;}}
 
 /* ─────────────────────────────────────────── formularios ──────────────────────────────────── */
 .field{display:block;}
@@ -297,6 +402,11 @@ h1,h2{font-family:var(--font-display);font-weight:300;letter-spacing:-0.02em;tex
   border-bottom:1px solid var(--hair-042);font-family:var(--font-sans);font-weight:400;
   font-size:0.625rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--c-text);}
 .table-std thead th.al-right{text-align:right;}
+/* Hueco entre columnas: sin relleno horizontal las celdas se TOCAN cuando la tabla se estrecha.
+   Medido a 430 en «Pedidos»: 0px entre el número de pedido y la fecha, y se leía «BR-4021814 sept
+   2026». El relleno va sólo a la derecha para que la primera columna siga en el raíl. */
+.table-std thead th:not(:last-child),
+.table-std tbody td:not(:last-child){padding-right:18px;}
 .table-std tbody td{padding:20px 0;border-bottom:1px solid var(--hair-018);
   font-family:var(--font-sans);font-size:0.875rem;letter-spacing:0.02em;color:var(--c-text);}
 .table-std tbody td.al-right{text-align:right;}
@@ -340,8 +450,12 @@ h1,h2{font-family:var(--font-display);font-weight:300;letter-spacing:-0.02em;tex
   align-items:center;padding:22px 0;border-bottom:1px solid var(--hair-014);}
 .cart-row .cart-unit,.cart-row .cart-subtotal{font-family:var(--font-sans);font-size:0.875rem;
   color:var(--c-ink);text-align:right;}
-.cart-row .cart-remove{font-family:var(--font-sans);font-size:0.75rem;color:var(--c-text);
-  text-align:right;background:none;border:none;cursor:pointer;padding:0;}
+/* «Quitar» es el único control de la página y se pintaba como texto secundario liso, sin ninguna
+   señal: un lector ciego no lo leyó como control. Lleva el subrayado verde de los demás enlaces de
+   acción de la plantilla (el mismo borde inferior que `.eyebrow-link`), y la tinta crema. */
+.cart-row .cart-remove{font-family:var(--font-sans);font-size:0.75rem;color:var(--c-ink);
+  text-align:right;background:none;border:none;border-bottom:1px solid var(--c-border);
+  cursor:pointer;padding:0 0 3px 0;justify-self:end;}
 .qty-stepper{display:flex;align-items:center;border:1px solid var(--hair-030);border-radius:2px;width:fit-content;}
 .qty-stepper button{width:32px;height:32px;background:none;border:none;color:var(--c-ink);
   font-size:0.9375rem;cursor:pointer;}
@@ -355,7 +469,16 @@ h1,h2{font-family:var(--font-display);font-weight:300;letter-spacing:-0.02em;tex
   .cart-row .cart-subtotal{grid-column:2;grid-row:2;}
   .cart-row .cart-remove{grid-column:2;grid-row:3;}
 }
-.summary-box{border-top:1px solid var(--hair-042);margin-top:8px;padding-top:22px;}
+/* Sin los 8px de separación: el filete del resumen caía 8px por debajo del borde inferior de la
+   última línea del carro, y se veía un escalón a media página a 1280 y a 768, y DOS filetes
+   paralelos a 430, donde las dos cajas van a ancho completo. Ahora el filete del resumen continúa
+   exactamente el de la última línea. El ancho del resumen va aquí y no en un `style=`. */
+/* SIN filete propio: el borde inferior de la última línea del carro ya separa las líneas de los
+   totales, y el resumen dibujaba otro encima. Medido: dos filetes paralelos a 430 y 768, y a 1280
+   en adelante una sola línea que cambiaba de tono justo donde empezaba la columna de totales —dos
+   filetes superpuestos, no uno—. El énfasis lo pone el filete de la fila «Total», que ya existe. */
+.summary-box{margin-top:0;padding-top:22px;max-width:380px;margin-left:auto;}
+@media (max-width:1024px){.summary-box{max-width:none;margin-left:0;}}
 .summary-row{display:flex;justify-content:space-between;padding:9px 0;font-family:var(--font-sans);
   font-size:0.875rem;color:var(--c-text);}
 .summary-row.al-total{border-top:1px solid var(--hair-030);margin-top:8px;padding-top:18px;
@@ -410,10 +533,7 @@ main{display:block;}
     <div class="container">
       <p class="eyebrow" style="margin-bottom:clamp(2.25rem,1.8rem + 2vw,3.375rem);">Catálogo — otoño 2026</p>
       <h1 class="h-hero" style="max-width:18ch;">Ninguna pieza sale dos veces <em>igual</em>.</h1>
-      <div class="row-label" style="margin-top:clamp(2.75rem,2rem + 3.5vw,4.5rem);">
-        <div></div>
-        <p class="lead">Cinco talleres entre Bailén, Agost, Béjar y Estella. Gres cocido a 1.240&nbsp;°C, lino lavado tres veces antes de coserlo, roble torneado en verde y secado dos años. Cada pieza sale con el nombre de quien la hizo y con la arcilla con la que se hizo. Tardan lo que tardan y no hay manera de acelerarlo.</p>
-      </div>
+      <p class="lead sangrado-636" style="margin-top:clamp(2.75rem,2rem + 3.5vw,4.5rem);">Cinco talleres entre Bailén, Agost, Béjar y Estella. Gres cocido a 1.240&nbsp;°C, lino lavado tres veces antes de coserlo, roble torneado en verde y secado dos años. Cada pieza sale con el nombre de quien la hizo y con la arcilla con la que se hizo. Tardan lo que tardan y no hay manera de acelerarlo.</p>
     </div>
   </section>
 
@@ -460,19 +580,23 @@ main{display:block;}
     </div>
   </section>
 
-  <!-- EL TALLER — única rotura de retícula de esta página -->
+  <!-- EL TALLER — única rotura de retícula de esta página. Orden y contenido del lienzo:
+       la foto sangra por la izquierda y la columna de texto lleva rótulo, titular, párrafo,
+       la lista de datos y la firma. -->
   <section class="section">
     <div class="bleed">
-      <div style="padding-top:8px;">
-        <span class="small-label">El taller</span>
-        <dl class="dl-rows" style="padding-top:4px;">
+      <img src="../img/barro-torno.webp" alt="Las manos de la alfarera centrando el barro en el torno" style="object-position:42% 50%;">
+      <div>
+        <p class="eyebrow">El taller</p>
+        <h2 class="h-section" style="margin-top:26px;">Veintidós años centrando el mismo barro.</h2>
+        <p class="lead" style="margin-top:30px;">Marta Sedano trabaja en una nave de Bailén, a doscientos metros de la cantera de donde saca la arcilla. Tornea por la mañana, cuando el barro conserva la humedad de la noche, y bizcocha los martes. De un día bueno salen catorce cuencos; de esos, once llegan a la tienda.</p>
+        <dl class="dl-rows" style="margin-top:44px;">
           <div><dt>Piezas al mes</dt><dd>180</dd></div>
           <div><dt>Cochuras por pieza</dt><dd>2</dd></div>
           <div><dt>Merma en el horno</dt><dd>21&nbsp;%</dd></div>
         </dl>
-        <p class="copy" style="margin-top:24px;">Marta Sedano — alfarera, Bailén (Jaén)</p>
+        <p class="copy" style="margin-top:28px;">Marta Sedano — alfarera, Bailén (Jaén)</p>
       </div>
-      <img src="../img/barro-torno.webp" alt="Las manos de la alfarera centrando el barro en el torno" style="object-position:42% 50%;">
     </div>
   </section>
 
@@ -529,10 +653,7 @@ main{display:block;}
     <div class="container">
       <p class="eyebrow">Cerámica y lino · cuatro talleres</p>
       <h1 class="h-page" style="margin-top:28px;">Mesa</h1>
-      <div class="row-label" style="margin-top:44px;">
-        <div></div>
-        <p class="lead">Platos, cuencos, jarras y lino, hechos por las mismas manos que los usan cada semana en su propia mesa. Nada sale en serie: un plato que tuerce en el torno no llega a la tienda, y un lino que no seca parejo se queda en paño de cocina en vez de mantel.</p>
-      </div>
+      <p class="lead sangrado-516" style="margin-top:44px;">Platos, cuencos, jarras y lino, hechos por las mismas manos que los usan cada semana en su propia mesa. Nada sale en serie: un plato que tuerce en el torno no llega a la tienda, y un lino que no seca parejo se queda en paño de cocina en vez de mantel.</p>
     </div>
   </section>
 
@@ -584,10 +705,7 @@ main{display:block;}
           <span class="cat-piece-wrap"><span class="cat-piece">Posavasos, juego de cuatro</span><span class="cat-price">36,00&nbsp;€</span></span>
         </a>
       </div>
-      <div class="row-label" style="margin-top:80px;">
-        <div></div>
-        <p class="copy">Cada pieza sale de un lote corto y con su propia ficha técnica de material y cocción. Hoy sólo el Cuenco hondo tiene ficha propia: el resto de la mesa se sube pieza a pieza, taller a taller.</p>
-      </div>
+      <p class="copy sangrado-516" style="margin-top:80px;">Cada pieza sale de un lote corto y con su propia ficha técnica de material y cocción. Hoy sólo el Cuenco hondo tiene ficha propia: el resto de la mesa se sube pieza a pieza, taller a taller.</p>
     </div>
   </section>
 
@@ -623,10 +741,7 @@ main{display:block;}
         </div>
       </div>
 
-      <!-- La columna de compra mide 400 mientras quepa, y encoge cuando no. Con `flex:0 0 400px` no
-           encogía nunca y la ficha desbordaba 2px a 430: medido, no supuesto. En Elementor esto es
-           un ancho de 400 con el contenedor autorizado a encoger, no un ancho fijo. -->
-      <div style="flex:1 1 400px;max-width:400px;min-width:0;">
+      <div class="col-compra">
         <p class="price-lg">38,00&nbsp;€</p>
         <p class="copy" style="margin-top:14px;">IVA incluido · envío 5,90&nbsp;€</p>
 
@@ -659,9 +774,9 @@ main{display:block;}
   </section>
 
   <section class="section">
-    <div class="container" style="display:flex;gap:clamp(2rem,1vw + 2rem,8.125rem);flex-wrap:wrap;padding-bottom:56px;">
-      <h2 class="h-section" style="flex:1 1 480px;max-width:694px;">Dos cuencos nunca miden lo mismo.</h2>
-      <p class="lead" style="flex:1 1 320px;max-width:400px;">Se tornean uno detrás de otro y el gres encoge entre un ocho y un diez por ciento en la segunda cochura. Por eso las medidas van con su margen: el diámetro se mueve hasta cuatro milímetros y la altura hasta tres. Si necesitas doce iguales, esta no es tu tienda.</p>
+    <div class="container fila-2col" style="padding-bottom:56px;">
+      <h2 class="h-section col-ancha">Dos cuencos nunca miden lo mismo.</h2>
+      <p class="lead col-estrecha">Se tornean uno detrás de otro y el gres encoge entre un ocho y un diez por ciento en la segunda cochura. Por eso las medidas van con su margen: el diámetro se mueve hasta cuatro milímetros y la altura hasta tres. Si necesitas doce iguales, esta no es tu tienda.</p>
     </div>
     <div class="container">
       <dl class="dl-grid">
@@ -685,12 +800,12 @@ main{display:block;}
     <div class="light-band">
       <img src="../img/barro-manos.webp" alt="Las manos de Marta Sedano levantando el cuenco terminado, con polvo de barro en los dedos" style="aspect-ratio:1440/620;object-fit:cover;object-position:50% 46%;">
     </div>
-    <div class="container" style="display:flex;gap:clamp(2rem,1vw + 2rem,8.125rem);flex-wrap:wrap;padding-top:64px;">
-      <blockquote style="flex:1 1 480px;max-width:694px;">
+    <div class="container fila-2col" style="padding-top:64px;">
+      <blockquote class="col-ancha">
         <p class="h-section" style="font-weight:300;"><em>«El gres de Bailén tira a rojo. El esmalte lo apaga y deja el pie a la vista: ahí se ve si la pieza está bien torneada.»</em></p>
         <p class="eyebrow" style="margin-top:32px;">Marta Sedano — alfarera</p>
       </blockquote>
-      <div style="flex:1 1 320px;max-width:400px;">
+      <div class="col-estrecha">
         <p class="copy-lg">Marta aprendió con su padre en la misma nave donde trabaja hoy, a doscientos metros de la cantera. Tornea de siete a una, bizcocha los martes y esmalta los jueves. Este cuenco es la pieza que más ha repetido: cuatro mil doscientos desde&nbsp;2011.</p>
         <a href="#la-marca" class="eyebrow-link" style="margin-top:26px;">Ver el taller de Bailén →</a>
       </div>
@@ -724,7 +839,7 @@ main{display:block;}
   </section>
 
   <section class="section-tight">
-    <div class="container" style="max-width:1024px;">
+    <div class="container medida-carro">
       <div class="cart-head">
         <span>Pieza</span><span class="al-right">Precio</span><span>Cantidad</span><span class="al-right">Subtotal</span><span></span>
       </div>
@@ -751,7 +866,7 @@ main{display:block;}
         <button type="button" class="cart-remove">Quitar</button>
       </div>
 
-      <div class="summary-box" style="max-width:380px;margin-left:auto;">
+      <div class="summary-box">
         <div class="summary-row"><span>Subtotal</span><span>92,00&nbsp;€</span></div>
         <div class="summary-row"><span>Envío</span><span>Gratis · superas 90,00&nbsp;€</span></div>
         <div class="summary-row al-total"><span>Total</span><span>92,00&nbsp;€</span></div>
@@ -825,7 +940,7 @@ main{display:block;}
 <div class="page" id="pedido-recibido" data-title="Pedido confirmado — BARRO">
 
   <section class="section" style="padding-top:80px;">
-    <div class="container" style="max-width:720px;">
+    <div class="container medida-recibo">
       <p class="eyebrow">Pedido n.º BR-40218</p>
       <h1 class="h-page" style="margin-top:10px;">Gracias. Cada taller prepara lo suyo.</h1>
       <p class="lead" style="margin-top:26px;">Hemos mandado la confirmación a tu correo con el número de pedido y el resumen de lo comprado. Cada pieza sale del taller que la hizo, así que puede llegar en más de un paquete; el segundo correo trae el seguimiento de cada envío.</p>
@@ -898,16 +1013,14 @@ main{display:block;}
     <div class="container">
       <p class="eyebrow">Cinco talleres · cuatro pueblos</p>
       <h1 class="h-hero" style="margin-top:26px;max-width:18ch;">Cada pieza sale de una mano, no de una fábrica.</h1>
-      <div class="row-label" style="margin-top:44px;">
-        <div></div>
-        <p class="lead">BARRO no fabrica nada: reúne lo que ya hacen cinco talleres que llevaban trabajando solos, algunos desde hace veinte años. No pedimos volumen ni un diseño uniforme; pedimos que cada pieza siga saliendo como sale en su taller, y vendemos lo que cabe entre una cochura y la siguiente.</p>
-      </div>
+      <p class="lead sangrado-636" style="margin-top:44px;">BARRO no fabrica nada: reúne lo que ya hacen cinco talleres que llevaban trabajando solos, algunos desde hace veinte años. No pedimos volumen ni un diseño uniforme; pedimos que cada pieza siga saliendo como sale en su taller, y vendemos lo que cabe entre una cochura y la siguiente.</p>
     </div>
   </section>
 
   <section class="section">
     <div class="bleed">
-      <div style="padding-top:8px;">
+      <img src="../img/barro-torno.webp" alt="Las manos de la alfarera centrando el barro en el torno" style="object-position:42% 50%;">
+      <div>
         <p class="eyebrow">Bailén, Jaén</p>
         <h2 class="h-section" style="margin-top:26px;">Marta Sedano aprendió a centrar el barro antes que a leer.</h2>
         <p class="lead" style="margin-top:30px;">Su padre torneaba en la misma nave, a doscientos metros de la cantera de donde sale la arcilla. Hoy Marta trabaja sola casi todo el año y contrata a un aprendiz en las seis semanas previas a Navidad, cuando el pedido de las tiendas duplica al resto del año junto.</p>
@@ -918,7 +1031,6 @@ main{display:block;}
         </dl>
         <p class="copy" style="margin-top:28px;">Marta Sedano — alfarera, Bailén (Jaén)</p>
       </div>
-      <img src="../img/barro-torno.webp" alt="Las manos de la alfarera centrando el barro en el torno" style="object-position:42% 50%;">
     </div>
   </section>
 
@@ -928,7 +1040,7 @@ main{display:block;}
         <h2 class="h-section">Por qué el lote es corto</h2>
         <p class="copy" style="margin-top:22px;">No es una estrategia de escasez: es lo que cabe en un horno, en un telar o en dos años de secado.</p>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;column-gap:44px;align-items:start;">
+      <div class="dos-columnas">
         <p class="lead">Un horno de gas de este tamaño cuece treinta piezas por tanda y tarda catorce horas en enfriar antes de poder abrirse. El roble de Urbasa se torna en verde y se seca dos años antes de venderse; tornear más rápido significaría vender madera que todavía se raja.</p>
         <p class="lead">Un telar de pinza en Béjar tarda cuatro horas en armarse para un solo ancho de lino. Cambiar de artículo cada semana, como pediría un catálogo grande, multiplicaría el tiempo de preparación por encima del de tejido. Cada taller elige el ritmo que no le hace repetir el mismo gesto sin mirar.</p>
       </div>
@@ -983,16 +1095,13 @@ main{display:block;}
     <div class="container">
       <p class="eyebrow">Antes de comprar · o después</p>
       <h1 class="h-page" style="margin-top:26px;">Antes de comprar, pregunta.</h1>
-      <div class="row-label" style="margin-top:44px;">
-        <div></div>
-        <p class="lead">Sin línea 900 ni respuesta automática. Un correo escrito a BARRO llega al taller que hizo la pieza cuando la pregunta es sobre una pieza concreta, y a coordinación cuando es sobre un pedido o un envío. Contestamos en día laborable.</p>
-      </div>
+      <p class="lead sangrado-516" style="margin-top:44px;">Sin línea 900 ni respuesta automática. Un correo escrito a BARRO llega al taller que hizo la pieza cuando la pregunta es sobre una pieza concreta, y a coordinación cuando es sobre un pedido o un envío. Contestamos en día laborable.</p>
     </div>
   </section>
 
   <section class="section" id="formulario">
-    <div class="container" style="display:flex;gap:clamp(2rem,1vw + 2rem,8.125rem);flex-wrap:wrap;">
-      <div style="flex:0 0 380px;width:380px;">
+    <div class="container fila-2col">
+      <div class="col-datos">
         <span class="small-label">Coordinación</span>
         <dl class="dl-stacked" style="padding-top:22px;">
           <div><dt>Dirección</dt><dd>Camino de la Alfarería, 8<br>23710 Bailén (Jaén)</dd></div>
@@ -1003,7 +1112,7 @@ main{display:block;}
         </dl>
       </div>
 
-      <form style="flex:1 1 480px;min-width:0;max-width:620px;">
+      <form class="col-form">
         <div class="field-row2">
           <label class="field"><span class="field-label">Nombre</span><input type="text" placeholder="Nombre y apellidos"></label>
           <label class="field"><span class="field-label">Correo</span><input type="email" placeholder="tu@correo.com"></label>
@@ -1053,7 +1162,7 @@ main{display:block;}
   <p class="breadcrumb"><a href="#portada">BARRO</a><span class="sep">/</span><span class="al-current">Condiciones de venta y envíos</span></p>
 
   <section class="section-tight">
-    <div class="container" style="max-width:868px;">
+    <div class="container medida-legal">
       <h1 class="h-page" style="font-size:clamp(2rem,1.2rem + 3.5vw,3.75rem);">Condiciones de venta y envíos</h1>
       <p class="lead" style="margin-top:26px;">Estas condiciones rigen cualquier compra hecha en barro.es a BARRO S. Coop. Al confirmar un pedido las aceptas junto con la <a href="#privacidad" class="link-accent">política de privacidad</a>.</p>
 
@@ -1080,7 +1189,7 @@ main{display:block;}
   <p class="breadcrumb"><a href="#portada">BARRO</a><span class="sep">/</span><span class="al-current">Aviso legal</span></p>
 
   <section class="section-tight">
-    <div class="container" style="max-width:868px;">
+    <div class="container medida-legal">
       <h1 class="h-page" style="font-size:clamp(2rem,1.2rem + 3.5vw,3.75rem);">Aviso legal</h1>
       <p class="lead" style="margin-top:26px;">Estructura y aspecto de esta página los pone la Plantilla. El texto entero se redacta con los datos reales del titular en el sitio del cliente, con <em>wordpress-legal</em>. Lo de aquí describe a la marca ficticia BARRO para mostrar cómo queda.</p>
 
@@ -1113,7 +1222,7 @@ main{display:block;}
   <p class="breadcrumb"><a href="#portada">BARRO</a><span class="sep">/</span><span class="al-current">Privacidad</span></p>
 
   <section class="section-tight">
-    <div class="container" style="max-width:868px;">
+    <div class="container medida-legal">
       <h1 class="h-page" style="font-size:clamp(2rem,1.2rem + 3.5vw,3.75rem);">Política de privacidad</h1>
       <p class="lead" style="margin-top:26px;">Estructura y aspecto de esta página los pone la Plantilla. El texto entero, con el responsable real y sus finalidades, se redacta en el sitio del cliente con <em>wordpress-legal</em>. Lo de aquí describe a la marca ficticia BARRO.</p>
 
@@ -1143,7 +1252,7 @@ main{display:block;}
   <p class="breadcrumb"><a href="#portada">BARRO</a><span class="sep">/</span><span class="al-current">Cookies</span></p>
 
   <section class="section-tight">
-    <div class="container" style="max-width:868px;">
+    <div class="container medida-legal">
       <h1 class="h-page" style="font-size:clamp(2rem,1.2rem + 3.5vw,3.75rem);">Política de cookies</h1>
       <p class="lead" style="margin-top:26px;">Una cookie es un fichero pequeño que el sitio guarda en tu navegador. Aquí se listan sólo las que barro.es carga de verdad; el sitio del cliente se audita con <em>wordpress-legal</em> antes de publicar esta página, para que la lista nunca prometa menos de lo que carga.</p>
 
@@ -1165,7 +1274,7 @@ main{display:block;}
 <div class="page" id="404" data-title="Página no encontrada — BARRO">
 
   <section class="section" style="padding-top:120px;padding-bottom:120px;">
-    <div class="container" style="max-width:620px;">
+    <div class="container medida-corta">
       <p class="eyebrow">Error 404</p>
       <h1 class="h-page" style="margin-top:10px;">Esta pieza ya no está en el estante.</h1>
       <p class="lead" style="margin-top:22px;">El enlace puede haber cambiado, o la pieza que buscabas ya se agotó y no ha vuelto con la siguiente cochura. El catálogo completo sigue en su sitio.</p>
