@@ -102,7 +102,14 @@ sesión para portada, clases y diario; retratos de equipo sobre pared de cal.
   palabra de énfasis en redonda y en acento, sin itálica sintética. En el build, la fuente global de
   Elementor carga la itálica de Google Fonts; queda como decisión abierta si el sitio la usa o se queda
   como la maqueta.
-- **Archivo 300.** El lienzo escribe el cuerpo en 300; el registro tiene 400–700. La maqueta pinta 400.
+- **Archivo 300.** El lienzo escribe el cuerpo en 300; el registro tiene 400–700. La maqueta pinta 400. Se
+  paga en el ancho de línea: el tercer párrafo de la entrada ocupa cuatro líneas en la maqueta y tres en el
+  lienzo, y eso es todo lo que queda de diferencia en esa página (+40&nbsp;px sobre 2141).
+- **Interlínea del documento: `normal`.** El lienzo no declara ninguna en el suelo y da la suya a cada bloque
+  de lectura (1,6–1,8). En los ajustes globales de Elementor eso es **dejar vacío el campo de interlínea de
+  la tipografía de cuerpo**, no escribir un número. Heredar 1,7 engordaba seis píxeles cada rótulo, cada
+  elemento de lista y cada fila de horario, y bajaba las secciones enteras: visítanos +47&nbsp;px, planes de
+  Inicio +33&nbsp;px, otras clases +20&nbsp;px, contacto +47&nbsp;px.
 - **Monoespaciada.** Los números de orden del lienzo iban en `ui-monospace`; pasan a Archivo 500 con cifras
   tabulares, en el lienzo y en la maqueta, para que la Plantilla sean dos familias.
 
@@ -168,7 +175,7 @@ pulsada, que es exactamente lo que hace esa plantilla con etiquetas dinámicas.
 | Sección | Elementor (nativo) | Nota |
 |---|---|---|
 | Cabecera | Plantilla de cabecera del Theme Builder: contenedor flex + Logotipo del sitio (SVG, el punto en acento va dentro del archivo) + Menú de navegación + Botón con borde inferior | El desplegable del menú a partir de tableta es el conmutador nativo: uno solo. La llamada se retira bajo 767 y va dentro del menú. Cabecera opaca, pegajosa con Efectos de movimiento |
-| `hero` | Contenedor rejilla de columnas personalizadas `1.15fr .85fr`: contenedor fila (Divisor de 46&nbsp;px + Encabezado) + Editor de texto para el H1 (la palabra en acento con el color global desde la barra del editor) + Editor de texto + dos Botones · Imagen con alto 62&nbsp;vh, ajuste «cubrir» y radio por esquina 240/240/12/12 + contenedor con borde superior (Encabezado + Editor de texto) | Una columna bajo 767, con proporción y radio por punto de ruptura. Animación de entrada nativa en lugar de `rise`. **A verificar contra el techo**: si `qa-review` cuenta el color de palabra del editor como CSS, el énfasis pasa a un Encabezado aparte |
+| `hero` | Contenedor rejilla de columnas personalizadas `1.15fr .85fr`: contenedor fila (Divisor de 46&nbsp;px + Encabezado) + Editor de texto para el H1 (la palabra en acento con el color global desde la barra del editor) + Editor de texto + dos Botones · Imagen con proporción `3/4,1`, ajuste «cubrir» y radio por esquina 240/240/12/12 + contenedor con borde superior (Encabezado + Editor de texto) | Una columna bajo 767 (proporción `4/4,4` y radio 180/180/10/10). **La imagen no lleva alto máximo**: el lienzo la dibuja entera en su columna (513×701 a 1440) y un tope en `vh` la recortaba 82&nbsp;px y movía el hero con el alto de la ventana. Animación de entrada nativa en lugar de `rise`. **A verificar contra el techo**: si `qa-review` cuenta el color de palabra del editor como CSS, el énfasis pasa a un Encabezado aparte |
 | `disciplinas` | Contenedor fila con bordes superior e inferior: Lista de iconos en línea sin iconos + Encabezado en acento | Columna bajo 1024; lista en rejilla de tres bajo 767 |
 | `filosofia-inicio` | Contenedor rejilla `.8fr 1.2fr`: contenedor pegajoso (Efectos de movimiento › Pegajoso, «permanecer en la columna», sólo escritorio y tableta) con Encabezado + Imagen 4/5 · Encabezado + rejilla de 2 Editores de texto + rejilla de 3 contenedores con borde izquierdo (Encabezado + Editor de texto) + Botón de enlace | Separadores con borde por lado, nunca con hueco sobre fondo |
 | `clases` | Contenedor con fondo alterno: cabecera flex con borde inferior + Rejilla de bucle sobre el tipo `clase` (3 / 2 / 1 columnas); plantilla de elemento: contenedor-enlace con borde, Encabezados, Editor de texto y fila con borde superior | Al pasar: Transformar › Desplazar −6&nbsp;px y color de borde, controles nativos de estado |
@@ -182,7 +189,7 @@ pulsada, que es exactamente lo que hace esa plantilla con etiquetas dinámicas.
 | `principios` | Contenedor con fondo alterno: Encabezado + rejilla de 4 contenedores con borde superior (Encabezado + Encabezado + Editor de texto) | 2 columnas bajo 1024, 1 bajo 767 |
 | `filosofia-cierre` | Contenedor flex con ajuste de línea: Encabezado + Botón | |
 | `planes-cabecera` | Contenedor rejilla de 2 columnas con borde inferior: Encabezado + Encabezado | Las pestañas del conmutador son el mismo widget que `planes-tarifas`: en el build quedan alineadas a la derecha justo debajo del filete, no en la fila del H1 |
-| `planes-tarifas` | Pestañas anidadas, igual que `planes-inicio`, sobre fondo claro; el plan destacado con fondo alterno | |
+| `planes-tarifas` | Pestañas anidadas, igual que `planes-inicio`, sobre fondo claro; el plan destacado con fondo alterno | **Bajo 1024 el botón del plan parte de línea** (tipografía por punto de ruptura, control nativo): entre 768 y 1024 la columna mide 190&nbsp;px y una etiqueta como «Empezar con Completa» en una sola línea se salía 23&nbsp;px de su píldora sin desbordar la página |
 | `horario` | Cabecera flex + 7 contenedores rejilla `10rem 1fr` con borde superior; cada clase, contenedor-enlace con tres Encabezados (hora, clase, profesora) | Se escribe a mano o sale de campos de cada clase con etiquetas dinámicas |
 | `preguntas` | Contenedor rejilla `.8fr 1.2fr` con fondo alterno: Encabezado + Acordeón anidado con la primera pregunta abierta | |
 | `clase-cabecera` | Plantilla de entrada individual para `clase`: rejilla `1.2fr .8fr`; Editor de texto con etiqueta dinámica (migas) + Título de la entrada + Extracto + contenedor con borde y filas (Encabezado + Encabezado con campo personalizado) | |
@@ -190,7 +197,7 @@ pulsada, que es exactamente lo que hace esa plantilla con etiquetas dinámicas.
 | `clase-sesion` | Contenedor con fondo alterno: Encabezado + rejilla de 4 pasos con etiquetas dinámicas de cuatro campos fijos | |
 | `clase-cta` | Contenedor flex: Encabezado + dos Botones | |
 | `otras-clases` | Rejilla de bucle de `clase` con la consulta «excluir la entrada actual», 5 columnas en escritorio y 1 bajo 1024 | |
-| `diario-cabecera` | Contenedor con borde inferior: Encabezado + Encabezado + Filtro de taxonomía enlazado a la rejilla, con desplazamiento horizontal bajo 1024 | En la maqueta el filtro oculta también la destacada; en el build filtra sólo su rejilla |
+| `diario-cabecera` | Contenedor con borde inferior: Encabezado + Encabezado + Filtro de taxonomía enlazado a la rejilla, con desplazamiento horizontal bajo 1024 | En la maqueta el filtro oculta también la destacada; en el build filtra sólo su rejilla. **Suelo táctil**: los botones de filtro llevan 40&nbsp;px de alto mínimo frente a los 34 del lienzo, y el botón de cada plan 48; la sección queda 12&nbsp;px más alta que el lienzo a propósito |
 | `diario-lista` | Rejilla de bucle de 1 entrada (destacada, plantilla de elemento a 2 columnas) + Rejilla de bucle con desplazamiento 1 (3 / 2 / 1) | |
 | `entrada-cabecera` | Plantilla de entrada individual: rejilla de 2 columnas; Información de la entrada (categoría) + Título de la entrada + Extracto con borde izquierdo | |
 | `entrada-imagen` | Imagen destacada 16/6,5 (3/2 bajo 767) | |

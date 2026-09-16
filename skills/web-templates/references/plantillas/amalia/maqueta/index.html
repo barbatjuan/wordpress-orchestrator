@@ -1,3 +1,4 @@
+<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Amalia Yoga — Estudio de yoga en Chamberí, Madrid</title>
@@ -30,7 +31,10 @@
 
 *{box-sizing:border-box}
 html,body{margin:0;padding:0;background:#F6F2EA}
-body{font-family:var(--font-body);color:var(--c-text);background:var(--c-bg);font-size:1rem;line-height:1.7;-webkit-font-smoothing:antialiased}
+/* Interlínea del documento: el lienzo la deja en `normal` y declara la suya en cada bloque de lectura.
+   Heredar 1,7 en los rótulos, las listas y el chrome los engordaba 6px por línea y desplazaba todas
+   las secciones hacia abajo (visítanos +47px, planes +33px, otras clases +20px). */
+body{font-family:var(--font-body);color:var(--c-text);background:var(--c-bg);font-size:1rem;line-height:normal;-webkit-font-smoothing:antialiased}
 img{display:block;max-width:100%}
 p,figure,blockquote,dl,dd{margin:0}
 h1,h2,h3{margin:0;font-family:var(--font-display);font-weight:400;color:var(--c-text-titulo);overflow-wrap:normal;word-break:normal}
@@ -129,8 +133,8 @@ input,select,textarea{font:inherit;color:inherit}
 
 /* ══════════════════════════════════════ cabecera ══════════════════════════════════════ */
 header.site{position:sticky;top:0;z-index:50;background:var(--c-bg);border-bottom:1px solid var(--c-linea)}
-.barra{display:flex;align-items:center;justify-content:space-between;gap:32px;padding-block:20px}
-.marca{font-family:var(--font-display);font-size:1.5625rem;line-height:1;letter-spacing:.01em;color:var(--c-text-titulo);white-space:nowrap}
+.barra{display:flex;align-items:center;justify-content:space-between;gap:32px;padding-block:22px}
+.marca{font-family:var(--font-display);font-size:1.5625rem;letter-spacing:.01em;color:var(--c-text-titulo);white-space:nowrap}
 .marca span{color:var(--c-accent)}
 .nav{display:flex;align-items:center;gap:clamp(16px, 2.2vw, 38px)}
 .nav a{font-size:.8125rem;letter-spacing:.1em;text-transform:uppercase;color:var(--c-text-titulo);padding-block:6px;border-bottom:1px solid transparent}
@@ -157,7 +161,9 @@ header.site{position:sticky;top:0;z-index:50;background:var(--c-bg);border-botto
 .hero h1{font-size:var(--fs-h1-hero);line-height:.92;letter-spacing:-.02em;padding-bottom:.08em}
 .hero .lede{max-width:46ch;margin-top:clamp(24px, 4vh, 40px)}
 .hero-botones{display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin-top:clamp(28px, 5vh, 48px)}
-.hero-foto{width:100%;max-width:100%;min-width:0;aspect-ratio:3/4.1;max-height:min(62vh, 640px);border-radius:240px 240px 12px 12px}
+/* Sin tope de alto: el lienzo dibuja la foto entera en su columna (513×701 a 1440). El
+   `max-height:min(62vh,640px)` la recortaba a 620 y encogía el hero 82px. */
+.hero-foto{width:100%;max-width:100%;min-width:0;aspect-ratio:3/4.1;border-radius:240px 240px 12px 12px}
 .hero-dato{display:flex;align-items:baseline;gap:12px;margin-top:20px;padding-top:18px;border-top:1px solid var(--c-linea)}
 .hero-dato b{font-family:var(--font-display);font-weight:400;font-size:2.625rem;line-height:1;color:var(--c-text-titulo)}
 .hero-dato span{font-size:.75rem;line-height:1.5;letter-spacing:.06em;text-transform:uppercase;color:var(--c-text-faint)}
@@ -189,6 +195,7 @@ header.site{position:sticky;top:0;z-index:50;background:var(--c-bg);border-botto
 .cabeza-seccion>p{max-width:34ch;font-size:.9375rem;line-height:1.7}
 .clases{padding-block:var(--sp-medio)}
 .clases .cabeza-seccion{padding-bottom:clamp(28px, 4vh, 48px);border-bottom:1px solid var(--c-linea)}
+.clases .cabeza-seccion h2{max-width:20ch}   /* medida del lienzo: parte «Seis formas de bajar / el ritmo» */
 .clases-rejilla{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(20px, 2.5vw, 34px);margin-top:clamp(32px, 5vh, 56px)}
 .clase-card{display:flex;flex-direction:column;gap:16px;padding:26px 24px 30px;background:var(--c-bg);border:1px solid var(--c-linea-tarjeta);border-radius:4px;transition:transform .4s ease,border-color .4s ease}
 .clase-card:hover{transform:translateY(-6px);border-color:var(--c-filete-acento)}
@@ -228,7 +235,7 @@ header.site{position:sticky;top:0;z-index:50;background:var(--c-bg);border-botto
 .plan-precio b{font-family:var(--font-display);font-weight:400;font-size:3.375rem;line-height:1;color:var(--c-text-titulo);white-space:nowrap}
 .plan-precio span{font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:var(--c-text-faint)}
 .plan ul{display:flex;flex-direction:column;gap:11px}
-.plan li{display:flex;gap:11px;align-items:baseline;font-size:.875rem;line-height:1.55;color:var(--c-text)}
+.plan li{display:flex;gap:11px;align-items:baseline;font-size:.875rem;color:var(--c-text)}
 .plan li span{color:var(--c-accent)}
 .plan .btn{margin-top:auto;min-height:48px;padding:14px 22px;font-size:.75rem;letter-spacing:.14em;border:1px solid var(--c-text-titulo);color:var(--c-text-titulo)}
 .plan .btn:hover{background:var(--c-accent);border-color:var(--c-accent);color:var(--c-on-accent)}
@@ -257,12 +264,12 @@ header.site{position:sticky;top:0;z-index:50;background:var(--c-bg);border-botto
 .guia{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(28px, 5vw, 80px);align-items:center;margin-inline:var(--page-margin);padding:clamp(40px, 8vh, 88px) clamp(24px, 4vw, 64px);background:var(--c-bg-alt);border-radius:6px}
 .guia .rotulo-regla{margin-bottom:18px}
 .guia h2{max-width:20ch;font-size:clamp(1.875rem, 3.8vw, 3.625rem);line-height:1.06}
-.guia .lede{max-width:44ch;margin-top:22px}
+.guia .lede{max-width:44ch;margin-top:22px;font-size:.96875rem;line-height:1.7}  /* 15,5px fijos en el lienzo, no el lede general */
 .form-guia{display:flex;flex-direction:column;gap:14px}
 
 .campo{display:block}
 .campo>span{display:block;margin-bottom:8px;font-size:.71875rem;letter-spacing:.14em;text-transform:uppercase;color:var(--c-text-faint)}
-.campo input,.campo select,.campo textarea{display:block;width:100%;min-height:52px;padding:15px 16px;border:1px solid var(--c-border-campo);border-radius:3px;background:var(--c-bg);font-size:.9375rem;color:var(--c-text-titulo)}
+.campo input,.campo select,.campo textarea{display:block;width:100%;min-height:52px;padding:16px;border:1px solid var(--c-border-campo);border-radius:3px;background:var(--c-bg);font-size:.9375rem;color:var(--c-text-titulo)}
 .campo textarea{resize:vertical;line-height:1.6}
 .campo input::placeholder,.campo textarea::placeholder{color:var(--c-text-faint)}
 .campo input:focus,.campo select:focus,.campo textarea:focus{outline:2px solid var(--c-accent);outline-offset:1px}
@@ -296,8 +303,15 @@ header.site{position:sticky;top:0;z-index:50;background:var(--c-bg);border-botto
 .cabecera-pagina{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,.6fr);gap:clamp(28px, 5vw, 72px);align-items:end;padding-block:clamp(48px, 9vh, 112px) clamp(36px, 6vh, 64px);border-bottom:1px solid var(--c-linea)}
 .cabecera-pagina--par{grid-template-columns:repeat(2,minmax(0,1fr))}
 .cabecera-pagina .rotulo{margin-bottom:clamp(20px, 4vh, 36px)}
+.clase-cabecera .rotulo,.contacto-cabecera .rotulo{margin-bottom:clamp(18px, 3vh, 32px)}
+.entrada-cabecera .migas{margin-bottom:clamp(18px, 3vh, 30px)}
 .cabecera-pagina h1{max-width:18ch;font-size:var(--fs-h1);line-height:.98;letter-spacing:-.02em;padding-bottom:.06em;text-wrap:pretty}
+.filosofia-cabecera h1{font-size:clamp(2.5rem, 6.4vw, 7.375rem)}
 .cabecera-pagina .lede--filete{max-width:42ch;padding-left:clamp(0px, 1.5vw, 26px);border-left:1px solid var(--c-linea)}
+/* El lienzo da a cada cabecera su propio aire; una sola medida las igualaba y subía contacto 47px. */
+.planes-cabecera{padding-block:clamp(48px, 9vh, 104px) clamp(36px, 6vh, 60px)}
+.diario-cabecera{padding-block:clamp(48px, 9vh, 104px) clamp(32px, 5vh, 56px)}
+.contacto-cabecera{padding-block:clamp(40px, 7vh, 88px) clamp(32px, 5vh, 56px)}
 
 .sala{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:clamp(28px, 5vw, 72px);align-items:center;padding-block:clamp(48px, 9vh, 104px)}
 .sala-texto{display:flex;flex-direction:column;gap:22px}
@@ -305,13 +319,15 @@ header.site{position:sticky;top:0;z-index:50;background:var(--c-bg);border-botto
 .sala-texto p{font-size:1rem;line-height:1.78;text-wrap:pretty}
 .sala img{aspect-ratio:4/3;border-radius:6px}
 .principios{padding-block:clamp(48px, 9vh, 104px)}
-.principios h2,.sesion h2{margin-bottom:clamp(30px, 5vh, 52px);font-size:var(--fs-h2-s);line-height:1.08}
+.principios h2,.sesion h2{margin-bottom:clamp(30px, 5vh, 52px);font-size:var(--fs-h2-s)}
 .cuatro{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--gap)}
 .paso{padding-top:22px;border-top:1px solid var(--c-linea-suave)}
 .paso .num{display:block;margin-bottom:14px}
 .paso h3{margin-bottom:12px;font-size:1.5rem;line-height:1.2}
 .paso p{font-size:.90625rem;line-height:1.72;text-wrap:pretty}
 .cierre{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:24px;padding-block:clamp(48px, 9vh, 104px)}
+.clase-cta{gap:22px;padding-block:clamp(44px, 8vh, 96px)}        /* aire del lienzo en la ficha de clase */
+.contacto-cierre{gap:22px;padding-block:clamp(44px, 8vh, 92px)}  /* y en el cierre de contacto */
 .cierre h2{max-width:22ch;font-size:clamp(1.75rem, 3.6vw, 3.5rem);line-height:1.08}
 .cierre-botones{display:flex;flex-wrap:wrap;gap:14px}
 
@@ -319,6 +335,7 @@ header.site{position:sticky;top:0;z-index:50;background:var(--c-bg);border-botto
 .tarifas .planes-rejilla{margin-top:0}
 .horario{padding-block:clamp(8px, 2vh, 24px) clamp(48px, 9vh, 104px)}
 .horario .cabeza-seccion{margin-bottom:clamp(28px, 5vh, 48px)}
+.horario .cabeza-seccion h2{max-width:none;font-size:clamp(1.875rem, 3.6vw, 3.375rem);line-height:1.06}
 .horario .cabeza-seccion>p{max-width:40ch}
 .semana{border-bottom:1px solid var(--c-linea)}
 .dia{display:grid;grid-template-columns:10rem minmax(0,1fr);gap:24px;align-items:baseline;padding-block:18px;border-top:1px solid var(--c-linea)}
@@ -326,7 +343,7 @@ header.site{position:sticky;top:0;z-index:50;background:var(--c-bg);border-botto
 .dia ul{display:flex;flex-wrap:wrap;gap:10px 40px}
 .dia a{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px}
 .dia a b{font-variant-numeric:tabular-nums;font-size:.875rem;font-weight:500;color:var(--c-accent)}
-.dia a strong{font-family:var(--font-display);font-weight:400;font-size:1.375rem;line-height:1.2;color:var(--c-text-titulo);transition:color .3s ease}
+.dia a strong{font-family:var(--font-display);font-weight:400;font-size:1.375rem;color:var(--c-text-titulo);transition:color .3s ease}
 .dia a:hover strong{color:var(--c-accent)}
 .dia a em{font-style:normal;font-size:.8125rem;color:var(--c-text-faint)}
 .preguntas{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:clamp(28px, 5vw, 72px);padding-block:clamp(48px, 9vh, 104px)}
@@ -442,7 +459,7 @@ header.site{position:sticky;top:0;z-index:50;background:var(--c-bg);border-botto
 .legal-body{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2.1fr);gap:clamp(32px, 6vw, 88px);align-items:start;margin-top:clamp(36px, 6vh, 64px)}
 .legal-index{position:sticky;top:110px}
 .legal-index ol{border-top:1px solid var(--c-linea)}
-.legal-index a{display:flex;align-items:baseline;gap:10px;padding-block:13px;border-bottom:1px solid var(--c-linea);font-size:.875rem;color:var(--c-text)}
+.legal-index a{display:flex;align-items:baseline;gap:10px;padding-block:13px;border-bottom:1px solid var(--c-linea);font-size:.875rem;line-height:1.4;color:var(--c-text)}
 .legal-index a:hover{color:var(--c-accent)}
 .legal-index .num{color:var(--c-text-faint)}
 .legal-texto{display:flex;flex-direction:column;gap:clamp(32px, 5vh, 48px);max-width:40rem}
@@ -493,6 +510,11 @@ footer.site{background:var(--c-surface-inverse);color:var(--c-on-inverse)}
   .clase-card h3{font-size:1.625rem}
   .nota h3{font-size:1.375rem}
   .plan{padding:28px 20px 24px}
+  .plan li,.ficha dt,.ficha dd{line-height:1.5}
+  /* Entre 768 y 1024 la columna del plan mide 190px y «Empezar con Completa» se salía 23px
+     de su píldora: la tinta desbordaba el botón sin desbordar la página, así que ni el barrido ni
+     el medidor de cajas lo veían. La etiqueta parte de línea en lugar de salirse. */
+  .plan .btn{white-space:normal;text-align:center;padding-inline:16px;line-height:1.3}
   .plan-precio b{font-size:2.75rem}
   .otras-rejilla{grid-template-columns:minmax(0,1fr)}
   .otra{flex-direction:row;flex-wrap:wrap;align-items:baseline;gap:6px 18px}
@@ -814,7 +836,7 @@ footer.site{background:var(--c-surface-inverse);color:var(--c-on-inverse)}
 
 <!-- ═══════════════════════════ 2 · FILOSOFÍA ═══════════════════════════ -->
 <div class="page" id="filosofia" data-title="Filosofía — Amalia Yoga, una sala sin espejos en Chamberí">
-  <section class="cabecera-pagina carril" id="filosofia-cabecera">
+  <section class="cabecera-pagina filosofia-cabecera carril" id="filosofia-cabecera">
     <div>
       <p class="rotulo">Filosofía</p>
       <h1>Diez minutos de <span class="enfasis">silencio</span> antes de la primera postura</h1>
@@ -851,7 +873,7 @@ footer.site{background:var(--c-surface-inverse);color:var(--c-on-inverse)}
 
 <!-- ═══════════════════════════ 3 · PLANES ═══════════════════════════ -->
 <div class="page" id="planes" data-title="Planes y horario — Amalia Yoga, cuota mensual sin permanencia">
-  <section class="cabecera-pagina cabecera-pagina--par carril" id="planes-cabecera">
+  <section class="cabecera-pagina cabecera-pagina--par planes-cabecera carril" id="planes-cabecera">
     <div>
       <p class="rotulo">Planes</p>
       <h1>Elige cuánto quieres practicar</h1>
@@ -965,7 +987,7 @@ footer.site{background:var(--c-surface-inverse);color:var(--c-on-inverse)}
     </div>
   </section>
 
-  <section class="cierre carril" id="clase-cta">
+  <section class="cierre clase-cta carril" id="clase-cta">
     <h2>Prueba esta clase sin pagar la primera vez</h2>
     <div class="cierre-botones">
       <a class="btn btn-tinta" href="#reservar">Reservar plaza</a>
@@ -1093,7 +1115,7 @@ footer.site{background:var(--c-surface-inverse);color:var(--c-on-inverse)}
 
 <!-- ═══════════════════════════ 7 · CONTACTO ═══════════════════════════ -->
 <div class="page" id="contacto" data-title="Contacto y clase de prueba — Amalia Yoga, Calle Trafalgar 18, Madrid">
-  <section class="cabecera-pagina cabecera-pagina--par carril" id="contacto-cabecera">
+  <section class="cabecera-pagina cabecera-pagina--par contacto-cabecera carril" id="contacto-cabecera">
     <div>
       <p class="rotulo">Contacto</p>
       <h1>Ven a ver la <span class="enfasis">sala</span></h1>
@@ -1156,7 +1178,7 @@ footer.site{background:var(--c-surface-inverse);color:var(--c-on-inverse)}
     </div>
   </section>
 
-  <section class="cierre banda-alterna carril" id="contacto-cierre">
+  <section class="cierre contacto-cierre banda-alterna carril" id="contacto-cierre">
     <h2>¿Prefieres empezar directamente?</h2>
     <div class="cierre-botones">
       <a class="btn btn-tinta" href="#horario">Ver el horario</a>
