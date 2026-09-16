@@ -120,8 +120,47 @@ dónde llegamos», «cómo viaja» y el pie — dieciséis apariciones de la cad
 cinco valores ya medidos en la biblioteca (48 de `terrazza`, 72 de `aranda`, 96 de `lumiere`, 108
 estándar de `marzo`/`barro`/`escuadra`/`cadencia`/`delao`, 144 de `tueste`). Es la segunda plantilla
 más compacta de la casa después de `terrazza`. Las cuatro láminas nuevas y la maqueta lo expresan como
-fracción (`--page-margin:clamp(20px, 4.444vw, 64px)`), nunca en píxel fijo, siguiendo la regla que
-`aranda`, `lumiere`, `terrazza` y `tueste` ya fijaron para el suyo.
+fracción, nunca en píxel fijo, siguiendo la regla que `aranda`, `lumiere`, `terrazza` y `tueste` ya
+fijaron para el suyo — ver § Techo de composición.
+
+## Techo de composición
+
+**Un solo raíl a cualquier ancho.** `--pad-x:max(4.444%, calc((100% - 1312px) / 2))`: por debajo de
+1440 manda la fracción medida; por encima, el centrado de los 1312px que compone el lienzo. El cruce
+cae exactamente en 1440. Medido en las catorce rutas: la tinta arranca y termina en x=64 a 1440, 184
+a 1680 y 304 a 1920, sin desborde. Las tres bandas a sangre de la portada —la rejilla de cuatro
+fotos, la banda de «el peso» y la fotografía del puerto— llevan su propio techo, la lámina (1440),
+así que a 1920 se centran en vez de estirar originales de 800 y 1200px a toda la pantalla.
+
+Lo que se corrigió al realinear la maqueta con sus cinco láminas (medido sección a sección a 1440):
+
+- **Faltaba `<!doctype html>`**: el documento se pintaba en modo quirks. Al añadirlo no se movió
+  ninguna sección —el `*{box-sizing:border-box}` ya estaba— pero deja de depender de la herencia de
+  anchuras del modo compatible.
+- **Interlínea global.** `line-height:1.6` en `body`, que las láminas dejan en `normal`: engordaba
+  filas de subasta, migas y celdas.
+- **Tipos que nunca llegaban a su máximo.** `--fs-h1` valía 56px a 1440 en vez de los 62 del lienzo y
+  seguía creciendo hasta 1718; igual `--fs-h2` (38,7 de 46), `--fs-h3` (30,8 de 34) y `--sp-tight`.
+  Ahora todas las escalas alcanzan el valor de la lámina exactamente a 1440 y se detienen ahí, y los
+  huecos (`--gap-40/56/72`) hacen lo mismo — antes `clamp(2rem,3vw,6rem)` seguía abriendo el pie
+  hasta 2000px de pantalla.
+- **El listado de la subasta no era la tabla del lienzo.** Columnas de 280/180/220/150/110 con 16 de
+  hueco en vez de las seis del lienzo (344·231·252·206·177·102 sobre 1312), sin el relleno de 16
+  dentro de cada celda, con el «Pedir» como texto plano en lugar del botón perfilado, y las filas
+  alternas contadas mal.
+- **Topes que sacaban bloques del raíl.** Cesta y las cuatro legales llevaban `max-width` en la
+  sección centrada; a 1920 el aviso legal arrancaba 222px a la derecha de su propia miga. El tope
+  pasa al bloque (`.medida-*`), pegado al raíl.
+- **Secciones desplazadas.** El pie era un directorio de tres columnas de enlaces donde la lámina
+  dibuja marca y teléfono en una fila; la banda de «el peso» tenía la foto dentro del raíl y al 46 %
+  en vez de a sangre por la izquierda; la franja de código postal, el hero, la ficha y contacto iban
+  con rellenos del sistema (`--sp-*`) en vez de los del lienzo.
+
+**Lo que sigue distinto de la lámina, a propósito:** la cabecera lleva cesta y «Mi cuenta» (la lámina
+sólo el enlace de cesta) y el pie una fila legal, que las páginas obligatorias necesitan; y las
+columnas del listado son fracciones fijas, no una tabla de anchura automática, así que una lista de
+tres filas mide igual que una de diez — en el lienzo, la tabla corta de «queda poco» estiraba sus
+filas a 78px de alto y la larga a 55.
 
 ## Mapeo nativo
 

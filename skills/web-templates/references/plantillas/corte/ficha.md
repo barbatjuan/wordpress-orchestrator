@@ -139,7 +139,40 @@ línea (`rg -o '96px' Corte.dc.html | wc -l` → 15: cabecera, hero, franja de m
 la tabla completa, «seis prendas», la banda de garantía y el pie), nunca `108px`. Es más estrecho
 que el 7,5&nbsp;% de la casa y que el 10&nbsp;% de `tueste`, y coincide en aritmética (no en
 Enfoque) con el 6,667&nbsp;% de `lumiere`. Las cuatro láminas nuevas y la maqueta lo expresan como
-fracción (`--page-margin:clamp(20px, 6.667vw, 96px)`), nunca en píxel fijo.
+fracción, nunca en píxel fijo — ver § Techo de composición.
+
+## Techo de composición
+
+**Un solo raíl a cualquier ancho.** `--pad-x:max(6.667%, calc((100% - 1248px) / 2))`: por debajo de
+1440 manda la fracción medida; por encima, el centrado de los 1248px que compone el lienzo. El cruce
+cae exactamente en 1440. Medido en las catorce rutas: el texto arranca y termina en x=96 a 1440,
+216 a 1680 y 336 a 1920, sin desborde.
+
+Lo que se corrigió al realinear la maqueta con sus cinco láminas (medido sección a sección a 1440):
+
+- **La portada no era la lámina.** Tarjetas de cuerpo con foto de 340 en vez de 430 y sin la fila
+  «Largo que pidió» ni su párrafo; filas de prenda con miniatura de 118×88 y una columna de notas
+  en vez de la foto de 232×174, la columna de 268 y los tres datos; banda de garantía como lista
+  clave-valor sin el icono de línea. Altura de página 4024 contra 4892; ahora 4942 (la diferencia es
+  el pie, que añade la fila legal).
+- **La ficha** dibujaba la calculadora como panel dentro del raíl, con el botón fuera del resultado
+  y diez tallas; la lámina la pone en banda alterna, con «Volver a calcular» dentro del resultado y
+  cinco tallas alrededor de la 32. La tabla entera (28 a 40) sigue en la portada y en el script de la
+  calculadora. Faltaba el aviso «No sé mi talla en cm».
+- **Interlínea global.** `line-height:1.6` en `body`, que la lámina deja en `normal`: engordaba
+  migas, celdas y rótulos. Se retira; cada clase de texto corrido lleva la suya.
+- **Huecos que seguían creciendo pasado 1440** (`1rem + 2vw` hasta 48, `4vw` hasta 96…). Ahora
+  `--gap-*` llegan a su valor a 1440 y se detienen; los titulares, `--fs-*` con el mismo criterio.
+- **Topes que sacaban bloques del raíl.** Carro, pedido, legales y 404 llevaban `max-width` en la
+  sección centrada; a 1920 el aviso legal arrancaba 336px a la derecha de su miga. El tope pasa al
+  bloque (`.medida-*`) y el bloque queda pegado al raíl.
+- **`text-wrap:balance`** en los titulares de lámina repartía los cortes de línea de otra manera.
+
+**Lo que sigue distinto de la lámina, a propósito:** la cabecera lleva carro y «Mi cuenta» (la
+lámina sólo la cifra de devoluciones) y el pie una fila legal, que las páginas obligatorias
+necesitan; el icono de garantía mide 40px, su ancho declarado, donde el lienzo lo deja encoger a
+26 por no fijar `flex-shrink`; y el «Añadir al carro →» de la ficha va en el raíl, no pegado al
+borde, donde lo deja una etiqueta `h2` mal cerrada en `Ficha.dc.html`.
 
 ## Mapeo nativo
 
