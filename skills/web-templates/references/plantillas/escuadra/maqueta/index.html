@@ -1,3 +1,4 @@
+<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Escuadra — maqueta</title>
@@ -49,8 +50,29 @@
   --font-display:'Instrument Sans','Helvetica Neue',Arial,sans-serif;
   --font-mono:'Martian Mono',ui-monospace,monospace;
 
-  --pad-x:7.5%;
-  --container-max:1440px;
+  /* EL CARRIL — un solo valor para cabecera, migas, menú móvil, secciones y pie, a TODOS los
+     anchos. Medido en los cinco artboards a 1440: margen de 108px (el 7,5 %) y contenido de
+     1224px. El margen se escribe como FRACCIÓN para que aguante entre los dos puntos de ruptura;
+     por encima de 1440 el contenido NO crece y el sobrante se reparte a los lados, así que el
+     carril es el MAYOR de los dos. Escrito como RELLENO y no como caja topada: `max-width` más
+     `margin:auto` más un relleno en porcentaje SUMA el centrado al margen y resuelve el
+     porcentaje contra la PANTALLA, no contra la caja topada — medido antes del arreglo, el
+     contenido encogía al ensanchar la pantalla (1224px a 1440 → 1188 a 1680 → 1152 a 1920 →
+     1056 a 2560) mientras la cabecera, las migas y el rail de departamentos, que no llevaban
+     tope, se quedaban en el 7,5 % de la pantalla: dos raíles a 144 y 384 a 1920. Misma forma que
+     `--carril` en delao y tueste, `--contenido-max` en terrazza y `--pad-x` en aranda. */
+  --margen-pagina:clamp(20px, 7.5%, 108px);
+  --contenido-max:1224px;
+  --carril:max(var(--margen-pagina), calc((100% - var(--contenido-max)) / 2));
+
+  /* Interlínea de las etiquetas de chrome. El lienzo no declara `line-height` en su envoltorio,
+     así que todo lo que no la pide cae en `normal` (≈1,22 en este par tipográfico). La maqueta sí
+     la declara —1,6, la correcta para prosa— y las etiquetas la heredaban: cada departamento de
+     la cabecera salía en 52px contra los 49 del artboard, cada rótulo de 10px en 16 contra 12,
+     cada precio de registro en 24 contra 17 y el «59,00 €» de la ficha en 60,8 contra 36. Medido
+     en las cinco páginas, era la mayor fuente de deriva vertical. Se declara donde el lienzo la
+     deja en `normal`, nunca en el body, porque la prosa sí quiere 1,6. */
+  --lh-etiqueta:1.22;
 
   --hair-010:rgba(30,42,50,0.10);
   --hair-012:rgba(30,42,50,0.12);
@@ -64,9 +86,19 @@
   /* ── Escala fluida: clamp(min, yAxis + slope·vw, max), min a 375, max a 1440 ── */
   --fs-h1:          clamp(2rem,    1.56rem  + 1.878vw, 3.25rem);   /* h1 de página/ficha: 32px → 52px */
   --fs-h2:          clamp(1.625rem,1.229rem + 1.69vw,  2.75rem);   /* h2 de sección mayor: 26px → 44px */
+  /* El lienzo NO usa un solo tamaño de h2: 44 en «Mil setecientos artículos», 40 en «Todo lleva su
+     medida puesta» y «Por qué el precio es el que ves», 36 en «Todo lo que mide». Sin estos dos
+     escalones, el 40 se falseaba hacia arriba con `font-size:var(--fs-h1)` en línea —52px, un 30 %
+     de más— o se dejaba en el de 44 —un 10 % de más—, y el 36 se falseaba hacia abajo con
+     `var(--fs-h3)` —32px, un 11 % de menos. Un tamaño declarado que ningún elemento alcanza es un
+     escalón que falta, no una excepción en línea. */
+  --fs-h2-sm:       clamp(1.5rem,  1.148rem + 1.502vw, 2.5rem);    /* h2 de sección: 24px → 40px */
+  --fs-h2-xs:       clamp(1.375rem,1.067rem + 1.315vw, 2.25rem);   /* h2 de banda: 22px → 36px */
   --fs-h3:          clamp(1.375rem,1.155rem + 0.939vw, 2rem);      /* h3 de subsección: 22px → 32px */
   --fs-price-total: clamp(1.625rem,1.361rem + 1.127vw, 2.375rem);  /* total del salón: 26px → 38px */
-  --fs-price-lg:    clamp(1.1875rem,1.1215rem + 0.2817vw, 1.375rem) /* 19px a 375 → 22px a 1440: la escala del lienzo, donde Banco Vado va a 19 y Estante Tramo a 22. Antes llegaba a 30 y el precio no cabía en su columna */;  /* precio de ficha: 22px → 30px */
+  --fs-price-ficha: clamp(1.375rem,1.199rem + 0.751vw, 1.875rem);  /* precio de la ficha: 22px → 30px */
+  --fs-price-lg:    clamp(1.1875rem,1.1215rem + 0.2817vw, 1.375rem); /* precio de pieza destacada: 19px → 22px (Estante Tramo) */
+  --fs-price-sm:    clamp(1.0625rem,1.018rem + 0.188vw, 1.1875rem); /* precio de fila de cota: 17px → 19px (Banco Vado) */
   --sp-section:     clamp(2.75rem, 1.43rem  + 5.634vw, 6.5rem);    /* ritmo vertical mayor: 44px → 104px */
   --sp-tight:       clamp(2.5rem,  1.972rem + 2.254vw, 4rem);      /* ritmo vertical menor: 40px → 64px */
 
@@ -92,11 +124,34 @@ fieldset{border:none;}
 /* Cadenas cortas en caja estrecha: nunca se parten a mitad de palabra — logotipo, navegación,
    botones, referencias y precios. Ver defectos-de-derivacion.md § Tipografía. */
 .logo,.dept-nav a,.util-nav a,.menu-movil a,.btn,.btn-outline,.price,.price-lg,.price-total,
-.reg-ref,.eyebrow{overflow-wrap:normal;word-break:normal;}
-.logo,.btn,.btn-outline{white-space:nowrap;}
+.reg-ref,.eyebrow,.price-ficha,.price-sm{overflow-wrap:normal;word-break:normal;}
+.logo,.btn,.btn-outline,.reg-ref,.ref{white-space:nowrap;}
+/* La referencia es una etiqueta de chrome y se parte por su guión aunque `overflow-wrap` esté
+   en `normal`: medido a 430 en Mi cuenta (ES-58231 en dos líneas) y a 1920 en el carro (SI-044).
+   Ver defectos-de-derivacion.md § Tipografía. */
+.ref{font-family:var(--font-mono);line-height:var(--lh-etiqueta);}
+
+/* Las etiquetas que el lienzo deja en `normal`: logotipo, utilidades, departamentos, migas,
+   rótulos, referencias, medidas, precios, cabeceras de registro y de carro, rótulos de campo,
+   cabeceras de tabla, contador de cantidad y todo el pie. Heredaban el 1,6 de la prosa y crecían
+   entre 3 y 25px por línea. Una sola declaración, porque en el constructor nativo son la
+   tipografía de cada widget, no una excepción. Ver defectos-de-derivacion.md § Tipografía. */
+.mono,.eyebrow,.logo,.util-nav a,.cart-link,.dept-nav a,.menu-movil a,.menu-movil-label,
+.breadcrumb,.price,.price-lg,.price-total,.price-ficha,.price-sm,.reg-ref,.reg-piece,.reg-price,
+.reg-head span,.reg-meta span,.dl-rows dt,.dim-row .val,.dim-row .unit,.dept-figure .name,
+.dept-figure .meta,.dept-mini-row .name,.dept-mini-row .meta,.field span.field-label,
+.table-std thead th,.cart-head span,.cart-row .cart-unit,.cart-row .cart-subtotal,
+.cart-row .cart-remove,.summary-row,.qty-stepper span,.footer-marca,.footer-cols h4,
+.footer-cols a,.footer-bottom p,.eyebrow-link{line-height:var(--lh-etiqueta);}
 
 /* ─────────────────────────────────────────── layout ───────────────────────────────────────── */
-.container{max-width:var(--container-max);margin:0 auto;padding:0 var(--pad-x);}
+.container{width:100%;padding-left:var(--carril);padding-right:var(--carril);}
+/* EL TOPE DE MEDIDA NO VA EN EL .container. Su relleno lateral ES el carril, así que un
+   `max-width` propio se lo resta al contenido en vez de al margen: medido a 1920, las cuatro
+   legales quedaban en 172px de columna —«Política / de / cookies» en tres líneas— y el carro en
+   328. La medida de lectura se topa en el BLOQUE DE TEXTO, que es lo que hace un widget de
+   Elementor con su ancho personalizado. Misma leccion que `tueste`. */
+.medida-lectura > *{max-width:868px;}
 .section{padding-top:var(--sp-section);}
 .section-tight{padding-top:var(--sp-tight);}
 .bleed-band img{width:100%;height:auto;display:block;}
@@ -110,11 +165,33 @@ fieldset{border:none;}
 .row-2{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start;}
 @media (max-width:1024px){.row-2{grid-template-columns:1fr;}}
 
-/* Separación asimétrica de dos columnas con anchos propios por instancia (flex-basis inline) —
-   el ancho vive en el elemento, nunca en un envoltorio extra. Ver mockup-guide § Container hygiene. */
-.split{display:flex;gap:2rem;align-items:flex-start;}
+/* Separación asimétrica de dos columnas. Los anchos son los del lienzo expresados como FRACCIÓN
+   del contenido de 1224 —804, 760, 680, 596 y 384 px— para que la proporción del artboard se
+   mantenga a cualquier ancho y para que el constructor nativo pueda escribirlos como ancho
+   personalizado de contenedor. Antes vivían en `style=` como píxeles fijos, que no pueden llevar
+   punto de ruptura: por eso este bloque necesitaba dos `!important` para deshacerlos al apilar.
+   Ver defectos-de-derivacion.md § «Un `style=` en línea no puede llevar punto de ruptura». */
+.split{display:flex;gap:32px;align-items:flex-start;}
+.split-36{gap:36px;}
+.split-64{gap:64px;}
+.split-80{gap:80px;}
 .split > *{min-width:0;}
-@media (max-width:1024px){.split{flex-direction:column;}.split > *{width:100% !important;flex:none !important;}}
+.col-804{flex:0 1 65.69%;width:65.69%;max-width:100%;}
+.col-760{flex:0 1 62.09%;width:62.09%;max-width:100%;}
+.col-680{flex:0 1 55.56%;width:55.56%;max-width:100%;}
+.col-596{flex:0 1 48.69%;width:48.69%;max-width:100%;}
+.col-384{flex:0 1 31.37%;width:31.37%;max-width:100%;}
+.col-resto{flex:1 1 0;min-width:0;}
+/* Columnas de una fila que envuelve: la base en píxeles ES el umbral de envoltura, no un ancho
+   de maqueta, pero vive igualmente en una clase para que pueda llevar punto de ruptura. */
+.col-756{flex:1 1 61.76%;min-width:0;}
+.col-form{flex:1 1 480px;min-width:0;max-width:700px;}
+.col-panel{flex:1 1 320px;min-width:0;max-width:380px;}
+@media (max-width:1024px){
+  .split{flex-direction:column;gap:32px;}
+  .split-36,.split-64,.split-80{gap:32px;}
+  .split > *{width:100%;flex:none;}
+}
 
 /* ────────────────────────────────────────── tipografía ─────────────────────────────────────── */
 h1,h2,h3{font-family:var(--font-display);font-weight:600;letter-spacing:-0.02em;text-wrap:balance;color:var(--c-ink);}
@@ -131,6 +208,8 @@ h1,h2,h3{font-family:var(--font-display);font-weight:600;letter-spacing:-0.02em;
 .price{font-family:var(--font-mono);font-size:0.9375rem;letter-spacing:0.01em;color:var(--c-ink);}
 .price-lg{font-family:var(--font-mono);font-size:var(--fs-price-lg);letter-spacing:-0.01em;color:var(--c-ink);}
 .price-total{font-family:var(--font-mono);font-size:var(--fs-price-total);letter-spacing:-0.01em;color:var(--c-ink);}
+.price-ficha{font-family:var(--font-mono);font-size:var(--fs-price-ficha);letter-spacing:-0.01em;color:var(--c-ink);}
+.price-sm{font-family:var(--font-mono);font-size:var(--fs-price-sm);letter-spacing:0.01em;color:var(--c-ink);}
 .link-accent{color:var(--c-ink);border-bottom:1px solid var(--c-border);padding-bottom:3px;}
 .eyebrow-link{display:inline-block;font-family:var(--font-mono);font-size:0.6875rem;letter-spacing:0.04em;
   color:var(--c-ink);border-bottom:1px solid var(--c-border);padding-bottom:4px;}
@@ -153,7 +232,7 @@ h1,h2,h3{font-family:var(--font-display);font-weight:600;letter-spacing:-0.02em;
 
 /* ─────────────────────────────────────────── cabecera ─────────────────────────────────────── */
 .site-header{width:100%;background:var(--c-bg);border-bottom:1px solid var(--hair-016);position:relative;z-index:20;}
-.header-top{display:flex;align-items:baseline;justify-content:space-between;padding:22px var(--pad-x) 18px;gap:20px;}
+.header-top{display:flex;align-items:baseline;justify-content:space-between;padding:24px var(--carril) 20px;gap:20px;}
 .logo{display:flex;align-items:baseline;gap:12px;font-size:1.25rem;font-weight:600;letter-spacing:0.2em;color:var(--c-ink);}
 .logo .eyebrow{letter-spacing:0.04em;}
 .util-nav{display:flex;gap:24px;align-items:baseline;margin-left:auto;}
@@ -168,11 +247,11 @@ h1,h2,h3{font-family:var(--font-display);font-weight:600;letter-spacing:-0.02em;
 .burger-lines::before,.burger-lines::after{content:"";position:absolute;left:0;}
 .burger-lines::before{top:-5px;}
 .burger-lines::after{top:5px;}
-.dept-nav{padding:0 var(--pad-x);border-top:1px solid var(--hair-010);display:flex;}
-.dept-nav a{width:204px;display:block;padding:14px 0;font-size:0.9375rem;color:var(--c-text);}
+.dept-nav{padding:0 var(--carril);border-top:1px solid var(--hair-010);display:flex;}
+.dept-nav a{width:204px;display:block;padding:15px 0;font-size:0.9375rem;color:var(--c-text);}
 .dept-nav a[aria-current="page"]{color:var(--c-ink);font-weight:500;}
 .dept-nav a:hover{color:var(--c-ink);}
-.menu-movil{display:flex;flex-direction:column;padding:0 var(--pad-x) 26px;border-bottom:1px solid var(--hair-016);}
+.menu-movil{display:flex;flex-direction:column;padding:0 var(--carril) 26px;border-bottom:1px solid var(--hair-016);}
 .menu-movil-label{padding:16px 0 8px;font-family:var(--font-mono);font-size:0.625rem;letter-spacing:0.06em;
   text-transform:uppercase;color:var(--c-text);}
 .menu-movil a{padding:13px 0;border-bottom:1px solid var(--hair-012);font-size:0.9375rem;color:var(--c-ink);}
@@ -187,7 +266,7 @@ h1,h2,h3{font-family:var(--font-display);font-weight:600;letter-spacing:-0.02em;
 }
 
 /* ────────────────────────────────────────── migas ─────────────────────────────────────────── */
-.breadcrumb{padding:24px var(--pad-x) 0;font-family:var(--font-mono);font-size:0.625rem;
+.breadcrumb{padding:24px var(--carril) 0;font-family:var(--font-mono);font-size:0.625rem;
   letter-spacing:0.06em;text-transform:uppercase;color:var(--c-text);}
 .breadcrumb a{color:var(--c-text);}
 .breadcrumb a:hover{color:var(--c-ink);}
@@ -209,27 +288,75 @@ h1,h2,h3{font-family:var(--font-display);font-weight:600;letter-spacing:-0.02em;
 @media (max-width:767px){.dept-mini-row{flex-direction:column;gap:24px;}}
 
 /* ─────────────────────────────────────────── el registro (listado) ────────────────────────── */
-.reg-head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;
-  padding-bottom:14px;border-bottom:1px solid var(--hair-028);}
+/* LAS COLUMNAS SON LAS DEL LIENZO, y la cabecera usa LAS MISMAS. El lienzo reparte el registro
+   completo en 112 · 392 · 252 · 130 · 130 · 208 sobre 1224. La maqueta daba a la cabecera unos
+   porcentajes (20/32/20/10/10/8) y a las filas otro sistema —`justify-content:space-between` con
+   los metadatos pegados al precio—, así que rótulo y dato no caían en la misma columna: medido a
+   1920 en Cocina, «MEDIDA EN CM» en x=973 y su valor en x=1370, 397px de separación. Un rótulo de
+   columna que no está sobre su columna se lee como una tabla rota aunque nada desborde. Se
+   expresan como fracción para que la proporción aguante entre los dos puntos de ruptura. */
+.reg-head{display:flex;align-items:baseline;padding-bottom:14px;border-bottom:1px solid var(--hair-028);}
 .reg-head span{font-family:var(--font-mono);font-size:0.625rem;letter-spacing:0.06em;
   text-transform:uppercase;color:var(--c-text);}
+.reg-head .rc1{flex:0 0 9.15%;}
+.reg-head .rc2{flex:0 0 32.03%;padding-right:16px;}
+.reg-head .rc3{flex:0 0 20.59%;}
+.reg-head .rc4{flex:0 0 10.62%;}
+.reg-head .rc5{flex:0 0 10.62%;}
+.reg-head .rc6{flex:0 0 16.99%;text-align:right;}
 .reg-list{border-top:1px solid var(--hair-028);}
-.reg-row{display:flex;align-items:baseline;justify-content:space-between;gap:16px;
-  padding:15px 0;border-bottom:1px solid var(--hair-012);}
+.reg-row{display:flex;align-items:baseline;padding:18px 0;border-bottom:1px solid var(--hair-012);}
 .reg-row:hover{background:var(--hover-tint);}
-.reg-main{display:flex;align-items:baseline;gap:16px;min-width:0;flex:1;}
-.reg-ref{flex:0 0 60px;font-family:var(--font-mono);font-size:0.6875rem;color:var(--c-text);}
-.reg-piece{flex:1;min-width:0;font-size:0.9375rem;color:var(--c-ink);}
-.reg-meta{display:flex;gap:22px;flex:0 0 auto;}
-.reg-meta span{font-family:var(--font-mono);font-size:0.75rem;color:var(--c-text);}
-.reg-price{flex:0 0 92px;text-align:right;font-family:var(--font-mono);font-size:0.9375rem;color:var(--c-ink);}
+.reg-main{display:flex;align-items:baseline;min-width:0;flex:0 0 41.18%;width:41.18%;}
+.reg-ref{flex:0 0 22.22%;font-family:var(--font-mono);font-size:0.6875rem;color:var(--c-text);}
+/* Canal entre columnas: el lienzo no lo necesita porque a 1224 ningun nombre llena su columna,
+   pero a 768 «Tabla de Cortar, haya maciza» tocaba su medida. Relleno del contenedor, nativo. */
+.reg-piece{flex:1 1 0;min-width:0;font-size:1rem;color:var(--c-ink);padding-right:16px;}
+.reg-meta{display:flex;flex:0 0 41.83%;width:41.83%;min-width:0;}
+.reg-meta span{font-family:var(--font-mono);font-size:0.75rem;color:var(--c-text);padding-right:12px;}
+.reg-meta span:nth-child(1){flex:0 0 49.22%;}
+.reg-meta span:nth-child(2){flex:0 0 25.39%;}
+.reg-meta span:nth-child(3){flex:0 0 25.39%;}
+.reg-price{flex:0 0 16.99%;width:16.99%;text-align:right;font-family:var(--font-mono);
+  font-size:0.9375rem;color:var(--c-ink);}
+/* El registro del salón vive dentro de la columna de 804 y el lienzo le da sus propias cuatro
+   columnas: 112 · 380 · 188 · 124. */
+.reg-list--salon .reg-row{padding:13px 0;}
+.reg-list--salon .reg-main{flex:0 0 61.19%;width:61.19%;}
+.reg-list--salon .reg-ref{flex:0 0 22.76%;}
+.reg-list--salon .reg-meta{flex:0 0 23.38%;width:23.38%;}
+.reg-list--salon .reg-meta span:nth-child(1){flex:1 1 0;}
+.reg-list--salon .reg-price{flex:0 0 15.42%;width:15.42%;font-size:0.8125rem;}
+/* El registro reaparece con otras tres formas, cada una con las columnas que le da el lienzo:
+   los departamentos de la portada sobre 1224 (612 · 306 · 306), los pasos de montaje dentro de
+   la columna de 680 (70 · 452 · 158) y la lista de departamentos de La marca, que el lienzo
+   resuelve con nombre a la izquierda y recuento a la derecha. */
+.reg-list--dept .reg-row{padding:15px 0;}
+.reg-list--dept .reg-piece{flex:0 0 50%;width:50%;font-size:1rem;}
+.reg-list--dept .reg-meta{flex:0 0 25%;width:25%;}
+.reg-list--dept .reg-price{flex:0 0 25%;width:25%;font-size:0.8125rem;}
+.reg-list--pasos .reg-row{padding:15px 0;}
+.reg-list--pasos .reg-ref{flex:0 0 10.29%;width:10.29%;font-size:0.75rem;}
+.reg-list--pasos .reg-piece{flex:0 0 66.47%;width:66.47%;}
+.reg-list--pasos .reg-price{flex:0 0 23.24%;width:23.24%;font-size:0.8125rem;}
+.reg-list--simple .reg-row{padding:14px 0;justify-content:space-between;}
+.reg-list--simple .reg-piece{flex:1 1 auto;min-width:0;}
+.reg-list--simple .reg-price{flex:0 0 auto;width:auto;font-size:0.75rem;color:var(--c-text);}
+@media (max-width:767px){
+  .reg-list--dept .reg-piece,.reg-list--pasos .reg-piece,.reg-list--simple .reg-piece{flex:1 1 auto;width:auto;}
+  .reg-list--dept .reg-meta{flex:0 0 auto;width:auto;}
+  .reg-list--dept .reg-price,.reg-list--pasos .reg-price,.reg-list--pasos .reg-ref{flex:0 0 auto;width:auto;}
+  .reg-list--pasos .reg-ref{display:block;padding-right:14px;}
+}
 @media (max-width:767px){
   .reg-head{display:none;}
-  .reg-row{flex-wrap:wrap;row-gap:6px;padding:16px 0;}
-  .reg-main{width:100%;order:1;}
+  .reg-row,.reg-list--salon .reg-row{flex-wrap:wrap;row-gap:6px;padding:16px 0;}
+  .reg-main,.reg-list--salon .reg-main{flex:1 1 100%;width:100%;order:1;}
   .reg-ref{display:none;}
-  .reg-meta{width:100%;order:3;font-family:var(--font-mono);font-size:0.6875rem;color:var(--c-text);gap:14px;flex-wrap:wrap;}
-  .reg-price{order:2;}
+  .reg-meta,.reg-list--salon .reg-meta{flex:1 1 100%;width:100%;order:3;font-family:var(--font-mono);font-size:0.6875rem;color:var(--c-text);gap:14px;flex-wrap:wrap;}
+  .reg-meta span:nth-child(1),.reg-meta span:nth-child(2),.reg-meta span:nth-child(3){flex:0 0 auto;padding-right:0;}
+  .reg-piece{padding-right:0;}
+  .reg-price,.reg-list--salon .reg-price{flex:0 0 auto;width:auto;order:2;}
 }
 
 /* ─────────────────────────────────────────── definiciones ─────────────────────────────────── */
@@ -246,7 +373,30 @@ h1,h2,h3{font-family:var(--font-display);font-weight:600;letter-spacing:-0.02em;
 .dl-grid dd{font-size:0.9375rem;line-height:1.5;color:var(--c-ink);margin-top:8px;}
 @media (max-width:1024px){.dl-grid{grid-template-columns:repeat(2,1fr);}
   .dl-grid > div:nth-child(2n+1){border-left:none;} .dl-grid > div:nth-child(2n){border-left:1px solid var(--hair-012);}}
-@media (max-width:767px){.dl-grid{grid-template-columns:1fr;} .dl-grid > div{border-left:none !important;}}
+/* El filete izquierdo se apaga con la MISMA especificidad que lo encendió y más abajo en la hoja
+   —`:nth-child(n)` los cubre a todos— en vez de con un `!important`. */
+@media (max-width:767px){.dl-grid{grid-template-columns:1fr;} .dl-grid > div:nth-child(n){border-left:none;}}
+
+/* El lienzo apila rótulo y valor en los datos de contacto (dt encima, dd debajo a 15px); la
+   maqueta los ponía en dos columnas y mandaba la dirección al borde derecho —medido: el valor
+   arrancaba en x=278 contra los 108 del artboard—. El lienzo manda. */
+.dl-apilada > div{display:block;padding:14px 0;}
+.dl-apilada dd{text-align:left;font-size:0.9375rem;line-height:1.6;margin-top:8px;}
+.dl-apilada > div:last-child{border-bottom:1px solid var(--hair-012);}
+
+/* Fila de cota: las cinco columnas del lienzo —596 · 180 · 150 · 150 · 148 sobre 1224— sin canal. */
+.fila-cota{display:flex;flex-wrap:wrap;align-items:flex-start;padding-top:26px;margin-top:22px;
+  border-top:1px solid var(--hair-016);}
+.fila-cota > *{min-width:0;}
+.fc-nombre{flex:0 1 48.69%;width:48.69%;}
+.fc-dato{flex:0 1 14.71%;width:14.71%;padding-top:6px;}
+.fc-dato-sm{flex:0 1 12.25%;width:12.25%;padding-top:6px;}
+.fc-precio{flex:0 1 12.09%;width:12.09%;padding-top:6px;text-align:right;}
+@media (max-width:1024px){
+  .fc-nombre{flex:1 1 100%;width:100%;}
+  .fc-dato,.fc-dato-sm,.fc-precio{flex:1 1 22%;width:auto;margin-top:26px;}
+}
+@media (max-width:767px){.fc-dato,.fc-dato-sm,.fc-precio{flex:1 1 42%;}}
 
 /* Franja de dimensiones (cota + medida) repetida en la ficha y en el detalle de producto. */
 .dim-row{display:flex;gap:0;}
@@ -288,8 +438,15 @@ h1,h2,h3{font-family:var(--font-display);font-weight:600;letter-spacing:-0.02em;
   font-size:0.875rem;color:var(--c-text);}
 .table-std tbody td.al-right{text-align:right;}
 .table-std tbody td.al-strong{color:var(--c-ink);font-family:var(--font-mono);}
-.table-std{overflow-x:auto;display:block;}
-@media (min-width:768px){.table-std{display:table;overflow-x:visible;}}
+/* Una tabla no parte sus columnas: por debajo de 768 se desplaza DENTRO de su propio contenedor,
+   y para que lo haga sus celdas tienen que pedir su ancho natural (`nowrap`) en vez de
+   comprimirse. Sin eso, la tabla de pedidos de Mi cuenta medía 430 de ancho con «Ver» pegado al
+   importe y contra el filo. Ver defectos-de-derivacion.md § Fondos y rejillas. */
+@media (max-width:767px){
+  .table-std{display:block;overflow-x:auto;max-width:100%;width:auto;}
+  .table-std thead th,.table-std tbody td{white-space:nowrap;padding-right:22px;}
+  .table-std thead th:last-child,.table-std tbody td:last-child{padding-right:0;}
+}
 
 /* ─────────────────────────────────────────── carro y resumen ──────────────────────────────── */
 .cart-head{display:grid;grid-template-columns:1fr 96px 132px 96px 32px;column-gap:20px;
@@ -319,16 +476,16 @@ h1,h2,h3{font-family:var(--font-display);font-weight:600;letter-spacing:-0.02em;
   font-family:var(--font-mono);font-size:1.0625rem;color:var(--c-ink);}
 
 /* ─────────────────────────────────────────── pie ───────────────────────────────────────────── */
-.site-footer{width:100%;padding:0 0 var(--sp-section);margin-top:var(--sp-section);}
+.site-footer{width:100%;padding:0 0 72px;margin-top:var(--sp-section);}
 .footer-rule{height:1px;background:var(--hair-028);}
-.footer-top{display:flex;padding-top:64px;gap:80px;}
+.footer-top{display:flex;padding-top:34px;gap:80px;}
 .footer-brand{width:432px;flex:0 0 432px;}
 .footer-marca{font-size:1.375rem;font-weight:600;letter-spacing:0.22em;color:var(--c-ink);}
 .footer-desc{font-size:0.9375rem;line-height:1.76;color:var(--c-text);margin-top:18px;max-width:404px;}
 .footer-cols{display:flex;gap:80px;}
 .footer-cols h4{font-family:var(--font-mono);font-size:0.625rem;letter-spacing:0.06em;
   text-transform:uppercase;color:var(--c-text);margin-bottom:20px;font-weight:400;}
-.footer-cols li{margin-bottom:12px;}
+.footer-cols li{margin-bottom:12px;line-height:var(--lh-etiqueta);}
 .footer-cols li:last-child{margin-bottom:0;}
 .footer-cols a{font-size:0.9375rem;color:var(--c-ink);}
 .footer-cols a:hover{color:var(--c-text);}
@@ -419,8 +576,8 @@ main{display:block;}
       </a>
     </div>
 
-    <div class="split" style="margin-top:44px;">
-      <ul class="reg-list" style="flex:1 1 640px;">
+    <div class="split split-36" style="margin-top:44px;">
+      <ul class="reg-list reg-list--salon col-804">
         <li class="reg-row"><div class="reg-main"><span class="reg-ref mono">ME-140</span><a class="reg-piece" href="#ficha">Mesa Aro</a></div><div class="reg-meta"><span>140 × 80 × 74</span></div><span class="reg-price">189,00&nbsp;€</span></li>
         <li class="reg-row"><div class="reg-main"><span class="reg-ref mono">SI-044</span><a class="reg-piece" href="#ficha">Silla Aro · dos unidades</a></div><div class="reg-meta"><span>44 × 48 × 82</span></div><span class="reg-price">118,00&nbsp;€</span></li>
         <li class="reg-row"><div class="reg-main"><span class="reg-ref mono">ES-180</span><a class="reg-piece" href="#ficha">Estante Tramo</a></div><div class="reg-meta"><span>80 × 32 × 180</span></div><span class="reg-price">149,00&nbsp;€</span></li>
@@ -428,7 +585,7 @@ main{display:block;}
         <li class="reg-row"><div class="reg-main"><span class="reg-ref mono">TX-160</span><a class="reg-piece" href="#ficha">Alfombra Sella</a></div><div class="reg-meta"><span>160 × 230</span></div><span class="reg-price">79,00&nbsp;€</span></li>
         <li class="reg-row"><div class="reg-main"><span class="reg-ref mono">TX-140</span><a class="reg-piece" href="#ficha">Cortina Sella, par</a></div><div class="reg-meta"><span>140 × 260</span></div><span class="reg-price">34,00&nbsp;€</span></li>
       </ul>
-      <div style="flex:0 0 340px;">
+      <div class="col-resto">
         <span class="eyebrow">El salón entero</span>
         <div class="cota" style="margin-top:14px;"></div>
         <p class="price-total" style="margin-top:12px;">598,00&nbsp;€</p>
@@ -482,12 +639,12 @@ main{display:block;}
       </figure>
     </div>
 
-    <ul class="reg-list" style="margin-top:48px;">
-      <li class="reg-row"><a class="reg-piece" href="#categoria" style="flex:1;">Salón y comedor</a><div class="reg-meta"><span>214 artículos</span></div><span class="reg-price">desde&nbsp;4,00&nbsp;€</span></li>
-      <li class="reg-row"><a class="reg-piece" href="#categoria" style="flex:1;">Almacenaje</a><div class="reg-meta"><span>240 artículos</span></div><span class="reg-price">desde&nbsp;3,00&nbsp;€</span></li>
-      <li class="reg-row"><a class="reg-piece" href="#categoria" style="flex:1;">Menaje y mesa</a><div class="reg-meta"><span>310 artículos</span></div><span class="reg-price">desde&nbsp;0,90&nbsp;€</span></li>
-      <li class="reg-row"><a class="reg-piece" href="#categoria" style="flex:1;">Infantil</a><div class="reg-meta"><span>148 artículos</span></div><span class="reg-price">desde&nbsp;2,50&nbsp;€</span></li>
-      <li class="reg-row"><a class="reg-piece" href="#categoria" style="flex:1;">Terraza</a><div class="reg-meta"><span>92 artículos</span></div><span class="reg-price">desde&nbsp;5,00&nbsp;€</span></li>
+    <ul class="reg-list reg-list--dept" style="margin-top:48px;">
+      <li class="reg-row"><a class="reg-piece" href="#categoria">Salón y comedor</a><div class="reg-meta"><span>214 artículos</span></div><span class="reg-price">desde&nbsp;4,00&nbsp;€</span></li>
+      <li class="reg-row"><a class="reg-piece" href="#categoria">Almacenaje</a><div class="reg-meta"><span>240 artículos</span></div><span class="reg-price">desde&nbsp;3,00&nbsp;€</span></li>
+      <li class="reg-row"><a class="reg-piece" href="#categoria">Menaje y mesa</a><div class="reg-meta"><span>310 artículos</span></div><span class="reg-price">desde&nbsp;0,90&nbsp;€</span></li>
+      <li class="reg-row"><a class="reg-piece" href="#categoria">Infantil</a><div class="reg-meta"><span>148 artículos</span></div><span class="reg-price">desde&nbsp;2,50&nbsp;€</span></li>
+      <li class="reg-row"><a class="reg-piece" href="#categoria">Terraza</a><div class="reg-meta"><span>92 artículos</span></div><span class="reg-price">desde&nbsp;5,00&nbsp;€</span></li>
     </ul>
   </section>
 
@@ -496,31 +653,28 @@ main{display:block;}
     <span class="eyebrow">Almacenaje</span>
     <img class="placa" src="../img/escuadra-banco.webp" alt="Banco bajo de contrachapado de abedul contra una pared de yeso, con la tapa entreabierta y unas zapatillas al lado" style="width:100%;height:auto;aspect-ratio:1224/460;object-fit:cover;margin-top:24px;">
 
-    <!-- DERIVATION FIX: the lienzo's five-column spec row (Escuadra.dc.html, "Almacenaje" section)
-         is fixed widths summing exactly to the section's content width, no gap, no wrap, no grow —
-         the maqueta added a responsive gap and a flex:1 (grow) on the description, and the grow
-         eats the room the price column needed, dropping "129,00 €" onto its own line ALONE at 1280
-         (barrido.mjs H, portada@1280). Capping the description to its own basis instead of letting
-         it grow, and tightening the gap slightly, restores the lienzo's one-row fit without
-         reintroducing a fixed width that would overflow at narrower widths — flex-wrap still
-         protects 768/430, which were never broken. -->
-    <div style="padding-top:24px;border-top:1px solid var(--hair-016);margin-top:22px;display:flex;flex-wrap:wrap;gap:18px;align-items:flex-start;">
-      <div style="flex:0 1 480px;min-width:0;">
+    <!-- La fila de cota reproduce las cinco columnas del lienzo (Escuadra.dc.html, seccion
+         «Almacenaje»): 596 · 180 · 150 · 150 · 148 sobre 1224, sin canal y sin crecer. Escritas como
+         fracción en clases, no como base fija en línea: así la proporción aguanta a cualquier ancho
+         y el precio no se cae solo a su propia línea a 1280, que es lo que pasaba con el
+         `flex:1` de la descripción. -->
+    <div class="fila-cota">
+      <div class="fc-nombre">
         <h3 class="h3">Banco Vado</h3>
         <p class="copy-lg" style="margin-top:14px;max-width:34em;">Un cajón con tapa a la altura de sentarse. Aguanta 120 kg encima y dentro caben dos edredones o el calzado de una casa entera.</p>
       </div>
-      <div style="flex:0 0 160px;"><div class="cota"></div><p class="mono" style="font-size:0.8125rem;margin-top:9px;">110 × 40 × 45</p><p class="copy" style="font-size:0.75rem;margin-top:4px;">centímetros</p></div>
-      <div style="flex:0 0 120px;"><p class="mono" style="font-size:0.8125rem;">1 bulto</p><p class="copy" style="font-size:0.75rem;margin-top:4px;">de 18 kg</p></div>
-      <div style="flex:0 0 120px;"><p class="mono" style="font-size:0.8125rem;">18 min</p><p class="copy" style="font-size:0.75rem;margin-top:4px;">de montaje</p></div>
-      <div style="flex:0 0 auto;text-align:right;"><a href="#ficha" class="price-lg" style="display:block;">129,00&nbsp;€</a></div>
+      <div class="fc-dato"><div class="cota"></div><p class="mono" style="font-size:0.8125rem;margin-top:9px;">110 × 40 × 45</p><p class="copy" style="font-size:0.75rem;margin-top:4px;">centímetros</p></div>
+      <div class="fc-dato-sm"><p class="mono" style="font-size:0.8125rem;">1 bulto</p><p class="copy" style="font-size:0.75rem;margin-top:4px;">de 18 kg</p></div>
+      <div class="fc-dato-sm"><p class="mono" style="font-size:0.8125rem;">18 min</p><p class="copy" style="font-size:0.75rem;margin-top:4px;">de montaje</p></div>
+      <div class="fc-precio"><a href="#ficha" class="price-sm" style="display:block;">129,00&nbsp;€</a></div>
     </div>
 
-    <div class="split" style="margin-top:56px;">
-      <img class="placa" src="../img/escuadra-estante.webp" alt="Mueble abierto de contrachapado de abedul contra una pared de yeso, con libros, una jarra de cerámica y una manta doblada" style="flex:0 0 320px;width:320px;height:auto;aspect-ratio:384/512;object-fit:cover;">
-      <div style="flex:1;">
+    <div class="split split-64" style="margin-top:56px;">
+      <img class="placa col-384" src="../img/escuadra-estante.webp" alt="Mueble abierto de contrachapado de abedul contra una pared de yeso, con libros, una jarra de cerámica y una manta doblada" style="height:auto;aspect-ratio:384/512;object-fit:cover;">
+      <div class="col-resto">
         <h3 class="h3">Estante Tramo</h3>
         <p class="copy-lg" style="margin-top:14px;max-width:38em;">Cinco baldas a 32 cm de fondo, que es lo que mide un libro grande de pie. Sube hasta 180 y se ancla a la pared con dos escuadras que van en el bulto.</p>
-        <div class="dim-row" style="margin-top:28px;max-width:520px;">
+        <div class="dim-row" style="margin-top:28px;">
           <div><div class="cota"></div><p class="val mono">80 cm</p><p class="unit">de ancho</p></div>
           <div><div class="cota"></div><p class="val mono">32 cm</p><p class="unit">de fondo</p></div>
           <div><div class="cota"></div><p class="val mono">180 cm</p><p class="unit">de alto</p></div>
@@ -537,17 +691,17 @@ main{display:block;}
   <!-- ============================ EL CATÁLOGO ACOTADO ============================ -->
   <section class="section container">
     <div class="split">
-      <img class="placa" src="../img/escuadra-mesa.webp" alt="Mesa rectangular lisa de contrachapado de abedul fotografiada casi de alzado sobre fondo hueso" style="flex:0 0 480px;width:480px;height:auto;aspect-ratio:596/337;object-fit:cover;">
-      <div style="flex:1;">
-        <h2 class="h2" style="font-size:var(--fs-h1);">Todo lleva su medida puesta.</h2>
+      <img class="placa col-596" src="../img/escuadra-mesa.webp" alt="Mesa rectangular lisa de contrachapado de abedul fotografiada casi de alzado sobre fondo hueso" style="height:auto;aspect-ratio:596/337;object-fit:cover;">
+      <div class="col-resto">
+        <h2 class="h2" style="font-size:var(--fs-h2-sm);">Todo lleva su medida puesta.</h2>
         <p class="lead" style="margin-top:16px;">Ancho por fondo por alto en centímetros, hasta en una toalla. Los bultos son los que salen del almacén y los minutos, los que tardó una persona sola la primera vez, sin taladro.</p>
         <p class="lead" style="margin-top:12px;">Si una pieza no cabe por tu puerta, la ficha te lo dice antes de que la compres.</p>
       </div>
     </div>
 
     <div class="reg-head" style="margin-top:52px;">
-      <span style="width:20%;">Ref.</span><span style="width:32%;">Artículo</span><span style="width:20%;">Medida en cm</span>
-      <span style="width:10%;">Bultos</span><span style="width:10%;">Montaje</span><span style="width:8%;text-align:right;">Precio</span>
+      <span class="rc1">Ref.</span><span class="rc2">Artículo</span><span class="rc3">Medida en cm</span>
+      <span class="rc4">Bultos</span><span class="rc5">Montaje</span><span class="rc6">Precio</span>
     </div>
     <ul class="reg-list" style="border-top:0;">
       <li class="reg-row"><div class="reg-main"><span class="reg-ref mono">ME-140</span><a class="reg-piece" href="#ficha">Mesa Aro</a></div><div class="reg-meta"><span>140 × 80 × 74</span><span>2</span><span>25 min</span></div><span class="reg-price">189,00&nbsp;€</span></li>
@@ -565,13 +719,13 @@ main{display:block;}
   <!-- ============================ CÓMO LLEGA ============================ -->
   <section class="section container">
     <div class="split">
-      <div style="flex:1 1 480px;">
+      <div class="col-resto">
         <span class="eyebrow">Cómo llega</span>
         <h3 class="h3" style="margin-top:16px;">Plano, y por la escalera.</h3>
         <p class="lead" style="margin-top:16px;">Ningún bulto pasa de 25 kg ni de 8 cm de canto, que es lo que sube una persona sola por una escalera estrecha sin ayuda y sin rozar la pared.</p>
         <p class="lead" style="margin-top:12px;">El cartón va sin imprimir y sin plástico. Lo recogemos en la siguiente entrega si nos lo dejas plegado en el portal.</p>
       </div>
-      <img class="placa" src="../img/escuadra-caja.webp" alt="Tres cajas planas de cartón marrón sin imprimir apiladas en el suelo junto a una pared de yeso" style="flex:1 1 480px;width:100%;height:auto;aspect-ratio:596/447;object-fit:cover;">
+      <img class="placa col-596" src="../img/escuadra-caja.webp" alt="Tres cajas planas de cartón marrón sin imprimir apiladas en el suelo junto a una pared de yeso" style="height:auto;aspect-ratio:596/447;object-fit:cover;">
     </div>
   </section>
 
@@ -579,7 +733,7 @@ main{display:block;}
   <section class="section container">
     <img class="placa" src="../img/escuadra-taller.webp" alt="Banco de montaje visto desde arriba con paneles de contrachapado claro dispuestos en orden y una bolsa de herrajes volcada" style="width:100%;height:auto;aspect-ratio:1224/460;object-fit:cover;">
     <div style="display:flex;flex-wrap:wrap;gap:20px;justify-content:space-between;align-items:baseline;padding-top:20px;border-top:1px solid var(--hair-016);margin-top:20px;">
-      <p class="copy-lg" style="flex:1 1 480px;">Las instrucciones vienen dibujadas a tamaño real: se apoya la pieza encima del papel y se comprueba que es la que toca antes de atornillar nada.</p>
+      <p class="copy-lg col-756">Las instrucciones vienen dibujadas a tamaño real: se apoya la pieza encima del papel y se comprueba que es la que toca antes de atornillar nada.</p>
       <span class="eyebrow">Sin tornillos sobrantes</span>
     </div>
   </section>
@@ -591,8 +745,8 @@ main{display:block;}
 
   <section class="section-tight container">
     <div class="split">
-      <img class="placa" src="../img/escuadra-cocina.webp" alt="Rincón de cocina con balda de contrachapado, vajilla blanca apilada, tarros de vidrio, una tabla de madera y una sartén de acero colgada" style="flex:0 0 480px;width:480px;height:auto;aspect-ratio:596/447;object-fit:cover;">
-      <div style="flex:1;">
+      <img class="placa col-596" src="../img/escuadra-cocina.webp" alt="Rincón de cocina con balda de contrachapado, vajilla blanca apilada, tarros de vidrio, una tabla de madera y una sartén de acero colgada" style="height:auto;aspect-ratio:596/447;object-fit:cover;">
+      <div class="col-resto">
         <h1 class="h1">Cocina</h1>
         <div style="display:flex;align-items:baseline;justify-content:space-between;margin-top:22px;padding-top:14px;border-top:1px solid var(--hair-016);">
           <span class="eyebrow">386 artículos</span>
@@ -610,8 +764,8 @@ main{display:block;}
       <span class="eyebrow">Actualizado hoy</span>
     </div>
     <div class="reg-head" style="margin-top:22px;">
-      <span style="width:18%;">Ref.</span><span style="width:34%;">Artículo</span><span style="width:20%;">Medida en cm</span>
-      <span style="width:10%;">Bultos</span><span style="width:10%;">Montaje</span><span style="width:8%;text-align:right;">Precio</span>
+      <span class="rc1">Ref.</span><span class="rc2">Artículo</span><span class="rc3">Medida en cm</span>
+      <span class="rc4">Bultos</span><span class="rc5">Montaje</span><span class="rc6">Precio</span>
     </div>
     <ul class="reg-list" style="border-top:0;">
       <li class="reg-row"><div class="reg-main"><span class="reg-ref mono">MN-006</span><a class="reg-piece" href="#ficha">Servilleta de Papel, paquete de cien</a></div><div class="reg-meta"><span>33 × 33</span><span>—</span><span>—</span></div><span class="reg-price">1,50&nbsp;€</span></li>
@@ -636,13 +790,13 @@ main{display:block;}
   <p class="breadcrumb"><a href="#categoria">Salón</a><span class="sep">/</span><a href="#categoria">Sillas</a><span class="sep">/</span><span class="cur">Silla Aro</span></p>
 
   <section class="section-tight container">
-    <div class="split">
-      <img src="../img/escuadra-silla.webp" alt="Silla de contrachapado de abedul vista de tres cuartos sobre fondo infinito hueso" style="flex:0 0 340px;width:340px;height:auto;aspect-ratio:384/512;object-fit:cover;">
-      <div style="flex:1;">
+    <div class="split split-64">
+      <img src="../img/escuadra-silla.webp" alt="Silla de contrachapado de abedul vista de tres cuartos sobre fondo infinito hueso" class="col-384" style="height:auto;aspect-ratio:384/512;object-fit:cover;">
+      <div class="col-resto">
         <h1 class="h1">Silla Aro</h1>
         <p class="lead" style="margin-top:16px;">Siete piezas y doce tornillos. El asiento va prensado en frío con cuatro milímetros de curva, que es lo que hace que una tabla plana deje de ser incómoda a los veinte minutos.</p>
 
-        <div class="dim-row" style="margin-top:32px;max-width:640px;">
+        <div class="dim-row" style="margin-top:32px;">
           <div><div class="cota"></div><p class="val mono">44 cm</p><p class="unit">de ancho</p></div>
           <div><div class="cota"></div><p class="val mono">48 cm</p><p class="unit">de fondo</p></div>
           <div><div class="cota"></div><p class="val mono">82 cm</p><p class="unit">de alto</p></div>
@@ -651,7 +805,7 @@ main{display:block;}
 
         <div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-end;justify-content:space-between;margin-top:36px;padding-top:22px;border-top:1px solid var(--hair-016);">
           <div>
-            <p class="price-total">59,00&nbsp;€</p>
+            <p class="price-ficha">59,00&nbsp;€</p>
             <p class="eyebrow" style="margin-top:8px;">1 bulto de 6,4 kg · 12 min de montaje</p>
           </div>
           <a href="#carro" class="btn">Añadir a la cesta</a>
@@ -663,9 +817,9 @@ main{display:block;}
 
   <!-- ============================ LAS COTAS ============================ -->
   <section class="section container">
-    <div class="split">
-      <h2 class="h2" style="flex:1 1 480px;font-size:var(--fs-h3);">Todo lo que mide.</h2>
-      <p class="lead" style="flex:1 1 440px;">En centímetros y medido sobre la pieza montada, no sobre el plano. La tolerancia del contrachapado prensado es de ±2 mm en cualquier dirección.</p>
+    <div class="split split-80">
+      <h2 class="h2 col-596" style="font-size:var(--fs-h2-xs);">Todo lo que mide.</h2>
+      <p class="lead col-resto">En centímetros y medido sobre la pieza montada, no sobre el plano. La tolerancia del contrachapado prensado es de ±2 mm en cualquier dirección.</p>
     </div>
 
     <dl class="dl-rows" style="margin-top:36px;">
@@ -684,19 +838,19 @@ main{display:block;}
 
   <!-- ============================ EL MONTAJE ============================ -->
   <section class="section container">
-    <div class="split">
-      <div style="flex:1 1 560px;">
+    <div class="split split-64">
+      <div class="col-680">
         <span class="eyebrow">El montaje</span>
         <h3 class="h3" style="margin-top:16px;">Doce minutos, y la llave va dentro.</h3>
         <p class="lead" style="margin-top:16px;">Cronometrado con una persona sola, sin taladro y sin haberla montado antes. Los herrajes van numerados en la bolsa y los agujeros, en la pieza.</p>
-        <ul class="reg-list" style="margin-top:26px;">
-          <li class="reg-row"><span class="reg-ref mono" style="flex:0 0 32px;">01</span><span class="reg-piece">Espigar las cuatro patas</span><span class="reg-price" style="flex:0 0 70px;">3 min</span></li>
-          <li class="reg-row"><span class="reg-ref mono" style="flex:0 0 32px;">02</span><span class="reg-piece">Atornillar los travesaños</span><span class="reg-price" style="flex:0 0 70px;">4 min</span></li>
-          <li class="reg-row"><span class="reg-ref mono" style="flex:0 0 32px;">03</span><span class="reg-piece">Encajar el asiento prensado</span><span class="reg-price" style="flex:0 0 70px;">2 min</span></li>
-          <li class="reg-row"><span class="reg-ref mono" style="flex:0 0 32px;">04</span><span class="reg-piece">Montar el respaldo y apretar en cruz</span><span class="reg-price" style="flex:0 0 70px;">3 min</span></li>
+        <ul class="reg-list reg-list--pasos" style="margin-top:26px;">
+          <li class="reg-row"><span class="reg-ref mono">01</span><span class="reg-piece">Espigar las cuatro patas</span><span class="reg-price">3 min</span></li>
+          <li class="reg-row"><span class="reg-ref mono">02</span><span class="reg-piece">Atornillar los travesaños</span><span class="reg-price">4 min</span></li>
+          <li class="reg-row"><span class="reg-ref mono">03</span><span class="reg-piece">Encajar el asiento prensado</span><span class="reg-price">2 min</span></li>
+          <li class="reg-row"><span class="reg-ref mono">04</span><span class="reg-piece">Montar el respaldo y apretar en cruz</span><span class="reg-price">3 min</span></li>
         </ul>
       </div>
-      <div style="flex:0 0 380px;">
+      <div class="col-resto">
         <img class="placa" src="../img/escuadra-union.webp" alt="Macro de la esquina de un panel de contrachapado de abedul con el canto laminado a la vista, un herraje de acero embutido y una espiga de madera" style="width:100%;height:auto;aspect-ratio:1/1;object-fit:cover;">
         <p class="eyebrow" style="padding-top:14px;">Espiga de haya y herraje excéntrico de acero</p>
       </div>
@@ -710,7 +864,7 @@ main{display:block;}
 
   <section class="section-tight container"><h1 class="h1">Tu carro</h1></section>
 
-  <section class="section-tight container" style="max-width:1024px;">
+  <section class="section-tight container">
     <div class="cart-head">
       <span>Artículo</span><span class="al-right">Precio</span><span>Cantidad</span><span class="al-right">Subtotal</span><span></span>
     </div>
@@ -718,7 +872,7 @@ main{display:block;}
     <div class="cart-row">
       <div class="cart-piece">
         <a href="#ficha" class="price" style="font-size:1.125rem;display:block;">Silla Aro</a>
-        <p class="copy" style="margin-top:6px;">Ref. SI-044 · 1 bulto de 6,4 kg</p>
+        <p class="copy" style="margin-top:6px;">Ref. <span class="ref">SI-044</span> · 1 bulto de 6,4 kg</p>
       </div>
       <span class="cart-unit">59,00&nbsp;€</span>
       <div class="qty-stepper"><span class="step">–</span><span class="amt">2</span><span class="step">+</span></div>
@@ -729,7 +883,7 @@ main{display:block;}
     <div class="cart-row">
       <div class="cart-piece">
         <a href="#ficha" class="price" style="font-size:1.125rem;display:block;">Estante Tramo</a>
-        <p class="copy" style="margin-top:6px;">Ref. ES-180 · 3 bultos de hasta 40 kg</p>
+        <p class="copy" style="margin-top:6px;">Ref. <span class="ref">ES-180</span> · 3 bultos de hasta 40 kg</p>
       </div>
       <span class="cart-unit">149,00&nbsp;€</span>
       <div class="qty-stepper"><span class="step">–</span><span class="amt">1</span><span class="step">+</span></div>
@@ -753,8 +907,8 @@ main{display:block;}
 
   <section class="section-tight container"><h1 class="h1">Finalizar compra</h1></section>
 
-  <section class="section-tight container" style="display:flex;gap:clamp(2rem,1vw + 2rem,3.5rem);flex-wrap:wrap;">
-    <form style="flex:1 1 480px;min-width:0;max-width:700px;">
+  <section class="section-tight container" style="display:flex;gap:clamp(2rem,1.472rem + 2.254vw,3.5rem);flex-wrap:wrap;">
+    <form class="col-form">
       <span class="eyebrow ink" style="letter-spacing:0.06em;">Datos de envío</span>
       <div style="padding-top:24px;">
         <div class="field-row2">
@@ -794,7 +948,7 @@ main{display:block;}
       <a href="#pedido-recibido" class="btn" style="margin-top:28px;">Confirmar pedido</a>
     </form>
 
-    <div style="flex:1 1 320px;max-width:380px;">
+    <div class="col-panel">
       <span class="eyebrow ink" style="letter-spacing:0.06em;">Tu pedido</span>
       <dl class="dl-rows" style="padding-top:4px;">
         <div><dt>Silla Aro × 2</dt><dd>118,00&nbsp;€</dd></div>
@@ -811,14 +965,14 @@ main{display:block;}
 </div>
 <div class="page" id="pedido-recibido" data-title="Pedido confirmado — ESCUADRA">
 
-  <section class="section container" style="padding-top:clamp(3rem,2rem + 3vw,5rem);">
+  <section class="section container" style="padding-top:clamp(3rem,2.296rem + 3.005vw,5rem);">
     <div style="max-width:720px;">
-      <span class="eyebrow">Pedido n.º ES-58231</span>
+      <span class="eyebrow">Pedido n.º <span class="ref">ES-58231</span></span>
       <h1 class="h1" style="margin-top:10px;font-size:var(--fs-h2);">Gracias. Ya está en el almacén.</h1>
       <p class="lead" style="margin-top:22px;">Hemos mandado la confirmación a tu correo con el número de pedido y el resumen de lo comprado. El bulto más grande marca el ritmo del envío: todo sale junto, en cuanto el último pasa por la báscula.</p>
 
       <dl class="dl-rows" style="margin-top:40px;max-width:480px;">
-        <div><dt>Pedido</dt><dd>ES-58231</dd></div>
+        <div><dt>Pedido</dt><dd><span class="ref">ES-58231</span></dd></div>
         <div><dt>Total</dt><dd>267,00&nbsp;€</dd></div>
         <div><dt>Bultos</dt><dd>4</dd></div>
         <div><dt>Envío estimado</dt><dd>48–72&nbsp;h laborables</dd></div>
@@ -847,12 +1001,12 @@ main{display:block;}
       </thead>
       <tbody>
         <tr>
-          <td class="al-strong">ES-58231</td><td>14 sept 2026</td><td>Preparando el bulto</td>
+          <td class="al-strong ref">ES-58231</td><td>14 sept 2026</td><td>Preparando el bulto</td>
           <td class="al-right al-strong">267,00&nbsp;€</td>
           <td class="al-right"><a href="#pedido-recibido" class="link-accent">Ver</a></td>
         </tr>
         <tr>
-          <td class="al-strong">ES-54109</td><td>2 feb 2026</td><td>Entregado</td>
+          <td class="al-strong ref">ES-54109</td><td>2 feb 2026</td><td>Entregado</td>
           <td class="al-right al-strong">129,00&nbsp;€</td>
           <td class="al-right"><a href="#pedido-recibido" class="link-accent">Ver</a></td>
         </tr>
@@ -886,13 +1040,13 @@ main{display:block;}
   <section class="section container">
     <span class="eyebrow">Cómo medimos</span>
     <img class="placa" src="../img/escuadra-taller.webp" alt="Banco de montaje visto desde arriba con paneles de contrachapado claro dispuestos en orden y una bolsa de herrajes volcada" style="width:100%;height:auto;aspect-ratio:1224/460;object-fit:cover;margin-top:20px;">
-    <div class="split" style="padding-top:22px;border-top:1px solid var(--hair-016);margin-top:20px;">
-      <div style="flex:1 1 640px;">
+    <div class="split split-64" style="padding-top:22px;border-top:1px solid var(--hair-016);margin-top:20px;">
+      <div class="col-760">
         <h2 class="h3">Cada referencia se mide antes de subir la ficha.</h2>
         <p class="lead" style="margin-top:16px;">Un metro, una báscula de suelo y un cronómetro. Antes de publicar un artículo, alguien del almacén de Alaquàs lo desembala, lo mide por los tres lados, lo pesa con el embalaje puesto y monta uno entero para cronometrar los minutos reales, sin darle ventaja al que lo hace.</p>
         <p class="lead" style="margin-top:12px;">Si la medida de la ficha no coincide con la pieza que llega, la devolución la paga ESCUADRA, no quien compró.</p>
       </div>
-      <dl class="dl-rows" style="flex:0 0 340px;">
+      <dl class="dl-rows col-resto">
         <div><dt>Comprando desde</dt><dd>2014</dd></div>
         <div><dt>Almacén en Alaquàs</dt><dd>12.400 m²</dd></div>
         <div><dt>Referencias activas</dt><dd>1.700</dd></div>
@@ -903,7 +1057,7 @@ main{display:block;}
 
   <!-- ============================ POR QUÉ EL PRECIO ============================ -->
   <section class="section container">
-    <h2 class="h2" style="max-width:18ch;">Por qué el precio es el que ves.</h2>
+    <h2 class="h2" style="font-size:var(--fs-h2-sm);max-width:18ch;">Por qué el precio es el que ves.</h2>
     <div class="row-3" style="margin-top:36px;">
       <div style="padding-top:18px;border-top:1px solid var(--hair-016);">
         <span class="eyebrow ink">Compra directa</span>
@@ -922,18 +1076,18 @@ main{display:block;}
 
   <!-- ============================ SEIS DEPARTAMENTOS ============================ -->
   <section class="section container">
-    <div class="split">
-      <div style="flex:1 1 480px;">
+    <div class="split split-64">
+      <div class="col-596">
         <h2 class="h3">Seis departamentos, una sola nave.</h2>
         <p class="lead" style="margin-top:16px;">Salón, cocina, dormitorio, baño, almacenaje e iluminación salen del mismo pasillo de picking. Comprar un banco y una sartén en el mismo pedido no cuesta dos envíos: cuesta uno.</p>
       </div>
-      <ul class="reg-list" style="flex:1 1 480px;">
-        <li class="reg-row"><a class="reg-piece" href="#categoria" style="flex:1;">Salón y comedor</a><span class="reg-price">214 artículos</span></li>
-        <li class="reg-row"><a class="reg-piece" href="#categoria" style="flex:1;">Cocina</a><span class="reg-price">386 artículos</span></li>
-        <li class="reg-row"><a class="reg-piece" href="#categoria" style="flex:1;">Dormitorio</a><span class="reg-price">178 artículos</span></li>
-        <li class="reg-row"><a class="reg-piece" href="#categoria" style="flex:1;">Baño</a><span class="reg-price">132 artículos</span></li>
-        <li class="reg-row"><a class="reg-piece" href="#categoria" style="flex:1;">Almacenaje</a><span class="reg-price">240 artículos</span></li>
-        <li class="reg-row"><a class="reg-piece" href="#categoria" style="flex:1;">Iluminación</a><span class="reg-price">96 artículos</span></li>
+      <ul class="reg-list reg-list--simple col-596">
+        <li class="reg-row"><a class="reg-piece" href="#categoria">Salón y comedor</a><span class="reg-price">214 artículos</span></li>
+        <li class="reg-row"><a class="reg-piece" href="#categoria">Cocina</a><span class="reg-price">386 artículos</span></li>
+        <li class="reg-row"><a class="reg-piece" href="#categoria">Dormitorio</a><span class="reg-price">178 artículos</span></li>
+        <li class="reg-row"><a class="reg-piece" href="#categoria">Baño</a><span class="reg-price">132 artículos</span></li>
+        <li class="reg-row"><a class="reg-piece" href="#categoria">Almacenaje</a><span class="reg-price">240 artículos</span></li>
+        <li class="reg-row"><a class="reg-piece" href="#categoria">Iluminación</a><span class="reg-price">96 artículos</span></li>
       </ul>
     </div>
   </section>
@@ -941,7 +1095,7 @@ main{display:block;}
   <!-- ============================ CIERRE ============================ -->
   <section class="section container">
     <div style="display:flex;flex-wrap:wrap;gap:24px;align-items:baseline;justify-content:space-between;padding-top:22px;border-top:1px solid var(--hair-028);">
-      <p class="lead" style="flex:1 1 480px;">Nada de esto compensa una pieza mal medida. Si algo no coincide con su ficha, se recoge en tu casa y se devuelve el importe entero, sin preguntar por qué.</p>
+      <p class="lead col-756">Nada de esto compensa una pieza mal medida. Si algo no coincide con su ficha, se recoge en tu casa y se devuelve el importe entero, sin preguntar por qué.</p>
       <a href="#contacto" class="btn">Escríbenos</a>
     </div>
   </section>
@@ -957,11 +1111,11 @@ main{display:block;}
     <p class="lead" style="margin-top:22px;">Sin línea 900 ni contestador automático. Un correo a ESCUADRA lo lee alguien del almacén de Alaquàs, la misma nave donde se mide cada pieza. Respondemos en día laborable, casi siempre con una cinta métrica de por medio.</p>
   </section>
 
-  <section class="section container" style="display:flex;flex-wrap:wrap;gap:56px;">
-    <div style="flex:1 1 320px;max-width:400px;">
+  <section class="section container split split-64">
+    <div class="col-384">
       <span class="eyebrow ink" style="letter-spacing:0.06em;padding-bottom:16px;border-bottom:1px solid var(--hair-022);display:block;">Almacén y tienda</span>
-      <dl class="dl-rows" style="padding-top:18px;">
-        <div><dt>Dirección</dt><dd style="text-align:right;">Polígono Industrial Alaquàs, nave 12<br>46970 Alaquàs (Valencia)</dd></div>
+      <dl class="dl-rows dl-apilada" style="padding-top:20px;">
+        <div><dt>Dirección</dt><dd>Polígono Industrial Alaquàs, nave 12<br>46970 Alaquàs (Valencia)</dd></div>
         <div><dt>Recogida en almacén</dt><dd>Lunes a sábado, sin cita</dd></div>
         <div><dt>Horario</dt><dd>Lunes a sábado, 9:30–20:30</dd></div>
         <div><dt>Teléfono</dt><dd>963 24 71 08</dd></div>
@@ -969,7 +1123,7 @@ main{display:block;}
       </dl>
     </div>
 
-    <form style="flex:1 1 480px;min-width:0;max-width:700px;">
+    <form class="col-resto">
       <div class="field-row2">
         <label class="field"><span class="field-label">Nombre</span><input type="text" placeholder="Nombre y apellidos"></label>
         <label class="field"><span class="field-label">Correo</span><input type="email" placeholder="tu@correo.com"></label>
@@ -990,7 +1144,7 @@ main{display:block;}
 
   <!-- ============================ LO QUE YA SABEMOS RESPONDER ============================ -->
   <section class="section container">
-    <h2 class="h3">Lo que ya sabemos responder.</h2>
+    <h2 class="h3" style="max-width:20ch;">Lo que ya sabemos responder.</h2>
     <p class="copy" style="margin-top:12px;">Tres preguntas que llegan cada semana.</p>
     <div class="row-3" style="margin-top:32px;">
       <div style="padding-top:18px;border-top:1px solid var(--hair-028);">
@@ -1013,8 +1167,8 @@ main{display:block;}
 
   <p class="breadcrumb"><a href="#portada">ESCUADRA</a><span class="sep">/</span><span class="cur">Condiciones de venta y envíos</span></p>
 
-  <section class="section-tight container" style="max-width:868px;">
-    <h1 class="h1" style="font-size:clamp(2rem,1.2rem + 3.5vw,3.5rem);">Condiciones de venta y envíos</h1>
+  <section class="section-tight container medida-lectura">
+    <h1 class="h1">Condiciones de venta y envíos</h1>
     <p class="lead" style="margin-top:22px;">Estas condiciones rigen cualquier compra hecha en escuadra.es a ESCUADRA S. L. U. Al confirmar un pedido las aceptas junto con la <a href="#privacidad" class="link-accent">política de privacidad</a>.</p>
 
     <h2 class="h3" style="margin-top:var(--sp-section);">Precios e impuestos</h2>
@@ -1041,8 +1195,8 @@ main{display:block;}
 
   <p class="breadcrumb"><a href="#portada">ESCUADRA</a><span class="sep">/</span><span class="cur">Aviso legal</span></p>
 
-  <section class="section-tight container" style="max-width:868px;">
-    <h1 class="h1" style="font-size:clamp(2rem,1.2rem + 3.5vw,3.5rem);">Aviso legal</h1>
+  <section class="section-tight container medida-lectura">
+    <h1 class="h1">Aviso legal</h1>
     <p class="lead" style="margin-top:22px;">Estructura y aspecto de esta página los pone la Plantilla. El texto entero se redacta con los datos reales del titular en el sitio del cliente, con <em>wordpress-legal</em>. Lo de aquí describe a la marca ficticia ESCUADRA para mostrar cómo queda.</p>
 
     <h2 class="h3" style="margin-top:var(--sp-section);">Titular del sitio</h2>
@@ -1072,8 +1226,8 @@ main{display:block;}
 
   <p class="breadcrumb"><a href="#portada">ESCUADRA</a><span class="sep">/</span><span class="cur">Privacidad</span></p>
 
-  <section class="section-tight container" style="max-width:868px;">
-    <h1 class="h1" style="font-size:clamp(2rem,1.2rem + 3.5vw,3.5rem);">Política de privacidad</h1>
+  <section class="section-tight container medida-lectura">
+    <h1 class="h1">Política de privacidad</h1>
     <p class="lead" style="margin-top:22px;">Estructura y aspecto de esta página los pone la Plantilla. El texto entero, con el responsable real y sus finalidades, se redacta en el sitio del cliente con <em>wordpress-legal</em>. Lo de aquí describe a la marca ficticia ESCUADRA.</p>
 
     <h2 class="h3" style="margin-top:var(--sp-section);">Responsable del tratamiento</h2>
@@ -1100,8 +1254,8 @@ main{display:block;}
 
   <p class="breadcrumb"><a href="#portada">ESCUADRA</a><span class="sep">/</span><span class="cur">Cookies</span></p>
 
-  <section class="section-tight container" style="max-width:868px;">
-    <h1 class="h1" style="font-size:clamp(2rem,1.2rem + 3.5vw,3.5rem);">Política de cookies</h1>
+  <section class="section-tight container medida-lectura">
+    <h1 class="h1">Política de cookies</h1>
     <p class="lead" style="margin-top:22px;">Una cookie es un fichero pequeño que el sitio guarda en tu navegador. Aquí se listan sólo las que escuadra.es carga de verdad; el sitio del cliente se audita con <em>wordpress-legal</em> antes de publicar esta página, para que la lista nunca prometa menos de lo que carga.</p>
 
     <h2 class="h3" style="margin-top:var(--sp-section);">Cookies técnicas, siempre activas</h2>
@@ -1120,7 +1274,7 @@ main{display:block;}
 </div>
 <div class="page" id="404" data-title="Página no encontrada — ESCUADRA">
 
-  <section class="section container" style="padding-top:clamp(3rem,2rem + 3vw,5rem);padding-bottom:clamp(3rem,2rem + 3vw,5rem);">
+  <section class="section container" style="padding-top:clamp(3rem,2.296rem + 3.005vw,5rem);padding-bottom:clamp(3rem,2.296rem + 3.005vw,5rem);">
     <div style="max-width:620px;">
       <span class="eyebrow">Error 404</span>
       <h1 class="h1" style="margin-top:10px;font-size:var(--fs-h2);">Esta pieza no está en el almacén.</h1>

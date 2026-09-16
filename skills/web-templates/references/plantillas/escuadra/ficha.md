@@ -61,20 +61,40 @@ de artesanos; hay referencias, bultos y minutos de montaje.
 | Texto secundario | `#55636A` | `#EDEFEE` | 5,38:1 |
 | Ocre de cota, sólo interfaz | `#9C6D12` | `#EDEFEE` | 3,94:1 — pasa el 3:1 de interfaz, no el 4,5:1 de texto |
 
+## Carril declarado
+
+**Margen de página 7,5 % topado en 108px; contenido topado en 1224px.** Es la medida del lienzo a
+1440 (108 de margen, 1224 de caja) expresada como fracción para que aguante entre los dos puntos de
+ruptura, y con TECHO para que por encima de 1440 el contenido no crezca y el sobrante se reparta a
+los lados. Un solo valor gobierna cabecera, migas, rail de departamentos, menú móvil, secciones y
+pie: `--carril: max(clamp(20px, 7,5 %, 108px), (100 % − 1224px) / 2)`.
+
+Por qué con techo y no sólo con fracción: el registro de artículos es una tabla de seis columnas y
+un contenido que sigue creciendo con la pantalla separa el nombre del artículo de su precio hasta
+que dejan de leerse como la misma fila. Y por qué escrito como RELLENO y no como caja topada con
+`margin:auto`: un relleno en porcentaje dentro de un `max-width` **suma** el centrado al margen y
+resuelve el porcentaje contra la pantalla, no contra la caja topada. Medido antes del arreglo:
+contenido de 1224px a 1440, **1188 a 1680, 1152 a 1920 y 1056 a 2560** —la página se estrechaba al
+ensanchar la pantalla— mientras la cabecera, las migas y el rail de departamentos, que no llevaban
+tope, se quedaban en el 7,5 % de la pantalla: **dos raíles, a 144 y a 384, a 1920**. En Elementor son
+el ancho de contenido de la página y el relleno lateral del contenedor, ambos nativos.
+
 ## Mapeo nativo
 
 **Propuesto, no verificado todavía contra el vocabulario nativo introspeccionado.**
 
 | Sección | Elementor (nativo) | Nota |
 |---|---|---|
-| Cabecera de dos filas | Theme Builder: contenedor de marca y utilidades + contenedor rejilla de seis columnas con el Menú | Cada departamento en su columna de 204 |
+| Cabecera de dos filas | Theme Builder: contenedor de marca y utilidades + contenedor rejilla de seis columnas con el Menú | Cada departamento en su columna de 204, que es exacta sobre el contenido topado de 1224 a 1440 y por encima; entre 1025 y 1440 las seis columnas se reparten el ancho disponible y por debajo de 1024 el rail se desplaza dentro de sí mismo |
 | Salón con su factura | Imagen + Loop Grid de seis filas + contenedor con Encabezado de total + Botón | |
 | «Añadir el salón al carro» | **Producto agrupado** de WooCommerce con las seis referencias | Nativo: añade varias al carro desde un formulario. **El total 598,00 € no lo calcula WooCommerce**: es texto escrito a mano y se desincroniza si cambia un precio |
 | Miniaturas de departamento | Contenedor rejilla de tres + Imagen + Encabezado + etiqueta de recuento | El recuento es texto: WooCommerce no expone el número de productos de una categoría como etiqueta dinámica nativa, **no verificado** |
 | Cota | Contenedor de 9px de alto con borde superior de 2px y bordes laterales de 1px | Bordes por lado del contenedor, nativos |
-| Catálogo acotado | Loop Grid con Loop Item de una fila | Medidas, bultos y minutos como atributos. **No verificado** su lectura dinámica por fila |
+| Catálogo acotado | Loop Grid con Loop Item de una fila | Medidas, bultos y minutos como atributos. **No verificado** su lectura dinámica por fila. Columnas del lienzo, en fracción del contenido: 9,15 % · 32,03 % · 20,59 % · 10,62 % · 10,62 % · 16,99 % (112 · 392 · 252 · 130 · 130 · 208 sobre 1224). El rótulo de columna y su dato usan LAS MISMAS fracciones: por debajo de 767 la fila se apila y la cabecera se retira |
+| Registro del salón, de departamentos y de pasos de montaje | El mismo Loop Item con otro juego de columnas | El lienzo les da repartos propios: 112·380·188·124 sobre 804 (salón), 612·306·306 sobre 1224 (departamentos de portada), 70·452·158 sobre 680 (pasos) y nombre/recuento a los extremos (departamentos de La marca) |
 | Ficha: compra | `woocommerce-product-title` + `woocommerce-product-price` + `woocommerce-product-add-to-cart` | |
 | Ficha: todo lo que mide | Contenedores flex por fila | |
+| Escalones de titular y de precio | Tamaños globales de Site Settings | El lienzo dibuja CUATRO h2 (44 · 40 · 36 · 32) y CUATRO precios (38 total · 30 ficha · 22 pieza destacada · 19 fila de cota). Faltaban el h2 de 40 y el de 36 y los precios de 30 y 19, y se falseaban con un tamaño en línea en una dirección o en la otra |
 | Pie | Theme Builder | |
 
 ## Páginas
@@ -132,8 +152,13 @@ exista.
 **Tres miniaturas son recortes** de fotos que salen enteras más abajo en la misma página. Es la
 relación índice → departamento de cualquier tienda de hogar y se deja así a propósito.
 
-**Sin veredicto.** Geometría medida en las cinco láminas: 108px = 7,5%, cero raíles por dentro, cero
-tinta al cristal, cero desborde. La portada y la ficha existentes pasaron cuatro rondas de juez antes
+**Sin veredicto.** Geometría medida con Chrome sin cabeza contra los cinco artboards a 1440 y la
+maqueta a 430, 768, 1024, 1280, 1440, 1680, 1920 y 2560, más 1920 dentro de un `iframe` con barra de
+desplazamiento: **un solo carril a todos los anchos**, contenido de 1224 desde 1440 en adelante, cero
+raíles por dentro del margen dominante, cero tinta al cristal, cero desborde, cero solapes entre
+elementos renderizados (`checkVisibility()`), cero precios partidos y consola limpia salvo el favicon.
+Alto de página contra su artboard: portada +0,1 %, categoría −2,0 %, ficha +2,8 %, la marca +0,7 %,
+contacto −4,1 %. La portada y la ficha existentes pasaron cuatro rondas de juez antes
 de esta entrega; las tres láminas nuevas y la maqueta entera no las ha pasado — `blind-judges` y el
 barrido a 430/768/1280 de `visual-verification` no se han ejecutado todavía, así que `_indice.md` debe
 seguir marcando ESCUADRA «sin veredicto» y no se ofrece a un cliente. La geometría es correcta por
