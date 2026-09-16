@@ -22,16 +22,8 @@
 
 <div data-suelo style="width: 1440px; background: #F3F6F7; overflow: hidden">
 
-  <!-- dark utility strip -->
-  <div style="display: flex; align-items: center; justify-content: space-between; height: 40px; padding: 0 72px; background: #111A1F">
-    <span style="font-size: 12px; color: #B9C6CC">Polígono Prado Marina, nave 12 · 09400 Aranda de Duero (Burgos)</span>
-    <div style="display: flex; align-items: center; gap: 26px">
-      <span style="font-size: 12px; color: #B9C6CC">L–V 9:30–14:00 y 16:30–20:00 · S 10:00–14:00</span>
-      <span style="font-size: 12px; font-weight: 600; color: #F3F6F7; font-variant-numeric: tabular-nums">947 50 12 88</span>
-    </div>
-  </div>
-
-  <!-- header -->
+  <!-- header: un solo piso. La franja oscura de dirección/horario/teléfono se retiró; el
+       teléfono, que es la acción real del negocio, se queda en esta misma fila. -->
   <div style="display: flex; align-items: center; justify-content: space-between; height: 74px; padding: 0 72px; background: #FFFFFF; border-bottom: 1px solid #C7D2D7">
     <div style="display: flex; align-items: center; gap: 44px">
       <div style="display: flex; align-items: center; gap: 10px">
@@ -51,7 +43,7 @@
         <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5.2 2.5 6.6 5 5.4 6.4a8 8 0 0 0 4.2 4.2L11 9.4l2.5 1.4v2.2c0 .5-.4.9-.9.8C6.6 13.2 2.8 9.4 2.2 3.4a.85.85 0 0 1 .8-.9h2.2Z" stroke="#111A1F" stroke-width="1.3" stroke-linejoin="round"></path></svg>
         947 50 12 88
       </span>
-      <a href="#" style="font-size: 14px; font-weight: 600; color: #0B5D6B; border: 1px solid #0B5D6B; border-radius: 2px; padding: 10px 18px">Tasar mi coche</a>
+      <a href="#" style="font-size: 14px; font-weight: 600; color: #0B5D6B; border: 1px solid #0B5D6B; border-radius: 2px; padding: 10px 18px">Cuánto vale tu coche</a>
     </div>
   </div>
 
@@ -68,68 +60,37 @@
     <p style="margin-top: 12px; font-size: 15px; line-height: 1.6; color: #55666E; max-width: 66ch">34 unidades hoy, cada una con su propia revisión de 137 puntos. Matrícula, año, kilómetros, combustible, cambio y precio en la misma fila: sin entrar en una ficha para descartar un coche.</p>
   </div>
 
-  <!-- filtros -->
-  <div id="listado-filtros" style="margin-top: 28px; background: #E4EAED; border-top: 1px solid #C7D2D7; border-bottom: 1px solid #C7D2D7; padding: 22px 72px 24px">
-    <div style="display: flex; align-items: flex-end; gap: 12px">
-      <div style="flex-grow: 1; min-width: 0">
-        <div style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 10.5px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #55666E">Marca</div>
-        <div style="display: flex; align-items: center; justify-content: space-between; height: 46px; margin-top: 6px; padding: 0 13px; background: #FFFFFF; border: 1px solid #C7D2D7; border-radius: 2px">
-          <span style="font-size: 14.5px; color: #111A1F">Todas</span>
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" stroke="#55666E" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-        </div>
-      </div>
-      <div style="flex-grow: 1; min-width: 0">
-        <div style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 10.5px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #55666E">Precio hasta</div>
-        <div style="display: flex; align-items: center; justify-content: space-between; height: 46px; margin-top: 6px; padding: 0 13px; background: #FFFFFF; border: 1px solid #C7D2D7; border-radius: 2px">
-          <span style="font-size: 14.5px; color: #111A1F; font-variant-numeric: tabular-nums">45.000&nbsp;€</span>
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" stroke="#55666E" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-        </div>
-      </div>
-      <div style="flex-grow: 1; min-width: 0">
-        <div style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 10.5px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #55666E">Año desde</div>
-        <div style="display: flex; align-items: center; justify-content: space-between; height: 46px; margin-top: 6px; padding: 0 13px; background: #FFFFFF; border: 1px solid #C7D2D7; border-radius: 2px">
-          <span style="font-size: 14.5px; color: #111A1F; font-variant-numeric: tabular-nums">2018</span>
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" stroke="#55666E" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-        </div>
-      </div>
-      <div style="flex-grow: 1; min-width: 0">
-        <div style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 10.5px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #55666E">Combustible</div>
-        <div style="display: flex; align-items: center; justify-content: space-between; height: 46px; margin-top: 6px; padding: 0 13px; background: #FFFFFF; border: 1px solid #C7D2D7; border-radius: 2px">
-          <span style="font-size: 14.5px; color: #111A1F">Todos</span>
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" stroke="#55666E" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-        </div>
-      </div>
-      <div style="flex-grow: 1; min-width: 0">
-        <div style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 10.5px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #55666E">Cambio</div>
-        <div style="display: flex; align-items: center; justify-content: space-between; height: 46px; margin-top: 6px; padding: 0 13px; background: #FFFFFF; border: 1px solid #C7D2D7; border-radius: 2px">
-          <span style="font-size: 14.5px; color: #111A1F">Todos</span>
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" stroke="#55666E" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-        </div>
-      </div>
-      <div style="flex-grow: 1; min-width: 0">
-        <div style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 10.5px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #55666E">Km máximos</div>
-        <div style="display: flex; align-items: center; justify-content: space-between; height: 46px; margin-top: 6px; padding: 0 13px; background: #FFFFFF; border: 1px solid #C7D2D7; border-radius: 2px">
-          <span style="font-size: 14.5px; color: #111A1F; font-variant-numeric: tabular-nums">150.000</span>
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" stroke="#55666E" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-        </div>
-      </div>
-      <a href="#" style="display: flex; align-items: center; justify-content: center; width: 196px; height: 46px; background: #0B5D6B; color: #FFFFFF; font-size: 14.5px; font-weight: 600; border-radius: 2px; flex-shrink: 0">Filtrar 34 coches</a>
-    </div>
-    <div style="display: flex; align-items: center; gap: 8px; margin-top: 16px">
-      <span style="font-size: 13px; color: #55666E; margin-right: 4px">Búsquedas rápidas:</span>
-      <a href="#" style="font-size: 13px; color: #111A1F; border: 1px solid #C7D2D7; border-radius: 2px; padding: 7px 12px; background: #FFFFFF">Automáticos (19)</a>
-      <a href="#" style="font-size: 13px; color: #111A1F; border: 1px solid #C7D2D7; border-radius: 2px; padding: 7px 12px; background: #FFFFFF">Menos de 60.000 km (11)</a>
-      <a href="#" style="font-size: 13px; color: #111A1F; border: 1px solid #C7D2D7; border-radius: 2px; padding: 7px 12px; background: #FFFFFF">Etiqueta ECO (7)</a>
-      <a href="#" style="font-size: 13px; color: #111A1F; border: 1px solid #C7D2D7; border-radius: 2px; padding: 7px 12px; background: #FFFFFF">Hasta 15.000&nbsp;€ (6)</a>
-      <a href="#" style="font-size: 13px; color: #111A1F; border: 1px solid #C7D2D7; border-radius: 2px; padding: 7px 12px; background: #FFFFFF">Sin entrada (22)</a>
-    </div>
-  </div>
-
   <!-- tabla -->
-  <div id="listado-tabla" style="padding: 36px 72px 0">
+  <div id="listado-tabla" style="padding: 0 72px">
 
+    <!-- buscador + fichas conmutables: sustituyen a la banda de seis columnas con botón al canto -->
+    <div style="display: flex; align-items: center; gap: 18px; margin-top: 24px">
+      <div style="display: flex; align-items: center; gap: 10px; width: 420px; height: 48px; padding: 0 14px; background: #FFFFFF; border: 1px solid #C7D2D7; border-radius: 2px">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="4.6" stroke="#55666E" stroke-width="1.4"></circle><path d="M10.4 10.4 14 14" stroke="#55666E" stroke-width="1.4" stroke-linecap="round"></path></svg>
+        <span style="font-size: 15px; color: #55666E">Matrícula, marca o modelo</span>
+      </div>
+      <p style="font-size: 13.5px; color: #55666E">34 unidades hoy · actualizado a las 09:14</p>
+    </div>
+    <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 14px">
+      <span style="font-size: 13px; color: #55666E; margin-right: 4px">Motor y cambio:</span>
+      <a href="#" style="font-size: 13px; color: #111A1F; border: 1px solid #C7D2D7; border-radius: 2px; padding: 7px 12px; background: #FFFFFF">Diésel <span style="color: #55666E; font-variant-numeric: tabular-nums">14</span></a>
+      <a href="#" style="font-size: 13px; color: #111A1F; border: 1px solid #C7D2D7; border-radius: 2px; padding: 7px 12px; background: #FFFFFF">Gasolina <span style="color: #55666E; font-variant-numeric: tabular-nums">16</span></a>
+      <a href="#" style="font-size: 13px; color: #111A1F; border: 1px solid #C7D2D7; border-radius: 2px; padding: 7px 12px; background: #FFFFFF">Híbrido <span style="color: #55666E; font-variant-numeric: tabular-nums">4</span></a>
+      <a href="#" style="font-size: 13px; color: #111A1F; border: 1px solid #C7D2D7; border-radius: 2px; padding: 7px 12px; background: #FFFFFF">Automático <span style="color: #55666E; font-variant-numeric: tabular-nums">19</span></a>
+      <a href="#" style="font-size: 13px; color: #111A1F; border: 1px solid #C7D2D7; border-radius: 2px; padding: 7px 12px; background: #FFFFFF">Manual <span style="color: #55666E; font-variant-numeric: tabular-nums">15</span></a>
+      <a href="#" style="font-size: 13px; color: #111A1F; border: 1px solid #C7D2D7; border-radius: 2px; padding: 7px 12px; background: #FFFFFF">Etiqueta ECO <span style="color: #55666E; font-variant-numeric: tabular-nums">7</span></a>
+    </div>
+    <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 14px">
+      <span style="font-size: 13px; color: #55666E; margin-right: 4px">Precio y uso:</span>
+      <a href="#" style="font-size: 13px; color: #111A1F; border: 1px solid #C7D2D7; border-radius: 2px; padding: 7px 12px; background: #FFFFFF">Hasta 15.000&nbsp;€ <span style="color: #55666E; font-variant-numeric: tabular-nums">6</span></a>
+      <a href="#" style="font-size: 13px; color: #111A1F; border: 1px solid #C7D2D7; border-radius: 2px; padding: 7px 12px; background: #FFFFFF">De 15.000 a 30.000&nbsp;€ <span style="color: #55666E; font-variant-numeric: tabular-nums">17</span></a>
+      <a href="#" style="font-size: 13px; color: #111A1F; border: 1px solid #C7D2D7; border-radius: 2px; padding: 7px 12px; background: #FFFFFF">Menos de 60.000&nbsp;km <span style="color: #55666E; font-variant-numeric: tabular-nums">11</span></a>
+      <a href="#" style="font-size: 13px; color: #111A1F; border: 1px solid #C7D2D7; border-radius: 2px; padding: 7px 12px; background: #FFFFFF">De 2018 en adelante <span style="color: #55666E; font-variant-numeric: tabular-nums">24</span></a>
+      <a href="#" style="font-size: 13px; color: #111A1F; border: 1px solid #C7D2D7; border-radius: 2px; padding: 7px 12px; background: #FFFFFF">Familiares y SUV <span style="color: #55666E; font-variant-numeric: tabular-nums">14</span></a>
+      <a href="#" style="font-size: 13px; color: #111A1F; border: 1px solid #C7D2D7; border-radius: 2px; padding: 7px 12px; background: #FFFFFF">Sin entrada <span style="color: #55666E; font-variant-numeric: tabular-nums">22</span></a>
+    </div>
     <!-- encabezado de columnas -->
-    <div style="display: grid; grid-template-columns: 64px 300px 56px 86px 104px 100px 260px 126px 40px; column-gap: 20px; align-items: end; padding-bottom: 12px; border-bottom: 1px solid #111A1F">
+    <div style="display: grid; grid-template-columns: 64px 300px 56px 86px 104px 100px 260px 126px 40px; column-gap: 20px; align-items: end; margin-top: 30px; padding-bottom: 12px; border-bottom: 1px solid #111A1F">
       <span style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #55666E">Ref.</span>
       <span style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #55666E">Vehículo</span>
       <span style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #55666E">Año</span>

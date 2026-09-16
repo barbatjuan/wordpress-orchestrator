@@ -288,6 +288,18 @@ derecho no queda pieza compartida que reconocer. Cambió el lienzo (`Terrazza.dc
 y la maqueta a la vez; ni la paleta, ni el par tipográfico, ni las demás bandas se tocaron. La banda
 de bronce del cierre no entra en el cambio: es una rejilla de 2×2 con el botón debajo, otra pieza.
 
+**Y sobre el titular de portada ya no va nada.** El mismo juez ciego emparejó `terrazza` con `delao`
+por una segunda pieza: la etiqueta en versalita ámbar con «·» de separador colgada encima de un
+titular en serifa fina («Brasa de encina y arroz de secano · desde 1998»). Se retiró el elemento y
+lo que decía abre ahora el párrafo, en caja baja, sin acento y sin «·»: «Brasa de encina y arroz de
+secano desde 1998. Una carta corta que cambia los martes…». No se pierde información —es la misma
+frase, dicha como prosa— y el nombre en Fraunces a 94px se sostiene solo encima de ella. Los otros
+siete `.eyebrow` de la maqueta viven en páginas interiores, no en la portada que el juez mira, y se
+quedan como están. El cambio no toca ningún elemento nativo: el hero era Encabezado + Editor de
+texto y lo sigue siendo, con un Editor de texto menos, así que la tabla «Mapeo nativo» no cambia.
+La frase de reserva no se tocó. Cambiaron el lienzo y la maqueta a la vez, y `canvas.json` recogió
+el alto de la portada: 5438 → 5428.
+
 **La página más débil es Nosotros, y es por la fotografía, no por el texto.** De las siete
 fotografías, sólo `terrazza-chef` retrata a una persona con nombre — Álex Ibáñez, ya presente en la
 portada. Marisol Peris y Nando Costa, los otros dos nombres del equipo, no tienen fotografía propia

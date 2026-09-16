@@ -201,9 +201,12 @@ section{padding-block:var(--sp-section)}
 .titular-largo{font-size:var(--fs-h1-largo)}
 .seccion-alt{background:var(--c-bg-alt)}
 
-/* ══ hero de inicio ══ */
+/* ══ hero de inicio ══
+   Sobre el titular no va nada. La etiqueta en versalita ámbar con «·» que abría la portada se
+   fundió en la primera frase del párrafo, en caja baja y sin acento: el nombre en serifa fina se
+   sostiene solo, y lo que decía la etiqueta sigue dicho, como prosa. */
 .hero{padding:78px var(--page-margin) 66px}
-.hero h1{margin-top:26px;line-height:.98;letter-spacing:-.025em;font-size:var(--fs-h1-hero)}
+.hero h1{margin-top:0;line-height:.98;letter-spacing:-.025em;font-size:var(--fs-h1-hero)}
 .hero .lede{margin-top:26px;max-width:60ch;font-size:var(--fs-lede-hero);font-weight:300;line-height:1.6}
 /* La reserva NO es una barra de campos. La fila de cinco columnas que había aquí —etiqueta en
    versalita arriba, valor debajo y botón sólido a ancho completo pegado al borde derecho— es la
@@ -624,9 +627,8 @@ footer.site{padding-top:66px}
 <div class="page activa" id="inicio" data-title="Casa Terrazza — Brasa de encina y arroz de secano en València">
 
   <section class="hero wrap">
-    <p class="eyebrow">Brasa de encina y arroz de secano · desde&nbsp;1998</p>
     <h1>Casa Terrazza</h1>
-    <p class="lede">Una carta corta que cambia los martes, una parrilla que no se apaga y los precios donde tienen que estar: a la vista, antes de que preguntes.</p>
+    <p class="lede">Brasa de encina y arroz de secano desde&nbsp;1998. Una carta corta que cambia los martes, una parrilla que no se apaga y los precios donde tienen que estar: a la vista, antes de que preguntes.</p>
     <div class="frase-reserva">
       <span>Mesa para</span>
       <span class="hueco">2 comensales</span>

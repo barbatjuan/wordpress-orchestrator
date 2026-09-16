@@ -9,7 +9,7 @@ dónde sale» más abajo).
 
 | Artboard | Página | Tamaño | Alto declarado |
 |---|---|---|---|
-| `Terrazza.dc.html` | inicio (portada) | 1440 × 5438 | **medido**, no tecleado |
+| `Terrazza.dc.html` | inicio (portada) | 1440 × 5428 | **medido**, no tecleado |
 | `Carta.dc.html` | la carta (listado) | 1440 × 3813 | **medido**, no tecleado |
 | `Plato.dc.html` | el plato de la semana (detalle) | 1440 × 2710 | **medido**, no tecleado |
 | `Nosotros.dc.html` | nosotros | 1440 × 2891 | **medido**, no tecleado |
@@ -24,7 +24,8 @@ corrido una sola vez sobre las cinco láminas con
 como base:
 
 ```
-Terrazza.dc.html     alto  5438  ancho 1440  imgs 7 (rotas 7)
+Terrazza.dc.html     alto  5428  ancho 1440  imgs 7 (rotas 7)   (antes 5438: se retiró la
+                                                                 etiqueta sobre el titular)
 Carta.dc.html        alto  3813  ancho 1440  imgs 1 (rotas 1)
 Plato.dc.html        alto  2710  ancho 1440  imgs 1 (rotas 1)
 Nosotros.dc.html     alto  2891  ancho 1440  imgs 2 (rotas 2)

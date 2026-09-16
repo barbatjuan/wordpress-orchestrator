@@ -9,25 +9,25 @@ sale» más abajo).
 
 | Artboard | Página | Tamaño | Alto declarado |
 |---|---|---|---|
-| `Aranda.dc.html` | portada | 1440 × 3636 | **medido**, no tecleado |
-| `Listado.dc.html` | listado del stock | 1440 × 1906 | **medido**, no tecleado |
-| `Ficha.dc.html` | ficha del Hyundai Tucson A-2390 | 1440 × 1687 | **medido**, no tecleado |
-| `Nosotros.dc.html` | nosotros | 1440 × 1882 | **medido**, no tecleado |
-| `Contacto.dc.html` | contacto | 1440 × 1206 | **medido**, no tecleado |
+| `Aranda.dc.html` | portada | 1440 × 3602 | **medido**, no tecleado |
+| `Listado.dc.html` | listado del stock | 1440 × 1837 | **medido**, no tecleado |
+| `Ficha.dc.html` | ficha del Hyundai Tucson A-2390 | 1440 × 1647 | **medido**, no tecleado |
+| `Nosotros.dc.html` | nosotros | 1440 × 1842 | **medido**, no tecleado |
+| `Contacto.dc.html` | contacto | 1440 × 1166 | **medido**, no tecleado |
 
 `canvas.json` coloca los cinco artboards en dos filas — portada y listado arriba, ficha, nosotros y
 contacto debajo — con 80px entre láminas de la misma fila y 124px entre filas. **El alto de cada
-fila sale de `alto-contenido.mjs`** (Chrome headless por CDP, `getBoundingClientRect()` del
-envoltorio `[data-suelo]` con el `<helmet>` oculto), corrido una sola vez sobre las cinco láminas
-con `file:///C:/Users/Juan/temas/novamira-web-framework/skills/web-templates/references/plantillas/aranda/canvas/`
-como base:
+fila sale de una medida sobre el render** (Chrome headless por CDP, `getBoundingClientRect()` del
+envoltorio de la lámina), corrida sobre las cinco láminas servidas desde esta carpeta. Los altos
+bajaron al retirarse la franja de utilidad de las cinco cabeceras, y en portada y listado también al
+sustituirse la banda de filtros por el buscador con fichas:
 
 ```
-Aranda.dc.html       alto  3636  ancho 1440  imgs 10 (rotas 10)
-Listado.dc.html      alto  1906  ancho 1440  imgs 0 (rotas 0)
-Ficha.dc.html        alto  1687  ancho 1440  imgs 3 (rotas 3)
-Nosotros.dc.html     alto  1882  ancho 1440  imgs 1 (rotas 1)
-Contacto.dc.html     alto  1206  ancho 1440  imgs 0 (rotas 0)
+Aranda.dc.html       alto  3602  ancho 1440  imgs 10 (rotas 10)   (antes 3636)
+Listado.dc.html      alto  1837  ancho 1440  imgs 0 (rotas 0)     (antes 1906)
+Ficha.dc.html        alto  1647  ancho 1440  imgs 3 (rotas 3)     (antes 1687)
+Nosotros.dc.html     alto  1842  ancho 1440  imgs 1 (rotas 1)     (antes 1882)
+Contacto.dc.html     alto  1166  ancho 1440  imgs 0 (rotas 0)     (antes 1206)
 ```
 
 Las imágenes salen «rotas» al abrir el fichero suelto desde esta carpeta: es lo esperado (ver «Cómo
