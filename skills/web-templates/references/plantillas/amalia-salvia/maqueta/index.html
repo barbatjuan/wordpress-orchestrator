@@ -1,3 +1,4 @@
+<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Amalia Yoga — Estudio de yoga en Chamberí, Madrid</title>
@@ -44,7 +45,14 @@
 *{box-sizing:border-box}
 html,body{margin:0;padding:0;background:#F2F5F0}
 body{font-family:var(--font-body);font-weight:300;color:var(--c-text);background:var(--c-bg);font-size:1rem;
-     line-height:1.7;-webkit-font-smoothing:antialiased}
+     line-height:normal;-webkit-font-smoothing:antialiased}
+/* La interlínea de 1,7 es la de la PROSA, y el lienzo la declara párrafo a párrafo: su suelo
+   (`data-suelo`) no lleva ninguna, así que rótulos, menú, cifras, listas de plan, pies de tarjeta
+   y etiquetas van a `normal`. Puesta en `body`, la heredaba todo lo que no tuviera regla propia y
+   cada banda crecía entre un 7 y un 16 % — la caja del h3 del equipo pasaba de 31 a 44px, la del
+   «Suelta» de los planes de 34 a 48 y la del «Escríbenos» del formulario de 48 a 68. Aquí va
+   `normal`, como en el lienzo; la prosa ya lleva la suya en cada bloque (.lede, .slide-texto,
+   .dos-parrafos p, .tarjeta-clase p, .paso p, .clase-texto p, .entrada-texto p, .legal-sec p). */
 img{display:block;max-width:100%}
 p{margin:0}
 h1,h2,h3,h4{margin:0;font-family:var(--font-display);font-weight:400;color:var(--c-text-ink);overflow-wrap:normal;word-break:normal}
@@ -108,19 +116,40 @@ input,select,textarea{font:inherit;color:inherit}
   --c-punto-velo:rgba(242,245,240,.6);
   --c-marco-foto:#DEE7DA;
 
-  /* Margen medido en el lienzo: max(clamp(20px, 4vw, 64px), (100% - 1120px) / 2). Viaja como
-     fracción del ancho, con tope de medida en 1120px. */
-  --page-margin:max(clamp(20px, 4vw, 64px), calc((100% - 1120px) / 2));
+  /* ── Carril y tope de medida. El lienzo escribe `max(clamp(20px, 4vw, 64px), (100% - 1120px)/2)`
+     en cada sección, y a 1440 compone 1074,8px de contenido dentro de una columna de 1190 (1440
+     menos el raíl de 250). Los dos números fallaban por encima de 1440:
 
-  --fs-h1-hero:clamp(2.875rem, 6.2vw, 6.5rem);
-  --fs-h1:clamp(2.5rem, 6vw, 6.5rem);
-  --fs-h2:clamp(2rem, 4.2vw, 4.25rem);
-  --fs-h2-s:clamp(1.75rem, 3.4vw, 3.25rem);
-  --fs-lede:clamp(.9375rem, 1.2vw, 1.125rem);
+       · el `vw` mide el CRISTAL mientras el relleno se resuelve contra la COLUMNA, así que la
+         fracción se desliza en cuanto el raíl deja de ser una parte constante de la pantalla — y
+         dentro del iframe con barra con el que se mira la maqueta, `vw` sigue midiendo 1920
+         cuando la caja mide 1905. Va en % del contenedor: el 4,84 % da exactamente los 57,6px
+         del lienzo a 1440.
+       · el tope de 1120px NUNCA llegaba a aplicarse a 1440 (esa rama da 35px y pierde contra los
+         57,6), así que sólo entraba a partir de ~1607px y ensanchaba el contenido hasta 1120: la
+         composición de 1440 se estiraba 45px justo donde nadie la había medido. El tope es lo que
+         el lienzo COMPONE a 1440 —1075px— y desde ahí el contenido se queda clavado.
 
-  --sp-amplia:clamp(4rem, 9vw, 8.75rem);
-  --sp-media:clamp(3.5rem, 7.5vw, 7.5rem);
-  --sp-compacta:clamp(2.75rem, 6vw, 6rem);
+     Nativo: contenedor «en caja» de 1075px con relleno lateral del 4,84 %. ── */
+  --contenido-max:1075px;
+  --page-margin:max(clamp(20px, 4.84%, 64px), calc((100% - var(--contenido-max)) / 2));
+
+  --fs-h1-hero:clamp(2.875rem, 6.2vw, 5.58rem);
+  --fs-h1:clamp(2.5rem, 6vw, 5.4rem);
+  --fs-h2:clamp(2rem, 4.2vw, 3.78rem);
+  --fs-h2-s:clamp(1.75rem, 3.4vw, 3.06rem);
+  --fs-lede:clamp(.9375rem, 1.2vw, 1.08rem);
+
+  /* ── Ritmo vertical. El lienzo lo escribe en `vh` —12vh, 10vh, 8vh— y a 1440×900 compone 108,
+     90 y 72px. La primera derivación pasó esos `vh` a `vw` con el coeficiente equivocado y las
+     tres pendientes salieron EXACTAMENTE un 20 % largas (129,6 / 108 / 86,4), que es de donde
+     venían los 444px de más de Inicio. Aquí van en `vw` para que el ritmo no dependa del alto de
+     la ventana, calculadas para tocar el número del lienzo justo a 1440, y con tope en ese mismo
+     número: por encima de 1440 el contenido ya está topado en 1075 y las bandas no siguen
+     creciendo solas. ── */
+  --sp-amplia:clamp(4rem, 7.5vw, 6.75rem);      /* 12vh del lienzo → 108px a 1440 */
+  --sp-media:clamp(3.5rem, 6.25vw, 5.625rem);   /* 10vh → 90px */
+  --sp-compacta:clamp(2.75rem, 5vw, 4.5rem);    /*  8vh → 72px */
   --gap:clamp(20px, 3vw, 44px);
   --ease:cubic-bezier(.2,.7,.2,1);
 }
@@ -135,7 +164,7 @@ section{padding-inline:var(--page-margin)}
 .skip{position:absolute;left:-9999px;top:0;z-index:99;background:var(--c-text-ink);color:var(--c-bg);padding:14px 20px;font-size:.875rem}
 .skip:focus{left:16px;top:14px}
 .divisor{flex:1;height:1px;background:var(--c-filete)}
-.linea-rotulo{display:flex;align-items:center;gap:18px;margin-bottom:clamp(24px,3.5vw,52px)}
+.linea-rotulo{display:flex;align-items:center;gap:18px;margin-bottom:clamp(24px,3.5vw,3.15rem)}
 .linea-rotulo .eyebrow{margin:0}
 .enlace-subrayado{display:inline-block;margin-top:clamp(28px,3vw,44px);padding-bottom:4px;border-bottom:1px solid var(--c-salvia-clara);font-size:.8125rem;font-weight:400;letter-spacing:.12em;text-transform:uppercase;color:var(--c-text-ink);transition:border-color .35s var(--ease)}
 .enlace-subrayado:hover{border-color:var(--c-accent)}
@@ -178,7 +207,7 @@ section{padding-inline:var(--page-margin)}
 
 /* ═════════════ inicio · diapositivas ═════════════ */
 .slider{position:relative;height:70vh;min-height:520px;overflow:hidden;padding:0;background:var(--c-marco-slide);color:var(--c-bg)}
-.slide{position:absolute;inset:0;display:grid;place-items:center;padding:clamp(40px,6vh,80px) clamp(72px,7vw,110px);opacity:0;visibility:hidden;transition:opacity .7s var(--ease),visibility .7s}
+.slide{position:absolute;inset:0;display:grid;place-items:center;padding:clamp(40px,6vh,80px) clamp(72px,7vw,6.3rem);opacity:0;visibility:hidden;transition:opacity .7s var(--ease),visibility .7s}
 .slide.activa{opacity:1;visibility:visible}
 .slide img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:var(--c-marco-slide)}
 .slide-velo{position:absolute;inset:0;background:var(--c-velo)}
@@ -198,29 +227,35 @@ section{padding-inline:var(--page-margin)}
 .sin-movimiento .slide,.sin-movimiento .slider-punto{transition:none}
 
 /* ═════════════ inicio · tira, filosofía, clases, equipo ═════════════ */
-.tira{display:flex;flex-wrap:wrap;align-items:center;gap:14px clamp(18px,3.5vw,56px);margin-top:clamp(40px,6vw,88px);padding-block:22px;
+.tira{display:flex;flex-wrap:wrap;align-items:center;gap:14px clamp(18px,3.5vw,3.15rem);margin-top:clamp(40px,4.375vw,3.9375rem);padding-block:22px;
       border-top:1px solid var(--c-filete);border-bottom:1px solid var(--c-filete);font-size:.75rem;font-weight:400;letter-spacing:.16em;text-transform:uppercase;color:var(--c-text-muted)}
 .tira-cta{margin-left:auto;color:var(--c-accent)}
 .tira-cta:hover{color:var(--c-text-ink)}
 
-.filo{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:clamp(28px,6vw,88px);align-items:start;padding-block:var(--sp-amplia)}
+.filo{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:clamp(28px,6vw,5.4rem);align-items:start;padding-block:var(--sp-amplia)}
 .filo-media{position:sticky;top:120px}
 .filo-media img,.foto-45{width:100%;max-width:100%;min-width:0;height:auto;aspect-ratio:4/5;object-fit:cover;background:var(--c-marco-foto)}
 .filo-media img{border-radius:12px}
-.filo-copy h2{max-width:24ch;font-size:clamp(2.125rem,4.6vw,4.75rem);line-height:1.04;letter-spacing:-.015em}
-.dos-parrafos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(20px,3vw,48px);margin-top:clamp(32px,4vw,56px)}
+.filo-copy h2{max-width:24ch;font-size:clamp(2.125rem,4.6vw,4.14rem);line-height:1.04;letter-spacing:-.015em}
+.dos-parrafos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(20px,3vw,2.7rem);margin-top:clamp(32px,3.125vw,2.8125rem)}
 .dos-parrafos p{line-height:1.75;text-wrap:pretty}
-.cifras{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin-top:clamp(36px,5vw,64px);border-top:1px solid var(--c-filete);border-bottom:1px solid var(--c-filete)}
+.cifras{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin-top:clamp(36px,3.75vw,3.375rem);border-top:1px solid var(--c-filete);border-bottom:1px solid var(--c-filete)}
 .cifra{padding:26px 22px}
 .cifra+.cifra{border-left:1px solid var(--c-filete)}
 .cifra-num{font-family:var(--font-display);font-size:2.5rem;line-height:1;color:var(--c-text-ink)}
 .cifra-rotulo{margin-top:8px;font-size:.75rem;font-weight:400;letter-spacing:.12em;text-transform:uppercase;color:var(--c-text-muted)}
 
 .clases{padding-block:var(--sp-media);background:var(--c-bg-alt)}
-.cabecera-seccion{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:24px;padding-bottom:clamp(28px,3vw,48px);border-bottom:1px solid var(--c-filete)}
+.cabecera-seccion{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:24px;padding-bottom:clamp(28px,3vw,2.7rem);border-bottom:1px solid var(--c-filete)}
 .cabecera-seccion h2{max-width:20ch;font-size:var(--fs-h2);line-height:1.05}
 .cabecera-seccion>p{max-width:34ch;font-size:.9375rem;line-height:1.7}
-.rejilla-seis,.rejilla-tres{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(20px,2.5vw,34px);margin-top:clamp(32px,4vw,56px)}
+/* Las seis tarjetas van a DOS columnas, no a tres: el lienzo las compone a 520,4px de ancho
+   (`auto-fit` con mínimo de 340px dentro de 1074,8 sólo caben de dos en dos) tanto en las clases
+   de la portada como en el listado del diario, y a tres quedaban en 335,6 — otra tarjeta, no la
+   misma más estrecha. Las de tres (equipo, diario de portada) sí son tres, con el hueco de 43,2px
+   del lienzo. */
+.rejilla-seis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(20px,2.5vw,34px);margin-top:clamp(32px,3.125vw,2.8125rem)}
+.rejilla-tres{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(20px,3vw,43px);margin-top:clamp(32px,3.125vw,2.8125rem)}
 .tarjeta-clase{display:flex;flex-direction:column;gap:16px;padding:26px 24px 30px;background:var(--c-bg);border:1px solid var(--c-filete-tarjeta);border-radius:4px;transition:border-color .4s var(--ease)}
 .tarjeta-clase:hover{border-color:var(--c-salvia-clara)}
 .tarjeta-clase-top{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
@@ -242,7 +277,7 @@ section{padding-inline:var(--page-margin)}
 .planes-banda{padding-block:var(--sp-media);background:var(--c-text-ink);color:var(--c-bg)}
 .planes-banda h2{max-width:22ch;font-size:var(--fs-h2);line-height:1.05;color:var(--c-bg)}
 .planes-banda .eyebrow{margin-bottom:18px;color:var(--c-sobre-tinta-rotulo)}
-.pestanas{display:flex;width:fit-content;max-width:100%;gap:4px;margin-top:clamp(28px,3vw,40px);padding:5px;border:1px solid var(--c-filete-suave);border-radius:999px}
+.pestanas{display:flex;width:fit-content;max-width:100%;gap:4px;padding:5px;border:1px solid var(--c-filete-suave);border-radius:999px}
 .pestana{min-height:44px;padding:11px 20px;border-radius:999px;font-size:.71875rem;font-weight:400;letter-spacing:.13em;text-transform:uppercase;white-space:nowrap;color:var(--c-text);transition:background .3s var(--ease),color .3s var(--ease)}
 .pestana[aria-selected="true"]{background:var(--c-text-ink);color:var(--c-bg)}
 .planes-banda .pestanas{border-color:var(--c-filete-sobre-tinta)}
@@ -296,9 +331,14 @@ section{padding-inline:var(--page-margin)}
 .tarjeta-entrada:hover h3{color:var(--c-accent)}
 .cabecera-seccion .enlace-subrayado{margin-top:0}
 
-.guia{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(28px,5vw,80px);align-items:center;margin-inline:var(--page-margin);
-      padding:clamp(40px,6vw,88px) clamp(24px,4vw,64px);background:var(--c-bg-alt);border-radius:6px}
-.guia h2{max-width:20ch;font-size:clamp(1.875rem,3.8vw,3.625rem);line-height:1.06}
+/* El relleno interior del panel iba en `vw` y, por encima de 1440, se desenganchaba del carril:
+   a 1920 la banda quedaba a 64px del borde del panel mientras las demás secciones ya estaban en
+   275, y su texto arrancaba 64px a la derecha del raíl de la página. Va en la MISMA fracción que
+   el carril —el % de un relleno se resuelve contra el contenedor, no contra el propio panel—, así
+   que da los 57,6px del lienzo a 1440 y los mantiene una vez el tope de 1075 fija su ancho. */
+.guia{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(28px,5vw,4.5rem);align-items:center;margin-inline:var(--page-margin);
+      padding:clamp(40px,5vw,4.5rem) clamp(24px,4.84%,3.6rem);background:var(--c-bg-alt);border-radius:6px}
+.guia h2{max-width:20ch;font-size:clamp(1.875rem,3.8vw,3.42rem);line-height:1.06}
 .guia .lede{max-width:44ch;margin-top:22px}
 .form-guia{display:flex;flex-direction:column;gap:14px}
 .campo{display:block}
@@ -312,8 +352,8 @@ textarea.campo-caja{min-height:10rem;resize:vertical;line-height:1.6}
 .consentimiento a{color:var(--c-text-ink);text-decoration:underline;text-underline-offset:2px}
 .consentimiento a:hover{color:var(--c-accent)}
 
-.visita{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(28px,4vw,64px);padding-block:var(--sp-amplia) var(--sp-compacta)}
-.visita h2{margin-bottom:clamp(26px,3vw,40px);font-size:clamp(2rem,4.2vw,3.875rem);line-height:1.05}
+.visita{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(28px,4vw,3.6rem);padding-block:var(--sp-amplia) var(--sp-compacta)}
+.visita h2{margin-bottom:clamp(26px,3vw,40px);font-size:clamp(2rem,4.2vw,3.78rem);line-height:1.05}
 .datos-contacto{display:flex;flex-wrap:wrap;gap:12px 28px;margin-top:28px;font-size:.9375rem}
 .datos-contacto a:hover{color:var(--c-accent)}
 .mapa{position:relative;display:flex;flex-direction:column;justify-content:flex-end;gap:6px;min-height:340px;padding:28px;border:1px solid var(--c-filete);border-radius:6px;background:
@@ -329,13 +369,13 @@ textarea.campo-caja{min-height:10rem;resize:vertical;line-height:1.6}
 /* ═════════════ páginas interiores ═════════════ */
 .page{display:none}
 .page.activa{display:block}
-.cabecera-pagina{padding-block:clamp(48px,7vw,104px) clamp(36px,4vw,60px);border-bottom:1px solid var(--c-filete)}
+.cabecera-pagina{padding-block:clamp(48px,5.625vw,5.0625rem) clamp(36px,3.75vw,3.375rem);border-bottom:1px solid var(--c-filete)}
 .cabecera-pagina h1{max-width:22ch;font-size:var(--fs-h1);line-height:1;letter-spacing:-.02em;text-wrap:pretty}
 .cabecera-doble{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(28px,5vw,72px);align-items:end}
 .migas{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:0 0 clamp(18px,2.5vw,32px);font-size:.75rem;font-weight:400;letter-spacing:.18em;text-transform:uppercase;color:var(--c-text-muted)}
 .migas a:hover{color:var(--c-accent)}
 .migas-actual{color:var(--c-accent)}
-.lede-filete{max-width:42ch;padding-left:clamp(16px,1.5vw,26px);border-left:1px solid var(--c-filete)}
+.lede-filete{max-width:42ch;padding-left:clamp(16px,1.5vw,1.35rem);border-left:1px solid var(--c-filete)}
 
 .sala{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(28px,5vw,72px);padding-block:var(--sp-compacta)}
 .sala-copy{display:flex;flex-direction:column;gap:22px}
@@ -344,7 +384,7 @@ textarea.campo-caja{min-height:10rem;resize:vertical;line-height:1.6}
 .sala img{border-radius:6px}
 
 .bloque-alterno{padding-block:var(--sp-compacta);background:var(--c-bg-alt)}
-.bloque-alterno h2{margin-bottom:clamp(28px,3.5vw,52px);font-size:var(--fs-h2-s);line-height:1.06}
+.bloque-alterno h2{margin-bottom:clamp(28px,3.5vw,3.15rem);font-size:var(--fs-h2-s);line-height:1.06}
 .pasos{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(20px,3vw,44px)}
 .paso{padding-top:22px;border-top:1px solid var(--c-filete-suave)}
 .paso .num{display:block;margin-bottom:14px}
@@ -356,10 +396,12 @@ textarea.campo-caja{min-height:10rem;resize:vertical;line-height:1.6}
 .cierre-botones{display:flex;flex-wrap:wrap;gap:14px}
 .cierre--alterno{background:var(--c-bg-alt)}
 
-.tabla-planes{padding-block:clamp(40px,5vw,80px)}
+/* El lienzo deja 63px entre la cabecera y el conmutador, y otros 63 entre las tarjetas y el
+   horario; el relleno de banda los lleva y el conmutador no suma margen propio encima. */
+.tabla-planes{padding-block:clamp(40px,4.375vw,3.9375rem)}
 
 /* clase */
-.clase-cabecera{padding-block:clamp(40px,6vw,88px) clamp(36px,4vw,60px);border-bottom:1px solid var(--c-filete)}
+.clase-cabecera{padding-block:clamp(40px,4.375vw,3.9375rem) clamp(36px,3.75vw,3.375rem);border-bottom:1px solid var(--c-filete)}
 .clase-cabecera h1{font-size:var(--fs-h1);line-height:1;letter-spacing:-.02em}
 .clase-cabecera .lede{max-width:46ch;margin-top:clamp(22px,3vw,36px)}
 .ficha-clase{background:var(--c-bg);border:1px solid var(--c-filete);border-radius:4px}
@@ -384,21 +426,21 @@ textarea.campo-caja{min-height:10rem;resize:vertical;line-height:1.6}
 .chip{min-height:44px;padding:9px 16px;border:1px solid var(--c-filete-suave);border-radius:999px;font-size:.75rem;font-weight:400;letter-spacing:.1em;text-transform:uppercase;color:var(--c-text);transition:border-color .3s var(--ease),color .3s var(--ease)}
 .chip:hover{border-color:var(--c-accent);color:var(--c-accent)}
 .chip[aria-pressed="true"]{background:var(--c-text-ink);border-color:var(--c-text-ink);color:var(--c-bg)}
-.listado-diario{padding-block:clamp(40px,6vw,88px)}
+.listado-diario{padding-block:clamp(40px,4.375vw,3.9375rem)}
 .destacada{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(24px,4vw,56px);align-items:center;padding-bottom:clamp(40px,5vw,72px);border-bottom:1px solid var(--c-filete)}
 .destacada img{width:100%;max-width:100%;min-width:0;height:auto;aspect-ratio:4/3;object-fit:cover;border-radius:6px;background:var(--c-marco-foto)}
 .destacada-meta{margin-bottom:14px;font-size:.71875rem;font-weight:400;letter-spacing:.14em;text-transform:uppercase;color:var(--c-accent)}
 .destacada h2{margin-bottom:16px;font-size:clamp(1.75rem,3.4vw,3.125rem);line-height:1.1;text-wrap:pretty;transition:color .3s var(--ease)}
 .destacada:hover h2{color:var(--c-accent)}
 .destacada p:last-child{max-width:50ch;font-size:.96875rem;line-height:1.72}
-.diario-vacio{margin-top:clamp(32px,4vw,56px);font-size:.9375rem}
+.diario-vacio{margin-top:clamp(32px,3.125vw,2.8125rem);font-size:.9375rem}
 
 /* entrada */
-.entrada-cabecera{padding-block:clamp(36px,5vw,76px) clamp(28px,3vw,44px)}
-.entrada-cabecera h1{max-width:20ch;font-size:clamp(2.25rem,5.2vw,5.375rem);line-height:1;letter-spacing:-.018em;text-wrap:pretty}
-.entradilla{font-family:var(--font-display);font-size:clamp(1.1875rem,1.6vw,1.625rem);line-height:1.42;color:var(--c-text)}
+.entrada-cabecera{padding-block:clamp(36px,3.75vw,3.375rem) clamp(28px,2.5vw,2.25rem)}
+.entrada-cabecera h1{max-width:20ch;font-size:clamp(2.25rem,5.2vw,4.68rem);line-height:1;letter-spacing:-.018em;text-wrap:pretty}
+.entradilla{font-family:var(--font-display);font-size:clamp(1.1875rem,1.6vw,1.44rem);line-height:1.42;color:var(--c-text)}
 .entrada-imagen img{width:100%;max-width:100%;min-width:0;height:auto;aspect-ratio:16/6.5;object-fit:cover;border-radius:6px;background:var(--c-marco-foto)}
-.entrada-cuerpo{display:flex;align-items:flex-start;gap:clamp(32px,5vw,80px);padding-block:clamp(34px,4.5vw,68px) clamp(44px,6vw,88px)}
+.entrada-cuerpo{display:flex;align-items:flex-start;gap:clamp(32px,5vw,4.5rem);padding-block:clamp(34px,3.75vw,3.375rem) clamp(44px,4.375vw,3.9375rem)}
 .entrada-aside{position:sticky;top:40px;flex:0 0 230px;display:flex;flex-direction:column;gap:26px}
 .autora{display:flex;align-items:center;gap:14px;font-size:.84375rem;line-height:1.45}
 .autora img{width:48px;height:48px;flex-shrink:0;object-fit:cover;object-position:50% 25%;border-radius:50%;background:var(--c-marco-foto)}
@@ -421,7 +463,7 @@ textarea.campo-caja{min-height:10rem;resize:vertical;line-height:1.6}
 .seguir-titulo{display:block;font-family:var(--font-display);font-size:1.375rem;line-height:1.22;color:var(--c-text-ink)}
 
 /* contacto */
-.contacto-cuerpo{display:flex;align-items:flex-start;gap:clamp(32px,5vw,80px);padding-block:clamp(40px,6vw,88px)}
+.contacto-cuerpo{display:flex;align-items:flex-start;gap:clamp(32px,5vw,4.5rem);padding-block:clamp(40px,4.375vw,3.9375rem)}
 .form-contacto{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:18px}
 .form-contacto h2{margin-bottom:6px;font-size:clamp(1.625rem,2.8vw,2.5rem)}
 .campos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
@@ -433,9 +475,9 @@ textarea.campo-caja{min-height:10rem;resize:vertical;line-height:1.6}
 .aside-lista a:hover{color:var(--c-accent)}
 .aside-horario{padding-top:8px;border-top:1px solid var(--c-filete)}
 .aside-horario .fila{padding:11px 0;border-bottom:0;font-size:.875rem}
-.contacto-mapa{padding-block:0 clamp(44px,6vw,88px)}
+.contacto-mapa{padding-block:0 clamp(44px,4.375vw,3.9375rem)}
 .contacto-mapa .mapa{min-height:380px}
-.llegar{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(20px,3vw,40px);margin-top:clamp(28px,3.5vw,48px)}
+.llegar{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(20px,3vw,40px);margin-top:clamp(28px,3.125vw,2.8125rem)}
 .llegar .paso{border-top-color:var(--c-filete)}
 .llegar h3{font-size:1.4375rem}
 
@@ -443,10 +485,10 @@ textarea.campo-caja{min-height:10rem;resize:vertical;line-height:1.6}
 .lede-gracias{max-width:52ch;margin-top:22px}
 .gracias-pasos{padding-block:var(--sp-compacta)}
 .gracias-pasos .pasos{grid-template-columns:repeat(3,minmax(0,1fr))}
-.gracias-pasos .cierre-botones{margin-top:clamp(32px,4vw,56px)}
+.gracias-pasos .cierre-botones{margin-top:clamp(32px,3.125vw,2.8125rem)}
 .legal-cabecera .lede{max-width:60ch;margin-top:18px}
 .legal-cabecera .fecha{margin-top:10px;font-size:.8125rem;color:var(--c-text-muted)}
-.legal-body{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2.1fr);gap:clamp(28px,6vw,88px);align-items:start;padding-block:var(--sp-compacta)}
+.legal-body{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2.1fr);gap:clamp(28px,6vw,5.4rem);align-items:start;padding-block:var(--sp-compacta)}
 .legal-indice{position:sticky;top:32px}
 .legal-indice ol{border-top:1px solid var(--c-filete)}
 .legal-indice a{display:flex;align-items:baseline;gap:10px;padding-block:13px;border-bottom:1px solid var(--c-filete);font-size:.875rem;color:var(--c-text)}
@@ -472,10 +514,10 @@ textarea.campo-caja{min-height:10rem;resize:vertical;line-height:1.6}
 .error{padding-block:var(--sp-amplia)}
 .error h1{max-width:18ch;font-size:var(--fs-h1);line-height:1;letter-spacing:-.02em}
 .error .lede{max-width:46ch;margin-top:22px}
-.error .cierre-botones{margin-top:clamp(28px,3.5vw,48px)}
+.error .cierre-botones{margin-top:clamp(28px,3.125vw,2.8125rem)}
 
 /* ═════════════ pie ═════════════ */
-.pie{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(28px,4vw,56px);padding:clamp(48px,6vw,96px) var(--page-margin) 34px;background:var(--c-text-ink);color:var(--c-bg)}
+.pie{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(28px,4vw,56px);padding:clamp(48px,6vw,5.4rem) var(--page-margin) 34px;background:var(--c-text-ink);color:var(--c-bg)}
 .pie-nombre{margin:0 0 16px;font-family:var(--font-display);font-size:1.875rem;line-height:1.1;color:var(--c-bg)}
 .pie-nombre span{color:var(--c-salvia-sobre-tinta)}
 .pie-claim{max-width:28ch;font-size:.875rem;line-height:1.7;color:var(--c-sobre-tinta-apagado)}
@@ -484,7 +526,7 @@ textarea.campo-caja{min-height:10rem;resize:vertical;line-height:1.6}
 .pie-lista a{color:var(--c-sobre-tinta)}
 .pie-lista a:hover{color:var(--c-salvia-sobre-tinta)}
 .pie-lista span{color:var(--c-sobre-tinta-apagado)}
-.pie-base{grid-column:1/-1;display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px 16px;margin-top:clamp(24px,3vw,44px);padding-top:22px;
+.pie-base{grid-column:1/-1;display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px 16px;margin-top:clamp(24px,2.5vw,2.25rem);padding-top:22px;
           border-top:1px solid var(--c-filete-sobre-tinta);font-size:.75rem;color:var(--c-sobre-tinta-tenue)}
 .pie-legal{display:flex;flex-wrap:wrap;gap:8px 22px}
 .pie-legal a:hover{color:var(--c-sobre-tinta)}
@@ -492,7 +534,9 @@ textarea.campo-caja{min-height:10rem;resize:vertical;line-height:1.6}
 /* ═════════════ puntos de ruptura — sólo 1024 y 767 ═════════════ */
 @media (max-width:1024px){
   .marco{display:block}
-  .rail{top:0;min-height:0;flex-direction:column;gap:0;padding:12px clamp(20px,4vw,64px);border-right:0;border-bottom:1px solid var(--c-filete)}
+  /* Un solo carril: cuando el raíl pasa a barra superior, su relleno lateral es el margen de
+     página, no una segunda fórmula que se le parezca. */
+  .rail{top:0;min-height:0;flex-direction:column;gap:0;padding:12px var(--page-margin);border-right:0;border-bottom:1px solid var(--c-filete)}
   .marca{font-size:1.625rem}
   .marca span{display:inline;margin-left:10px;font-size:.75rem}
   .burger{display:flex}
@@ -502,7 +546,6 @@ textarea.campo-caja{min-height:10rem;resize:vertical;line-height:1.6}
   .rail-datos{margin-top:0}
   .filo-media{top:96px}
   .dos-parrafos{grid-template-columns:minmax(0,1fr)}
-  .rejilla-seis{grid-template-columns:repeat(2,minmax(0,1fr))}
   .tarjeta-entrada h3{font-size:1.3125rem}
   .plan{padding:28px 20px 24px}
   .plan-cifra{font-size:2.75rem}

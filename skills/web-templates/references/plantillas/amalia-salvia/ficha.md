@@ -122,18 +122,98 @@ y sale en `0`. Los tokens que sólo existen sobre tinta (`--c-sobre-tinta-*`, `-
 no llevan `text`, `accent`, `bg` ni `border` en el nombre a propósito, igual que en `aranda` y
 `terrazza`: el barrido automático los mediría contra los suelos claros, donde nunca se pintan. Por
 eso se miden aquí con `--contraste`. El velo se midió con `scrim.php --peor-pixel` sobre la región
-del texto a 1280 y a 430: las tres fotos tienen blanco puro bajo el titular, y a 0,48 el antetítulo
-medía 2,18:1. Los filetes decorativos (`#D3DCCF`, `#C3CFBD`, `#DCE4D7`) separan y no identifican
-ningún control, así que no llevan umbral.
+del texto **en los seis anchos de la revisión —430, 768, 1280, 1440, 1680 y 1920— y en las tres
+fotos**: el peor píxel del antetítulo, que es el color más tenue que se pinta ahí, va de 4,60 a
+4,62:1 en las dieciocho combinaciones, sobre la barra de 4,5. Al ser un velo **plano** y no un
+degradado, el peor píxel no depende del ancho: lo que cambia con la pantalla es qué trozo de foto
+recorta `object-fit: cover`, y bajo un velo constante eso no mueve la lectura. Las tres fotos
+tienen blanco puro bajo el titular, y a 0,48 el antetítulo medía 2,18:1. Los filetes decorativos
+(`#D3DCCF`, `#C3CFBD`, `#DCE4D7`) separan y no identifican ningún control, así que no llevan umbral.
 
 ## El margen medido no es el 7,5 %
 
 El lienzo centra el contenido con `max(clamp(20px, 4vw, 64px), calc((100% - 1120px) / 2))` dentro de
-la columna que deja el raíl. A 1440, la columna mide 1190px y el margen es el `4vw`: **4 % del ancho
-por lado, junto a un raíl de 250px**, con la medida topada en 1120px. La maqueta usa exactamente esa
-expresión como `--page-margin`, así que viaja como fracción entre los dos puntos de ruptura. El raíl
-ya ocupa el aire que en otras Plantillas pone el margen izquierdo; sumar el 7,5 % dejaría una columna
-de lectura de 900px en un escritorio de 1280.
+la columna que deja el raíl. A 1440 la columna mide 1190px, gana el `4vw` —57,6px por lado— y el
+contenido **compone 1075px**, junto a un raíl de 250px. El raíl ya ocupa el aire que en otras
+Plantillas pone el margen izquierdo; sumar el 7,5 % dejaría una columna de lectura de 900px en un
+escritorio de 1280.
+
+La maqueta copió esa expresión tal cual y **las dos mitades fallaban por encima de 1440**, que es
+donde nadie la había medido:
+
+- **El `vw` mide el cristal y el relleno se resuelve contra la columna.** Son dos referencias
+  distintas en cuanto el raíl deja de ser una parte constante de la pantalla, y dentro del iframe
+  con barra con el que se mira una maqueta, `vw` sigue midiendo 1920 cuando la caja mide 1905.
+- **El tope de 1120px nunca llegaba a aplicarse a 1440** (esa rama da 35px y pierde contra los
+  57,6), así que sólo entraba a partir de ~1607px y ensanchaba el contenido de 1075 a 1120: la
+  composición de 1440 se estiraba 45px. Y el panel tintado de la guía, con su relleno interior en
+  `vw`, se descolgaba del carril: a 1920 iba a 64px de su borde mientras las demás secciones
+  estaban en 275.
+
+El margen viaja ahora **en % del contenedor**, con el tope puesto en lo que el lienzo **compone** a
+1440:
+
+```
+--contenido-max:1075px;
+--page-margin:max(clamp(20px, 4.84%, 64px), calc((100% - var(--contenido-max)) / 2));
+```
+
+El 4,84 % de la columna da exactamente los 57,6px del lienzo a 1440, las dos ramas se cruzan ahí
+(57,6 contra 57,5) y por encima manda el tope: a 1680 y a 1920 el contenido mide 1074px y el
+documento el mismo alto: la composición se congela a 1440 y lo que crece es el papel de la
+derecha. El relleno interior del panel de la guía lleva esa misma fracción, porque el % se resuelve
+contra la columna y no contra el propio panel. **Nativo: contenedor «en caja» de
+1075px con relleno lateral del 4,84 %**; ninguna regla a medida.
+
+**Lo único que no se topa es la banda del pase**, porque una banda a sangre llega al cristal por
+definición y el tope de 1075 no la gobierna: su texto sí, que va topado en 1040px dentro de ella.
+La consecuencia medida es que a 1920 la fotografía se dibuja en una caja de 1670px con 1600 de
+original, un **4,4 % de ampliación** (a 1680 y por debajo nunca se amplía: 1430px sobre 1600). Bajo
+un velo plano de 0,72 y con el recorte de `object-fit: cover` ya activo en el eje vertical, cuatro
+puntos de ampliación no se ven; si el cliente entrega fotos nuevas, el manifiesto pide 1600×900 y
+con 1920 de ancho el margen desaparece.
+
+## El ritmo vertical del lienzo está en `vh`
+
+El lienzo escribe todo su ritmo vertical en alturas de ventana —`12vh`, `10vh`, `8vh`, `7vh`,
+`5vh`— y a 1440×900 compone 108, 90, 72, 63 y 45px. La maqueta lo pasa a `vw` a propósito, para que
+la altura de una banda no dependa de lo alta que sea la ventana, pero la primera derivación usó el
+coeficiente equivocado y **las tres pendientes salieron exactamente un 20 % largas**: 129,6 / 108 /
+86,4 en vez de 108 / 90 / 72. Sumaba 305px en Inicio y entre un 7 y un 16 % en cada banda de todas
+las páginas. La conversión correcta es `vw = vh × 0,625`, y el tope de cada `clamp()` es el valor a
+1440, para que la composición se congele donde se congela la medida.
+
+| Lienzo | Maqueta | A 1440×900 |
+|---|---|---|
+| `12vh` | `--sp-amplia: clamp(4rem, 7.5vw, 6.75rem)` | 108px |
+| `10vh` | `--sp-media: clamp(3.5rem, 6.25vw, 5.625rem)` | 90px |
+| `8vh` | `--sp-compacta: clamp(2.75rem, 5vw, 4.5rem)` | 72px |
+| `9vh` / `7vh` / `6vh` / `5vh` / `4vh` | rellenos y márgenes de bloque en `5.625vw` / `4.375vw` / `3.75vw` / `3.125vw` / `2.5vw` | 81 / 63 / 54 / 45 / 36px |
+
+## Todo `clamp()` topa en su valor a 1440
+
+Topar la medida no basta: mientras el contenido se quedaba clavado en 1075px, **la escala de display
+seguía subiendo** porque sus `clamp()` llevaban el techo del lienzo (104, 110, 88px), que la recta
+no alcanzaba hasta los 1733–1844px. El resultado es el defecto que el tope existía para evitar: a
+1920 el H1 de una ficha de clase pasaba de 86,4 a 104px dentro de la misma columna de 501px y
+**partía en dos líneas lo que a 1440 entraba en una**. Con los huecos y los rellenos laterales pasaba
+lo mismo en pequeño.
+
+La regla, la misma de `terrazza`: **la pendiente se calcula para tocar el número del lienzo justo a
+1440, y ese número es también el techo**. Son 25 `clamp()` en la maqueta —los cinco tokens de
+escala, los seis titulares con tamaño propio, los huecos de rejilla y los rellenos de banda—.
+Medido después: entre 1440 y 1920 el documento de las siete páginas de contenido cambia como mucho
+3px y ninguna sección cambia de alto. Por encima de 1440 lo único que crece es el papel.
+
+## La interlínea de 1,7 es de la prosa, no del cuerpo
+
+El suelo del lienzo (`data-suelo`) no declara `line-height`: la de 1,7 va párrafo a párrafo. La
+maqueta la tenía en `body`, así que la heredaba **todo lo que no llevara regla propia** —rótulos,
+menú, cifras, listas de plan, pies de tarjeta, etiquetas de campo—. Medido: la caja del H3 del
+equipo pasaba de 31 a 44px, la del «Suelta» de los planes de 34 a 48 y la del «Escríbenos» del
+formulario de 48 a 68. En `body` va `normal`, como en el lienzo; la prosa ya lleva la suya en cada
+bloque. **Nativo: la tipografía global de texto sin interlínea, y la interlínea en el widget de
+texto de cada bloque.**
 
 ## Enfoque, eje por eje
 
@@ -142,10 +222,10 @@ Leído en el lienzo (`canvas/AmaliaSalvia.dc.html`), no en el nombre de la direc
 | Eje | Posición | Evidencia en el lienzo |
 |---|---|---|
 | Escala | editorial | H1 del pase `clamp(46px, 6.2vw, 104px)` en Cormorant 400, unas 5,5 veces el cuerpo de 16px; titulares de dos líneas, no de cuatro. No es monumental: la dirección A es la de 148px |
-| Densidad | generosa | Relleno de sección `clamp(64px, 12vh, 140px)`, huecos de 20–44px, medida topada en 1120px |
+| Densidad | generosa | Relleno de sección `clamp(64px, 12vh, 140px)` = 108px sobre 900 de alto, huecos de 20–44px, medida compuesta en 1075px |
 | Fondo | frío claro | Papel `#F2F5F0` y alterno `#E7EDE4`, verde grisáceo; no es papel blanco neutro ni cálido |
 | Elevación | filete | «Sombras: ninguna; los contornos se hacen con border 1px»: tarjetas de clase con borde, «Seguir leyendo» con contorno |
-| Composición | rejilla estricta | Clases 3×2, equipo 3, planes 3, diario 3, «Otras clases» en fila; sólo el pase va centrado y Filosofía a `.8fr / 1.2fr` |
+| Composición | rejilla estricta | Clases 2×3 (tarjetas de 520px), equipo 3, planes 3, diario en dos columnas de 516px, «Otras clases» en fila; sólo el pase va centrado y Filosofía a `.8fr / 1.2fr` |
 | Acento | reservado | Salvia en una palabra en cursiva por titular, números, roles y «Ver clase →»; botones en tinta |
 | Chasis | dividido por filetes | Cifras, planes, horario, ficha de clase, principios, preguntas y «Cómo llegar», todos separados por filetes de 1px |
 | Ornamento | filete | La línea que sigue a «03 — Equipo» y a «Otras clases»; el filete vertical animado de la guía salió por no ser nativo |
@@ -171,11 +251,11 @@ sin un solo widget HTML y sin CSS a medida. La primera columna son los ids de se
 
 | Sección | Elementor (nativo) | Nota |
 |---|---|---|
-| `#rail` (raíl → barra) | Plantilla de página única del Theme Builder: contenedor de dos columnas, raíl de 250px con Efectos de movimiento › Fijo (arriba, «permanecer en la columna») + widget «Contenido de la entrada». En el raíl: Encabezado (marca) + Menú de navegación vertical + Botón + Editor de texto | Por debajo de 1024 el contenedor pasa a fila y el botón de menú abre el widget **Off-Canvas** con el menú, el botón y los datos. Ningún `overflow` en el padre: rompe el fijo |
+| `#rail` (raíl → barra) | Plantilla de página única del Theme Builder: contenedor de dos columnas, raíl de 250px con Efectos de movimiento › Fijo (arriba, «permanecer en la columna») + widget «Contenido de la entrada». En el raíl: Encabezado (marca) + Menú de navegación vertical + Botón + Editor de texto | Por debajo de 1024 el contenedor pasa a fila y el botón de menú abre el widget **Off-Canvas** con el menú, el botón y los datos. Su relleno lateral es el mismo margen de página que el contenido, para que la marca y el primer bloque compartan carril. Ningún `overflow` en el padre: rompe el fijo |
 | `#inicio-diapositivas` | **Carrusel anidado**: tres diapositivas, cada una un contenedor con imagen de fondo + Superposición de fondo `rgba(24,36,28,.72)` + Encabezado (antetítulo) + Encabezado (H1 en la primera, H2 en las demás) + Editor de texto + dos Botones. Flechas, paginación por puntos, reproducción automática 7000 ms, pausa al pasar el ratón | El widget **Diapositivas** sólo da título, descripción y **un** botón por diapositiva: perdería el antetítulo y el botón de la guía. El contador «01 / 03» sale: la paginación nativa es puntos **o** fracción. La maqueta no avanza sola con `prefers-reduced-motion`; si el widget no lee esa preferencia, en el build la reproducción automática va apagada, no se añade código |
 | `#inicio-disciplinas` | Contenedor fila con envoltura y filete arriba y abajo: cinco Encabezados + Botón de texto «Primera clase gratuita» | |
 | `#inicio-filosofia` | Contenedor rejilla `.8fr / 1.2fr`: columna izquierda con Efectos de movimiento › Fijo (sólo escritorio y tableta) con Encabezado + Imagen; derecha Encabezado H2 (la cursiva es `<em>` en el propio texto) + contenedor de dos Editores + contenedor de tres cifras (dos Encabezados cada una, borde izquierdo) + Botón de texto | Cifras en columna por debajo de 767 |
-| `#inicio-clases` | Contenedor con fondo alterno: cabecera (Encabezado + H2 + Editor, borde inferior) + **Loop Grid** del tipo de contenido Clase, 3 / 2 / 1 columnas; plantilla de tarjeta: contenedor enlazado con borde 1px + Encabezados dinámicos (número, nivel, nombre) + Extracto + fila de pie | Hover sólo de color de borde (control nativo); el `translateY` del traspaso salió |
+| `#inicio-clases` | Contenedor con fondo alterno: cabecera (Encabezado + H2 + Editor, borde inferior) + **Loop Grid** del tipo de contenido Clase, **2 / 2 / 1** columnas (el lienzo compone las seis tarjetas a 520px, no a 335); plantilla de tarjeta: contenedor enlazado con borde 1px + Encabezados dinámicos (número, nivel, nombre) + Extracto + fila de pie | Hover sólo de color de borde (control nativo); el `translateY` del traspaso salió |
 | `#inicio-equipo` | Contenedor rejilla 3 / 3 / 1: Imagen + Encabezado + Encabezado (rol) + Editor | Nunca más columnas que personas |
 | `#inicio-planes`, `#planes-tabla` | **Pestañas** (widget nativo anidado): «Mensual» y «Anual · −15 %», cada pestaña un contenedor rejilla 3 / 3 / 1 con bordes internos; plan = contenedor (Encabezado + etiqueta «Lo más elegido» como Encabezado con fondo) + Editor + Encabezado de precio + Editor con lista + Botón | Elementor Pro no tiene un conmutador de precios; las pestañas son el control nativo y la maqueta las implementa con `role="tab"`. «Tabla de precios» obligaría a su estructura fija de cabecera |
 | `#inicio-diario` | Cabecera + Loop Grid de entradas, 3 / 3 / 1, tarjeta = Imagen destacada + Info de la entrada (categoría, minutos) + Título | |
@@ -190,7 +270,7 @@ sin un solo widget HTML y sin CSS a medida. La primera columna son los ids de se
 | `#clase-NN-cabecera` | Plantilla de entrada individual del tipo Clase (Theme Builder): Encabezado con enlace «Clases / NN» + Título + Extracto + ficha de cuatro filas con Campos dinámicos (duración, nivel, quién imparte, horario) | Las migas son un Encabezado con enlace: el widget de migas depende de un plugin de SEO |
 | `#clase-NN-cuerpo` | Dos columnas: Contenido de la entrada + «Qué llevar» (Encabezado + Campo dinámico) + Imagen destacada 5:4 | |
 | `#clase-NN-otras` | Loop Grid de 5 columnas (1 por debajo de 1024) con la consulta «excluir la entrada actual» | Nunca incluye la clase abierta |
-| `#diario-listado` | Loop Grid de 1 elemento en dos columnas (destacada) + Loop Grid 3 / 2 / 1 conectado al Filtro de taxonomía | Los chips de categoría filtran en la maqueta, como el filtro nativo |
+| `#diario-listado` | Loop Grid de 1 elemento en dos columnas (destacada) + Loop Grid **2 / 2 / 1** conectado al Filtro de taxonomía | Los chips de categoría filtran en la maqueta, como el filtro nativo |
 | `#entrada-NN-cabecera` | Plantilla de entrada individual (Theme Builder): Encabezado con enlace a Diario y a la categoría + Título + Extracto con borde izquierdo | |
 | `#entrada-NN-imagen` | Imagen destacada con proporción 16:6,5 | |
 | `#entrada-NN-cuerpo` | Contenedor fila: columna de 230px con Efectos de movimiento › Fijo (Caja de autor + Info de la entrada + **Botones para compartir** + Botón) + Contenido de la entrada con ancho máximo de 42rem; capitular con la opción nativa «Letra capital» del Editor de texto; cita con el widget Cita | Columna fija sólo en escritorio y tableta; en móvil va después del texto |
@@ -205,7 +285,28 @@ sin un solo widget HTML y sin CSS a medida. La primera columna son los ids de se
 
 **Techo declarado: cero widgets HTML y cero reglas de CSS a medida.** Si al construir apareciera una
 sección que no cabe en esta tabla, la sección se rediseña en el lienzo; no se abre una excepción sin
-escribirla aquí con su razón.
+escribirla aquí con su razón. La revisión de anchos no gastó nada del techo: todo lo que cambió son
+controles nativos de contenedor (ancho en caja, relleno lateral, relleno de bloque) y de tipografía
+(interlínea). El raíl lateral, el pase de diapositivas y su reproducción automática siguen dibujados
+tal y como los pone el lienzo.
+
+### Lo que la maqueta compone distinto que el lienzo, y por qué
+
+Cuatro diferencias medidas a 1440 que **no** son errores de derivación. Se escriben aquí porque
+`qa-review` las va a ver y la respuesta tiene que estar escrita antes de la pregunta:
+
+| Dónde | Lienzo a 1440 | Maqueta | Razón |
+|---|---|---|---|
+| `#filosofia-principios`, `#clase-NN-sesion` (4 pasos), `#contacto-mapa` (4 formas de llegar), `#clase-NN-otras` (5 clases), `#contacto-formulario` (4 campos) | rejillas `auto-fit` que aterrizan en **3 pistas**, con la última fila incompleta | 4, 4, 5 y 2 pistas: fila completa | La regla de huérfanas del barrido: una rejilla de tarjetas repetidas no deja su última sola. El lienzo también dibuja pistas fantasma (`... 0px`) en equipo, planes y «Visítanos» |
+| `#planes-preguntas` | las cuatro respuestas abiertas, 665px de banda | `<details>` con la primera abierta, 491px | Regla de la casa: una lista desplegable es `<details>` nativo con exactamente la primera fila abierta (acordeón de Elementor) |
+| `#entrada-NN-cuerpo` | columna de texto de 773px, unos 91 caracteres | tope de 42rem = 672px, unos 79 | La medida de lectura se topa en el bloque de texto. 91 caracteres pasa el techo de 85 que mide `medir-geometria.mjs` |
+| Escala de display | **18** `clamp()` distintos escritos a mano | 5 tokens | Un valor de tipografía sin ranura global es una excepción de CSS. Al condensarlos, tres titulares quedan por debajo de su valor del lienzo: el H1 de Filosofía 86,4 en vez de 92,2 (única cabecera de página a `6.4vw`; las otras cuatro ya estaban a `6vw`), y los H2 del cierre de Filosofía, del horario y de las preguntas 49 en vez de 51,8 (`3.4vw` contra `3.6vw`, cuando los otros cuatro H2 del mismo papel ya estaban a `3.4vw`). Subir el token arreglaría tres titulares y desajustaría dos |
+
+Y una que sí es del lienzo y se queda como está: sus bandas de **relleno vertical en `vh`** —Filosofía
+a `9vh` y el resto de sus hermanas a `8vh`, o la cabecera de Contacto a `7vh` contra `9vh` en las
+otras tres— hacen que el mismo componente mida distinto según la página. La maqueta usa un solo valor
+por componente, así que tres bandas de Filosofía quedan 18–24px más cortas que en el lienzo y la
+cabecera de Contacto 26px más alta.
 
 ## Páginas
 
