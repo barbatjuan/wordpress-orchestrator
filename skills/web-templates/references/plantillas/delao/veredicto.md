@@ -13,6 +13,10 @@ El juez B vio únicamente la portada de esta plantilla, a 1280×860, sin ficha n
 
 Punto débil señalado por el juez B, como opinión del juez: «nada concreto; no pudo ver estados ni móvil».
 
+Revisión de anchura del 2026-09-16, la misma que ya corrigió `lumiere` y `marzo`: la maqueta se comparó sección por sección con sus cinco lienzos renderizados a 1440 y se miró a 1680 y 1920, los anchos del visor a pantalla completa. El margen de página medía 180px donde el lienzo pone 40 —un `max-width` topado y un relleno del 5&nbsp;% que se resolvía contra la pantalla, sumados—, así que el contenido salía un 20&nbsp;% más estrecho y todas las fotos encogidas; por encima de 1440 no había tope y el contenido se estiraba hasta 1440. Corregido antes de este sello: un solo carril con tope de 1360, foto de tarjeta, mosaico de ficha y banda de nosotros en las cifras del lienzo, y de 1440 en adelante nada se mueve. De paso, el documento no llevaba `<!doctype html>` (se pintaba en modo de compatibilidad) y un `</label>` sin cerrar anidaba dos campos del formulario de contacto.
+
+Queda declarado y sin igualar: la escala tipográfica es la del sistema de diseño (h1 88px, h2 58,7px en todas las páginas) y el lienzo dibuja cinco h1 y seis h2 distintos, entre un 9&nbsp;% y un 47&nbsp;% menores; y el ritmo vertical del sistema (112/112) deja junturas de 224px donde el lienzo pone 120. Ninguna de las dos rompe geometría: son decisiones de sistema, no de pantalla ancha.
+
 ## Barrido
 
 | Página | 430 | 768 | 1280 |
