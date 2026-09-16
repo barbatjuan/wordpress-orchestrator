@@ -111,22 +111,23 @@ Elementor, sin un solo widget HTML y sin CSS a medida. Divi queda declarado pero
 
 | Sección | Elementor (nativo) | Divi | Nota |
 |---|---|---|---|
+| Raíl de página y tope de contenido | Cada banda es un contenedor **Boxed** con ancho de contenido 1296px y relleno lateral del 5 % en unidades `%` | Sección con ancho personalizado | Dos controles nativos, ninguna regla a medida: el «Boxed» pone el tope y el relleno en `%` pone el margen por debajo de 1440. El fondo de la banda sigue a sangre; lo que se topa es el contenido |
 | Franja de utilidad | Contenedor flex de fondo oscuro, ancho completo | Módulo de texto | Se oculta por debajo de 767 con el control nativo de visibilidad responsive |
 | Cabecera con menú | Plantilla de cabecera del Theme Builder: Logotipo + Menú de navegación + Botón | Theme Builder | El menú nativo trae el desplegable móvil; no se dibuja a mano |
-| Hero partido (inicio, nosotros) | Contenedor flex de dos mitades: texto sobre fondo oscuro + Imagen | Sección de dos columnas | Apila por debajo de 767 con el control nativo de dirección |
+| Hero partido (inicio, nosotros) | Contenedor flex de dos mitades: texto sobre fondo oscuro + Imagen | Sección de dos columnas | Alto **fijo** de 400px (control nativo de altura del contenedor), el que compone el lienzo; con sólo un mínimo, el alto lo decidía la proporción natural de la foto y a 1920 se iba a 540. Por debajo de 1024 el alto lo suelta la copia. La Imagen lleva `object-position: 40% 50%`, ajuste nativo de `es_photo()`, con el encuadre que registra `manifiesto-imagenes.md`. Apila por debajo de 767 con el control nativo de dirección |
 | Panel de cifras del hero | Contenedor flex con borde izquierdo por elemento | Módulo de texto | El filete es el borde del contenedor, no una imagen |
 | Banda de filtros | Contenedor flex + seis campos de formulario nativo + Botón | Módulo de formulario | Envuelve por punto de ruptura con el control nativo de wrap |
 | Rejilla de stock | Contenedor rejilla de 3 columnas; cada tarjeta un contenedor con Imagen + Encabezado + Loop Grid de datos | Fila + módulos | 3 → 2 → 1 columnas por los controles nativos de columnas responsive |
-| Unidad destacada (mosaico + datos + precio) | Contenedor rejilla 2fr/1fr + Imagen + Lista de definición + Botón | Fila 2 columnas | Reutilizado igual en Detalle |
+| Unidad destacada (mosaico + datos + precio) | Contenedor de dos columnas: fotos de ancho **fijo** 792px + datos que se quedan el resto (472px a 1440) | Fila 2 columnas | No es 2fr/1fr: el lienzo fija la columna de fotos y deja crecer la de datos. Con las dos creciendo, la foto grande medía 838. Reutilizado igual en Detalle |
 | Qué cubrió la revisión | Widget Lista de iconos, o filas de Encabezado + Editor de texto | Módulo de texto | Seis filas etiqueta/descripción; nunca una tabla HTML |
-| Banda de garantías | Contenedor rejilla de 4 columnas + Icono + Encabezado + Editor de texto | Fila 4 columnas | 4 → 2 → 1 por los controles nativos |
+| Banda de garantías | Contenedor rejilla de 4 columnas + Icono + Encabezado + Editor de texto | Fila 4 columnas | Relleno lateral de 34px por columna, sin el izquierdo en la primera ni el derecho en la última, como el lienzo. 4 → 2 → 1 por los controles nativos |
 | Banda de tasación / cierre oscuro | Contenedor de fondo oscuro a dos columnas + campos de formulario + Botón | Sección de dos columnas | Reutilizada en Inicio y en Nosotros con distinto CTA |
-| Tabla de listado | Loop Grid de una fila por unidad, con Loop Item = la fila de datos | Fila + módulos | Colapsa a tres columnas (vehículo, precio, flecha) por debajo de 1024 con el control nativo; el resto de datos se oculta y aparece como una línea de meta dentro de la celda del vehículo, sin duplicar contenido en el DOM del build — dos Loop Item por punto de ruptura, uno con los campos sueltos y otro con la línea combinada |
+| Tabla de listado | Loop Grid de una fila por unidad, con Loop Item = la fila de datos | Fila + módulos | **Nueve** columnas, las del lienzo: `64 · 300 · 56 · 86 · 104 · 100 · 260 · 126 · 40` con 20px de hueco, que suman 1296 exactos. Vehículo y Revisión son las elásticas (proporción 15:13) para que la tabla ceda por debajo de la medida; Combustible y Cambio son dos columnas, nunca una fundida. Alto de fila 74px. Colapsa a tres columnas (vehículo, precio, flecha) por debajo de 1024 con el control nativo; el resto de datos se oculta y aparece como una línea de meta dentro de la celda del vehículo, sin duplicar contenido en el DOM del build — dos Loop Item por punto de ruptura, uno con los campos sueltos y otro con la línea combinada |
 | Panel de precio y financiación | Contenedor con fondo alterno + Encabezado + Botón + Contenedor rejilla 2×2 | Módulo de texto | Las cuatro cuotas son texto: no hay integrador financiero, se documenta como texto fijo |
 | Pasos «cómo revisamos» | Contenedor rejilla de 5 columnas, cada paso un contenedor con Encabezado (número) + Encabezado + Editor de texto | Fila 5 columnas | Reutilizado en Gracias con 3 pasos |
-| Banda de cifras | Contenedor rejilla de 4 columnas con borde izquierdo | Fila 4 columnas | Mismo componente que el panel de cifras del hero, sobre fondo alterno en vez de oscuro |
+| Banda de cifras | Contenedor rejilla de 4 columnas con borde izquierdo | Fila 4 columnas | Mismo componente que el panel de cifras del hero y mismo relleno de 34px que la banda de garantías, sobre fondo alterno en vez de oscuro |
 | Equipo | Contenedor rejilla de 3 columnas, cada persona un contenedor con Encabezado + Editor de texto | Fila 3 columnas | Nunca más columnas que personas |
-| Formulario de contacto | Widget Formulario nativo (nombre, correo, teléfono, mensaje, casilla de consentimiento) | Módulo de formulario | Acción «Redirigir» a la página Gracias; la casilla enlaza a Privacidad |
+| Formulario de contacto | Widget Formulario nativo (nombre, correo, teléfono, mensaje, casilla de consentimiento) | Módulo de formulario | Ancho **fijo** de 700px y la columna de datos se queda el resto (540px a 1440), como el lienzo; con las dos creciendo medían 780 y 460. Esa columna apila rótulo sobre valor —no rótulo-izquierda/valor-derecha como la de la ficha—, que es como la dibuja `canvas/Contacto.dc.html`. Acción «Redirigir» a la página Gracias; la casilla enlaza a Privacidad |
 | Páginas legales (aviso legal, privacidad, cookies) | Cabecera con fecha + Contenedor rejilla índice/cuerpo + por apartado: Ancla de menú + Encabezado (número) + Encabezado (título) + Editor de texto; fichas de datos como filas rejilla 11em/1fr | Página + módulos de texto | La tabla de cookies usa el widget nativo **Tabla** de Elementor (disponible desde 3.6): nombre, proveedor, finalidad, duración, tipo — es la única sección de la maqueta que usa un `<table>` HTML de verdad, y tiene equivalente nativo directo |
 | 404 | Plantilla «404» del Theme Builder: Encabezado + Editor de texto + tres Botones | Theme Builder | Toda ruta inexistente cae aquí, nunca en Inicio |
 | Pie | Plantilla de pie del Theme Builder | Theme Builder | Aviso legal, Privacidad y Cookies enlazan a sus tres páginas |
@@ -184,8 +185,17 @@ la casa.** `canvas/Aranda.dc.html` usa `padding: 0 72px` en las nueve bandas de 
 108px — diez apariciones de «72px», cero de «108px», contadas por grep. `mockup-guide.md` documenta
 7,5 % como el estándar de la casa y así lo usa `marzo`, pero la autoridad de esta plantilla es su
 propio artboard ya aprobado, no el estándar general cuando los dos discrepan («canvas manda, maqueta
-deriva»). Las cuatro láminas nuevas y la maqueta entera usan 5 % — viaja como fracción (`--pad-x:5%`
-en `:root`), nunca como píxel fijo, igual que exige el contrato de derivación.
+deriva»). Las cuatro láminas nuevas y la maqueta entera usan 5 % — viaja como fracción, nunca como
+píxel fijo, igual que exige el contrato de derivación.
+
+**Y el 5 % tiene techo: la banda de contenido no pasa de 1296px (`--medida`).** El raíl de la
+maqueta es uno solo a todos los anchos, `--pad-x: max(5%, calc((100% - var(--medida)) / 2))`: por
+debajo de 1440 manda la fracción del 5 %, a partir de 1440 manda el tope y el raíl crece. Las dos
+ramas valen 72px exactos a 1440, así que la curva no tiene escalón. Sin el tope, medido a 1920, la
+banda daba 1728px y con ella se estiraban las tarjetas de stock (558px en vez de 414), la foto de la
+unidad destacada (1054px en vez de 792) y las cuatro columnas de garantías (432px de paso en vez de
+324). Medido después del tope: a 1440, 1680, 1920 y dentro de un `iframe` con barra a 1920, la banda
+mide 1296px y el alto de cada página es idéntico a partir de 1440.
 
 **Los alt de las diez fotografías, tal y como los usa la portada committeada, no coinciden con el
 manifiesto.** `manifiesto-imagenes.md` registra el `alt` real de cada fotografía (p. ej.

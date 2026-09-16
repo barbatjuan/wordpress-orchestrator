@@ -1,3 +1,4 @@
+<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Motor Aranda — 34 coches en el patio, revisados uno a uno</title>
@@ -82,9 +83,15 @@ button,input,textarea,select{font:inherit;color:inherit}
   --font-secondary:'Inter Tight','Helvetica Neue',Arial,sans-serif;
 
   /* ── Margen de página: 5% (72px medidos a 1440 en canvas/Aranda.dc.html), NO el 7,5% que usan
-     otras plantillas de la casa — viaja como fracción, no como píxel fijo. Ver ficha.md. ── */
-  --pad-x:5%;
-  --ancho-max:1440px;
+     otras plantillas de la casa — viaja como fracción, no como píxel fijo. Ver ficha.md.
+
+     Un único raíl para todos los anchos. Por debajo de la anchura de composición manda la fracción
+     del 5%; a partir de 1440 manda el tope: el raíl crece para que la banda de contenido no pase
+     nunca de --medida (1296px = 1440 − 2×72, la medida que dibuja el lienzo). Las dos ramas valen
+     72px exactos a 1440, así que la curva no tiene escalón. Sin el tope, a 1920 la banda medía
+     1728px y todas las rejillas, fotos y raíles se estiraban con ella. ── */
+  --medida:1296px;
+  --pad-x:max(5%, calc((100% - var(--medida)) / 2));
 
   --sp-xs:.5rem; --sp-s:1rem; --sp-m:1.5rem; --sp-l:2.5rem; --sp-xl:4rem; --sp-xxl:5.5rem;
   --radio:2px;
@@ -142,12 +149,19 @@ header.site{background:var(--c-bg-surface);border-bottom:1px solid var(--hair)}
 .migas .actual{color:var(--c-ink)}
 
 /* ── hero partido (inicio + nosotros) ── */
-.hero-partida{display:flex;align-items:stretch;min-height:400px}
+/* Altura fija 400px, la que compone el lienzo. Con sólo `min-height`, el alto de la banda lo
+   decidía la proporción natural de la foto: a 1920 la mitad del ancho son 960px y la foto se iba a
+   540 de alto, 35% más alta que la composición. Por debajo de 1024 la suelta la copia. */
+.hero-partida{display:flex;align-items:stretch;height:400px}
 .hero-copia{width:50%;flex:0 0 50%;min-width:0;background:var(--c-inversa);display:flex;flex-direction:column;justify-content:center;padding:54px 60px 40px var(--pad-x)}
-.hero-copia h1{font-size:clamp(1.75rem,1.1rem + 2.4vw,3.125rem);line-height:1.08;letter-spacing:-.02em;color:var(--c-ink-inversa);max-width:16ch}
-.hero-copia p{margin-top:18px;max-width:52ch;font-size:.96875rem;line-height:1.6;color:var(--c-ink-inversa-suave)}
+/* El lienzo no pone tope al titular: lo parte la propia columna (720 − 60 − 72 = 588px), y a 50px
+   caben dos líneas. Con `max-width:16ch` medía 476px y salían tres. */
+.hero-copia h1{font-size:clamp(1.75rem,1.1rem + 2.4vw,3.125rem);line-height:1.08;letter-spacing:-.02em;color:var(--c-ink-inversa)}
+.hero-copia p{margin-top:18px;max-width:56ch;font-size:.96875rem;line-height:1.6;color:var(--c-ink-inversa-suave)}
 .hero-foto{width:50%;flex:0 0 50%;min-width:0}
-.hero-foto img{width:100%;height:100%;min-height:280px;object-fit:cover}
+/* El encuadre lo fija el lienzo (`object-position: 40% 50%`) y lo recoge manifiesto-imagenes.md:
+   sin él la foto se centraba y el coche oscuro del primer plano se iba fuera del recorte. */
+.hero-foto img{width:100%;height:100%;min-height:280px;object-fit:cover;object-position:40% 50%}
 .hero-stats{display:flex;align-items:center;margin-top:30px}
 .hero-stats > div{padding:0 26px;border-left:1px solid var(--hair-inversa)}
 .hero-stats > div:first-child{padding-left:0;border-left:0}
@@ -163,7 +177,9 @@ header.site{background:var(--c-bg-surface);border-bottom:1px solid var(--hair)}
 /* ── filtros ── */
 .filtros{background:var(--c-bg-alt);border-top:1px solid var(--hair);border-bottom:1px solid var(--hair);padding-top:22px;padding-bottom:24px}
 .filtros-fila{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap}
-.campo-filtro{flex:1 1 140px;min-width:0}
+/* El lienzo escribe `flex-grow:1; min-width:0` sin base: cada campo arranca de su contenido y
+   luego crece, así que miden 185/160/181… y no los 171 iguales que daba `flex-basis:140px`. */
+.campo-filtro{flex:1 1 auto;min-width:0}
 .campo-filtro .eyebrow{display:block}
 .campo-filtro .valor{display:flex;align-items:center;justify-content:space-between;height:46px;margin-top:6px;padding:0 13px;background:var(--c-bg-surface);border:1px solid var(--hair);border-radius:var(--radio);font-size:.90625rem;color:var(--c-ink)}
 .filtros-fila .btn{flex-shrink:0;flex-basis:196px}
@@ -202,7 +218,9 @@ header.site{background:var(--c-bg-surface);border-bottom:1px solid var(--hair)}
 .destacada{background:var(--c-bg-surface);border-top:1px solid var(--hair);border-bottom:1px solid var(--hair)}
 .destacada-fila{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap}
 .ficha-cuerpo{display:flex;align-items:flex-start;gap:32px;margin-top:30px}
-.ficha-fotos{flex:1 1 792px;min-width:0}
+/* La columna de fotos vale 792px fijos en el lienzo y la de datos se queda el resto (472px a
+   1440). Con `flex:1 1` las dos crecían y la foto grande medía 838. Sólo crece la de datos. */
+.ficha-fotos{flex:0 1 792px;min-width:0}
 .foto-grande{width:100%;height:400px;object-fit:cover;border:1px solid var(--hair-suave)}
 .mosaico-chico{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:8px}
 .mosaico-chico img{width:100%;height:230px;object-fit:cover;border:1px solid var(--hair-suave)}
@@ -215,11 +233,14 @@ header.site{background:var(--c-bg-surface);border-bottom:1px solid var(--hair)}
 .panel-precio{margin-top:22px;padding:20px;background:var(--c-bg-alt);border-radius:var(--radio)}
 .panel-precio-fila{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .panel-precio .precio-grande{font-family:var(--font-primary);font-size:2.125rem;font-weight:800;letter-spacing:-.02em;color:var(--c-ink)}
+/* En la portada el lienzo dibuja el precio de la unidad destacada a 38px; en la ficha, a 34. */
+#inicio .panel-precio .precio-grande{font-size:2.375rem}
+#nosotros .hero-copia p{font-size:.9375rem;max-width:54ch}
 .panel-precio .nota-iva{font-size:.8125rem;color:var(--c-text)}
 .panel-precio .cuota-linea{margin-top:8px;font-size:.90625rem;color:var(--c-ink)}
 .panel-precio .btn{margin-top:16px}
 .panel-precio .btn + .btn{margin-top:8px}
-.panel-precio .nota{margin-top:12px;font-size:.78125rem;line-height:1.5;color:var(--c-text)}
+.panel-precio .nota,.panel-garantia .nota{margin-top:12px;font-size:.78125rem;line-height:1.5;color:var(--c-text)}
 .panel-garantia{margin-top:22px;padding:20px;border:1px solid var(--hair);border-radius:var(--radio)}
 .panel-garantia .rotulo{font-family:var(--font-primary);font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--c-accent)}
 .panel-garantia .rotulo + p{margin-top:8px;font-size:.84375rem;line-height:1.55;color:var(--c-ink)}
@@ -240,8 +261,11 @@ header.site{background:var(--c-bg-surface);border-bottom:1px solid var(--hair)}
 /* ── garantías (inicio) ── */
 .grid-garantias{background:var(--c-bg-alt)}
 .grid-garantias-fila{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
-.item-garantia{padding-right:34px;border-left:1px solid var(--hair)}
-.item-garantia:first-child{border-left:0}
+/* El lienzo escribe `padding: 0 34px` en cada columna y quita el relleno izquierdo sólo en la
+   primera; sin el de la izquierda, el texto de las columnas 2–4 caía 34px por delante del suyo. */
+.item-garantia{padding:0 34px;border-left:1px solid var(--hair)}
+.item-garantia:first-child{padding-left:0;border-left:0}
+.item-garantia:last-child{padding-right:0}
 .item-garantia b{display:block;margin-top:14px;font-family:var(--font-primary);font-size:.96875rem;font-weight:700;color:var(--c-ink)}
 .item-garantia p{margin-top:6px;font-size:.84375rem;line-height:1.55;color:var(--c-text)}
 
@@ -252,6 +276,7 @@ header.site{background:var(--c-bg-surface);border-bottom:1px solid var(--hair)}
 .banda-inversa .lede{margin-top:12px;color:var(--c-ink-inversa-suave)}
 .tasa-campos{display:flex;align-items:flex-end;gap:10px;flex-wrap:wrap}
 .tasa-campo .eyebrow{color:var(--c-ink-inversa-suave)}
+.tasa-campos .btn{width:200px;height:48px}
 .tasa-campo .caja{display:flex;align-items:center;width:190px;height:48px;margin-top:6px;padding:0 14px;background:var(--c-inversa-alt);border:1px solid var(--hair-inversa);border-radius:var(--radio);font-size:.9375rem;color:var(--c-ink-inversa-suave)}
 
 /* ── pasos numerados (nosotros) ── */
@@ -264,8 +289,9 @@ header.site{background:var(--c-bg-surface);border-bottom:1px solid var(--hair)}
 /* ── cifras (nosotros) ── */
 .cifras-band{background:var(--c-bg-alt)}
 .cifras-fila{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
-.cifra{padding-right:34px;border-left:1px solid var(--hair)}
-.cifra:first-child{border-left:0}
+.cifra{padding:0 34px;border-left:1px solid var(--hair)}
+.cifra:first-child{padding-left:0;border-left:0}
+.cifra:last-child{padding-right:0}
 .cifra b{font-family:var(--font-primary);font-size:1.875rem;font-weight:800;color:var(--c-ink)}
 .cifra span{display:block;margin-top:4px;font-size:.8125rem;color:var(--c-text)}
 
@@ -278,10 +304,17 @@ header.site{background:var(--c-bg-surface);border-bottom:1px solid var(--hair)}
 
 /* ── contacto ── */
 .contacto-cuerpo{display:flex;gap:56px;align-items:flex-start;margin-top:40px}
-.form-contacto{flex:1 1 700px;min-width:0;background:var(--c-bg-surface);border:1px solid var(--hair);border-radius:var(--radio);padding:32px}
+/* Mismo reparto que la ficha: el formulario vale 700px fijos en el lienzo y la columna de datos
+   se queda el resto (540px a 1440). Con las dos creciendo medían 780 y 460. */
+.form-contacto{flex:0 1 700px;min-width:0;background:var(--c-bg-surface);border:1px solid var(--hair);border-radius:var(--radio);padding:32px}
 .campos-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
 .campo{display:block}
 .campo + .campo{margin-top:20px}
+/* Dentro de la rejilla de dos campos no hay margen entre hermanos: metía 20px al segundo campo
+   de la MISMA fila y Teléfono caía por debajo de Nombre. El campo que SIGUE a la rejilla sí lo
+   lleva, porque su hermano anterior es la rejilla y no un `.campo`. */
+.campos-2 > .campo + .campo{margin-top:0}
+.campos-2 + .campo{margin-top:20px}
 .campo .eyebrow{display:block;padding-bottom:7px}
 .campo input,.campo textarea{width:100%;padding:0 13px;background:var(--c-bg);border:1px solid var(--hair);border-radius:var(--radio);font-size:.90625rem;color:var(--c-ink)}
 .campo input{height:46px}
@@ -292,25 +325,39 @@ header.site{background:var(--c-bg-surface);border-bottom:1px solid var(--hair)}
 .consentimiento span{font-size:.78125rem;line-height:1.55;color:var(--c-text)}
 .consentimiento a{color:var(--c-accent);text-decoration:underline}
 .form-contacto .btn{margin-top:24px}
-.contacto-aside{flex:1 1 380px;min-width:0}
+.contacto-aside{flex:1 1 300px;min-width:0}
+/* La lista de datos de contacto se apila como en el lienzo: rótulo arriba, valor debajo a 15px.
+   Compartida con la ficha, donde el lienzo SÍ dibuja rótulo-izquierda / valor-derecha. */
+.datos-lista.apilada > div{display:block;padding:18px 0}
+.datos-lista.apilada .et{display:block;font-family:var(--font-primary);font-size:.65625rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--c-text)}
+.datos-lista.apilada .va{display:block;margin-top:6px;font-size:.9375rem;font-weight:400;line-height:1.6;text-align:left}
 .panel-lateral{margin-top:22px;padding:20px;background:var(--c-bg-alt);border-radius:var(--radio)}
 .panel-lateral b{display:block;font-family:var(--font-primary);font-size:.9375rem;font-weight:700;color:var(--c-ink)}
 .panel-lateral p{margin-top:6px;font-size:.8125rem;line-height:1.55;color:var(--c-text)}
 .panel-lateral .btn{margin-top:14px}
 
 /* ── listado / tabla de stock ── */
-.tabla-cabecera{display:grid;grid-template-columns:64px minmax(0,1fr) 56px 86px 150px 190px 120px 28px;column-gap:20px;align-items:end;padding-bottom:12px;border-bottom:1px solid var(--c-ink);margin-top:36px}
+/* Las nueve pistas del lienzo — `64px 300px 56px 86px 104px 100px 260px 126px 40px` con 20px de
+   hueco suman 1296 exactos. Vehículo y revisión son las elásticas, en la proporción 15:13 que con
+   el tope de --medida da 300 y 260 exactos a 1440 y a cualquier ancho mayor; por debajo la tabla
+   cede por las dos anchas y no sólo por el nombre del coche. Antes eran ocho pistas, con
+   Combustible y Cambio fundidas en una, y el vehículo `1fr` sin tope se comía 462px: las cinco
+   columnas de la derecha caían 162px fuera de su sitio. */
+.tabla-cabecera{display:grid;grid-template-columns:64px minmax(0,15fr) 56px 86px 104px 100px minmax(0,13fr) 126px 40px;column-gap:20px;align-items:end;padding-bottom:12px;border-bottom:1px solid var(--c-ink);margin-top:36px}
 .tabla-cabecera span{font-family:var(--font-primary);font-size:.625rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--c-text)}
 .tabla-cabecera .al-der{text-align:right}
-.fila-stock{display:grid;grid-template-columns:64px minmax(0,1fr) 56px 86px 150px 190px 120px 28px;column-gap:20px;align-items:center;min-height:66px;padding:15px 0;border-bottom:1px solid var(--hair-suave)}
+.fila-stock{display:grid;grid-template-columns:64px minmax(0,15fr) 56px 86px 104px 100px minmax(0,13fr) 126px 40px;column-gap:20px;align-items:center;min-height:74px;padding:15px 0;border-bottom:1px solid var(--hair-suave)}
 .fila-stock:hover{background:var(--c-bg-alt)}
 .f-ref{font-size:.75rem;letter-spacing:.02em;color:var(--c-text)}
-.f-vehiculo b{font-size:.9375rem;font-weight:700;color:var(--c-ink)}
+/* El tamaño va en la celda: heredado de la fila, el acabado («xLine», «M Sport») salía a 16px
+   contra los 15px del nombre que lleva al lado, y en el lienzo los dos miden 15. */
+.f-vehiculo{font-size:.9375rem}
+.f-vehiculo b{font-weight:700;color:var(--c-ink)}
 .f-vehiculo i{font-style:normal;font-weight:400;color:var(--c-text)}
 .f-vehiculo .estado{display:block;font-family:var(--font-primary);font-size:.625rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding-top:4px;color:var(--c-ink)}
 .f-vehiculo .estado.disponible{color:var(--c-accent)}
 .f-meta-movil{display:none}
-.f-anio,.f-km,.f-motor{font-size:.84375rem;color:var(--c-ink)}
+.f-anio,.f-km,.f-combustible,.f-cambio{font-size:.84375rem;color:var(--c-ink)}
 .f-revision{font-size:.78125rem;color:var(--c-accent)}
 .f-precio{font-size:.9375rem;font-weight:700;color:var(--c-ink);text-align:right}
 .f-flecha{justify-self:end}
@@ -359,8 +406,12 @@ header.site{background:var(--c-bg-surface);border-bottom:1px solid var(--hair)}
 
 /* ── pie ── */
 footer.site{background:var(--c-bg);border-top:1px solid var(--hair)}
-.pie-cols{display:flex;align-items:flex-start;justify-content:space-between;gap:40px;flex-wrap:wrap;padding-top:var(--sp-xl);padding-bottom:30px}
-.pie-marca{width:300px;flex:0 1 300px}
+/* Medidas del pie del lienzo: hueco 56, relleno 48/30, columna de marca 330 y columna de horario
+   300 (`.pie-col-ancha`, antes un `width:280px` en línea que no podía llevar punto de ruptura). */
+.pie-cols{display:flex;align-items:flex-start;justify-content:space-between;gap:56px;flex-wrap:wrap;padding-top:48px;padding-bottom:30px}
+.pie-marca{width:330px;flex:0 1 330px}
+.pie-col-ancha{width:300px}
+footer.site .marca{font-size:1rem;gap:9px}
 .pie-marca .marca{color:var(--c-ink)}
 .pie-marca p{margin-top:12px;font-size:.84375rem;line-height:1.6;color:var(--c-text)}
 .pie-col{flex:0 0 auto}
@@ -369,7 +420,7 @@ footer.site{background:var(--c-bg);border-top:1px solid var(--hair)}
 .pie-col a{font-size:.84375rem;color:var(--c-text)}
 .pie-col a:hover{color:var(--c-accent)}
 .pie-col p{margin-top:12px;font-size:.84375rem;line-height:1.6;color:var(--c-text)}
-.pie-fin{padding-top:0;padding-bottom:30px;font-size:.78125rem;color:var(--c-text)}
+.pie-fin{padding-top:0;padding-bottom:40px;font-size:.78125rem;color:var(--c-text)}
 .pie-fin a{color:var(--c-text);text-decoration:underline}
 .pie-fin a:hover{color:var(--c-accent)}
 
@@ -379,23 +430,32 @@ footer.site{background:var(--c-bg);border-top:1px solid var(--hair)}
 @media (max-width:1024px){
   .nav-principal{gap:18px}
   .nav-principal a{font-size:.84375rem}
-  .cab-tel span{display:none}
+  .util-fila{height:auto;min-height:40px;flex-wrap:wrap;row-gap:2px;padding-block:7px}
+  .hero-partida{height:auto;min-height:400px}
+  /* Las cuatro cifras no caben en media pantalla por debajo de 1024: a 768 la cuarta se salía
+     86px de la columna oscura y se pintaba encima de la fotografía. Se parten en dos filas. */
+  .hero-stats{flex-wrap:wrap;row-gap:16px}
+  .hero-stats > div{flex:0 0 50%}
+  .hero-stats > div:nth-child(odd){border-left:0;padding-left:0}
   .hero-copia{padding:44px 40px 34px var(--pad-x)}
   .grid-stock{grid-template-columns:repeat(2,minmax(0,1fr))}
+  /* Un contenedor que pasa a columna devuelve `flex-basis:auto` a TODOS sus hijos: en columna la
+     base se mide en el eje vertical y esos 792/380px se reservaban como alto vacío. */
   .ficha-cuerpo{flex-direction:column}
-  .ficha-fotos{width:100%}
+  .ficha-fotos,.ficha-datos{flex-basis:auto;width:100%}
   .grid-garantias-fila{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:28px}
   .item-garantia:nth-child(2){border-left:1px solid var(--hair)}
   .item-garantia:nth-child(3){border-left:0;padding-left:0}
   .grid-pasos{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .grid-pasos > :last-child{grid-column:1 / -1}
   .cifras-fila{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:24px}
   .cifra:nth-child(3){border-left:0}
   .grid-equipo{grid-template-columns:repeat(2,minmax(0,1fr))}
   .contacto-cuerpo{flex-direction:column}
-  .form-contacto{width:100%}
+  .form-contacto,.contacto-aside{flex-basis:auto;width:100%}
   .tabla-cabecera{display:none}
   .fila-stock{grid-template-columns:minmax(0,1fr) 110px 24px}
-  .f-ref,.f-anio,.f-km,.f-motor,.f-revision{display:none}
+  .f-ref,.f-anio,.f-km,.f-combustible,.f-cambio,.f-revision{display:none}
   .f-meta-movil{display:block;margin-top:4px;font-size:.78125rem;color:var(--c-text)}
   .gracias-cuerpo{grid-template-columns:minmax(0,1fr)}
   .legal-cuerpo{grid-template-columns:minmax(0,1fr)}
@@ -414,7 +474,8 @@ footer.site{background:var(--c-bg);border-top:1px solid var(--hair)}
   .menu-movil a[aria-current=page]{color:var(--c-accent)}
   .menu-movil .btn{margin:16px var(--pad-x)}
 
-  .hero-partida{flex-direction:column}
+  .hero-partida{flex-direction:column;height:auto;min-height:0}
+  .hero-copia,.hero-foto{flex-basis:auto}
   .hero-copia{width:100%;padding:var(--sp-l) var(--pad-x) var(--sp-m)}
   .hero-foto{width:100%}
   .hero-foto img{min-height:220px}
@@ -442,7 +503,7 @@ footer.site{background:var(--c-bg);border-top:1px solid var(--hair)}
   .campos-2{grid-template-columns:minmax(0,1fr)}
 
   .pie-cols{flex-direction:column;gap:var(--sp-l)}
-  .pie-marca{width:100%}
+  .pie-marca,.pie-col,.pie-col-ancha{width:100%;flex-basis:auto}
 
   .datos-lista .va{text-align:right}
 }
@@ -480,7 +541,7 @@ footer.site{background:var(--c-bg);border-top:1px solid var(--hair)}
       </div>
     </div>
   </div>
-  <nav class="menu-movil faja" id="menu-movil" aria-label="Navegación móvil">
+  <nav class="menu-movil" id="menu-movil" aria-label="Navegación móvil">
     <a href="#inicio">Inicio</a>
     <a href="#listado">Stock</a>
     <a href="#nosotros">Nosotros</a>
@@ -524,6 +585,7 @@ footer.site{background:var(--c-bg);border-top:1px solid var(--hair)}
       <a href="#listado" class="chip">Menos de 60.000 km (11)</a>
       <a href="#listado" class="chip">Etiqueta ECO (7)</a>
       <a href="#listado" class="chip">Hasta 15.000&nbsp;€ (6)</a>
+      <a href="#listado" class="chip">Familiares y SUV (14)</a>
       <a href="#listado" class="chip">Sin entrada (22)</a>
     </div>
   </section>
@@ -728,90 +790,90 @@ footer.site{background:var(--c-bg);border-top:1px solid var(--hair)}
 
   <section class="faja" style="padding-bottom:var(--sp-xxl)">
     <div class="tabla-cabecera">
-      <span>Ref.</span><span>Vehículo</span><span>Año</span><span>Km</span><span>Combustible · Cambio</span><span>Revisión</span><span class="al-der">Precio</span><span></span>
+      <span>Ref.</span><span>Vehículo</span><span>Año</span><span>Km</span><span>Combustible</span><span>Cambio</span><span>Revisión</span><span class="al-der">Precio</span><span></span>
     </div>
 
     <a class="fila-stock" href="#detalle">
       <span class="f-ref num">A-2418</span>
       <span class="f-vehiculo"><b>BMW X1 sDrive18d</b> <i>xLine</i><span class="f-meta-movil num">A-2418 · 2023 · 41.300 km · Diésel · Automático</span></span>
-      <span class="f-anio num">2023</span><span class="f-km num">41.300</span><span class="f-motor">Diésel · Automático</span>
+      <span class="f-anio num">2023</span><span class="f-km num">41.300</span><span class="f-combustible">Diésel</span><span class="f-cambio">Automático</span>
       <span class="f-revision">137 puntos · 12/08/2026</span><span class="f-precio num">33.900&nbsp;€</span>
       <svg class="f-flecha" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2 7h10M8.5 3.5 12 7l-3.5 3.5" stroke="#0B5D6B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
     </a>
     <a class="fila-stock" href="#detalle">
       <span class="f-ref num">A-2402</span>
       <span class="f-vehiculo"><b>BMW X3 xDrive20d</b> <i>M Sport</i><span class="f-meta-movil num">A-2402 · 2022 · 68.900 km · Diésel · Automático</span></span>
-      <span class="f-anio num">2022</span><span class="f-km num">68.900</span><span class="f-motor">Diésel · Automático</span>
+      <span class="f-anio num">2022</span><span class="f-km num">68.900</span><span class="f-combustible">Diésel</span><span class="f-cambio">Automático</span>
       <span class="f-revision">137 puntos · 30/07/2026</span><span class="f-precio num">41.500&nbsp;€</span>
       <svg class="f-flecha" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2 7h10M8.5 3.5 12 7l-3.5 3.5" stroke="#0B5D6B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
     </a>
     <a class="fila-stock" href="#detalle">
       <span class="f-ref num">A-2377</span>
       <span class="f-vehiculo"><b>Audi A5 Sportback 2.0 TDI</b> <i>S line</i><span class="f-meta-movil num">A-2377 · 2020 · 96.400 km · Diésel · Automático</span></span>
-      <span class="f-anio num">2020</span><span class="f-km num">96.400</span><span class="f-motor">Diésel · Automático</span>
+      <span class="f-anio num">2020</span><span class="f-km num">96.400</span><span class="f-combustible">Diésel</span><span class="f-cambio">Automático</span>
       <span class="f-revision">137 puntos · 14/07/2026</span><span class="f-precio num">27.400&nbsp;€</span>
       <svg class="f-flecha" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2 7h10M8.5 3.5 12 7l-3.5 3.5" stroke="#0B5D6B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
     </a>
     <a class="fila-stock" href="#detalle">
       <span class="f-ref num">A-2411</span>
       <span class="f-vehiculo"><b>Volkswagen Tiguan 1.5 TSI</b> <i>Life</i><span class="f-meta-movil num">A-2411 · 2022 · 34.100 km · Gasolina · Manual</span></span>
-      <span class="f-anio num">2022</span><span class="f-km num">34.100</span><span class="f-motor">Gasolina · Manual</span>
+      <span class="f-anio num">2022</span><span class="f-km num">34.100</span><span class="f-combustible">Gasolina</span><span class="f-cambio">Manual</span>
       <span class="f-revision">137 puntos · 02/08/2026</span><span class="f-precio num">26.800&nbsp;€</span>
       <svg class="f-flecha" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2 7h10M8.5 3.5 12 7l-3.5 3.5" stroke="#0B5D6B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
     </a>
     <a class="fila-stock" href="#detalle">
       <span class="f-ref num">A-2365</span>
       <span class="f-vehiculo"><b>Mercedes-Benz Clase E 220 d</b> <i>Avantgarde</i><span class="estado">Reservado hasta el 20/09</span><span class="f-meta-movil num">A-2365 · 2021 · 112.700 km · Diésel · Automático</span></span>
-      <span class="f-anio num">2021</span><span class="f-km num">112.700</span><span class="f-motor">Diésel · Automático</span>
+      <span class="f-anio num">2021</span><span class="f-km num">112.700</span><span class="f-combustible">Diésel</span><span class="f-cambio">Automático</span>
       <span class="f-revision">137 puntos · 18/07/2026</span><span class="f-precio num">29.900&nbsp;€</span>
       <svg class="f-flecha" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2 7h10M8.5 3.5 12 7l-3.5 3.5" stroke="#0B5D6B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
     </a>
     <a class="fila-stock" href="#detalle">
       <span class="f-ref num">A-2340</span>
       <span class="f-vehiculo"><b>Volvo V40 D2</b> <i>Momentum</i><span class="f-meta-movil num">A-2340 · 2018 · 128.500 km · Diésel · Manual</span></span>
-      <span class="f-anio num">2018</span><span class="f-km num">128.500</span><span class="f-motor">Diésel · Manual</span>
+      <span class="f-anio num">2018</span><span class="f-km num">128.500</span><span class="f-combustible">Diésel</span><span class="f-cambio">Manual</span>
       <span class="f-revision">137 puntos · 05/07/2026</span><span class="f-precio num">12.400&nbsp;€</span>
       <svg class="f-flecha" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2 7h10M8.5 3.5 12 7l-3.5 3.5" stroke="#0B5D6B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
     </a>
     <a class="fila-stock" href="#detalle" style="background:var(--c-bg-alt)">
       <span class="f-ref num">A-2390</span>
       <span class="f-vehiculo"><b>Hyundai Tucson 1.6 T-GDi 150</b> <i>Maxx DCT</i><span class="estado disponible">Ficha completa disponible</span><span class="f-meta-movil num">A-2390 · 2021 · 48.200 km · Gasolina · Automático</span></span>
-      <span class="f-anio num">2021</span><span class="f-km num">48.200</span><span class="f-motor">Gasolina · Automático</span>
+      <span class="f-anio num">2021</span><span class="f-km num">48.200</span><span class="f-combustible">Gasolina</span><span class="f-cambio">Automático</span>
       <span class="f-revision">137 puntos · 02/09/2026</span><span class="f-precio num">21.900&nbsp;€</span>
       <svg class="f-flecha" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2 7h10M8.5 3.5 12 7l-3.5 3.5" stroke="#0B5D6B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
     </a>
     <a class="fila-stock" href="#detalle">
       <span class="f-ref num">A-2455</span>
       <span class="f-vehiculo"><b>Seat León 1.5 TSI</b> <i>FR</i><span class="f-meta-movil num">A-2455 · 2023 · 22.600 km · Gasolina · Manual</span></span>
-      <span class="f-anio num">2023</span><span class="f-km num">22.600</span><span class="f-motor">Gasolina · Manual</span>
+      <span class="f-anio num">2023</span><span class="f-km num">22.600</span><span class="f-combustible">Gasolina</span><span class="f-cambio">Manual</span>
       <span class="f-revision">137 puntos · 28/08/2026</span><span class="f-precio num">22.400&nbsp;€</span>
       <svg class="f-flecha" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2 7h10M8.5 3.5 12 7l-3.5 3.5" stroke="#0B5D6B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
     </a>
     <a class="fila-stock" href="#detalle">
       <span class="f-ref num">A-2298</span>
       <span class="f-vehiculo"><b>Renault Kadjar Blue dCi</b> <i>Zen</i><span class="f-meta-movil num">A-2298 · 2019 · 84.200 km · Diésel · Manual</span></span>
-      <span class="f-anio num">2019</span><span class="f-km num">84.200</span><span class="f-motor">Diésel · Manual</span>
+      <span class="f-anio num">2019</span><span class="f-km num">84.200</span><span class="f-combustible">Diésel</span><span class="f-cambio">Manual</span>
       <span class="f-revision">137 puntos · 20/06/2026</span><span class="f-precio num">15.900&nbsp;€</span>
       <svg class="f-flecha" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2 7h10M8.5 3.5 12 7l-3.5 3.5" stroke="#0B5D6B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
     </a>
     <a class="fila-stock" href="#detalle">
       <span class="f-ref num">A-2431</span>
       <span class="f-vehiculo"><b>Toyota C-HR 1.8 125H</b> <i>Active</i><span class="f-meta-movil num">A-2431 · 2022 · 39.700 km · Híbrido · Automático</span></span>
-      <span class="f-anio num">2022</span><span class="f-km num">39.700</span><span class="f-motor">Híbrido · Automático</span>
+      <span class="f-anio num">2022</span><span class="f-km num">39.700</span><span class="f-combustible">Híbrido</span><span class="f-cambio">Automático</span>
       <span class="f-revision">137 puntos · 10/08/2026</span><span class="f-precio num">23.600&nbsp;€</span>
       <svg class="f-flecha" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2 7h10M8.5 3.5 12 7l-3.5 3.5" stroke="#0B5D6B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
     </a>
     <a class="fila-stock" href="#detalle">
       <span class="f-ref num">A-2266</span>
       <span class="f-vehiculo"><b>Škoda Octavia 2.0 TDI</b> <i>Ambition</i><span class="f-meta-movil num">A-2266 · 2018 · 143.900 km · Diésel · Manual</span></span>
-      <span class="f-anio num">2018</span><span class="f-km num">143.900</span><span class="f-motor">Diésel · Manual</span>
+      <span class="f-anio num">2018</span><span class="f-km num">143.900</span><span class="f-combustible">Diésel</span><span class="f-cambio">Manual</span>
       <span class="f-revision">137 puntos · 02/06/2026</span><span class="f-precio num">11.800&nbsp;€</span>
       <svg class="f-flecha" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2 7h10M8.5 3.5 12 7l-3.5 3.5" stroke="#0B5D6B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
     </a>
     <a class="fila-stock" href="#detalle" style="border-bottom:1px solid var(--c-ink)">
       <span class="f-ref num">A-2447</span>
       <span class="f-vehiculo"><b>Peugeot 3008 1.5 BlueHDi</b> <i>Allure</i><span class="f-meta-movil num">A-2447 · 2021 · 58.300 km · Diésel · Automático</span></span>
-      <span class="f-anio num">2021</span><span class="f-km num">58.300</span><span class="f-motor">Diésel · Automático</span>
+      <span class="f-anio num">2021</span><span class="f-km num">58.300</span><span class="f-combustible">Diésel</span><span class="f-cambio">Automático</span>
       <span class="f-revision">137 puntos · 22/08/2026</span><span class="f-precio num">24.700&nbsp;€</span>
       <svg class="f-flecha" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2 7h10M8.5 3.5 12 7l-3.5 3.5" stroke="#0B5D6B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
     </a>
@@ -909,7 +971,7 @@ footer.site{background:var(--c-bg);border-top:1px solid var(--hair)}
   <section class="hero-partida" style="margin-top:22px">
     <div class="hero-copia">
       <div class="eyebrow on-inversa">Desde&nbsp;1994</div>
-      <h1 style="margin-top:14px;font-size:2.5rem">Treinta años revisando antes de vender</h1>
+      <h1 style="margin-top:14px;font-size:2.625rem">Treinta años revisando antes de vender</h1>
       <p>Motor Aranda lo fundó Julián Herranz en 1994 comprando y revisando coches de particulares en Aranda de Duero. Hoy lo lleva su hija Marta, con el mismo taller propio y el mismo criterio: ningún coche sale al patio sin pasar antes por el foso.</p>
     </div>
     <div class="hero-foto"><img src="../img/aranda-patio.webp" alt="Frontal de un coche oscuro en primer plano con otro claro desenfocado detrás"></div>
@@ -978,7 +1040,7 @@ footer.site{background:var(--c-bg);border-top:1px solid var(--hair)}
       </form>
 
       <div class="contacto-aside">
-        <div class="datos-lista">
+        <div class="datos-lista apilada">
           <div><span class="et">Dirección</span><span class="va">Polígono Prado Marina, nave 12, 09400 Aranda de Duero (Burgos)</span></div>
           <div><span class="et">Horario del patio</span><span class="va">L–V 9:30–14:00 y 16:30–20:00 · S 10:00–14:00</span></div>
           <div><span class="et">Teléfono</span><span class="va num">947 50 12 88</span></div>
@@ -1193,7 +1255,7 @@ footer.site{background:var(--c-bg);border-top:1px solid var(--hair)}
           <li><a href="#tasacion">Tasación</a></li>
         </ul>
       </div>
-      <div class="pie-col" style="width:280px">
+      <div class="pie-col pie-col-ancha">
         <div class="titulo">Horario del patio</div>
         <p>Lunes a viernes, 9:30–14:00 y 16:30–20:00<br>Sábados, 10:00–14:00<br>Se puede ver cualquier coche sin cita previa.</p>
       </div>
