@@ -118,9 +118,41 @@ cabecera, hero, planes, «lo que abres el día 3», «lo que se está tostando»
 por línea (`rg -o '144px' Tueste.dc.html | wc -l` → 16), nunca `108px`. Es un margen más generoso que
 el 7,5&nbsp;% de la casa y que el 5&nbsp;%/6,667&nbsp;% de `aranda`/`lumiere`: un negocio que vende
 lo que se lee despacio respira más, no menos, y ese margen ancho es coherente con la densidad generosa
-de `editorial` (ver más abajo, § Procedencia, para el Enfoque corregido y sus dos ejes que no casan). Las cuatro láminas nuevas y la maqueta lo expresan como fracción
-(`--page-margin:clamp(20px, 10vw, 144px)`), nunca en píxel fijo, siguiendo la misma regla que
-`aranda` y `lumiere` ya fijaron para el suyo.
+de `editorial` (ver más abajo, § Procedencia, para el Enfoque corregido y sus dos ejes que no casan). Las cuatro láminas nuevas y la maqueta lo expresan como fracción,
+nunca en píxel fijo, siguiendo la misma regla que `aranda` y `lumiere` ya fijaron para el suyo.
+
+**Y el 10&nbsp;% tiene techo: el contenido no pasa de 1152px (`--contenido-max`).** El raíl de la
+maqueta es uno solo a todos los anchos:
+
+```
+--margen-pagina:clamp(20px, 10%, 144px);
+--contenido-max:1152px;                       /* 1440 − 2×144, medido en Tueste.dc.html */
+--carril:max(var(--margen-pagina), calc((100% - var(--contenido-max)) / 2));
+```
+
+Por debajo de 1440 manda la fracción del 10&nbsp;%; a partir de 1440 manda el tope y el raíl crece.
+Las dos ramas valen 144px exactos a 1440, así que la curva no tiene escalón. Va en **`%` y no en
+`vw`** porque la maqueta se mira dentro de un `iframe` a pantalla completa: a 1920 con barra de
+desplazamiento el cristal mide 1905 y `vw` seguiría midiendo 1920. Medido dentro del `iframe`: raíl
+único a 1280 (127), 1680 (257) y 1920 (377), desborde 0 en las catorce páginas.
+
+El carril se escribe como **relleno**, no como caja topada. Con `max-width` en la propia sección, una
+medida más estrecha centraba su caja y sumaba el relleno lateral encima: el carro llevaba su tabla
+208px adentro del raíl de la miga y las cuatro legales 286px, y la columna legal salía **más estrecha
+cuanto más ancha era la pantalla** (580px a 1440, 819 a 1024) — el relleno en porcentaje dentro de un
+tope de `defectos-de-derivacion.md` § Documento y apilado. Una medida más estrecha se topa ahora en
+los hijos de la sección (`.medida-ancha`, 1024px; `.medida-lectura`, 868px), que es un ancho de
+contenedor interior en Elementor, no un margen del exterior.
+
+Nativo, sin CSS a medida: contenedor «en caja» de 1152px en escritorio y relleno lateral del
+10&nbsp;% en tableta y móvil, que es exactamente lo que hacen `terrazza` con su 1344 y `aranda` con
+su 1296.
+
+**Segundo escalón de h2 (`--fs-h2-sm`, 40px a 1440).** El lienzo no usa un solo tamaño de h2: 46 en
+los planes de la portada, 44 en sus bandas, 40 en la ficha, 38 en El tostadero y 34 en contacto y
+bolsas sueltas. Las páginas interiores llevaban el de 46 —un 15&nbsp;% de más frente a los 40 de
+`Ficha.dc.html`— o un `clamp` cuyo máximo declarado (38px) **no se alcanzaba nunca**, porque su
+término medio topaba en 34,4 a 1440. En Elementor son dos ajustes de fuente global, no dos reglas.
 
 ## Mapeo nativo
 
@@ -130,7 +162,7 @@ de `editorial` (ver más abajo, § Procedencia, para el Enfoque corregido y sus 
 | Sección | Elementor (nativo) | Nota |
 |---|---|---|
 | Cabecera | Theme Builder: contenedor flex + Logotipo (texto) + Menú de navegación + Botón «Entrar» | `woocommerce-menu-cart` sustituye al enlace «Entrar» cuando hay sesión, según `paginas-obligatorias.md` |
-| Hero + precio flotante | Contenedor con Imagen a ancho completo + contenedor de texto (Encabezado + Editor de texto + dos Botones) + contenedor con relleno superpuesto (precio + nota de pausa) | El panel de precio superpuesto usa posicionamiento nativo de Elementor (offset), no CSS a medida |
+| Hero + precio a caballo | Contenedor de banda **a sangre** con relleno IZQUIERDO = el carril: contenedor de texto de ancho personalizado 488px (Encabezado + Editor de texto + dos Botones) + contenedor de Imagen que crece hasta el cristal, con el panel de precio superpuesto (precio + nota de pausa) | La banda no lleva relleno derecho: la foto llega al borde, como en `Tueste.dc.html:32`. Los 488px fijos (416 de texto + 72 de aire) mantienen la medida de lectura igual a 1280, 1440, 1680 y 1920; un 44&nbsp;% de pantalla la dejaba en 41 caracteres a 1280. El panel usa el desplazamiento horizontal **negativo** nativo de Elementor (−128px) para quedar a caballo de la junta: 264px sobre la foto y 128 sobre el crema, como los dibuja el lienzo. Apilado por debajo de 1024, el panel deja de ser capa y pasa a ser el bloque siguiente |
 | Planes de suscripción (tres filas + cadencia + molienda) | Contenedor flex de filas repetidas: Encabezado + Editor de texto + Encabezado de precio + Botón; chips de cadencia/molienda como grupo de Botones | **No verificado**: elegir cadencia y molienda como estado interactivo de un Producto variable es terreno de una extensión de suscripciones — ver nota debajo de la tabla |
 | Lo que abres el día 3 (lista numerada) | Contenedor flex de dos columnas: Imagen + lista de filas (Encabezado numérico + Editor de texto) | |
 | Lo que se está tostando esta semana | Contenedor rejilla de 3 columnas: Encabezado + Editor de texto por tarjeta | Sin producto de WooCommerce detrás — es contenido editorial, no catálogo |
@@ -142,10 +174,11 @@ de `editorial` (ver más abajo, § Procedencia, para el Enfoque corregido y sus 
 | Ficha: planes de suscripción («o que Huila sea tu primer envío») | Igual que «Planes de suscripción» de la portada | **No verificado**, misma nota |
 | La marca: tres cifras + tabla semanal | Contenedor rejilla de 3 columnas (Encabezado + Editor de texto) + contenedor de filas para la tabla lunes/martes/miércoles | Página de Elementor, sin widget de WooCommerce, según `paginas-obligatorias.md` |
 | Contacto: datos + formulario + preguntas | `Formulario` nativo de Elementor Pro (Nombre, Correo, Motivo, Mensaje, Casilla de consentimiento) + contenedor de filas clave-valor + rejilla de 3 para las preguntas | La casilla de consentimiento es el campo nativo `Aceptación` |
-| Carro | Página Carro de WooCommerce, `woocommerce-cart` | |
+| Carro | Página Carro de WooCommerce, `woocommerce-cart` | La tabla se topa en 1024px de ancho de contenido del contenedor interior, alineada al carril; nunca centrando la sección, que abría un segundo raíl |
 | Pago | Página Finalizar compra, `woocommerce-checkout-page`, con la cuota y la cadencia elegidas visibles en el resumen | **No verificado**: WooCommerce core no muestra un resumen de recurrencia en el checkout — es lo que añade la extensión de suscripciones |
 | Pedido recibido | Sin widget propio, vestida con los ajustes globales — a verificar, según `paginas-obligatorias.md` | |
 | Mi cuenta: pedidos + control de suscripción | `woocommerce-my-account` para pedidos y direcciones; el bloque «Tu suscripción» (saltar, pausar, cambiar cantidad, cambiar molienda, cancelar) **no tiene equivalente en `woocommerce-my-account`** | Ver nota — es el hueco más grande de esta tabla |
+| Legales (cuatro páginas) | Contenedor de sección con el carril + contenedor interior de 868px de ancho de contenido | La medida de lectura va al contenedor interior y arranca en el carril de la miga, no centrada |
 | Pie | Theme Builder | Aviso legal, Privacidad, Cookies y Condiciones de venta y envíos enlazan a sus páginas |
 
 **Lo que WooCommerce core no cubre, dicho sin adornar.** WooCommerce, tal y como lo introspecciona
