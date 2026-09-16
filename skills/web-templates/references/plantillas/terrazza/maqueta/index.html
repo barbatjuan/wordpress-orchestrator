@@ -59,16 +59,47 @@ table{border-collapse:collapse;width:100%}
   --c-border-soft:rgba(244,235,223,.08);
   --c-hair:#6B5C4B;
 
-  /* ── Márgen medido en Terrazza.dc.html: padding lateral de 48px en las diez bandas de la
-     portada (grep, cero apariciones de 108px) = 48/1440 = 3,333%, no el 7,5% de la casa. Viaja
-     como fracción con un suelo de 16px, nunca como píxel fijo. ── */
-  --page-margin:clamp(16px, 3.333vw, 48px);
+  /* ── EL CARRIL. Margen medido en Terrazza.dc.html: 48px por lado en las diez bandas de la
+     portada (grep, cero apariciones de 108px) = 48/1440 = 3,333 %, no el 7,5 % del resto de la
+     biblioteca. Y un TOPE, que es lo que faltaba: a 1440 el lienzo compone 1344px de contenido y
+     por encima de ese ancho no crece — se centra. Sin tope, medido con medir-geometria.mjs, el
+     margen dominante caía del 3,3 % a 1440 al 2,5 % a 1920, al 1,9 % a 2563 y al 1,4 % a 3418, y
+     el contenido llegaba a 1824px a 1920: el panel de reserva se estiraba de lado a lado, las
+     tres cifras del cocinero se separaban 300px entre sí y las filas de la carta dejaban el
+     precio a un palmo de su plato. El carril va en % y no en vw para que la barra de
+     desplazamiento del iframe con el que se ve la maqueta a pantalla completa no descentre el
+     contenido (a 1920 con barra el cristal mide 1905 y vw seguiría midiendo 1920). Nativo:
+     contenedor «en caja» de 1344px con relleno lateral del 3,333 %. ── */
+  --contenido-max:1344px;
+  --page-margin:max(clamp(16px, 3.333%, 48px), calc((100% - var(--contenido-max)) / 2));
 
-  --fs-h1-hero:clamp(2.5rem, 1.5rem + 4.4vw, 5.875rem);
-  --fs-h1:clamp(2.125rem, 1.55rem + 2.6vw, 3.75rem);
-  --fs-h2:clamp(1.75rem, 1.4rem + 1.6vw, 2.75rem);
-  --fs-h3:clamp(1.375rem, 1.2rem + .8vw, 2rem);
+  /* ── Escala de display. Los topes son los tamaños MEDIDOS en el lienzo a 1440 y la pendiente se
+     calcula para tocarlos justo a 1440, ni antes ni después. El tope existía pero la recta no
+     llegaba: el h1 de portada se quedaba en 87,36px contra los 94 del artboard, el h2 de sección
+     daba 44 contra 40 y el h3 30,72 contra 32. ── */
+  --fs-h1-hero:clamp(2.5rem, 1.3116rem + 5.0704vw, 5.875rem);    /* 40 → 94px a 1440 */
+  --fs-h1:clamp(2.125rem, 1.55rem + 2.6vw, 3.75rem);             /* 34 → 60px a 1440 */
+  --fs-h1-largo:clamp(2rem, 1.4719rem + 2.2535vw, 3.5rem);       /* 32 → 56px a 1440 */
+  --fs-h1-ficha:clamp(1.875rem, 1.3909rem + 2.0657vw, 3.25rem);  /* 30 → 52px a 1440 */
+  --fs-h2:clamp(1.75rem, 1.4859rem + 1.1268vw, 2.5rem);          /* 28 → 40px a 1440 */
+  --fs-h2-carta:clamp(1.875rem, 1.5669rem + 1.3146vw, 2.75rem);  /* 30 → 44px a 1440 */
+  --fs-h3:clamp(1.375rem, 1.1549rem + .939vw, 2rem);             /* 22 → 32px a 1440 */
+  --fs-h3-corto:clamp(1.25rem, 1.0986rem + .6455vw, 1.625rem);   /* 20 → 26px a 1440 */
+  --fs-h3-split:clamp(1.5rem, 1.2359rem + 1.1268vw, 2.25rem);    /* 24 → 36px a 1440 */
+  --fs-h2-cierre:clamp(1.875rem, 1.5229rem + 1.5024vw, 2.875rem);/* 30 → 46px a 1440 */
+  --fs-h2-cierre-portada:clamp(2.125rem, 1.7289rem + 1.6901vw, 3.25rem); /* 34 → 52px a 1440 */
   --fs-lede:clamp(1rem, .95rem + .2vw, 1.03125rem);
+  --fs-lede-hero:clamp(1.0625rem, .8524rem + .8967vw, 1.21875rem);/* 17 → 19,5px a 1440 */
+
+  /* ── Interlínea del display y de las etiquetas de chrome. El lienzo no declara line-height en
+     el body, así que todo lo que no la pide cae en `normal` (≈1,2). La maqueta sí la declara
+     —1,6, la correcta para prosa— y el display la heredaba: el h2 de sección salía en una caja
+     de 70,4px contra los 49 del artboard, el h3 de 32px en 49 contra 39, y el precio de 68,00 €
+     en 26,4 contra 20. Medido en las cinco páginas, era la mayor fuente de deriva vertical de la
+     maqueta. Se declara donde el lienzo la deja en `normal`, no en el body, porque la prosa sí
+     quiere 1,6. ── */
+  --lh-display:1.2;
+  --lh-etiqueta:1.22;
   --fs-body:1rem;
   --fs-small:.84375rem;
   --fs-tiny:.78125rem;
@@ -80,11 +111,27 @@ table{border-collapse:collapse;width:100%}
   --ease:cubic-bezier(.4,0,.2,1);
 }
 
-h1,h2,h3{font-family:var(--font-display);color:var(--c-ink);font-weight:300;letter-spacing:-.015em}
+h1,h2,h3{font-family:var(--font-display);color:var(--c-ink);font-weight:300;letter-spacing:-.015em;
+         line-height:var(--lh-display)}
 h1{font-size:var(--fs-h1)}
 h2{font-size:var(--fs-h2)}
 h3{font-size:var(--fs-h3);font-weight:300}
-.eyebrow{font-size:var(--fs-tiny);font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--c-accent)}
+.eyebrow{font-size:var(--fs-tiny);font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--c-accent);
+         line-height:var(--lh-etiqueta)}
+/* Las etiquetas de chrome que el lienzo deja en `normal`: nombre y precio de plato, rótulos de
+   grupo, precios de menú, pases, copas, nombres de sala, cifras, migas y datos de pie. Todas
+   heredaban el 1,6 de la prosa y crecían entre 4 y 19px por línea. Una sola declaración, porque
+   en el constructor nativo son la tipografía de cada widget, no una excepción. */
+.migas p,.marca-mini,.franja-datos span,.franja-datos .tel,.nav a,
+.plato-nombre,.plato-precio,.carta-titulo,.carta-nota,
+.menu-precio,.menu-etq,.menu-lista span,
+.drink-cab span,.vino-fila span,.sala-nombre,
+.cifra .num,.cifra .etq,.persona .cargo,
+.panel-campo .etq,.panel-campo .val,.panel-precio-top span,.panel-fila span,
+.info-card-titulo,.info-filas .etq,.paso .n,
+.footer-marca,.footer-col-titulo,.footer-lista a,.footer-legal,
+.legal-fecha,.legal-indice a{line-height:var(--lh-etiqueta)}
+
 .lede{max-width:62ch;font-size:var(--fs-lede);line-height:1.65;color:var(--c-text)}
 .lede + .lede{margin-top:14px}
 .muted{color:var(--c-text-muted)}
@@ -143,28 +190,47 @@ header.site{position:sticky;top:0;z-index:50;background:var(--c-bg)}
 .migas p{font-size:var(--fs-tiny);letter-spacing:.02em;color:var(--c-text-muted)}
 .migas a:hover{color:var(--c-accent)}
 section{padding-block:var(--sp-section)}
-.pag-head{padding:var(--sp-l) var(--page-margin) 0}
-.pag-head h1{margin-top:16px;max-width:20ch;text-wrap:pretty}
-.pag-head .lede{margin-top:18px}
+/* Medidas del lienzo: relleno 40px arriba, titular topado en 18ch y entradilla en 64ch. Con 20ch
+   el titular de Nosotros medía 755px contra los 680 del artboard y se quedaba en dos líneas. */
+.pag-head{padding:40px var(--page-margin) 0}
+/* La medida del titular de página la pone cada lámina, no el chasis: el lienzo deja «Lo que se
+   cocina esta semana» sin tope y en una línea, topa el de Nosotros en 18ch y baja el de Contacto
+   a 56px con 20ch. Un tope único dejaba el de la carta en dos líneas (+70px). */
+.pag-head h1{margin-top:18px;letter-spacing:-.02em;text-wrap:pretty}
+.pag-head .lede{margin-top:20px;max-width:64ch}
+.titular-largo{font-size:var(--fs-h1-largo)}
 .seccion-alt{background:var(--c-bg-alt)}
 
 /* ══ hero de inicio ══ */
-.hero{padding:var(--sp-xxl) var(--page-margin) var(--sp-xl)}
-.hero h1{margin-top:22px;line-height:.98;font-size:var(--fs-h1-hero)}
-.hero .lede{margin-top:22px}
-.panel-reserva{display:flex;align-items:stretch;gap:0;margin-top:40px;flex-wrap:wrap}
-.panel-campo{background:var(--c-bg-alt);border:1px solid var(--c-border);border-right:none;padding:12px 18px 13px;flex:1 1 150px}
+.hero{padding:78px var(--page-margin) 66px}
+.hero h1{margin-top:26px;line-height:.98;letter-spacing:-.025em;font-size:var(--fs-h1-hero)}
+.hero .lede{margin-top:26px;max-width:60ch;font-size:var(--fs-lede-hero);font-weight:300;line-height:1.6}
+/* El panel de reserva del lienzo mide 1044px en total —168+220+148+192 de campos y 316 de botón—
+   y NO el ancho de la banda. Con `flex:1 1 150px` en los campos y `1 1 220px` en el botón se
+   estiraba a los 1344 de contenido a 1440 y a los 1824 que había a 1920: cuatro campos enormes y
+   un botón de 420px. Ahora reparte el ancho del lienzo en las mismas proporciones y se topa en
+   1044. Nativo: contenedor de ancho 1044 «en caja» con cinco columnas de porcentaje fijo. */
+.panel-reserva{display:flex;align-items:stretch;gap:0;margin-top:46px;width:100%;max-width:1044px;flex-wrap:wrap}
+.panel-campo{background:var(--c-bg-alt);border:1px solid var(--c-border);border-right:none;padding:12px 18px 13px;min-width:0}
+.panel-campo-personas{flex:0 1 168px}
+.panel-campo-dia{flex:0 1 220px}
+.panel-campo-hora{flex:0 1 148px}
+.panel-campo-zona{flex:0 1 192px}
 .panel-campo .etq{display:block;font-size:.65625rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--c-accent)}
 .panel-campo .val{display:block;margin-top:5px;font-size:1rem;color:var(--c-ink)}
-.panel-reserva .btn{border:1px solid var(--c-border);flex:1 1 220px;height:auto}
-.hero-nota{margin-top:16px;font-size:.84375rem;color:var(--c-text-muted)}
+.panel-reserva .btn{border:1px solid var(--c-border);flex:0 1 316px;min-height:68px;height:auto;min-width:0}
+.hero-nota{margin-top:18px;font-size:.84375rem;line-height:var(--lh-etiqueta);color:var(--c-text-muted)}
 
-.banda-foto{width:100%;height:440px;object-fit:cover}
+/* El lienzo recorta esta fotografía por 50% 58%, no por el centro: bajando el encuadre entran las
+   lámparas y las mesas corridas y no el techo. Sin `object-position` la maqueta la cortaba 30px
+   más arriba (el alto visible es 440 de 810 naturales, así que el 8 % de diferencia son 29,6px). */
+.banda-foto{width:100%;height:440px;object-fit:cover;object-position:50% 58%}
 .banda-foto-tira{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0}
 .banda-foto-tira img{width:100%;height:380px;object-fit:cover}
 
 /* ══ la carta ══ */
 .carta-cabecera{display:flex;align-items:baseline;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.carta-cabecera h2{font-size:var(--fs-h2-carta)}
 .carta-nota{font-size:.84375rem;color:var(--c-text-muted);text-align:right}
 .carta-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:6.5rem;margin-top:2.5rem}
 .carta-grupo + .carta-grupo{margin-top:3rem}
@@ -191,13 +257,16 @@ section{padding-block:var(--sp-section)}
 .menu-etq{margin-top:1.625rem;font-size:.71875rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--c-accent)}
 .menu-lista{display:flex;flex-direction:column;gap:11px;margin-top:1rem}
 .menu-lista span{font-size:.96875rem;color:var(--c-ink)}
+/* La descripción del menú es letra pequeña apagada en el lienzo —14,5px sobre --c-text-muted,
+   topada en 52ch—, no una entradilla de 16,5 en tinta de texto. */
+.menu-col > .lede{margin-top:12px;max-width:52ch;font-size:.90625rem;line-height:1.6;color:var(--c-text-muted)}
 
 /* ══ teaser del plato ══ */
 .teaser-plato{display:flex;align-items:center;gap:4rem;flex-wrap:wrap}
 .teaser-plato img{width:480px;max-width:100%;height:360px;object-fit:cover;flex-shrink:0}
 .teaser-plato-texto{flex:1 1 320px}
 .teaser-plato-texto h2{margin-top:1rem;max-width:18ch}
-.teaser-plato-texto .lede{margin-top:1rem}
+.teaser-plato-texto .lede{margin-top:1rem;max-width:52ch;font-size:.96875rem;line-height:1.65}
 .teaser-plato-texto .ver-mas{display:inline-flex;align-items:center;gap:8px;margin-top:22px;font-size:.90625rem;font-weight:600}
 
 /* ══ la bodega ══ */
@@ -212,6 +281,14 @@ section{padding-block:var(--sp-section)}
 .dos-col > div{flex:1 1 320px}
 .dos-col h3{font-size:1.625rem}
 .dos-col p{margin-top:14px;max-width:56ch;font-size:.90625rem;line-height:1.65;color:var(--c-text-muted)}
+/* La banda «De dónde sale» de la ficha del plato no es la de alérgenos: el lienzo la compone con
+   88px de hueco, primera columna al 45 %, titular de 34px y prosa de 15,5px en tinta de texto. */
+.dos-col-ficha{gap:5.5rem}
+.dos-col-ficha > div:first-child{flex:0 1 45%;min-width:0}
+.dos-col-ficha > div + div{flex:1 1 0;min-width:0}
+.dos-col-ficha h3{font-size:2.125rem}
+.titulo-corto{font-size:var(--fs-h3-corto)}
+.dos-col-ficha > div:first-child > p{max-width:52ch;font-size:.96875rem;line-height:1.7;color:var(--c-text)}
 
 /* ══ dos salas ══ */
 .salas-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px;margin-top:2.125rem}
@@ -220,31 +297,58 @@ section{padding-block:var(--sp-section)}
 .sala-desc{margin-top:.4375rem;max-width:58ch;font-size:.90625rem;line-height:1.6;color:var(--c-text-muted)}
 
 /* ══ la barra ══ */
-.barra-seccion{display:flex;align-items:flex-start;gap:5.5rem;flex-wrap:wrap}
-.barra-intro{width:300px;flex-shrink:0}
-.barra-intro .lede{margin-top:14px}
-.barra-grid{flex-grow:1;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:2.5rem;min-width:280px}
+/* El lienzo compone esta banda como UNA fila: intro de 300px, hueco de 88 y una rejilla de cuatro
+   copas que encoge hasta 1025px. La maqueta la partía en dos a 1440 —`flex-wrap:wrap` más
+   `min-width:280px` en la rejilla, cuya base es su contenido máximo (~1120px): 300+88+1120 no cabe
+   en 1344, así que en vez de encoger, saltaba de línea—. Medido: los cuatro precios aterrizaban en
+   x=48 en vez de x=367 y la banda crecía 143px. Sin envolver y sin mínimo, encoge como el lienzo. */
+.barra-seccion{display:flex;align-items:flex-start;gap:5.5rem}
+.barra-intro{width:300px}
+.barra-intro .lede{margin-top:14px;font-size:.90625rem;line-height:1.65;color:var(--c-text-muted)}
+.barra-grid{flex-grow:1;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:2.5rem;min-width:0}
 .drink-cab{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
 .drink-cab span:first-child{font-size:1rem;font-weight:500;color:var(--c-ink)}
 .drink-cab span:last-child{font-size:.96875rem;font-weight:500;color:var(--c-accent)}
 .drink p{margin-top:.375rem;font-size:.84375rem;line-height:1.5;color:var(--c-text-muted)}
 
 /* ══ foto partida ══ */
-.split-foto{display:flex;align-items:stretch;flex-wrap:wrap}
-.split-foto img{width:620px;max-width:100%;height:480px;object-fit:cover;flex-shrink:0}
-.split-texto{flex:1 1 360px;padding:var(--sp-xl) var(--page-margin)}
-.split-texto h3{max-width:20ch}
-.split-texto .lede{margin-top:20px}
+/* Dos bandas con la misma mecánica del lienzo —foto de tamaño fijo a sangre por un lado, columna
+   de texto que crece y apoya su lado exterior en el carril— pero con fotos distintas, que la
+   maqueta había igualado a 620×480 las dos. Medido: la del cocinero es 700×520 en el artboard, y
+   con 620 el texto arrancaba en x=668 en vez de 772 (−104px). La banda tampoco lleva el ritmo
+   vertical de `section`: el lienzo no le pone relleno exterior, sólo los 78px de la columna de
+   texto, y al heredarlo crecía 171px. El relleno interior de 72px es el hueco a la foto; el
+   exterior es el carril, así que por encima de 1440 la banda respeta el mismo tope que el resto. */
+.split-foto{display:flex;align-items:stretch;padding-block:0}
+.split-foto img{max-width:100%;object-fit:cover;flex-shrink:0}
+.split-texto{flex-grow:1;min-width:0}
+.split-texto .lede{margin-top:20px;font-size:1rem;line-height:1.7;max-width:58ch}
+.split-texto .lede + .lede{margin-top:16px}
+.split-texto h3{font-size:var(--fs-h3-split);line-height:1.15}
+/* foto a la izquierda (portada) */
+.split-foto-izq > img{width:700px;height:520px}
+.split-foto-izq .split-texto{padding:78px var(--page-margin) 78px 72px}
+/* foto a la derecha (nosotros) */
+.split-foto-der{margin-top:64px}
+.split-foto-der > img{width:620px;height:480px}
+.split-foto-der .split-texto{padding:78px 72px 78px var(--page-margin)}
+.split-foto-der .split-texto .lede{max-width:54ch}
 
 /* ══ cita ══ */
-.cita blockquote{font-family:var(--font-display);font-size:1.875rem;font-weight:300;line-height:1.35;color:var(--c-ink);max-width:48ch;margin:0}
+/* 760px, la medida del lienzo. `48ch` sobre una Fraunces de 30px daba 907 y la cita se estiraba. */
+.cita blockquote{font-family:var(--font-display);font-size:1.875rem;font-weight:300;line-height:1.35;color:var(--c-ink);max-width:760px;margin:0}
 .cita cite{display:block;margin-top:1.25rem;font-size:.90625rem;font-style:normal;color:var(--c-text-muted)}
 
 /* ══ cifras ══ */
 .cifras{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:2.5rem;margin-top:3rem}
-.cifras.cifras-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+/* Las tres cifras del cocinero no son una rejilla de tres columnas iguales: el lienzo las pone en
+   fila con 48px de hueco y el ancho que pide cada etiqueta. Repartidas en tercios se separaban
+   hasta 300px entre sí en cuanto la columna crecía, que es justo lo que se veía a 1920. */
+.cifras.cifras-3{display:flex;gap:3rem;margin-top:30px}
 .cifra .num{font-family:var(--font-display);font-size:2.375rem;color:var(--c-accent)}
 .cifra .etq{margin-top:.625rem;font-size:.9375rem;font-weight:500;color:var(--c-ink)}
+.cifras-3 .num{font-size:1.875rem}
+.cifras-3 .etq{margin-top:4px;font-size:.84375rem;font-weight:400;color:var(--c-text-muted)}
 .cifra p{margin-top:.375rem;font-size:.84375rem;line-height:1.5;color:var(--c-text-muted)}
 
 /* ══ equipo ══ */
@@ -258,9 +362,11 @@ section{padding-block:var(--sp-section)}
 
 /* ══ ficha del plato ══ */
 .ficha-cab{display:flex;gap:4.5rem;align-items:flex-start;flex-wrap:wrap}
-.ficha-cab-texto{flex:1 1 420px}
-.ficha-cab-texto h1{margin-top:18px;max-width:16ch}
-.ficha-cab-texto .lede{margin-top:20px}
+.ficha-cab-texto{flex:1 1 420px;min-width:0}
+/* El titular de la ficha es de 52px en el lienzo, no de 60: es el más largo del sitio y el
+   artboard lo baja un escalón para que quepa en dos líneas. */
+.ficha-cab-texto h1{margin-top:18px;max-width:16ch;font-size:var(--fs-h1-ficha);line-height:1.06}
+.ficha-cab-texto .lede{margin-top:20px;max-width:58ch}
 .panel-precio{width:320px;flex-shrink:0;background:var(--c-bg-alt);border:1px solid var(--c-border);padding:26px}
 .panel-precio-top{display:flex;align-items:baseline;justify-content:space-between}
 .panel-precio-top span:first-child{font-size:.8125rem;color:var(--c-text-muted)}
@@ -276,7 +382,9 @@ section{padding-block:var(--sp-section)}
 .pasos{display:flex;flex-direction:column;gap:18px;margin-top:1.25rem}
 .paso{display:flex;gap:18px}
 .paso .n{font-family:var(--font-display);font-size:1.375rem;color:var(--c-accent);flex-shrink:0;width:28px}
-.paso p{font-size:.9375rem;line-height:1.6;color:var(--c-ink)}
+/* Los pasos no llevan medida de lectura propia: el 56ch de .dos-col los partía en dos líneas
+   dentro de una columna que en el lienzo los deja en una. */
+.paso p{font-size:.9375rem;line-height:1.6;max-width:none;color:var(--c-ink)}
 
 .maridaje{max-width:620px;margin-top:22px}
 .maridaje p{margin-top:8px;max-width:58ch;font-size:.875rem;line-height:1.6;color:var(--c-text-muted)}
@@ -296,7 +404,7 @@ section{padding-block:var(--sp-section)}
 .formulario{flex:1 1 460px;max-width:620px}
 .campo{display:block}
 .campo + .campo{margin-top:30px}
-.campo .etq{display:block;font-size:.75rem;font-weight:500;letter-spacing:.04em;color:var(--c-text-muted);padding-bottom:8px}
+.campo .etq{display:block;font-size:.75rem;font-weight:500;letter-spacing:.04em;line-height:var(--lh-etiqueta);color:var(--c-text-muted);padding-bottom:8px}
 .campo input,.campo select,.campo textarea{width:100%;height:48px;border:none;border-bottom:1px solid var(--c-border);
                                             background:transparent;font-size:.90625rem;color:var(--c-ink);appearance:auto}
 .campo textarea{height:auto;resize:none;padding-bottom:10px;line-height:1.6}
@@ -310,14 +418,19 @@ form .btn{margin-top:30px}
 
 /* ══ cierre de bronce ══ */
 .cierre{background:var(--c-accent);color:var(--c-on-accent)}
-.cierre-grid{display:flex;align-items:center;justify-content:space-between;gap:4rem;flex-wrap:wrap}
-.cierre h2{color:var(--c-on-accent)}
+.cierre-grid{display:flex;align-items:flex-start;justify-content:space-between;gap:4rem;flex-wrap:wrap}
+/* El lienzo le pone 520px a la columna de texto del cierre. Sin ese ancho, con
+   `justify-content:space-between` y el contenido ya topado, el bloque se estiraba con la pantalla. */
+.cierre-texto{width:520px;max-width:100%}
+.cierre h2{color:var(--c-on-accent);font-size:var(--fs-h2-cierre);line-height:1.05;letter-spacing:-.02em}
+.cierre-portada h2{font-size:var(--fs-h2-cierre-portada)}
 .cierre .lede{color:var(--c-bronce-cuerpo);max-width:52ch}
-.cierre .fuerte{margin-top:1rem;font-size:1.03125rem;font-weight:600;color:var(--c-on-accent)}
+.cierre .fuerte{margin-top:1rem;font-size:1.03125rem;font-weight:600;line-height:var(--lh-etiqueta);color:var(--c-on-accent)}
 .cierre .btn-dark{flex-shrink:0}
 
 /* ══ pie ══ */
-footer.site{padding-top:var(--sp-xxl)}
+/* 66px por arriba, medidos en el lienzo (`padding: 66px 48px 44px`), no los 104 de --sp-xxl. */
+footer.site{padding-top:66px}
 /* DERIVATION FIX: the lienzo's footer (Terrazza.dc.html) is the same four columns, unwrapped,
    with explicit width:320px on the brand column and width:280px on "Antes de venir" — the two
    prose columns. The maqueta kept the structure but dropped both width caps, so the last column's
@@ -363,13 +476,30 @@ footer.site{padding-top:var(--sp-xxl)}
    a 430 medía 538px dentro de un cuerpo de 398 y la página desbordaba 124px. Medido. Por debajo de
    768 se desplaza dentro de su propio contenedor, que es la misma solución que `marzo` usa para su
    tabla de medidas; por encima vuelve a ser una tabla. */
-.tabla-cookies{margin-top:1.25rem;font-size:.84375rem;display:block;overflow-x:auto;max-width:100%}
-@media (min-width:768px){.tabla-cookies{display:table;overflow-x:visible}}
+.tabla-cookies{margin-top:1.25rem;font-size:.84375rem}
 .tabla-cookies th,.tabla-cookies td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--c-border);color:var(--c-text)}
 .tabla-cookies th{color:var(--c-text-muted);font-weight:500;font-size:.78125rem;letter-spacing:.04em;text-transform:uppercase}
 
+/* ══ ajustes de banda ══ */
+/* Un `style=` en línea no puede llevar punto de ruptura, así que no puede maquetar: lo que decide
+   composición —relleno de banda, medida de lectura, aire— vive en una clase con sus @media. */
+.sin-aire-arriba{padding-top:0}
+.cab-ficha{padding-top:34px;padding-bottom:0}
+.aire-xxl-arriba{padding-top:var(--sp-xxl)}
+.aire-30{margin-top:30px}
+.aire-14{margin-top:14px}
+.centrado{margin-inline:auto}
+.medida-16{max-width:16ch}
+.medida-18{max-width:18ch}
+.medida-20{max-width:20ch}
+.actual{color:var(--c-ink)}
+
 /* ══ gracias / 404 ══ */
-.centro{max-width:640px;margin:0 auto;text-align:center}
+/* El tope es del CONTENIDO, no de la caja. En Gracias esta clase vive en el mismo elemento que
+   `.wrap`, así que con `box-sizing:border-box` los 640px incluían el carril: a 1440 dejaban 544 de
+   contenido y a 1920, con el carril ya topado en 288 por lado, 64px — el titular salía a palabra por
+   línea. El tope se escribe como contenido + carril, igual que `--container-max` en `marzo`. */
+.centro{max-width:calc(640px + 2 * var(--page-margin));margin:0 auto;text-align:center}
 .centro .pasos{text-align:left;max-width:420px;margin-inline:auto}
 .centro-cta{margin-top:2rem;display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
 .pag404{min-height:56vh;display:flex;align-items:center;justify-content:center;padding-inline:var(--page-margin)}
@@ -386,19 +516,48 @@ footer.site{padding-top:var(--sp-xxl)}
   .carta-grid{grid-template-columns:minmax(0,1fr)}
   .menus-grid{flex-direction:column;gap:3rem}
   .menu-col,.menu-col + .menu-col{width:100%;padding:0;border:none}
+  /* El empuje de la hamburguesa NO puede vivir en la navegación de escritorio, que aquí se oculta:
+     medido a 430, la hamburguesa acababa en x=192 de 430 en vez de pegada al margen derecho. El
+     `margin-left:auto` pasa al único control que queda visible a todos los anchos. */
+  .burger{margin-left:auto}
+  /* La banda de la barra pasa a columna: el intro deja de ser una columna de 300px. Y `align-items`
+     vuelve a `stretch`, porque con el `flex-start` del escritorio la rejilla de copas se quedaba en
+     su ancho de contenido — medido, 95px cortos del margen a 430 y 71 a 768. */
+  .barra-seccion{flex-direction:column;align-items:stretch;gap:2.5rem}
+  .barra-intro{width:100%}
+  /* La banda «De dónde sale» de la ficha se apila. Su primera columna es un 45 %, no una base en
+     píxeles, así que `flex-wrap` nunca llegaba a dispararse: a 430 quedaban dos columnas de 179 y
+     131px con los pasos a tres palabras por línea. Se apila por dirección, no por envoltura, y las
+     bases vuelven a `auto` para que un porcentaje no se mida contra el eje vertical. */
+  .dos-col-ficha{flex-direction:column;gap:3rem}
+  .dos-col-ficha > div:first-child,.dos-col-ficha > div + div{flex:0 1 auto}
   .barra-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
   .bodega-grid{grid-template-columns:minmax(0,1fr);row-gap:2rem}
   .salas-grid{grid-template-columns:minmax(0,1fr)}
-  .split-foto img{width:100%;height:360px}
+  /* La foto partida se apila. `flex-grow` no reserva alto, pero el relleno interior de 72px sí
+     dejaba de tener sentido en una columna: vuelve el carril a los dos lados, como manda la regla
+     de la banda a sangre que se apila. */
+  .split-foto,.split-foto-izq,.split-foto-der{flex-direction:column}
+  .split-foto-der{margin-top:2.5rem}
+  .split-foto-izq > img,.split-foto-der > img{width:100%;height:360px}
+  .split-foto-izq .split-texto,.split-foto-der .split-texto{padding:var(--sp-xl) var(--page-margin)}
   .cifras{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:2.5rem}
-  .cifras.cifras-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .cifras.cifras-3{gap:2.5rem;flex-wrap:wrap}
   .footer-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2.5rem 3.5rem}
   .footer-grid>div:first-child,.footer-grid>div:last-child{max-width:none}
   .equipo{grid-template-columns:minmax(0,1fr);row-gap:2.5rem}
+  /* Una base de flex en píxeles se mide en el eje principal: al pasar a columna, los 420px de la
+     ficha y los 460 del formulario se convertían en ALTO reservado. Vuelven a `auto`. */
   .ficha-cab{flex-direction:column}
+  .ficha-cab-texto{flex-basis:auto}
   .panel-precio{width:100%}
   .contacto-grid{flex-direction:column}
+  .formulario{flex-basis:auto;max-width:none}
   .info-columna,.info-card{width:100%}
+  .cierre-texto{width:100%}
+  .panel-reserva{max-width:none}
+  .panel-campo-personas,.panel-campo-dia,.panel-campo-hora,.panel-campo-zona{flex:1 1 150px}
+  .panel-reserva .btn{flex:1 1 220px}
   .legal-grid{grid-template-columns:minmax(0,1fr)}
   .legal-indice{position:static;display:flex;flex-wrap:wrap;gap:4px 18px;padding-bottom:1.5rem;border-bottom:1px solid var(--c-border)}
   .legal-indice a{padding:4px 0;border-left:none}
@@ -409,10 +568,18 @@ footer.site{padding-top:var(--sp-xxl)}
   .franja-datos .tel{display:inline}
   .fila-2,.fila-4{grid-template-columns:minmax(0,1fr)}
   .barra-grid{grid-template-columns:minmax(0,1fr)}
-  .cifras,.cifras.cifras-3{grid-template-columns:minmax(0,1fr)}
+  .cifras{grid-template-columns:minmax(0,1fr)}
+  .cifras.cifras-3{flex-direction:column;gap:1.75rem}
   .footer-grid{flex-direction:column;gap:2.25rem}
   .ficha-datos .fila{grid-template-columns:minmax(0,1fr)}
   .teaser-plato img{width:100%;height:280px}
+  /* La tabla de cookies no parte sus cuatro columnas: su ancho mínimo es la suma de sus celdas y a
+     430 medía 538px dentro de un cuerpo de 398. Se desplaza dentro de su propio contenedor, que es
+     donde se espera el desborde, y no en la página. Escrito como excepción por DEBAJO de 767 —la
+     misma forma que usa `marzo` con su tabla de medidas— y no como un `min-width:768`, que sería un
+     tercer punto de ruptura y `es-builder.php` sólo acepta `_tablet` y `_mobile`. */
+  .tabla-cookies{display:block;overflow-x:auto;max-width:100%}
+  .tabla-cookies th,.tabla-cookies td{white-space:nowrap}
 }
 </style>
 </head>
@@ -462,10 +629,10 @@ footer.site{padding-top:var(--sp-xxl)}
     <h1>Casa Terrazza</h1>
     <p class="lede">Una carta corta que cambia los martes, una parrilla que no se apaga y los precios donde tienen que estar: a la vista, antes de que preguntes.</p>
     <div class="panel-reserva">
-      <div class="panel-campo"><span class="etq">Personas</span><span class="val">2 comensales</span></div>
-      <div class="panel-campo"><span class="etq">Día</span><span class="val">Viernes 18 de septiembre</span></div>
-      <div class="panel-campo"><span class="etq">Hora</span><span class="val">21:00</span></div>
-      <div class="panel-campo"><span class="etq">Zona</span><span class="val">Sala de abajo</span></div>
+      <div class="panel-campo panel-campo-personas"><span class="etq">Personas</span><span class="val">2 comensales</span></div>
+      <div class="panel-campo panel-campo-dia"><span class="etq">Día</span><span class="val">Viernes 18 de septiembre</span></div>
+      <div class="panel-campo panel-campo-hora"><span class="etq">Hora</span><span class="val">21:00</span></div>
+      <div class="panel-campo panel-campo-zona"><span class="etq">Zona</span><span class="val">Sala de abajo</span></div>
       <a class="btn btn-accent" href="#contacto">Reservar mesa</a>
     </div>
     <p class="hero-nota">Quedan tres mesas para el viernes a las 21:00. Grupos de más de ocho, por teléfono. La barra no reserva: se entra y ya está.</p>
@@ -665,7 +832,7 @@ footer.site{padding-top:var(--sp-xxl)}
     </div>
   </section>
 
-  <section class="split-foto">
+  <section class="split-foto split-foto-izq">
     <img src="../img/terrazza-chef.webp" alt="Cocinero terminando un plato con una cuchara en la cocina">
     <div class="split-texto">
       <h3>Álex Ibáñez lleva en esta parrilla desde&nbsp;2011</h3>
@@ -679,9 +846,9 @@ footer.site{padding-top:var(--sp-xxl)}
     </div>
   </section>
 
-  <section class="cierre">
+  <section class="cierre cierre-portada">
     <div class="wrap cierre-grid">
-      <div>
+      <div class="cierre-texto">
         <h2>Reservar mesa</h2>
         <p class="lede">Se confirma por SMS en menos de una hora. Guardamos la mesa quince minutos; a partir de ahí la soltamos, que hay lista de espera casi todos los viernes.</p>
         <p class="fuerte">O por teléfono, que es más rápido: 963 91 44 07</p>
@@ -694,7 +861,7 @@ footer.site{padding-top:var(--sp-xxl)}
 
 <!-- ═══════════════════════════════ CARTA ═══════════════════════════════ -->
 <div class="page" id="carta" data-title="La carta — Casa Terrazza">
-  <div class="migas"><p><a href="#inicio">Inicio</a> &nbsp;/&nbsp; <span class="muted" style="color:var(--c-ink)">La carta</span></p></div>
+  <div class="migas"><p><a href="#inicio">Inicio</a> &nbsp;/&nbsp; <span class="muted actual">La carta</span></p></div>
 
   <section class="pag-head">
     <p class="eyebrow">La carta completa</p>
@@ -702,7 +869,7 @@ footer.site{padding-top:var(--sp-xxl)}
     <p class="lede">Dieciocho platos, nunca más: lo que no está aquí, Álex no lo puede hacer bien un sábado con la sala llena. La carta cambia los martes según lo que traiga el Mercat Central, así que un plato puede acabarse antes del cierre.</p>
   </section>
 
-  <section class="wrap" style="padding-top:0">
+  <section class="wrap sin-aire-arriba">
     <div class="carta-cabecera">
       <span></span>
       <span class="carta-nota">Actualizada el 8 de septiembre · IVA incluido · pan y aperitivo, 2,50&nbsp;€ por persona</span>
@@ -839,7 +1006,7 @@ footer.site{padding-top:var(--sp-xxl)}
 
   <section class="cierre">
     <div class="wrap cierre-grid">
-      <div>
+      <div class="cierre-texto">
         <h2>¿Ya sabes qué vas a pedir?</h2>
         <p class="lede">Resérvala antes de que se acabe: quedan tres mesas para el viernes a las 21:00.</p>
       </div>
@@ -850,9 +1017,9 @@ footer.site{padding-top:var(--sp-xxl)}
 
 <!-- ═══════════════════════════════ PLATO (detalle) ═══════════════════════════════ -->
 <div class="page" id="plato" data-title="Presa ibérica con salsa de cerezas — Casa Terrazza">
-  <div class="migas"><p><a href="#inicio">Inicio</a> &nbsp;/&nbsp; <a href="#carta">La carta</a> &nbsp;/&nbsp; <span style="color:var(--c-ink)">Presa ibérica con salsa de cerezas</span></p></div>
+  <div class="migas"><p><a href="#inicio">Inicio</a> &nbsp;/&nbsp; <a href="#carta">La carta</a> &nbsp;/&nbsp; <span class="actual">Presa ibérica con salsa de cerezas</span></p></div>
 
-  <section class="wrap" style="padding-top:34px;padding-bottom:0">
+  <section class="wrap cab-ficha">
     <div class="ficha-cab">
       <div class="ficha-cab-texto">
         <p class="eyebrow">El plato de esta semana · de la brasa</p>
@@ -873,7 +1040,7 @@ footer.site{padding-top:var(--sp-xxl)}
 
   <img class="foto-banda-simple" src="../img/terrazza-plato.webp" alt="Plato de carne con salsa de cerezas servido en una mesa oscura">
 
-  <section class="wrap dos-col">
+  <section class="wrap dos-col dos-col-ficha">
     <div>
       <h3>De dónde sale</h3>
       <p>La presa de bellota llega los martes desde un cebadero de Guijuelo. Las cerezas son de un huertecito de Ribesalbes que Álex conoce desde que era ayudante: se las trae un proveedor en cajas de ocho kilos y cuando se acaban, se acabaron — no hay segunda entrega hasta la semana que viene.</p>
@@ -898,7 +1065,7 @@ footer.site{padding-top:var(--sp-xxl)}
   </section>
 
   <section class="wrap">
-    <h3>Para acompañar</h3>
+    <h3 class="titulo-corto">Para acompañar</h3>
     <div class="maridaje">
       <div class="vino-fila"><span>Garnacha de Gredos</span><span class="puntos"></span><span class="tab-nums">5,00&nbsp;€ / 22,00&nbsp;€</span></div>
       <p>Con cuerpo suficiente para la brasa y fruta roja que no pelea con la cereza. La carta completa de vinos está en <a href="#carta">la bodega</a>.</p>
@@ -907,7 +1074,7 @@ footer.site{padding-top:var(--sp-xxl)}
 
   <section class="cierre">
     <div class="wrap cierre-grid">
-      <div>
+      <div class="cierre-texto">
         <h2>Pide este plato al reservar</h2>
         <p class="lede">Dilo en el campo de mensaje: como es de temporada, lo apartamos para tu mesa antes de que se acaben las cerezas.</p>
         <p class="fuerte">O por teléfono: 963 91 44 07</p>
@@ -919,15 +1086,15 @@ footer.site{padding-top:var(--sp-xxl)}
 
 <!-- ═══════════════════════════════ NOSOTROS ═══════════════════════════════ -->
 <div class="page" id="nosotros" data-title="Nosotros — Casa Terrazza">
-  <div class="migas"><p><a href="#inicio">Inicio</a> &nbsp;/&nbsp; <span style="color:var(--c-ink)">Nosotros</span></p></div>
+  <div class="migas"><p><a href="#inicio">Inicio</a> &nbsp;/&nbsp; <span class="actual">Nosotros</span></p></div>
 
   <section class="pag-head">
     <p class="eyebrow">Desde&nbsp;1998</p>
-    <h1>Una taberna que cambió de manos sin cambiar de brasa</h1>
+    <h1 class="medida-18">Una taberna que cambió de manos sin cambiar de brasa</h1>
     <p class="lede">Vicente Ibáñez abrió Casa Terrazza en 1998 en un antiguo almacén de naranjas cerca del Mercat Central. Hoy la lleva su sobrino Álex, con la misma brasa de encina encendida desde el primer día y una carta que sigue siendo corta a propósito.</p>
   </section>
 
-  <section class="split-foto" style="margin-top:2.5rem">
+  <section class="split-foto split-foto-der">
     <div class="split-texto">
       <h3>Un almacén de naranjas, antes que un restaurante</h3>
       <p class="lede">El local llevaba cerrado seis años cuando Vicente lo alquiló. Quedaba el ladrillo visto, las vigas de madera y muy poco más: la barra, las mesas y el horno de brasa se construyeron ese primer verano, con el dinero justo para abrir en septiembre.</p>
@@ -963,7 +1130,7 @@ footer.site{padding-top:var(--sp-xxl)}
   </section>
 
   <section class="wrap">
-    <h2 style="max-width:16ch">Lo que no cambia aunque cambie la carta</h2>
+    <h2 class="medida-16">Lo que no cambia aunque cambie la carta</h2>
     <div class="cifras">
       <div class="cifra"><div class="num">18</div><div class="etq">platos como máximo</div><p>Ninguno entra si no se puede hacer bien un sábado a las 22:30 con la sala llena.</p></div>
       <div class="cifra"><div class="num">2</div><div class="etq">compras a mercado por semana</div><p>Martes y viernes en el Mercat Central. Lo que no encuentra, no se pone.</p></div>
@@ -974,7 +1141,7 @@ footer.site{padding-top:var(--sp-xxl)}
 
   <section class="cierre">
     <div class="wrap cierre-grid">
-      <div>
+      <div class="cierre-texto">
         <h2>Ven a conocer la casa</h2>
         <p class="lede">Se confirma por SMS en menos de una hora. Guardamos la mesa quince minutos.</p>
         <p class="fuerte">O por teléfono: 963 91 44 07</p>
@@ -986,11 +1153,11 @@ footer.site{padding-top:var(--sp-xxl)}
 
 <!-- ═══════════════════════════════ CONTACTO ═══════════════════════════════ -->
 <div class="page" id="contacto" data-title="Contacto y reservas — Casa Terrazza">
-  <div class="migas"><p><a href="#inicio">Inicio</a> &nbsp;/&nbsp; <span style="color:var(--c-ink)">Contacto</span></p></div>
+  <div class="migas"><p><a href="#inicio">Inicio</a> &nbsp;/&nbsp; <span class="actual">Contacto</span></p></div>
 
   <section class="pag-head">
     <p class="eyebrow">Antes de reservar</p>
-    <h1 style="max-width:20ch">Por teléfono es más rápido, por aquí es más cómodo</h1>
+    <h1 class="medida-20 titular-largo">Por teléfono es más rápido, por aquí es más cómodo</h1>
     <p class="lede">Confirmamos por SMS en menos de una hora. Guardamos la mesa quince minutos; a partir de ahí la soltamos, que hay lista de espera casi todos los viernes.</p>
   </section>
 
@@ -1014,7 +1181,7 @@ footer.site{padding-top:var(--sp-xxl)}
         <label class="campo"><span class="etq">Nombre</span><input type="text" placeholder="Nombre y apellidos" required></label>
         <label class="campo"><span class="etq">Teléfono</span><input type="tel" placeholder="600 00 00 00" required></label>
       </div>
-      <div class="fila-4" style="margin-top:30px">
+      <div class="fila-4 aire-30">
         <label class="campo"><span class="etq">Personas</span><input type="number" value="2" min="1"></label>
         <label class="campo"><span class="etq">Día</span><input type="date"></label>
         <label class="campo"><span class="etq">Hora</span><input type="time" value="21:00"></label>
@@ -1040,10 +1207,10 @@ footer.site{padding-top:var(--sp-xxl)}
 
 <!-- ═══════════════════════════════ GRACIAS ═══════════════════════════════ -->
 <div class="page" id="gracias" data-title="Reserva enviada — Casa Terrazza">
-  <section class="wrap centro" style="padding-top:var(--sp-xxl)">
+  <section class="wrap centro aire-xxl-arriba">
     <p class="eyebrow">Gracias</p>
     <h1>Hemos recibido tu solicitud de mesa</h1>
-    <p class="lede" style="margin-inline:auto">Te confirmamos por SMS en menos de una hora, normalmente antes. Si no nos has oído en ese tiempo, llama: puede que se haya perdido el mensaje por el camino, no la mesa.</p>
+    <p class="lede centrado">Te confirmamos por SMS en menos de una hora, normalmente antes. Si no nos has oído en ese tiempo, llama: puede que se haya perdido el mensaje por el camino, no la mesa.</p>
     <div class="pasos">
       <div class="paso"><span class="n">1</span><p>Revisamos disponibilidad para el turno que pediste.</p></div>
       <div class="paso"><span class="n">2</span><p>Te escribimos por SMS con la hora confirmada o una alternativa cercana.</p></div>
@@ -1057,12 +1224,12 @@ footer.site{padding-top:var(--sp-xxl)}
 
 <!-- ═══════════════════════════════ AVISO LEGAL ═══════════════════════════════ -->
 <div class="page" id="aviso-legal" data-title="Aviso legal — Casa Terrazza">
-  <div class="migas"><p><a href="#inicio">Inicio</a> &nbsp;/&nbsp; <span style="color:var(--c-ink)">Aviso legal</span></p></div>
+  <div class="migas"><p><a href="#inicio">Inicio</a> &nbsp;/&nbsp; <span class="actual">Aviso legal</span></p></div>
   <section class="pag-head">
     <h1 class="legal-h1">Aviso legal</h1>
-    <p class="legal-fecha" style="margin-top:14px">Última actualización: 8 de septiembre de 2026</p>
+    <p class="legal-fecha aire-14">Última actualización: 8 de septiembre de 2026</p>
   </section>
-  <section class="wrap" style="padding-top:0">
+  <section class="wrap sin-aire-arriba">
     <div class="legal-grid">
       <nav class="legal-indice" aria-label="Índice del aviso legal">
         <a href="#al-titular">Titular del sitio</a>
@@ -1108,12 +1275,12 @@ footer.site{padding-top:var(--sp-xxl)}
 
 <!-- ═══════════════════════════════ PRIVACIDAD ═══════════════════════════════ -->
 <div class="page" id="privacidad" data-title="Política de privacidad — Casa Terrazza">
-  <div class="migas"><p><a href="#inicio">Inicio</a> &nbsp;/&nbsp; <span style="color:var(--c-ink)">Privacidad</span></p></div>
+  <div class="migas"><p><a href="#inicio">Inicio</a> &nbsp;/&nbsp; <span class="actual">Privacidad</span></p></div>
   <section class="pag-head">
     <h1 class="legal-h1">Política de privacidad</h1>
-    <p class="legal-fecha" style="margin-top:14px">Última actualización: 8 de septiembre de 2026</p>
+    <p class="legal-fecha aire-14">Última actualización: 8 de septiembre de 2026</p>
   </section>
-  <section class="wrap" style="padding-top:0">
+  <section class="wrap sin-aire-arriba">
     <div class="legal-grid">
       <nav class="legal-indice" aria-label="Índice de privacidad">
         <a href="#pr-responsable">Responsable</a>
@@ -1160,12 +1327,12 @@ footer.site{padding-top:var(--sp-xxl)}
 
 <!-- ═══════════════════════════════ COOKIES ═══════════════════════════════ -->
 <div class="page" id="cookies" data-title="Política de cookies — Casa Terrazza">
-  <div class="migas"><p><a href="#inicio">Inicio</a> &nbsp;/&nbsp; <span style="color:var(--c-ink)">Cookies</span></p></div>
+  <div class="migas"><p><a href="#inicio">Inicio</a> &nbsp;/&nbsp; <span class="actual">Cookies</span></p></div>
   <section class="pag-head">
     <h1 class="legal-h1">Política de cookies</h1>
-    <p class="legal-fecha" style="margin-top:14px">Última actualización: 8 de septiembre de 2026</p>
+    <p class="legal-fecha aire-14">Última actualización: 8 de septiembre de 2026</p>
   </section>
-  <section class="wrap" style="padding-top:0">
+  <section class="wrap sin-aire-arriba">
     <div class="legal-grid">
       <nav class="legal-indice" aria-label="Índice de cookies">
         <a href="#ck-que-son">Qué son</a>
@@ -1209,7 +1376,7 @@ footer.site{padding-top:var(--sp-xxl)}
     <div class="centro">
       <p class="eyebrow">Error 404</p>
       <h1>Esta mesa no existe</h1>
-      <p class="lede" style="margin-inline:auto">El enlace que has seguido no lleva a ninguna página de Casa Terrazza. Prueba desde aquí:</p>
+      <p class="lede centrado">El enlace que has seguido no lleva a ninguna página de Casa Terrazza. Prueba desde aquí:</p>
       <div class="centro-cta">
         <a class="btn btn-accent" href="#inicio">Ir a inicio</a>
         <a class="btn btn-outline" href="#carta">Ver la carta</a>

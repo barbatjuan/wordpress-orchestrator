@@ -115,16 +115,42 @@ el suelo oscuro sería medir un uso que nunca ocurre — la misma razón que doc
 `rgba()` sobre la tinta, no un hex plano, por el mismo motivo. **No existe veredicto todavía**: esto
 es la medida de contraste, no el juez ciego ni el barrido visual, que son puertas aparte.
 
-## El margen medido no es 7,5&nbsp;%
+## El margen medido no es 7,5&nbsp;%, y el contenido se topa en 1344
 
 `Terrazza.dc.html` usa `padding` lateral de **48px** en sus diez bandas de contenido — diez apariciones
 de «48px» como margen de página, contadas por grep, cero de «108px». 48/1440 = 3,333&nbsp;%, no el
 7,5&nbsp;% (`clamp(1140px, 85vw, 100vw)`, 108px) que usan `delao`, `marzo`, `barro`, `escuadra` y
 `cadencia`, ni el 5&nbsp;%/6,667&nbsp;% de `aranda`/`lumiere`. Las cuatro láminas nuevas y la maqueta
-siguen el margen medido de la propia portada — `--page-margin:clamp(16px, 3.333vw, 48px)` — porque
-seguir el lienzo es la regla, y el lienzo mide 48, no 108. Es, de las siete plantillas con juego
-completo, la de margen más estrecho: encaja con una carta que necesita caber dieciocho platos y dos
-menús cerrados sin que la página se alargue más de lo necesario.
+siguen el margen medido de la propia portada, porque seguir el lienzo es la regla y el lienzo mide 48,
+no 108. Es, de las siete plantillas con juego completo, la de margen más estrecho: encaja con una carta
+que necesita caber dieciocho platos y dos menús cerrados sin que la página se alargue más de lo
+necesario.
+
+El margen estrecho pedía además un **tope**, que la primera derivación no llevaba. A 1440 el lienzo
+compone **1344px** de contenido; sin tope, el 3,333&nbsp;% seguía resolviéndose contra el cristal y el
+contenido crecía sin freno. Medido con `medir-geometria.mjs` sobre la maqueta anterior:
+
+| ancho | margen dominante | fracción | contenido |
+|---|---|---|---|
+| 1440 | 48px | 3,3&nbsp;% | 1344px |
+| 1920 | 48px | 2,5&nbsp;% | 1824px |
+| 2563 | 48px | 1,9&nbsp;% | 2467px |
+| 3418 | 48px | 1,4&nbsp;% | 3322px |
+
+En pantalla eso era el panel de reserva estirado de lado a lado, las tres cifras del cocinero separadas
+300px entre sí y las filas de la carta con el precio a un palmo de su plato. El carril pasa a ser
+
+```
+--contenido-max:1344px;
+--page-margin:max(clamp(16px, 3.333%, 48px), calc((100% - var(--contenido-max)) / 2));
+```
+
+que a 1440 da los mismos 48px y por encima centra: 288px a 1920, 605 a 2554, 1037 a 3418, con el
+contenido congelado en 1344. Va en **`%` y no en `vw`** porque la maqueta se mira dentro de un `iframe`
+a pantalla completa: a 1920 con barra de desplazamiento el cristal mide 1905, y `vw` seguiría midiendo
+1920 y descentraría el contenido 7,5px. Medido dentro del `iframe`: carril izquierdo y derecho
+idénticos a 1440, 1680 y 1920, descentre 0px. Nativo: contenedor «en caja» de 1344px con relleno
+lateral del 3,333&nbsp;%, que es exactamente lo que hace `marzo` con su 1224 y `lumiere` con su 1248.
 
 ## Mapeo nativo
 
@@ -135,15 +161,15 @@ solo widget HTML y sin CSS a medida.
 |---|---|---|
 | Franja de utilidad | Contenedor flex de fondo oscuro, ancho completo | Dos de sus tres datos se ocultan por debajo de 1024 con el control nativo de visibilidad responsive; el teléfono queda siempre visible |
 | Cabecera con menú | Plantilla de cabecera del Theme Builder: Logotipo (texto) + Menú de navegación + Botón | El menú nativo trae el desplegable móvil |
-| Hero de inicio | Contenedor de texto (Encabezado + Editor de texto) + contenedor flex de campos (Encabezado + Editor de texto por campo, de sólo lectura) + Botón | Sin formulario real en el hero — el hero nunca lleva el formulario de captura, va en la banda de cierre |
-| Banda de foto a sangre | Imagen a ancho completo | |
+| Hero de inicio | Contenedor de texto (Encabezado + Editor de texto) + contenedor flex de campos **de 1044px en caja** (Encabezado + Editor de texto por campo, de sólo lectura) + Botón | Sin formulario real en el hero — el hero nunca lleva el formulario de captura, va en la banda de cierre. El panel lleva el ancho medido del lienzo (168+220+148+192 de campos y 316 de botón): repartido en fracciones se estiraba con la pantalla |
+| Banda de foto a sangre | Imagen a ancho completo | La del comedor recorta por **50 % 58 %**, no por el centro: control nativo «Posición del objeto» del widget Imagen, no CSS a medida |
 | La carta (listado con precio) | Contenedor rejilla de 2 columnas; cada grupo, Encabezado + filas de Editor de texto/enlace + filete + Encabezado de precio | El filete punteado es el borde inferior de un contenedor vacío, control nativo |
 | Menús cerrados | Contenedor flex de 2 columnas: Encabezado + Encabezado de precio + Editor de texto + lista | Columna única por debajo de 1024 con el control nativo de dirección |
 | Tira de fotos | Contenedor flex de 3 Imagen sin hueco | |
-| La barra | Contenedor flex: texto + rejilla de 4 columnas (Encabezado + Editor de texto) | 4 → 2 → 1 por los controles nativos de columnas responsive |
+| La barra | Contenedor flex SIN envolver: columna de 300px + rejilla de 4 columnas que encoge (Encabezado + Editor de texto) | 4 → 2 → 1 por los controles nativos de columnas responsive; la fila pasa a columna a 1024 con el control de dirección. Con envoltura la rejilla saltaba de línea ya a 1440 |
 | Dos salas | Contenedor rejilla de 2 columnas: Imagen + Encabezado + Editor de texto | |
-| Foto partida (la cocina, la casa) | Contenedor flex: Imagen + contenedor de texto con cifras | Apila por debajo de 1024 con el control nativo de dirección |
-| Cifras | Contenedor rejilla (3 o 4 columnas): Encabezado (número) + Encabezado + Editor de texto | Nunca más columnas que cifras |
+| Foto partida (la cocina, la casa) | Contenedor flex: Imagen + contenedor de texto con cifras | Dos variantes, no una: la cocina lleva la foto a la izquierda a **700×520** y la casa a la derecha a **620×480**, las dos medidas del lienzo. El texto crece y apoya su lado exterior en el carril; el interior es un hueco fijo de 72px. La banda no lleva el ritmo vertical de sección, sólo los 78px del contenedor de texto. Apila por debajo de 1024 con el control nativo de dirección |
+| Cifras | Las de Nosotros, contenedor rejilla de 4 columnas; las tres de la cocina, contenedor **flex** con hueco de 48px | Nunca más columnas que cifras. En tercios iguales las tres se separaban hasta 300px entre sí al crecer la columna: el lienzo las pone en fila con el ancho que pide cada etiqueta |
 | Teaser del plato (en la carta) | Contenedor flex: Imagen + contenedor de texto + Botón de texto | Misma foto que la ficha del plato — pieza única con lámina propia, como `barro` con su Cuenco hondo |
 | La bodega | Mismo patrón que la carta: contenedor rejilla de filas con filete | |
 | Ficha del plato: cabecera + panel de precio | Contenedor flex: contenedor de texto + contenedor con sombra (filas de precio + Botón) | |
@@ -195,6 +221,33 @@ plato con ficha propia tendría la suya; aquí, uno basta para probar la ruta.
 Los textos legales de la maqueta describen la empresa ficticia Casa Terrazza S.L. En un encargo se
 reescriben enteros con los datos reales del cliente mediante `wordpress-legal`; nunca se publican tal
 cual — la propia página de aviso legal lo dice en su último párrafo.
+
+## Techo de la fotografía — dos ampliaciones declaradas
+
+Las siete fotografías se entregaron a **720×540**, salvo la del comedor (`terrazza-sala.webp`,
+1440×810). El lienzo compone dos bandas a sangre por encima de ese tamaño, y las dos se dejan como el
+artboard las dibuja — no se recortan ni se sustituyen — pero se declaran aquí con su número, medido
+sobre el DOM renderizado:
+
+| Banda | Origen | Caja a 1440 | Ampliación a 1440 | a 1920 |
+|---|---|---|---|---|
+| Ficha del plato, banda simple | `terrazza-plato.webp` 720×540 | 1440×560 | **×2,00** | ×2,67 |
+| Portada, banda del comedor | `terrazza-sala.webp` 1440×810 | 1440×440 | ×1,00 | ×1,33 |
+
+La primera es una decisión del lienzo (`Plato.dc.html` dibuja `width:1440px` sobre un original de 720)
+y por eso no se toca; la segunda es exacta a 1440 y sólo se amplía por encima, porque una banda a
+sangre llega al cristal por definición y el tope de 1344 no la gobierna. **Las dos se resuelven
+reponiendo el original a 2×, no con CSS**: al sustituir las fotografías por las del cliente, estas dos
+piden un original de 2880px de ancho como mínimo. Ninguna otra imagen de las cinco páginas se amplía a
+ningún ancho entre 430 y 1920.
+
+Para el juez: **no hay velo.** Ni una sola de las diez páginas pone texto encima de una fotografía a
+ningún ancho — medido por solape de rectángulos sobre los elementos visibles (`checkVisibility()`) a
+430, 768, 1024, 1280, 1440, 1680 y 1920: cero solapes texto-sobre-imagen. El tono desigual que se le
+atribuye a esta plantilla es de los originales, no del encuadre ni de una capa: la luminancia media va
+de **35,3** (`terrazza-plato`) a **176,9** (`terrazza-chef`) sobre 255, cinco veces, mientras el rango
+dinámico de cinco de las siete pasa del 80&nbsp;% de la escala. No son fotografías planas: son
+fotografías de exposición dispar, y una de ellas ampliada al doble.
 
 ## Procedencia y decisiones abiertas
 
