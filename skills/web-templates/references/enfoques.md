@@ -20,13 +20,13 @@ Los ocho ids: `editorial`, `directo`, `materia`, `vitrina`, `institucional`, `te
 | `editorial` | Una historia que merece leerse despacio | `delao` | corporate · `cartera-curada` |
 | `directo` | La cosa y su cifra, sin frase de marca delante | `escuadra` | ecommerce · `catalogo-amplio` |
 | `materia` | La página se siente como la sustancia que se vende | `marzo` | ecommerce · `tienda-talla` |
-| `vitrina` | La sala a oscuras y el objeto iluminado | sin plantilla todavía | — |
+| `vitrina` | La sala a oscuras y el objeto iluminado | `noir` | ecommerce · `muestra-primero` |
 | `institucional` | Credibilidad antes que emoción | sin plantilla todavía | — |
 | `tecnologico` | Se vende por capacidad y por dato medido | `cadencia` | ecommerce · `equipo-por-uso` |
 | `lujo-oscuro` | Una colección que cuesta lo que parece costar | `barro` | ecommerce · `tienda-lote` |
 | `brutalista` | Se niega a ser de buen gusto, a propósito | sin plantilla todavía | — |
 
-Cinco de los ocho enfoques están encarnados por una plantilla de la biblioteca; `vitrina`, `institucional`
+Seis de los ocho enfoques están encarnados por una plantilla de la biblioteca; `institucional`
 y `brutalista` no tienen plantilla todavía, y un cliente cuyas referencias apunten a ellos va por la ruta a
 medida. Ningún par de plantillas comparte tipo + objetivo + enfoque. El estado de cada plantilla (maqueta, veredicto) no se repite aquí: lo
 lleva `plantillas/_indice.md`.
@@ -176,7 +176,7 @@ la display de otro enfoque.
 **Dirección de imagen:** el objeto aislado e iluminado contra el fondo oscuro, con aire alrededor.
 Nunca a sangre.
 
-**Lo encarna:** sin plantilla todavía.
+**Lo encarna:** `noir` (ecommerce · `muestra-primero`).
 
 ---
 

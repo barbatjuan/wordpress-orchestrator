@@ -39,6 +39,7 @@ distintos.
 | `catalogo-amplio` | Vender un surtido ancho por departamentos con precio y medida visibles; navegar por categoría y comparar es la intención principal | Cientos o miles de referencias, varios departamentos; «desde», medidas, montaje, envío por bultos; grandes superficies, hogar de precio medio, material de oficina |
 | `suscripcion` | Vender una entrega que se repite y no termina, con cuota y cadencia elegibles; la compra suelta es secundaria | Café, pienso, cosmética de reposición, vino, cajas de temporada; «cada dos o cuatro semanas», «pausa cuando quieras» |
 | `subasta-diaria` | Vender un género que cambia cada día y se acaba: qué hay hoy, a qué hora cierra y cuánto queda. Mañana el catálogo es otro, así que el sitio se organiza por la hora, no por la categoría | Lonja, pescado, marisco, mercado, producto fresco de temporada; «lo de hoy», «cierra a las», hora de corte y de reparto; el género no se repone, se renueva |
+| `muestra-primero` | Vender algo caro que no se elige por la foto: la conversión de entrada es un set de muestras de pago que se descuenta de la primera compra grande | Perfumería de autor o de nicho, té de origen, cosmética de alta gama, destilados en miniatura; «set de descubrimiento», «viales», «se descuenta de tu primer frasco», muestras de regalo, sesión en tienda |
 | `prenda-a-medida` | Vender una prenda que no tiene talla de percha: el visitante da sus medidas y el sitio le dice cuál le corresponde antes de que compre | Sastrería, camisería, calzado de horma; «dinos tres medidas», horma, patrón, prueba; la devolución por talla es justo el coste que el sitio existe para evitar |
 
 ### De cualquier tipo
@@ -68,6 +69,7 @@ propio Objetivo.
 | `suscripcion` | `tueste` | ecommerce | `editorial` | en la biblioteca |
 | `subasta-diaria` | `bajura` | ecommerce | `tecnologico` | en la biblioteca |
 | `prenda-a-medida` | `corte` | ecommerce | `materia` | en la biblioteca |
+| `muestra-primero` | `noir` | ecommerce | `vitrina` | en la biblioteca |
 | `plan-fases` | sin plantilla | — | — | ruta a medida |
 | `pedir-cita` | sin plantilla | — | — | ruta a medida |
 | `urgencia-hoy` | sin plantilla | — | — | ruta a medida |
@@ -98,6 +100,7 @@ del veredicto para no quedarse vieja; se lee siempre del índice.
      exigencia, de `forja`.
    - `tienda-lote` frente a `catalogo-amplio`: la procedencia frente al precio y la medida.
    - `tienda-talla` frente a `equipo-por-uso`: la prenda por su talla frente al conjunto por su uso.
+   - `muestra-primero` frente a `tienda-talla`: si la duda la resuelve un dato (tabla de tallas, composición), `tienda-talla`; si sólo se resuelve probándolo en casa, `muestra-primero`. Frente a `tienda-lote`: si la pieza se agota y no vuelve y la procedencia es el argumento, `tienda-lote`; si la fórmula se repone y el argumento es probar antes, `muestra-primero`. Frente a `suscripcion`: si las muestras llegan con cadencia, `suscripcion`; si el set se compra una vez y lleva a un frasco suelto, `muestra-primero`.
    - `a-medida` frente a cualquier tienda: si el precio no se sabe hasta configurar, no hay carro.
 
    Un empate entre dos objetivos se presenta al usuario con lo que se gana y se pierde en cada uno, y

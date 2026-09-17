@@ -20,6 +20,7 @@ sin veredicto vigente, la plantilla no se ofrece a un cliente.
 | `amalia-salvia` · Amalia · Sala verde | `clase-de-prueba` | `editorial` | corporate | inicio · filosofía · planes · clase · diario · entrada · contacto · gracias · aviso legal · privacidad · cookies · 404 | sin veredicto |
 | `forja` · Forja Box | `clase-de-prueba` | `directo` | corporate | inicio · el box · disciplinas · coaches · planes · contacto · gracias · aviso legal · privacidad · cookies · 404 | sin veredicto |
 | `forja-fucsia` · FORJA BOX · Fucsia | `clase-de-prueba` | `directo` | corporate | inicio · el box · disciplinas · coaches · planes · contacto · gracias · aviso legal · privacidad · cookies · 404 | sin veredicto |
+| `noir` · Maison Noir | `muestra-primero` | `vitrina` | ecommerce | portada · tienda · ficha de producto · set de descubrimiento · cesta · pago · pedido recibido · mi cuenta · la Maison · contacto · condiciones de venta y envíos · aviso legal · privacidad · cookies · 404 | sin veredicto |
 
 **`forja` y `forja-fucsia` son los dos modelos de un mismo encargo**, el box de entrenamiento FORJA:
 el mismo texto y las mismas páginas, uno en tinta y ácido con Anton y otro en tinta y fucsia con
@@ -209,3 +210,11 @@ Una carpeta por slug, y dentro siempre lo mismo:
 - `references/plantillas/forja-fucsia/maqueta/` — `index.html`
 - `references/plantillas/forja-fucsia/img/` — once `.webp`
 - `references/plantillas/forja-fucsia/veredicto.md`
+
+## noir
+
+- `references/plantillas/noir/ficha.md`
+- `references/plantillas/noir/manifiesto-imagenes.md`
+- `references/plantillas/noir/canvas/` — `Noir`, `canvas.json` y su `MANIFIESTO.md`
+- `references/plantillas/noir/maqueta/` — `index.html`
+- `references/plantillas/noir/img/` — catorce `.webp`
