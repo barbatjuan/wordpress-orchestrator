@@ -70,6 +70,7 @@ propio Objetivo.
 | `subasta-diaria` | `bajura` | ecommerce | `tecnologico` | en la biblioteca |
 | `prenda-a-medida` | `corte` | ecommerce | `materia` | en la biblioteca |
 | `muestra-primero` | `noir` | ecommerce | `vitrina` | en la biblioteca |
+| `muestra-primero` | `noir-claro` (versión clara del mismo encargo que `noir`, alternativa entre sí) | ecommerce | `editorial` | en la biblioteca |
 | `plan-fases` | sin plantilla | — | — | ruta a medida |
 | `pedir-cita` | sin plantilla | — | — | ruta a medida |
 | `urgencia-hoy` | sin plantilla | — | — | ruta a medida |
@@ -100,7 +101,7 @@ del veredicto para no quedarse vieja; se lee siempre del índice.
      exigencia, de `forja`.
    - `tienda-lote` frente a `catalogo-amplio`: la procedencia frente al precio y la medida.
    - `tienda-talla` frente a `equipo-por-uso`: la prenda por su talla frente al conjunto por su uso.
-   - `muestra-primero` frente a `tienda-talla`: si la duda la resuelve un dato (tabla de tallas, composición), `tienda-talla`; si sólo se resuelve probándolo en casa, `muestra-primero`. Frente a `tienda-lote`: si la pieza se agota y no vuelve y la procedencia es el argumento, `tienda-lote`; si la fórmula se repone y el argumento es probar antes, `muestra-primero`. Frente a `suscripcion`: si las muestras llegan con cadencia, `suscripcion`; si el set se compra una vez y lleva a un frasco suelto, `muestra-primero`.
+   - `muestra-primero` frente a `tienda-talla`: si la duda la resuelve un dato (tabla de tallas, composición), `tienda-talla`; si sólo se resuelve probándolo en casa, `muestra-primero`. Frente a `tienda-lote`: si la pieza se agota y no vuelve y la procedencia es el argumento, `tienda-lote`; si la fórmula se repone y el argumento es probar antes, `muestra-primero`. Frente a `suscripcion`: si las muestras llegan con cadencia, `suscripcion`; si el set se compra una vez y lleva a un frasco suelto, `muestra-primero`. Dentro de `muestra-primero` decide el tono: una casa nocturna, densa y de lujo cerrado parte de `noir`; un atelier luminoso, botánico o de día, de `noir-claro`.
    - `a-medida` frente a cualquier tienda: si el precio no se sabe hasta configurar, no hay carro.
 
    Un empate entre dos objetivos se presenta al usuario con lo que se gana y se pierde en cada uno, y

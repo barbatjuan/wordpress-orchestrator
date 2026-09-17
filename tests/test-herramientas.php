@@ -446,6 +446,15 @@ if ( isset( $reg['Barlow'] ) ) {
 	ok( false !== strpos( $css, 'font-weight:400;' ) && false !== strpos( $css, 'font-weight:500;' ) && false !== strpos( $css, 'font-weight:600;' ), 'fonts: the three Barlow faces declare 400, 500 and 600, the weights their files hold' );
 }
 
+/* The light model of the perfume Plantilla, `noir-claro`, sets Prata for display: a single-weight
+   upright didone with no italic, so exactly one static face at 400. */
+ok( isset( $reg['Prata'] ), 'fonts: `Prata` is registered' );
+if ( isset( $reg['Prata'] ) ) {
+	$css = nm_font_faces( array( 'Prata' ) );
+	ok( 1 === $caras_de( $css ), 'fonts: Prata emits one face, the static roman' );
+	ok( false !== strpos( $css, "font-family:'Prata';font-style:normal;font-weight:400;" ), 'fonts: the Prata face declares 400, the only weight its file holds' );
+}
+
 $fr = nm_font_faces( array( 'Fraunces' ) );
 ok( 1 === $caras_de( $fr ), 'fonts: a single-face family still emits exactly one face' );
 ok( false !== strpos( $fr, "font-family:'Fraunces';font-style:normal;font-weight:400 700;font-display:swap;" ), 'fonts: the single-face output keeps the exact shape it had before multi-face support' );

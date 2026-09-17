@@ -1,0 +1,23 @@
+{
+  "artboards": [
+    {
+      "file": "NoirClaro.dc.html",
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 4763,
+      "title": "MAISON NOIR · Claro · tienda (portada; tienda, ficha, cesta, pago, la Maison y contacto como estados de la misma lámina)"
+    },
+    {
+      "file": "TestTipografico.dc.html",
+      "x": 1600,
+      "y": 0,
+      "w": 1440,
+      "h": 991,
+      "title": "MAISON NOIR · Claro · test tipográfico sobre fondo claro (referencia, no es una página)"
+    }
+  ],
+  "launch": {
+    "view": "canvas"
+  }
+}

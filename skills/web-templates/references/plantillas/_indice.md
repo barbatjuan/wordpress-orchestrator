@@ -21,11 +21,19 @@ sin veredicto vigente, la plantilla no se ofrece a un cliente.
 | `forja` · Forja Box | `clase-de-prueba` | `directo` | corporate | inicio · el box · disciplinas · coaches · planes · contacto · gracias · aviso legal · privacidad · cookies · 404 | sin veredicto |
 | `forja-fucsia` · FORJA BOX · Fucsia | `clase-de-prueba` | `directo` | corporate | inicio · el box · disciplinas · coaches · planes · contacto · gracias · aviso legal · privacidad · cookies · 404 | sin veredicto |
 | `noir` · Maison Noir | `muestra-primero` | `vitrina` | ecommerce | portada · tienda · ficha de producto · set de descubrimiento · cesta · pago · pedido recibido · mi cuenta · la Maison · contacto · condiciones de venta y envíos · aviso legal · privacidad · cookies · 404 | sin veredicto |
+| `noir-claro` · Maison Noir · Claro | `muestra-primero` | `editorial` | ecommerce | portada · tienda · ficha de producto · set de descubrimiento · cesta · pago · pedido recibido · mi cuenta · la Maison · contacto · condiciones de venta y envíos · aviso legal · privacidad · cookies · 404 | sin veredicto |
 
 **`forja` y `forja-fucsia` son los dos modelos de un mismo encargo**, el box de entrenamiento FORJA:
 el mismo texto y las mismas páginas, uno en tinta y ácido con Anton y otro en tinta y fucsia con
 Archivo Black. Comparten Objetivo, tipo y Enfoque; como `amalia` y `amalia-salvia`, se ofrecen como
 alternativa entre sí para un mismo cliente.
+
+**`noir` y `noir-claro` son las dos versiones de un mismo encargo**, la perfumería MAISON NOIR: el
+mismo texto, las mismas quince páginas y las mismas catorce fotografías, una en tinta cálida y champán
+con Bodoni Moda en itálica y otra en papel y bronce con Prata redonda, hero a sangre con panel claro y
+franja de ventajas en bronce. Comparten Objetivo y tipo; **no comparten Enfoque**, medido eje por eje en
+los dos lienzos: `vitrina` la oscura, `editorial` la clara. Se ofrecen como alternativa entre sí para un
+mismo cliente, y decide el tono: noche y lujo cerrado, `noir`; atelier luminoso, `noir-claro`.
 
 **`amalia` y `amalia-salvia` son las dos direcciones de un mismo encargo** —el mismo estudio, el
 mismo texto y las mismas doce páginas—, una en papel crudo y terracota con cabecera horizontal y
@@ -218,3 +226,14 @@ Una carpeta por slug, y dentro siempre lo mismo:
 - `references/plantillas/noir/canvas/` — `Noir`, `canvas.json` y su `MANIFIESTO.md`
 - `references/plantillas/noir/maqueta/` — `index.html`
 - `references/plantillas/noir/img/` — catorce `.webp`
+- `references/plantillas/noir/veredicto.md`
+
+## noir-claro
+
+- `references/plantillas/noir-claro/ficha.md`
+- `references/plantillas/noir-claro/manifiesto-imagenes.md`
+- `references/plantillas/noir-claro/canvas/` — `NoirClaro`, `TestTipografico` (referencia, no página), `canvas.json`
+  y su `MANIFIESTO.md`
+- `references/plantillas/noir-claro/maqueta/` — `index.html`
+- `references/plantillas/noir-claro/img/` — catorce `.webp`, las de `noir`
+- `references/plantillas/noir-claro/veredicto.md`
