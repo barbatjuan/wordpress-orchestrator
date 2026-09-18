@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=Libre+Caslon+Display&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#F6F4F0;color:#17181A;-webkit-font-smoothing:antialiased}
+a{color:#17181A;text-decoration:none}
+a:hover{color:#8A7B5C}
+</style>
+</helmet>
+<dc-import name="Nav" hint-size="100%,78px"></dc-import>
+
+<section style="max-width:1440px;margin:0 auto;padding:80px 40px 0">
+  <div style="display:grid;grid-template-columns:1.5fr 1fr;gap:64px;align-items:end;padding-bottom:44px;border-bottom:1px solid rgba(23,24,26,.16)">
+    <div style="display:flex;flex-direction:column;gap:24px">
+      <span style="font:500 9.5px/1 'Archivo',sans-serif;letter-spacing:.28em;text-transform:uppercase;color:#8A7B5C">Casa fundada en 2004</span>
+      <h1 style="margin:0;font:400 clamp(42px,5.2vw,76px)/1.02 'Libre Caslon Display',Georgia,serif;letter-spacing:-.02em;text-wrap:balance">Pocas casas, mucho tiempo en cada una</h1>
+    </div>
+    <p style="margin:0;font:400 15.5px/1.85 'Archivo',sans-serif;color:rgba(23,24,26,.66);text-wrap:pretty">Somos una casa de intermediación pequeña por decisión. Aceptamos los mandatos que podemos representar bien y rechazamos el resto.</p>
+  </div>
+</section>
+
+<section style="max-width:1440px;margin:0 auto;padding:0 40px">
+  <div style="position:relative;aspect-ratio:21/9;background:#E4E0D7;background-image:repeating-linear-gradient(135deg,rgba(23,24,26,.055) 0 1px,transparent 1px 10px)">
+    <img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1600&q=70" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+    <span style="position:absolute;left:22px;bottom:16px;font:400 10px/1 ui-monospace,Menlo,monospace;letter-spacing:.14em;text-transform:uppercase;color:rgba(246,244,240,.85);text-shadow:0 1px 6px rgba(0,0,0,.4)">sustituir · equipo en la oficina</span>
+  </div>
+</section>
+
+<section style="max-width:1440px;margin:0 auto;padding:96px 40px;display:grid;grid-template-columns:1fr 1.5fr;gap:80px;align-items:start">
+  <h2 style="margin:0;font:400 clamp(28px,3vw,40px)/1.1 'Libre Caslon Display',Georgia,serif">Cómo trabajamos</h2>
+  <div style="display:flex;flex-direction:column;gap:1px;background:rgba(23,24,26,.16)">
+    <sc-for list="{{ metodo }}" as="m" hint-placeholder-count="4">
+      <div style="background:#F6F4F0;display:grid;grid-template-columns:64px 1fr;gap:32px;padding:32px 0">
+        <span style="font:400 13px/1.2 ui-monospace,Menlo,monospace;color:#8A7B5C">{{ m.num }}</span>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <h3 style="margin:0;font:400 24px/1.2 'Libre Caslon Display',Georgia,serif">{{ m.titulo }}</h3>
+          <p style="margin:0;max-width:58ch;font:400 15px/1.8 'Archivo',sans-serif;color:rgba(23,24,26,.65);text-wrap:pretty">{{ m.texto }}</p>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+</section>
+
+<section style="background:#17181A;color:#F6F4F0">
+  <div style="max-width:1440px;margin:0 auto;padding:88px 40px;display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(246,244,240,.14)">
+    <sc-for list="{{ cifras }}" as="c" hint-placeholder-count="4">
+      <div style="background:#17181A;padding:0 24px;display:flex;flex-direction:column;gap:12px">
+        <span style="font:400 clamp(34px,3.6vw,52px)/1 'Libre Caslon Display',Georgia,serif">{{ c.valor }}</span>
+        <span style="font:500 9.5px/1.5 'Archivo',sans-serif;letter-spacing:.22em;text-transform:uppercase;color:rgba(246,244,240,.5)">{{ c.etiqueta }}</span>
+      </div>
+    </sc-for>
+  </div>
+</section>
+
+<section style="max-width:1440px;margin:0 auto;padding:96px 40px">
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:40px;padding-bottom:28px;border-bottom:1px solid rgba(23,24,26,.16)">
+    <h2 style="margin:0;font:400 clamp(28px,3vw,40px)/1.1 'Libre Caslon Display',Georgia,serif">El equipo</h2>
+    <span style="font:500 9.5px/1 'Archivo',sans-serif;letter-spacing:.22em;text-transform:uppercase;color:rgba(23,24,26,.45)">Cuatro personas · una oficina</span>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(23,24,26,.16)">
+    <sc-for list="{{ equipo }}" as="e" hint-placeholder-count="4">
+      <div style="background:#F6F4F0;display:flex;flex-direction:column;padding-bottom:26px">
+        <div style="position:relative;aspect-ratio:3/4;background:#E4E0D7;background-image:repeating-linear-gradient(135deg,rgba(23,24,26,.055) 0 1px,transparent 1px 9px)">
+          <span style="position:absolute;left:14px;bottom:12px;font:400 9px/1 ui-monospace,Menlo,monospace;letter-spacing:.14em;text-transform:uppercase;color:rgba(23,24,26,.42)">retrato</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;padding:22px 20px 0">
+          <h3 style="margin:0;font:400 21px/1.2 'Libre Caslon Display',Georgia,serif">{{ e.nombre }}</h3>
+          <span style="font:500 9.5px/1.4 'Archivo',sans-serif;letter-spacing:.2em;text-transform:uppercase;color:#8A7B5C">{{ e.cargo }}</span>
+          <span style="font:400 13px/1.6 'Archivo',sans-serif;color:rgba(23,24,26,.55)">{{ e.detalle }}</span>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+</section>
+
+<section style="max-width:1440px;margin:0 auto;padding:0 40px 112px">
+  <div style="background:#EFEBE4;padding:80px 72px;display:grid;grid-template-columns:1.2fr 1fr;gap:64px;align-items:center">
+    <div style="display:flex;flex-direction:column;gap:20px">
+      <h2 style="margin:0;font:400 clamp(30px,3.2vw,44px)/1.08 'Libre Caslon Display',Georgia,serif;text-wrap:balance">¿Tiene una casa que merece este trato?</h2>
+      <p style="margin:0;max-width:48ch;font:400 15px/1.8 'Archivo',sans-serif;color:rgba(23,24,26,.65)">Hablamos primero, visitamos después y solo entonces decidimos si somos la casa adecuada para venderla.</p>
+    </div>
+    <a href="#contacto" style="justify-self:end;background:#17181A;color:#F6F4F0;font:500 10.5px/1 'Archivo',sans-serif;letter-spacing:.22em;text-transform:uppercase;padding:20px 38px" style-hover="background:#8A7B5C;color:#fff">Contactar</a>
+  </div>
+</section>
+
+<dc-import name="Pie" hint-size="100%,420px"></dc-import>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      metodo: [
+        {num:'01', titulo:'Valoración con comparables de cierre', texto:'Partimos de precios realmente firmados en la zona en los últimos dieciocho meses, no de precios publicados. Es la única cifra que sostiene una negociación.'},
+        {num:'02', titulo:'Reportaje y documentación completos', texto:'Fotografía de arquitectura, vídeo, plano acotado y dossier con todo lo que un comprador y su abogado van a preguntar. Antes de publicar, no después.'},
+        {num:'03', titulo:'Difusión selectiva', texto:'Primero nuestra cartera de compradores registrados y una red corta de colaboradores internacionales. Los portales llegan más tarde, si hacen falta.'},
+        {num:'04', titulo:'Acompañamiento hasta la notaría', texto:'Coordinamos abogados, tasación bancaria, cédula de habitabilidad y firma. El vendedor solo toma decisiones; el papeleo es nuestro.'}
+      ],
+      cifras: [
+        {valor:'22 años', etiqueta:'Operando en la Costa del Sol'},
+        {valor:'310 M€', etiqueta:'Intermediados desde&nbsp;2004'},
+        {valor:'11 semanas', etiqueta:'Tiempo medio de venta'},
+        {valor:'96 %', etiqueta:'Cierres sobre precio de salida'}
+      ],
+      equipo: [
+        {nombre:'Marta de la O', cargo:'Fundadora', detalle:'Mandatos y negociación'},
+        {nombre:'Diego Arrieta', cargo:'Dirección de ventas', detalle:'Compradores internacionales'},
+        {nombre:'Nuria Sáez', cargo:'Producción', detalle:'Reportaje y dossieres'},
+        {nombre:'Pablo Lorca', cargo:'Legal', detalle:'Due diligence y notaría'}
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

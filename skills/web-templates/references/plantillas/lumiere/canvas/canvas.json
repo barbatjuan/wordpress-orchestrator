@@ -1,0 +1,47 @@
+{
+  "artboards": [
+    {
+      "file": "Lumiere.dc.html",
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 6412,
+      "title": "LUMIÈRE · portada"
+    },
+    {
+      "file": "Rituales.dc.html",
+      "x": 0,
+      "y": 6572,
+      "w": 1440,
+      "h": 3835,
+      "title": "LUMIÈRE · la carta de rituales"
+    },
+    {
+      "file": "Ritual.dc.html",
+      "x": 1600,
+      "y": 6572,
+      "w": 1440,
+      "h": 2584,
+      "title": "LUMIÈRE · ritual (Luz Fría)"
+    },
+    {
+      "file": "Nosotros.dc.html",
+      "x": 3200,
+      "y": 6572,
+      "w": 1440,
+      "h": 2463,
+      "title": "LUMIÈRE · nosotros"
+    },
+    {
+      "file": "Contacto.dc.html",
+      "x": 4800,
+      "y": 6572,
+      "w": 1440,
+      "h": 1578,
+      "title": "LUMIÈRE · contacto"
+    }
+  ],
+  "launch": {
+    "view": "canvas"
+  }
+}

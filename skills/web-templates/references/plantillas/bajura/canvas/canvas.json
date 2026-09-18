@@ -1,0 +1,47 @@
+{
+  "artboards": [
+    {
+      "file": "Bajura.dc.html",
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 3581,
+      "title": "BAJURA · portada"
+    },
+    {
+      "file": "Categoria.dc.html",
+      "x": 0,
+      "y": 3741,
+      "w": 1440,
+      "h": 1770,
+      "title": "BAJURA · todo lo de hoy"
+    },
+    {
+      "file": "Ficha.dc.html",
+      "x": 1600,
+      "y": 3741,
+      "w": 1440,
+      "h": 1508,
+      "title": "BAJURA · ficha (lubina salvaje)"
+    },
+    {
+      "file": "LaMarca.dc.html",
+      "x": 3200,
+      "y": 3741,
+      "w": 1440,
+      "h": 1536,
+      "title": "BAJURA · la lonja"
+    },
+    {
+      "file": "Contacto.dc.html",
+      "x": 4800,
+      "y": 3741,
+      "w": 1440,
+      "h": 1193,
+      "title": "BAJURA · contacto"
+    }
+  ],
+  "launch": {
+    "view": "canvas"
+  }
+}

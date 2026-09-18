@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=Libre+Caslon+Display&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#F6F4F0;color:#17181A;-webkit-font-smoothing:antialiased}
+a{color:#17181A;text-decoration:none}
+a:hover{color:#8A7B5C}
+input,select,button{font-family:'Archivo',sans-serif}
+</style>
+</helmet>
+<dc-import name="Nav" hint-size="100%,78px"></dc-import>
+
+<section style="position:relative;background:#DDD9D0;background-image:repeating-linear-gradient(135deg,rgba(23,24,26,.05) 0 1px,transparent 1px 10px);min-height:78vh;display:flex;align-items:flex-end;overflow:hidden">
+  <img src="https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=1600&q=70" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0">
+  <div style="position:absolute;inset:0;background:linear-gradient(100deg,rgba(246,244,240,.95) 0%,rgba(246,244,240,.78) 38%,rgba(246,244,240,.28) 70%,rgba(246,244,240,.06) 100%);z-index:1"></div>
+  <div style="position:absolute;inset:0;max-width:1440px;margin:0 auto;padding:0 40px;display:grid;grid-template-columns:repeat(4,1fr);pointer-events:none;z-index:2">
+    <div style="border-left:1px solid rgba(23,24,26,.09)"></div>
+    <div style="border-left:1px solid rgba(23,24,26,.09)"></div>
+    <div style="border-left:1px solid rgba(23,24,26,.09)"></div>
+    <div style="border-left:1px solid rgba(23,24,26,.09);border-right:1px solid rgba(23,24,26,.09)"></div>
+  </div>
+  <div style="position:relative;z-index:3;max-width:1440px;margin:0 auto;padding:0 40px 72px;width:100%;display:grid;grid-template-columns:1.45fr 1fr;gap:64px;align-items:end">
+    <div style="display:flex;flex-direction:column;gap:28px">
+      <span style="font:500 9.5px/1 'Archivo',sans-serif;letter-spacing:.28em;text-transform:uppercase;color:#8A7B5C">Marbella · Costa del Sol</span>
+      <h1 style="margin:0;font:400 clamp(44px,5.6vw,84px)/1.02 'Libre Caslon Display',Georgia,serif;letter-spacing:-.015em;text-wrap:balance">Casas que no<br>se anuncian solas</h1>
+      <p style="margin:0;max-width:44ch;font:400 16px/1.75 'Archivo',sans-serif;color:rgba(23,24,26,.66);text-wrap:pretty">Seleccionamos un número corto de propiedades cada temporada y las representamos con el nivel de detalle que exige su precio.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:24px;background:rgba(246,244,240,.93);border-left:1px solid rgba(138,123,92,.55);padding:32px 32px 30px">
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <span style="font:400 34px/1 'Libre Caslon Display',Georgia,serif">17</span>
+        <span style="font:500 9.5px/1.4 'Archivo',sans-serif;letter-spacing:.2em;text-transform:uppercase;color:rgba(23,24,26,.45)">Mandatos activos</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <span style="font:400 34px/1 'Libre Caslon Display',Georgia,serif">2,4 M€</span>
+        <span style="font:500 9.5px/1.4 'Archivo',sans-serif;letter-spacing:.2em;text-transform:uppercase;color:rgba(23,24,26,.45)">Precio medio de cierre</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="background:#17181A">
+  <div style="max-width:1440px;margin:0 auto;padding:0 40px">
+    <form style="display:grid;grid-template-columns:1fr 1.2fr 1fr 1.1fr auto;align-items:stretch">
+      <label style="display:flex;flex-direction:column;gap:10px;padding:30px 26px 28px;border-right:1px solid rgba(246,244,240,.14)">
+        <span style="font:500 9px/1 'Archivo',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:rgba(246,244,240,.42)">Operación</span>
+        <select style="appearance:none;background:transparent;border:0;color:#F6F4F0;font:400 15px/1 'Archivo',sans-serif;outline:none;cursor:pointer">
+          <option>Venta</option>
+          <option>Alquiler</option>
+          <option>Alquiler de temporada</option>
+        </select>
+      </label>
+      <label style="display:flex;flex-direction:column;gap:10px;padding:30px 26px 28px;border-right:1px solid rgba(246,244,240,.14)">
+        <span style="font:500 9px/1 'Archivo',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:rgba(246,244,240,.42)">Zona o municipio</span>
+        <input placeholder="Marbella, Sierra Blanca…" style="background:transparent;border:0;color:#F6F4F0;font:400 15px/1 'Archivo',sans-serif;outline:none">
+      </label>
+      <label style="display:flex;flex-direction:column;gap:10px;padding:30px 26px 28px;border-right:1px solid rgba(246,244,240,.14)">
+        <span style="font:500 9px/1 'Archivo',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:rgba(246,244,240,.42)">Tipo</span>
+        <select style="appearance:none;background:transparent;border:0;color:#F6F4F0;font:400 15px/1 'Archivo',sans-serif;outline:none;cursor:pointer">
+          <option>Villa</option>
+          <option>Ático</option>
+          <option>Apartamento</option>
+          <option>Finca</option>
+        </select>
+      </label>
+      <label style="display:flex;flex-direction:column;gap:10px;padding:30px 26px 28px;border-right:1px solid rgba(246,244,240,.14)">
+        <span style="font:500 9px/1 'Archivo',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:rgba(246,244,240,.42)">Precio</span>
+        <select style="appearance:none;background:transparent;border:0;color:#F6F4F0;font:400 15px/1 'Archivo',sans-serif;outline:none;cursor:pointer">
+          <option>Sin límite</option>
+          <option>Hasta 1,5 M€</option>
+          <option>1,5 – 3 M€</option>
+          <option>3 – 6 M€</option>
+          <option>Más de 6 M€</option>
+        </select>
+      </label>
+      <a href="#propiedades" style="display:flex;align-items:center;justify-content:center;gap:12px;padding:0 44px;background:#8A7B5C;color:#fff;font:500 10.5px/1 'Archivo',sans-serif;letter-spacing:.22em;text-transform:uppercase" style-hover="background:#F6F4F0;color:#17181A">Buscar</a>
+    </form>
+  </div>
+</section>
+
+<section style="max-width:1440px;margin:0 auto;padding:120px 40px 0">
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:40px;padding-bottom:28px;border-bottom:1px solid rgba(23,24,26,.16)">
+    <div style="display:flex;flex-direction:column;gap:18px">
+      <span style="font:500 9.5px/1 'Archivo',sans-serif;letter-spacing:.28em;text-transform:uppercase;color:#8A7B5C">Selección 2026</span>
+      <h2 style="margin:0;font:400 clamp(32px,3.4vw,48px)/1.08 'Libre Caslon Display',Georgia,serif;letter-spacing:-.01em">Propiedades destacadas</h2>
+    </div>
+    <a href="#propiedades" style="font:500 10.5px/1 'Archivo',sans-serif;letter-spacing:.2em;text-transform:uppercase;padding-bottom:6px;border-bottom:1px solid rgba(23,24,26,.3)">Ver las 17 propiedades</a>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(23,24,26,.16)">
+    <sc-for list="{{ destacadas }}" as="p">
+      <a href="#ficha" style="display:flex;flex-direction:column;background:#F6F4F0;padding:0 0 30px" style-hover="background:#EFEBE4">
+        <div style="position:relative;aspect-ratio:4/3.2;background:#E4E0D7;background-image:repeating-linear-gradient(135deg,rgba(23,24,26,.055) 0 1px,transparent 1px 9px);overflow:hidden">
+          <span style="position:absolute;left:0;top:22px;background:#17181A;color:#F6F4F0;font:500 8.5px/1 'Archivo',sans-serif;letter-spacing:.22em;text-transform:uppercase;padding:8px 14px">{{ p.etiqueta }}</span>
+          <sc-if value="{{ p.foto }}">
+            <img src="{{ p.foto }}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
+          </sc-if>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px;padding:26px 26px 0">
+          <span style="font:500 9.5px/1 'Archivo',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#8A7B5C">{{ p.zona }}</span>
+          <h3 style="margin:0;font:400 25px/1.15 'Libre Caslon Display',Georgia,serif">{{ p.titulo }}</h3>
+          <div style="display:flex;gap:18px;font:400 12.5px/1 'Archivo',sans-serif;color:rgba(23,24,26,.55);letter-spacing:.02em">
+            <span>{{ p.m2 }}</span><span>{{ p.hab }}</span><span>{{ p.banos }}</span>
+          </div>
+          <span style="margin-top:8px;font:400 19px/1 'Libre Caslon Display',Georgia,serif">{{ p.precio }}</span>
+        </div>
+      </a>
+    </sc-for>
+  </div>
+</section>
+
+<section style="max-width:1440px;margin:0 auto;padding:120px 40px">
+  <div style="position:relative;background:#17181A;color:#F6F4F0;display:grid;grid-template-columns:1.15fr 1fr;overflow:hidden">
+    <div style="padding:88px 72px;display:flex;flex-direction:column;gap:32px">
+      <span style="font:500 9.5px/1 'Archivo',sans-serif;letter-spacing:.28em;text-transform:uppercase;color:#8A7B5C">Vender con nosotros</span>
+      <h2 style="margin:0;font:400 clamp(34px,3.8vw,54px)/1.06 'Libre Caslon Display',Georgia,serif;letter-spacing:-.015em;text-wrap:balance">Sabemos lo que vale su casa antes de fotografiarla</h2>
+      <p style="margin:0;max-width:46ch;font:400 15.5px/1.8 'Archivo',sans-serif;color:rgba(246,244,240,.62);text-wrap:pretty">Preparamos un informe de valoración con comparables reales de cierre, no de publicación. Sin compromiso y en 48 horas.</p>
+      <div style="display:flex;gap:16px;align-items:center;margin-top:8px">
+        <a href="#contacto" style="background:#8A7B5C;color:#fff;font:500 10.5px/1 'Archivo',sans-serif;letter-spacing:.22em;text-transform:uppercase;padding:19px 34px" style-hover="background:#F6F4F0;color:#17181A">Solicitar valoración</a>
+        <a href="tel:+34952000000" style="color:rgba(246,244,240,.7);font:500 10.5px/1 'Archivo',sans-serif;letter-spacing:.2em;text-transform:uppercase;padding:19px 8px">o llámenos</a>
+      </div>
+    </div>
+    <div style="position:relative;background:#23252A;background-image:repeating-linear-gradient(135deg,rgba(246,244,240,.06) 0 1px,transparent 1px 10px);min-height:420px">
+      <img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=1600&q=70" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+    </div>
+  </div>
+</section>
+
+<section style="border-top:1px solid rgba(23,24,26,.16)">
+  <div style="max-width:1440px;margin:0 auto;padding:96px 40px">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:40px;margin-bottom:56px">
+      <h2 style="margin:0;font:400 clamp(28px,3vw,40px)/1.1 'Libre Caslon Display',Georgia,serif">Lo que dicen<br>nuestros clientes</h2>
+      <span style="font:500 9.5px/1 'Archivo',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:rgba(23,24,26,.45)">4,9 / 5 · 68 reseñas verificadas</span>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(23,24,26,.16)">
+      <sc-for list="{{ resenas }}" as="r" hint-placeholder-count="3">
+        <figure style="margin:0;background:#F6F4F0;padding:44px 36px;display:flex;flex-direction:column;gap:26px;justify-content:space-between">
+          <blockquote style="margin:0;font:400 21px/1.5 'Libre Caslon Display',Georgia,serif;color:#17181A;text-wrap:pretty">{{ r.texto }}</blockquote>
+          <figcaption style="display:flex;flex-direction:column;gap:5px">
+            <span style="font:500 11.5px/1 'Archivo',sans-serif;letter-spacing:.1em;text-transform:uppercase">{{ r.nombre }}</span>
+            <span style="font:400 12px/1 'Archivo',sans-serif;color:rgba(23,24,26,.5)">{{ r.detalle }}</span>
+          </figcaption>
+        </figure>
+      </sc-for>
+    </div>
+  </div>
+</section>
+
+<dc-import name="Pie" hint-size="100%,420px"></dc-import>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      destacadas: [
+        {etiqueta:"En exclusiva", zona:"Sierra Blanca", titulo:"Villa Alameda", m2:"642 m²", hab:"5 hab.", banos:"6 baños", precio:"4.950.000&nbsp;€", foto:"https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1600&q=70"},
+        {etiqueta:"Nueva", zona:"Milla de Oro", titulo:"Ático Mar de Plata", m2:"318 m²", hab:"3 hab.", banos:"3 baños", precio:"3.200.000&nbsp;€", foto:"https://images.unsplash.com/photo-1600573472550-8090b5e0745e?auto=format&fit=crop&w=1600&q=70"},
+        {etiqueta:"Off market", zona:"La Zagaleta", titulo:"Casa Los Cipreses", m2:"1.140 m²", hab:"7 hab.", banos:"8 baños", precio:"Precio a consultar", foto:"https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=70"}
+      ],
+      resenas: [
+        {texto:"Vendieron la casa en cinco semanas al precio que nos dijeron el primer día. Nadie más se atrevió a darnos esa cifra.", nombre:"Elena Marchetti", detalle:"Venta · Sierra Blanca, 2025"},
+        {texto:"Nos enseñaron cuatro propiedades. Compramos la segunda. Es la primera vez que una agencia me hace perder poco tiempo.", nombre:"Javier Ollero", detalle:"Compra · Milla de Oro, 2025"},
+        {texto:"Discretos con los datos, exigentes con el reportaje y firmes en la negociación. Repetiría con los ojos cerrados.", nombre:"Familia Duarte", detalle:"Venta · Sotogrande, 2024"}
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,524 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Inter+Tight:wght@300..600&display=swap">
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #F3F6F7; color: #111A1F; font-family: 'Inter Tight', 'Helvetica Neue', Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+    img { display: block; }
+    p { margin: 0; }
+    h1, h2, h3, h4 { margin: 0; font-weight: 400; }
+    ul { margin: 0; padding: 0; list-style: none; }
+    a { color: #0B5D6B; text-decoration: none; }
+    a:hover { color: #073F49; }
+  </style>
+</helmet>
+
+<div style="width: 1440px; background: #F3F6F7; overflow: hidden">
+
+  <!-- header: un solo piso. La franja oscura de dirección/horario/teléfono se retiró; el
+       teléfono, que es la acción real del negocio, se queda en esta misma fila. -->
+  <div style="display: flex; align-items: center; justify-content: space-between; height: 74px; padding: 0 72px; background: #FFFFFF; border-bottom: 1px solid #C7D2D7">
+    <div style="display: flex; align-items: center; gap: 44px">
+      <div style="display: flex; align-items: center; gap: 10px">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true"><rect x="0.5" y="0.5" width="21" height="21" fill="#0B5D6B"></rect><path d="M5 15.5 11 6l6 9.5" stroke="#F3F6F7" stroke-width="1.8" stroke-linejoin="round"></path></svg>
+        <span style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 19px; font-weight: 800; letter-spacing: 0.01em; color: #111A1F">MOTOR ARANDA</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 26px">
+        <a href="#" style="font-size: 14.5px; font-weight: 500; color: #111A1F">Stock</a>
+        <a href="#" style="font-size: 14.5px; color: #55666E">Financiación</a>
+        <a href="#" style="font-size: 14.5px; color: #55666E">Tasación</a>
+        <a href="#" style="font-size: 14.5px; color: #55666E">Garantía</a>
+        <a href="#" style="font-size: 14.5px; color: #55666E">Dónde estamos</a>
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 14px">
+      <span style="display: flex; align-items: center; gap: 7px; font-size: 14.5px; font-weight: 600; color: #111A1F; font-variant-numeric: tabular-nums">
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5.2 2.5 6.6 5 5.4 6.4a8 8 0 0 0 4.2 4.2L11 9.4l2.5 1.4v2.2c0 .5-.4.9-.9.8C6.6 13.2 2.8 9.4 2.2 3.4a.85.85 0 0 1 .8-.9h2.2Z" stroke="#111A1F" stroke-width="1.3" stroke-linejoin="round"></path></svg>
+        947 50 12 88
+      </span>
+      <a href="#" style="font-size: 14px; font-weight: 600; color: #0B5D6B; border: 1px solid #0B5D6B; border-radius: 2px; padding: 10px 18px">Cuánto vale tu coche</a>
+    </div>
+  </div>
+
+  <!-- hero: hard 50/50 split, no type over photo -->
+  <div style="display: flex; align-items: stretch; height: 400px">
+    <div style="width: 720px; background: #111A1F; padding: 54px 60px 0 72px">
+      <h1 style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 50px; font-weight: 700; line-height: 1.06; letter-spacing: -0.025em; color: #F3F6F7">34 coches en el patio, revisados uno a uno</h1>
+      <p style="margin-top: 20px; max-width: 56ch; font-size: 15.5px; line-height: 1.62; color: #B9C6CC">Compraventa en Aranda de Duero desde&nbsp;1994. Cada unidad pasa 137 puntos de revisión, sale con doce meses de garantía mecánica y lleva su informe de kilometraje a la vista, sin pedirlo.</p>
+      <!-- Tabla de dos columnas: concepto a la izquierda, cifra a la derecha, filete entre filas.
+           Ya no es una fila de «cifra grande + etiqueta en versalita»; el dato tabular se queda. -->
+      <div style="margin-top: 12px; max-width: 360px; border-top: 1px solid #2C3A42">
+        <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 20px; padding: 3px 0; border-bottom: 1px solid #2C3A42">
+          <span style="font-size: 13px; color: #B9C6CC">Unidades en el patio hoy</span>
+          <span style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 15px; font-weight: 700; color: #F3F6F7; font-variant-numeric: tabular-nums">34</span>
+        </div>
+        <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 20px; padding: 3px 0; border-bottom: 1px solid #2C3A42">
+          <span style="font-size: 13px; color: #B9C6CC">Garantía mecánica</span>
+          <span style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 15px; font-weight: 700; color: #F3F6F7; font-variant-numeric: tabular-nums">12 meses</span>
+        </div>
+        <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 20px; padding: 3px 0; border-bottom: 1px solid #2C3A42">
+          <span style="font-size: 13px; color: #B9C6CC">Plazo de entrega</span>
+          <span style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 15px; font-weight: 700; color: #F3F6F7; font-variant-numeric: tabular-nums">48 h</span>
+        </div>
+        <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 20px; padding: 3px 0; border-bottom: 1px solid #2C3A42">
+          <span style="font-size: 13px; color: #B9C6CC">Comprando y vendiendo desde</span>
+          <span style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 15px; font-weight: 700; color: #F3F6F7; font-variant-numeric: tabular-nums">1994</span>
+        </div>
+      </div>
+    </div>
+    <img src="aranda-patio.webp" alt="Frontal de un coche oscuro en primer plano con otro claro desenfocado detrás" style="width: 720px; height: 400px; object-fit: cover; object-position: 40% 50%">
+  </div>
+
+  <!-- stock -->
+  <div style="padding: 40px 72px 64px">
+    <div style="display: flex; align-items: flex-end; justify-content: space-between">
+      <div>
+        <h2 style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 27px; font-weight: 700; letter-spacing: -0.015em; color: #111A1F">En stock ahora</h2>
+        <p style="margin-top: 6px; font-size: 14px; color: #55666E">34 unidades · actualizado hoy a las 09:14 · 3 entraron esta semana</p>
+      </div>
+      <div style="display: flex; align-items: center; justify-content: space-between; width: 254px; height: 42px; padding: 0 13px; background: #FFFFFF; border: 1px solid #C7D2D7; border-radius: 2px">
+        <span style="font-size: 14px; color: #111A1F">Ordenar: precio más bajo</span>
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" stroke="#55666E" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      </div>
+    </div>
+
+
+    <!-- buscador + fichas conmutables: sustituyen a la banda de seis columnas con botón al canto -->
+    <div style="display: flex; align-items: center; gap: 18px; margin-top: 24px">
+      <div style="display: flex; align-items: center; gap: 10px; width: 420px; height: 48px; padding: 0 14px; background: #FFFFFF; border: 1px solid #C7D2D7; border-radius: 2px">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="4.6" stroke="#55666E" stroke-width="1.4"></circle><path d="M10.4 10.4 14 14" stroke="#55666E" stroke-width="1.4" stroke-linecap="round"></path></svg>
+        <span style="font-size: 15px; color: #55666E">Matrícula, marca o modelo</span>
+      </div>
+      <p style="font-size: 13.5px; color: #55666E">Ya está en el patio o llega esta semana: si no aparece, no lo tenemos.</p>
+    </div>
+    <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 14px">
+      <span style="font-size: 13px; color: #55666E; margin-right: 4px">Motor y cambio:</span>
+      <a href="#" style="font-size: 13px; color: #111A1F; border: 1px solid #C7D2D7; border-radius: 2px; padding: 7px 12px; background: #FFFFFF">Diésel <span style="color: #55666E; font-variant-numeric: tabular-nums">14</span></a>
+      <a href="#" style="font-size: 13px; color: #111A1F; border: 1px solid #C7D2D7; border-radius: 2px; padding: 7px 12px; background: #FFFFFF">Gasolina <span style="color: #55666E; font-variant-numeric: tabular-nums">16</span></a>
+      <a href="#" style="font-size: 13px; color: #111A1F; border: 1px solid #C7D2D7; border-radius: 2px; padding: 7px 12px; background: #FFFFFF">Híbrido <span style="color: #55666E; font-variant-numeric: tabular-nums">4</span></a>
+      <a href="#" style="font-size: 13px; color: #111A1F; border: 1px solid #C7D2D7; border-radius: 2px; padding: 7px 12px; background: #FFFFFF">Automático <span style="color: #55666E; font-variant-numeric: tabular-nums">19</span></a>
+      <a href="#" style="font-size: 13px; color: #111A1F; border: 1px solid #C7D2D7; border-radius: 2px; padding: 7px 12px; background: #FFFFFF">Manual <span style="color: #55666E; font-variant-numeric: tabular-nums">15</span></a>
+      <a href="#" style="font-size: 13px; color: #111A1F; border: 1px solid #C7D2D7; border-radius: 2px; padding: 7px 12px; background: #FFFFFF">Etiqueta ECO <span style="color: #55666E; font-variant-numeric: tabular-nums">7</span></a>
+    </div>
+    <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 14px">
+      <span style="font-size: 13px; color: #55666E; margin-right: 4px">Precio y uso:</span>
+      <a href="#" style="font-size: 13px; color: #111A1F; border: 1px solid #C7D2D7; border-radius: 2px; padding: 7px 12px; background: #FFFFFF">Hasta 15.000&nbsp;€ <span style="color: #55666E; font-variant-numeric: tabular-nums">6</span></a>
+      <a href="#" style="font-size: 13px; color: #111A1F; border: 1px solid #C7D2D7; border-radius: 2px; padding: 7px 12px; background: #FFFFFF">De 15.000 a 30.000&nbsp;€ <span style="color: #55666E; font-variant-numeric: tabular-nums">17</span></a>
+      <a href="#" style="font-size: 13px; color: #111A1F; border: 1px solid #C7D2D7; border-radius: 2px; padding: 7px 12px; background: #FFFFFF">Menos de 60.000&nbsp;km <span style="color: #55666E; font-variant-numeric: tabular-nums">11</span></a>
+      <a href="#" style="font-size: 13px; color: #111A1F; border: 1px solid #C7D2D7; border-radius: 2px; padding: 7px 12px; background: #FFFFFF">De 2018 en adelante <span style="color: #55666E; font-variant-numeric: tabular-nums">24</span></a>
+      <a href="#" style="font-size: 13px; color: #111A1F; border: 1px solid #C7D2D7; border-radius: 2px; padding: 7px 12px; background: #FFFFFF">Familiares y SUV <span style="color: #55666E; font-variant-numeric: tabular-nums">14</span></a>
+      <a href="#" style="font-size: 13px; color: #111A1F; border: 1px solid #C7D2D7; border-radius: 2px; padding: 7px 12px; background: #FFFFFF">Sin entrada <span style="color: #55666E; font-variant-numeric: tabular-nums">22</span></a>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; margin-top: 26px">
+
+      <div style="background: #FFFFFF; border: 1px solid #C7D2D7; border-radius: 2px; overflow: hidden">
+        <div style="position: relative">
+          <img src="aranda-v1.webp" alt="Todoterreno azul de perfil en una carretera de otoño" style="width: 100%; height: 246px; object-fit: cover">
+          <span style="position: absolute; left: 0; top: 14px; background: #0B5D6B; color: #FFFFFF; font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 5px 10px">Nuevo ingreso</span>
+        </div>
+        <div style="padding: 16px 18px 18px">
+          <div style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 17px; font-weight: 700; letter-spacing: -0.01em; color: #111A1F">BMW X1 sDrive18d</div>
+          <div style="margin-top: 3px; font-size: 13.5px; color: #55666E">xLine · 150 CV · 5 puertas · Azul Phytonic</div>
+          <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 14px">
+            <div style="padding: 9px 12px 9px 0; border-top: 1px solid #E1E8EB; border-right: 1px solid #E1E8EB">
+              <div style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 9.5px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #55666E">Año</div>
+              <div style="margin-top: 1px; font-size: 15px; font-weight: 600; color: #111A1F; font-variant-numeric: tabular-nums">2023</div>
+            </div>
+            <div style="padding: 9px 0 9px 12px; border-top: 1px solid #E1E8EB">
+              <div style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 9.5px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #55666E">Kilómetros</div>
+              <div style="margin-top: 1px; font-size: 15px; font-weight: 600; color: #111A1F; font-variant-numeric: tabular-nums">41.300</div>
+            </div>
+            <div style="padding: 9px 12px 9px 0; border-top: 1px solid #E1E8EB; border-right: 1px solid #E1E8EB">
+              <div style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 9.5px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #55666E">Combustible</div>
+              <div style="margin-top: 1px; font-size: 15px; font-weight: 600; color: #111A1F">Diésel</div>
+            </div>
+            <div style="padding: 9px 0 9px 12px; border-top: 1px solid #E1E8EB">
+              <div style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 9.5px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #55666E">Cambio</div>
+              <div style="margin-top: 1px; font-size: 15px; font-weight: 600; color: #111A1F">Automático</div>
+            </div>
+          </div>
+          <div style="display: flex; align-items: baseline; justify-content: space-between; margin-top: 16px">
+            <span style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 25px; font-weight: 700; color: #111A1F; font-variant-numeric: tabular-nums">33.900&nbsp;€</span>
+            <span style="font-size: 13.5px; font-weight: 600; color: #0B5D6B; font-variant-numeric: tabular-nums">389&nbsp;€/mes</span>
+          </div>
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 14px; padding-top: 13px; border-top: 1px solid #E1E8EB">
+            <a href="#" style="display: flex; align-items: center; gap: 7px; font-size: 13.5px; font-weight: 600; color: #0B5D6B">Ver ficha completa
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2 7h10M8.5 3.5 12 7l-3.5 3.5" stroke="#0B5D6B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+            </a>
+            <span style="font-size: 12px; color: #55666E; font-variant-numeric: tabular-nums">Ref. A-2418</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #C7D2D7; border-radius: 2px; overflow: hidden">
+        <img src="aranda-v2.webp" alt="Todoterreno oscuro circulando por una calle nevada" style="width: 100%; height: 246px; object-fit: cover">
+        <div style="padding: 16px 18px 18px">
+          <div style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 17px; font-weight: 700; letter-spacing: -0.01em; color: #111A1F">BMW X3 xDrive20d</div>
+          <div style="margin-top: 3px; font-size: 13.5px; color: #55666E">M Sport · 190 CV · 5 puertas · Negro zafiro</div>
+          <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 14px">
+            <div style="padding: 9px 12px 9px 0; border-top: 1px solid #E1E8EB; border-right: 1px solid #E1E8EB">
+              <div style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 9.5px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #55666E">Año</div>
+              <div style="margin-top: 1px; font-size: 15px; font-weight: 600; color: #111A1F; font-variant-numeric: tabular-nums">2022</div>
+            </div>
+            <div style="padding: 9px 0 9px 12px; border-top: 1px solid #E1E8EB">
+              <div style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 9.5px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #55666E">Kilómetros</div>
+              <div style="margin-top: 1px; font-size: 15px; font-weight: 600; color: #111A1F; font-variant-numeric: tabular-nums">68.900</div>
+            </div>
+            <div style="padding: 9px 12px 9px 0; border-top: 1px solid #E1E8EB; border-right: 1px solid #E1E8EB">
+              <div style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 9.5px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #55666E">Combustible</div>
+              <div style="margin-top: 1px; font-size: 15px; font-weight: 600; color: #111A1F">Diésel</div>
+            </div>
+            <div style="padding: 9px 0 9px 12px; border-top: 1px solid #E1E8EB">
+              <div style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 9.5px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #55666E">Cambio</div>
+              <div style="margin-top: 1px; font-size: 15px; font-weight: 600; color: #111A1F">Automático</div>
+            </div>
+          </div>
+          <div style="display: flex; align-items: baseline; justify-content: space-between; margin-top: 16px">
+            <span style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 25px; font-weight: 700; color: #111A1F; font-variant-numeric: tabular-nums">41.500&nbsp;€</span>
+            <span style="font-size: 13.5px; font-weight: 600; color: #0B5D6B; font-variant-numeric: tabular-nums">476&nbsp;€/mes</span>
+          </div>
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 14px; padding-top: 13px; border-top: 1px solid #E1E8EB">
+            <a href="#" style="display: flex; align-items: center; gap: 7px; font-size: 13.5px; font-weight: 600; color: #0B5D6B">Ver ficha completa
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2 7h10M8.5 3.5 12 7l-3.5 3.5" stroke="#0B5D6B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+            </a>
+            <span style="font-size: 12px; color: #55666E; font-variant-numeric: tabular-nums">Ref. A-2402</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #C7D2D7; border-radius: 2px; overflow: hidden">
+        <img src="aranda-v3.webp" alt="Berlina plateada en una autovía despejada" style="width: 100%; height: 246px; object-fit: cover">
+        <div style="padding: 16px 18px 18px">
+          <div style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 17px; font-weight: 700; letter-spacing: -0.01em; color: #111A1F">Audi A5 Sportback 2.0 TDI</div>
+          <div style="margin-top: 3px; font-size: 13.5px; color: #55666E">S line · 190 CV · 5 puertas · Plata florete</div>
+          <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 14px">
+            <div style="padding: 9px 12px 9px 0; border-top: 1px solid #E1E8EB; border-right: 1px solid #E1E8EB">
+              <div style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 9.5px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #55666E">Año</div>
+              <div style="margin-top: 1px; font-size: 15px; font-weight: 600; color: #111A1F; font-variant-numeric: tabular-nums">2020</div>
+            </div>
+            <div style="padding: 9px 0 9px 12px; border-top: 1px solid #E1E8EB">
+              <div style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 9.5px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #55666E">Kilómetros</div>
+              <div style="margin-top: 1px; font-size: 15px; font-weight: 600; color: #111A1F; font-variant-numeric: tabular-nums">96.400</div>
+            </div>
+            <div style="padding: 9px 12px 9px 0; border-top: 1px solid #E1E8EB; border-right: 1px solid #E1E8EB">
+              <div style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 9.5px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #55666E">Combustible</div>
+              <div style="margin-top: 1px; font-size: 15px; font-weight: 600; color: #111A1F">Diésel</div>
+            </div>
+            <div style="padding: 9px 0 9px 12px; border-top: 1px solid #E1E8EB">
+              <div style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 9.5px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #55666E">Cambio</div>
+              <div style="margin-top: 1px; font-size: 15px; font-weight: 600; color: #111A1F">Automático</div>
+            </div>
+          </div>
+          <div style="display: flex; align-items: baseline; justify-content: space-between; margin-top: 16px">
+            <span style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 25px; font-weight: 700; color: #111A1F; font-variant-numeric: tabular-nums">27.400&nbsp;€</span>
+            <span style="font-size: 13.5px; font-weight: 600; color: #0B5D6B; font-variant-numeric: tabular-nums">314&nbsp;€/mes</span>
+          </div>
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 14px; padding-top: 13px; border-top: 1px solid #E1E8EB">
+            <a href="#" style="display: flex; align-items: center; gap: 7px; font-size: 13.5px; font-weight: 600; color: #0B5D6B">Ver ficha completa
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2 7h10M8.5 3.5 12 7l-3.5 3.5" stroke="#0B5D6B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+            </a>
+            <span style="font-size: 12px; color: #55666E; font-variant-numeric: tabular-nums">Ref. A-2377</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #C7D2D7; border-radius: 2px; overflow: hidden">
+        <img src="aranda-v4.webp" alt="Todoterreno blanco en carretera invernal al atardecer" style="width: 100%; height: 246px; object-fit: cover">
+        <div style="padding: 16px 18px 18px">
+          <div style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 17px; font-weight: 700; letter-spacing: -0.01em; color: #111A1F">Volkswagen Tiguan 1.5 TSI</div>
+          <div style="margin-top: 3px; font-size: 13.5px; color: #55666E">Life · 150 CV · 5 puertas · Blanco puro</div>
+          <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 14px">
+            <div style="padding: 9px 12px 9px 0; border-top: 1px solid #E1E8EB; border-right: 1px solid #E1E8EB">
+              <div style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 9.5px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #55666E">Año</div>
+              <div style="margin-top: 1px; font-size: 15px; font-weight: 600; color: #111A1F; font-variant-numeric: tabular-nums">2022</div>
+            </div>
+            <div style="padding: 9px 0 9px 12px; border-top: 1px solid #E1E8EB">
+              <div style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 9.5px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #55666E">Kilómetros</div>
+              <div style="margin-top: 1px; font-size: 15px; font-weight: 600; color: #111A1F; font-variant-numeric: tabular-nums">34.100</div>
+            </div>
+            <div style="padding: 9px 12px 9px 0; border-top: 1px solid #E1E8EB; border-right: 1px solid #E1E8EB">
+              <div style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 9.5px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #55666E">Combustible</div>
+              <div style="margin-top: 1px; font-size: 15px; font-weight: 600; color: #111A1F">Gasolina</div>
+            </div>
+            <div style="padding: 9px 0 9px 12px; border-top: 1px solid #E1E8EB">
+              <div style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 9.5px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #55666E">Cambio</div>
+              <div style="margin-top: 1px; font-size: 15px; font-weight: 600; color: #111A1F">Manual</div>
+            </div>
+          </div>
+          <div style="display: flex; align-items: baseline; justify-content: space-between; margin-top: 16px">
+            <span style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 25px; font-weight: 700; color: #111A1F; font-variant-numeric: tabular-nums">26.800&nbsp;€</span>
+            <span style="font-size: 13.5px; font-weight: 600; color: #0B5D6B; font-variant-numeric: tabular-nums">307&nbsp;€/mes</span>
+          </div>
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 14px; padding-top: 13px; border-top: 1px solid #E1E8EB">
+            <a href="#" style="display: flex; align-items: center; gap: 7px; font-size: 13.5px; font-weight: 600; color: #0B5D6B">Ver ficha completa
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2 7h10M8.5 3.5 12 7l-3.5 3.5" stroke="#0B5D6B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+            </a>
+            <span style="font-size: 12px; color: #55666E; font-variant-numeric: tabular-nums">Ref. A-2411</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #C7D2D7; border-radius: 2px; overflow: hidden">
+        <div style="position: relative">
+          <img src="aranda-v5.webp" alt="Berlina moderna circulando por una calle de ciudad" style="width: 100%; height: 246px; object-fit: cover">
+          <span style="position: absolute; left: 0; top: 14px; background: #111A1F; color: #F3F6F7; font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 5px 10px">Reservado hasta el 20/09</span>
+        </div>
+        <div style="padding: 16px 18px 18px">
+          <div style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 17px; font-weight: 700; letter-spacing: -0.01em; color: #111A1F">Mercedes-Benz Clase E 220 d</div>
+          <div style="margin-top: 3px; font-size: 13.5px; color: #55666E">Avantgarde · 194 CV · 4 puertas · Gris selenita</div>
+          <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 14px">
+            <div style="padding: 9px 12px 9px 0; border-top: 1px solid #E1E8EB; border-right: 1px solid #E1E8EB">
+              <div style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 9.5px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #55666E">Año</div>
+              <div style="margin-top: 1px; font-size: 15px; font-weight: 600; color: #111A1F; font-variant-numeric: tabular-nums">2021</div>
+            </div>
+            <div style="padding: 9px 0 9px 12px; border-top: 1px solid #E1E8EB">
+              <div style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 9.5px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #55666E">Kilómetros</div>
+              <div style="margin-top: 1px; font-size: 15px; font-weight: 600; color: #111A1F; font-variant-numeric: tabular-nums">112.700</div>
+            </div>
+            <div style="padding: 9px 12px 9px 0; border-top: 1px solid #E1E8EB; border-right: 1px solid #E1E8EB">
+              <div style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 9.5px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #55666E">Combustible</div>
+              <div style="margin-top: 1px; font-size: 15px; font-weight: 600; color: #111A1F">Diésel</div>
+            </div>
+            <div style="padding: 9px 0 9px 12px; border-top: 1px solid #E1E8EB">
+              <div style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 9.5px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #55666E">Cambio</div>
+              <div style="margin-top: 1px; font-size: 15px; font-weight: 600; color: #111A1F">Automático</div>
+            </div>
+          </div>
+          <div style="display: flex; align-items: baseline; justify-content: space-between; margin-top: 16px">
+            <span style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 25px; font-weight: 700; color: #111A1F; font-variant-numeric: tabular-nums">29.900&nbsp;€</span>
+            <span style="font-size: 13.5px; font-weight: 600; color: #0B5D6B; font-variant-numeric: tabular-nums">343&nbsp;€/mes</span>
+          </div>
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 14px; padding-top: 13px; border-top: 1px solid #E1E8EB">
+            <a href="#" style="display: flex; align-items: center; gap: 7px; font-size: 13.5px; font-weight: 600; color: #0B5D6B">Ver ficha completa
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2 7h10M8.5 3.5 12 7l-3.5 3.5" stroke="#0B5D6B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+            </a>
+            <span style="font-size: 12px; color: #55666E; font-variant-numeric: tabular-nums">Ref. A-2365</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #C7D2D7; border-radius: 2px; overflow: hidden">
+        <img src="aranda-v6.webp" alt="Compacto gris de perfil en una vía rápida" style="width: 100%; height: 246px; object-fit: cover">
+        <div style="padding: 16px 18px 18px">
+          <div style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 17px; font-weight: 700; letter-spacing: -0.01em; color: #111A1F">Volvo V40 D2</div>
+          <div style="margin-top: 3px; font-size: 13.5px; color: #55666E">Momentum · 120 CV · 5 puertas · Gris osmio</div>
+          <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 14px">
+            <div style="padding: 9px 12px 9px 0; border-top: 1px solid #E1E8EB; border-right: 1px solid #E1E8EB">
+              <div style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 9.5px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #55666E">Año</div>
+              <div style="margin-top: 1px; font-size: 15px; font-weight: 600; color: #111A1F; font-variant-numeric: tabular-nums">2018</div>
+            </div>
+            <div style="padding: 9px 0 9px 12px; border-top: 1px solid #E1E8EB">
+              <div style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 9.5px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #55666E">Kilómetros</div>
+              <div style="margin-top: 1px; font-size: 15px; font-weight: 600; color: #111A1F; font-variant-numeric: tabular-nums">128.500</div>
+            </div>
+            <div style="padding: 9px 12px 9px 0; border-top: 1px solid #E1E8EB; border-right: 1px solid #E1E8EB">
+              <div style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 9.5px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #55666E">Combustible</div>
+              <div style="margin-top: 1px; font-size: 15px; font-weight: 600; color: #111A1F">Diésel</div>
+            </div>
+            <div style="padding: 9px 0 9px 12px; border-top: 1px solid #E1E8EB">
+              <div style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 9.5px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #55666E">Cambio</div>
+              <div style="margin-top: 1px; font-size: 15px; font-weight: 600; color: #111A1F">Manual</div>
+            </div>
+          </div>
+          <div style="display: flex; align-items: baseline; justify-content: space-between; margin-top: 16px">
+            <span style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 25px; font-weight: 700; color: #111A1F; font-variant-numeric: tabular-nums">12.400&nbsp;€</span>
+            <span style="font-size: 13.5px; font-weight: 600; color: #0B5D6B; font-variant-numeric: tabular-nums">149&nbsp;€/mes</span>
+          </div>
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 14px; padding-top: 13px; border-top: 1px solid #E1E8EB">
+            <a href="#" style="display: flex; align-items: center; gap: 7px; font-size: 13.5px; font-weight: 600; color: #0B5D6B">Ver ficha completa
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2 7h10M8.5 3.5 12 7l-3.5 3.5" stroke="#0B5D6B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+            </a>
+            <span style="font-size: 12px; color: #55666E; font-variant-numeric: tabular-nums">Ref. A-2340</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 24px; padding: 16px 20px; background: #FFFFFF; border: 1px solid #C7D2D7; border-radius: 2px">
+      <span style="font-size: 14.5px; color: #55666E">Estás viendo 6 de 34 unidades. El stock se mueve rápido: la media de un coche en el patio es de 23 días.</span>
+      <a href="#" style="font-size: 14px; font-weight: 600; color: #0B5D6B; border: 1px solid #0B5D6B; border-radius: 2px; padding: 10px 20px">Ver todo el stock</a>
+    </div>
+  </div>
+
+  <!-- unidad destacada -->
+  <div style="background: #FFFFFF; border-top: 1px solid #C7D2D7; border-bottom: 1px solid #C7D2D7; padding: 56px 72px 64px">
+    <div style="display: flex; align-items: flex-end; justify-content: space-between">
+      <div>
+        <div style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 10.5px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #0B5D6B">Así es una ficha</div>
+        <h2 style="margin-top: 8px; font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 30px; font-weight: 700; letter-spacing: -0.02em; color: #111A1F">Hyundai Tucson 1.6 T-GDi 150 CV Maxx DCT</h2>
+        <p style="margin-top: 6px; font-size: 14.5px; color: #55666E">Ref. A-2390 · en el patio desde el 2 de septiembre · lo puedes ver hoy mismo sin cita</p>
+      </div>
+      <a href="#" style="font-size: 14px; font-weight: 600; color: #0B5D6B; border: 1px solid #0B5D6B; border-radius: 2px; padding: 11px 20px">Descargar el informe de kilometraje (PDF)</a>
+    </div>
+
+    <div style="display: flex; align-items: flex-start; gap: 32px; margin-top: 30px">
+      <div style="width: 792px; flex-shrink: 0">
+        <img src="aranda-u-interior.webp" alt="Interior visto desde la puerta del conductor: dos asientos de tela gris y consola" style="width: 792px; height: 400px; object-fit: cover; border: 1px solid #E1E8EB">
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 8px">
+          <div>
+            <img src="aranda-u-cuadro.webp" alt="Cuadro de mandos con el cuentakilómetros marcando 48.200 km" style="width: 100%; height: 230px; object-fit: cover; border: 1px solid #E1E8EB">
+            <div style="margin-top: 7px; font-size: 12.5px; color: #55666E">Cuadro sin manipular: 48.200 km, contrastados con las cinco últimas revisiones.</div>
+          </div>
+          <div>
+            <img src="aranda-u-maletero.webp" alt="Maletero abierto y vacío, con el patio del concesionario detrás" style="width: 100%; height: 230px; object-fit: cover; border: 1px solid #E1E8EB">
+            <div style="margin-top: 7px; font-size: 12.5px; color: #55666E">Maletero de 620 litros con la bandeja puesta. Rueda de repuesto de emergencia incluida.</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="flex-grow: 1">
+        <div style="border-top: 1px solid #111A1F">
+          <div style="display: flex; align-items: baseline; justify-content: space-between; padding: 11px 0; border-bottom: 1px solid #E1E8EB">
+            <span style="font-size: 13.5px; color: #55666E">Matriculación</span>
+            <span style="font-size: 14.5px; font-weight: 600; color: #111A1F; font-variant-numeric: tabular-nums">06/2021</span>
+          </div>
+          <div style="display: flex; align-items: baseline; justify-content: space-between; padding: 11px 0; border-bottom: 1px solid #E1E8EB">
+            <span style="font-size: 13.5px; color: #55666E">Kilómetros</span>
+            <span style="font-size: 14.5px; font-weight: 600; color: #111A1F; font-variant-numeric: tabular-nums">48.200 km</span>
+          </div>
+          <div style="display: flex; align-items: baseline; justify-content: space-between; padding: 11px 0; border-bottom: 1px solid #E1E8EB">
+            <span style="font-size: 13.5px; color: #55666E">Combustible</span>
+            <span style="font-size: 14.5px; font-weight: 600; color: #111A1F">Gasolina</span>
+          </div>
+          <div style="display: flex; align-items: baseline; justify-content: space-between; padding: 11px 0; border-bottom: 1px solid #E1E8EB">
+            <span style="font-size: 13.5px; color: #55666E">Cambio</span>
+            <span style="font-size: 14.5px; font-weight: 600; color: #111A1F">Automático DCT, 7 velocidades</span>
+          </div>
+          <div style="display: flex; align-items: baseline; justify-content: space-between; padding: 11px 0; border-bottom: 1px solid #E1E8EB">
+            <span style="font-size: 13.5px; color: #55666E">Potencia</span>
+            <span style="font-size: 14.5px; font-weight: 600; color: #111A1F; font-variant-numeric: tabular-nums">150 CV (110 kW)</span>
+          </div>
+          <div style="display: flex; align-items: baseline; justify-content: space-between; padding: 11px 0; border-bottom: 1px solid #E1E8EB">
+            <span style="font-size: 13.5px; color: #55666E">Carrocería</span>
+            <span style="font-size: 14.5px; font-weight: 600; color: #111A1F">SUV, 5 puertas, 5 plazas</span>
+          </div>
+          <div style="display: flex; align-items: baseline; justify-content: space-between; padding: 11px 0; border-bottom: 1px solid #E1E8EB">
+            <span style="font-size: 13.5px; color: #55666E">Color</span>
+            <span style="font-size: 14.5px; font-weight: 600; color: #111A1F">Gris grafito metalizado</span>
+          </div>
+          <div style="display: flex; align-items: baseline; justify-content: space-between; padding: 11px 0; border-bottom: 1px solid #E1E8EB">
+            <span style="font-size: 13.5px; color: #55666E">Etiqueta DGT</span>
+            <span style="font-size: 14.5px; font-weight: 600; color: #111A1F">C</span>
+          </div>
+          <div style="display: flex; align-items: baseline; justify-content: space-between; padding: 11px 0; border-bottom: 1px solid #E1E8EB">
+            <span style="font-size: 13.5px; color: #55666E">Propietarios</span>
+            <span style="font-size: 14.5px; font-weight: 600; color: #111A1F">2, ambos particulares</span>
+          </div>
+          <div style="display: flex; align-items: baseline; justify-content: space-between; padding: 11px 0; border-bottom: 1px solid #E1E8EB">
+            <span style="font-size: 13.5px; color: #55666E">Última ITV</span>
+            <span style="font-size: 14.5px; font-weight: 600; color: #111A1F; font-variant-numeric: tabular-nums">03/2026, sin defectos</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 22px; padding: 20px; background: #E4EAED; border-radius: 2px">
+          <div style="display: flex; align-items: baseline; justify-content: space-between">
+            <span style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 38px; font-weight: 800; letter-spacing: -0.02em; color: #111A1F; font-variant-numeric: tabular-nums">21.900&nbsp;€</span>
+            <span style="font-size: 13px; color: #55666E">IVA e impuesto de matriculación incluidos</span>
+          </div>
+          <div style="margin-top: 8px; font-size: 14.5px; color: #111A1F; font-variant-numeric: tabular-nums">o <span style="font-weight: 600; color: #0B5D6B">249&nbsp;€/mes</span> en 72 cuotas, sin entrada · TAE 8,95 %</div>
+          <a href="#" style="display: flex; align-items: center; justify-content: center; height: 50px; margin-top: 16px; background: #0B5D6B; color: #FFFFFF; font-size: 15px; font-weight: 600; border-radius: 2px">Reservar esta unidad por 300&nbsp;€</a>
+          <a href="#" style="display: flex; align-items: center; justify-content: center; height: 46px; margin-top: 8px; background: transparent; color: #0B5D6B; font-size: 14.5px; font-weight: 600; border: 1px solid #0B5D6B; border-radius: 2px">Pedir prueba en carretera</a>
+          <p style="margin-top: 12px; font-size: 12.5px; line-height: 1.5; color: #55666E">La reserva se descuenta del precio y se devuelve entera si en siete días decides que no.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- garantías -->
+  <div style="background: #E4EAED; padding: 48px 72px 52px">
+    <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr))">
+      <div style="padding-right: 34px">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="4.5" y="3.5" width="15" height="17" stroke="#0B5D6B" stroke-width="1.4"></rect><path d="M9 3.5v2h6v-2" stroke="#0B5D6B" stroke-width="1.4"></path><path d="M8.5 11.5l2 2 4.5-4.5" stroke="#0B5D6B" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path><path d="M8.5 17h7" stroke="#0B5D6B" stroke-width="1.4" stroke-linecap="round"></path></svg>
+        <div style="margin-top: 14px; font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 15.5px; font-weight: 700; color: #111A1F">137 puntos de revisión</div>
+        <p style="margin-top: 6px; font-size: 13.5px; line-height: 1.55; color: #55666E">Mecánica, chapa, electrónica y neumáticos. El parte firmado va dentro de la guantera.</p>
+      </div>
+      <div style="padding: 0 34px; border-left: 1px solid #C7D2D7">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3l7 2.5v6c0 4.2-2.9 7.6-7 9-4.1-1.4-7-4.8-7-9v-6L12 3Z" stroke="#0B5D6B" stroke-width="1.4" stroke-linejoin="round"></path><path d="M9 12l2.2 2.2L15.5 10" stroke="#0B5D6B" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+        <div style="margin-top: 14px; font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 15.5px; font-weight: 700; color: #111A1F">12 meses de garantía</div>
+        <p style="margin-top: 6px; font-size: 13.5px; line-height: 1.55; color: #55666E">Mecánica completa, sin franquicia y sin límite de kilómetros. Ampliable a 24 por 390,00&nbsp;€.</p>
+      </div>
+      <div style="padding: 0 34px; border-left: 1px solid #C7D2D7">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4.5 12a7.5 7.5 0 1 0 2.6-5.7" stroke="#0B5D6B" stroke-width="1.4" stroke-linecap="round"></path><path d="M4 3.5v3.6h3.6" stroke="#0B5D6B" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path><path d="M12 8v4.3l2.8 1.7" stroke="#0B5D6B" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+        <div style="margin-top: 14px; font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 15.5px; font-weight: 700; color: #111A1F">7 días para devolverlo</div>
+        <p style="margin-top: 6px; font-size: 13.5px; line-height: 1.55; color: #55666E">Si no te convence, lo traes antes de 300 km y te devolvemos el importe íntegro.</p>
+      </div>
+      <div style="padding-left: 34px; border-left: 1px solid #C7D2D7">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="6" width="18" height="12" stroke="#0B5D6B" stroke-width="1.4"></rect><circle cx="12" cy="12" r="2.6" stroke="#0B5D6B" stroke-width="1.4"></circle><path d="M6.5 9.8v4.4M17.5 9.8v4.4" stroke="#0B5D6B" stroke-width="1.4" stroke-linecap="round"></path></svg>
+        <div style="margin-top: 14px; font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 15.5px; font-weight: 700; color: #111A1F">Respuesta de financiación en 24 h</div>
+        <p style="margin-top: 6px; font-size: 13.5px; line-height: 1.55; color: #55666E">Trabajamos con cuatro entidades. Te decimos el sí o el no al día siguiente, por teléfono.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- tasación -->
+  <div style="background: #111A1F; padding: 50px 72px 54px">
+    <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 60px">
+      <div style="max-width: 560px">
+        <h2 style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 31px; font-weight: 700; letter-spacing: -0.02em; color: #F3F6F7">¿Vienes con coche?</h2>
+        <p style="margin-top: 12px; font-size: 15.5px; line-height: 1.6; color: #B9C6CC">Lo tasamos en veinte minutos y te lo compramos aunque no te lleves ninguno de los nuestros. Pagamos por transferencia el mismo día y nos ocupamos del cambio de nombre.</p>
+      </div>
+      <div style="display: flex; align-items: flex-end; gap: 10px">
+        <div>
+          <div style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 10.5px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #55666E">Matrícula</div>
+          <div style="display: flex; align-items: center; width: 190px; height: 48px; margin-top: 6px; padding: 0 14px; background: #1B262C; border: 1px solid #33454E; border-radius: 2px">
+            <span style="font-size: 15px; color: #55666E; font-variant-numeric: tabular-nums">1234 ABC</span>
+          </div>
+        </div>
+        <div>
+          <div style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 10.5px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #55666E">Kilómetros</div>
+          <div style="display: flex; align-items: center; width: 190px; height: 48px; margin-top: 6px; padding: 0 14px; background: #1B262C; border: 1px solid #33454E; border-radius: 2px">
+            <span style="font-size: 15px; color: #55666E; font-variant-numeric: tabular-nums">95.000</span>
+          </div>
+        </div>
+        <a href="#" style="display: flex; align-items: center; justify-content: center; width: 200px; height: 48px; background: #0B5D6B; color: #FFFFFF; font-size: 15px; font-weight: 600; border-radius: 2px">Calcular tasación</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- footer -->
+  <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 56px; padding: 48px 72px 30px">
+    <div style="width: 330px">
+      <div style="display: flex; align-items: center; gap: 9px">
+        <svg width="18" height="18" viewBox="0 0 22 22" fill="none" aria-hidden="true"><rect x="0.5" y="0.5" width="21" height="21" fill="#0B5D6B"></rect><path d="M5 15.5 11 6l6 9.5" stroke="#F3F6F7" stroke-width="1.8" stroke-linejoin="round"></path></svg>
+        <span style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 16px; font-weight: 800; color: #111A1F">MOTOR ARANDA</span>
+      </div>
+      <p style="margin-top: 12px; font-size: 13.5px; line-height: 1.6; color: #55666E">Polígono Prado Marina, nave 12<br>09400 Aranda de Duero (Burgos)<br>947 50 12 88 · stock@motoraranda.es</p>
+    </div>
+    <div>
+      <div style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #111A1F">Stock</div>
+      <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 12px">
+        <a href="#" style="font-size: 13.5px; color: #55666E">Todos los coches</a>
+        <a href="#" style="font-size: 13.5px; color: #55666E">SUV y familiares</a>
+        <a href="#" style="font-size: 13.5px; color: #55666E">Hasta 15.000&nbsp;€</a>
+        <a href="#" style="font-size: 13.5px; color: #55666E">Reservados</a>
+      </div>
+    </div>
+    <div>
+      <div style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #111A1F">La casa</div>
+      <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 12px">
+        <a href="#" style="font-size: 13.5px; color: #55666E">Cómo revisamos</a>
+        <a href="#" style="font-size: 13.5px; color: #55666E">Garantía y devolución</a>
+        <a href="#" style="font-size: 13.5px; color: #55666E">Financiación</a>
+        <a href="#" style="font-size: 13.5px; color: #55666E">Tasación</a>
+      </div>
+    </div>
+    <div style="width: 300px">
+      <div style="font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #111A1F">Horario del patio</div>
+      <p style="margin-top: 12px; font-size: 13.5px; line-height: 1.6; color: #55666E">Lunes a viernes, 9:30–14:00 y 16:30–20:00<br>Sábados, 10:00–14:00<br>Se puede ver cualquier coche sin cita previa.</p>
+    </div>
+  </div>
+  <div style="padding: 0 72px 40px; font-size: 12.5px; color: #55666E">Motor Aranda S.L. · B-09 372 148 · Precios con IVA e impuesto de matriculación incluidos, transferencia no incluida (180,00&nbsp;€). Financiación sujeta a aprobación de la entidad. · Aviso legal · Privacidad · Cookies</div>
+
+</div>
+</x-dc>
+</body>
+</html>

@@ -1,0 +1,327 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  /* El suelo va en body ADEMAS de en el envoltorio: el frame del artboard pinta su propio
+     blanco alli donde el contenido no llega. */
+  html, body { margin: 0; padding: 0; background: #141A21; }
+  x-dc { display: block; }
+  [data-suelo] h1, [data-suelo] h2, [data-suelo] h3, [data-suelo] h4,
+  [data-suelo] p, [data-suelo] ul, [data-suelo] li, [data-suelo] dl, [data-suelo] dd, [data-suelo] dt,
+  [data-suelo] figure, [data-suelo] figcaption {
+    margin: 0; padding: 0;
+  }
+  [data-suelo] ul { list-style: none; }
+  [data-suelo] img { display: block; border: 0; }
+  [data-suelo] a { color: inherit; text-decoration: none; }
+  .mono { font-family: "IBM Plex Mono", ui-monospace, monospace; }
+  /* El naranja nunca es color de letra: sobre el suelo frio mide 4,38:1, por debajo del 4,5:1
+     de un texto. Va en dos piezas de interfaz, las barras de intensidad y el subrayado de los
+     enlaces, y las dos pasan el 3:1 que se les pide. */
+  .barra { display: inline-block; width: 9px; height: 14px; background: #2E3944; }
+  .barra.on { background: #D9542B; }
+</style>
+</helmet>
+
+<div data-suelo style="width:1440px;background:#141A21;color:#E9EEF2;font-family:'Archivo','Helvetica Neue',Arial,sans-serif;font-weight:400;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility">
+
+<!-- ============================ CABECERA ============================ -->
+<header style="display:flex; align-items:baseline; justify-content:space-between; padding:26px 108px; border-bottom:1px solid rgba(233,238,242,0.14);">
+  <div style="display:flex; align-items:baseline; gap:56px;">
+    <a href="Cadencia.dc.html" style="display:flex; align-items:baseline; gap:14px;">
+      <span style="font-size:19px; font-weight:700; letter-spacing:0.26em;">CADENCIA</span>
+      <span class="mono" style="font-size:11px; letter-spacing:0.1em; color:#8C97A3;">ropa de frío</span>
+    </a>
+    <nav>
+      <ul style="display:flex; gap:34px;">
+        <li><a href="Categoria.dc.html" style="font-size:15px; font-weight:500; letter-spacing:0.04em;">Sesiones</a></li>
+        <li><a href="Cadencia.dc.html" style="font-size:15px; letter-spacing:0.04em; color:#8C97A3;">Prendas</a></li>
+        <li><a href="LaMarca.dc.html" style="font-size:15px; letter-spacing:0.04em; color:#8C97A3;">El banco</a></li>
+        <li><a href="Contacto.dc.html" style="font-size:15px; letter-spacing:0.04em; color:#8C97A3;">Contacto</a></li>
+      </ul>
+    </nav>
+  </div>
+  <div style="display:flex; gap:26px; align-items:baseline;">
+    <a href="Cadencia.dc.html" class="mono" style="font-size:12px; letter-spacing:0.06em; color:#8C97A3;">Buscar</a>
+    <a href="Cadencia.dc.html" class="mono" style="font-size:12px; letter-spacing:0.06em;">Carro · 0</a>
+  </div>
+</header>
+
+<!-- ============================ MIGA ============================ -->
+<div style="padding:24px 108px 0;">
+  <p class="mono" style="font-size:11px; letter-spacing:0.1em; color:#8C97A3;"><a href="Cadencia.dc.html" style="color:#8C97A3;">CADENCIA</a> · <span style="color:#E9EEF2;">Sesiones</span></p>
+</div>
+
+<!-- ============================ TITULAR ============================
+     Objetivo equipo-por-uso: la categoria organiza por lo que se va a hacer, no por tipo de
+     prenda. Sin fotografia — una foto no dice la duracion ni el rango de temperatura; la tabla
+     con barras si, que es el mismo argumento que ya sostiene la portada. ================== -->
+<section style="padding:64px 108px 0;">
+  <p class="mono" style="font-size:11px; letter-spacing:0.22em; text-transform:uppercase; color:#8C97A3;">Catálogo completo · nueve sesiones</p>
+  <h1 style="font-size:58px; font-weight:600; line-height:1.05; letter-spacing:-0.028em; margin-top:22px; max-width:820px;">Cada fila es una sesión, no una prenda.</h1>
+  <p style="font-size:16px; line-height:1.74; color:#8C97A3; margin-top:24px; max-width:640px;">Duración, rango de temperatura e intensidad deciden antes que el corte o el color. Agrupadas por lo que vas a salir a hacer: fondo en carretera, sala, remo o alta montaña. Si tu sesión no está aquí, escríbenos y la montamos.</p>
+</section>
+
+<!-- ============================ EL LISTADO ============================ -->
+<section id="listado" style="padding:96px 108px 0;">
+
+  <div style="display:flex; align-items:baseline; justify-content:space-between; padding-bottom:14px; border-bottom:1px solid rgba(233,238,242,0.42);">
+    <span class="mono" style="width:436px; font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:#8C97A3;">Sesión</span>
+    <span class="mono" style="width:150px; font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:#8C97A3;">Duración</span>
+    <span class="mono" style="width:160px; font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:#8C97A3;">Temperatura</span>
+    <span class="mono" style="width:250px; font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:#8C97A3;">Intensidad</span>
+    <span class="mono" style="width:228px; font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:#8C97A3; text-align:right;">Precio</span>
+  </div>
+
+  <!-- ── Grupo: fondo y series ── -->
+  <div style="display:flex; align-items:baseline; justify-content:space-between; padding-bottom:14px; margin-top:48px; border-bottom:1px solid rgba(233,238,242,0.30);">
+    <h2 class="mono" style="font-size:13px; font-weight:500; letter-spacing:0.16em; text-transform:uppercase; color:#E9EEF2;">Fondo y series, en carretera</h2>
+    <span class="mono" style="font-size:11px; letter-spacing:0.08em; color:#8C97A3;">3 sesiones</span>
+  </div>
+
+  <a href="CadenciaPieza.dc.html" style="display:flex; align-items:flex-start; padding:34px 0; border-bottom:1px solid rgba(233,238,242,0.14);">
+    <div style="width:436px;">
+      <h3 style="font-size:24px; font-weight:600; letter-spacing:-0.012em;">Fondo largo en frío</h3>
+      <p style="font-size:14px; line-height:1.7; color:#8C97A3; margin-top:10px; max-width:392px;">Camiseta térmica Cercedilla, cortavientos Navacerrada y malla larga Fuenfría.</p>
+    </div>
+    <div class="mono" style="width:150px; font-size:13px; letter-spacing:0.04em; color:#8C97A3; padding-top:6px;">90 min</div>
+    <div class="mono" style="width:160px; font-size:13px; letter-spacing:0.04em; color:#8C97A3; padding-top:6px;">−4 a 6 °C</div>
+    <div style="width:250px; padding-top:4px;">
+      <div style="display:flex; gap:3px;">
+        <span class="barra on"></span><span class="barra on"></span><span class="barra on"></span><span class="barra on"></span><span class="barra on"></span><span class="barra on"></span><span class="barra on"></span><span class="barra on"></span><span class="barra"></span><span class="barra"></span>
+      </div>
+      <p class="mono" style="font-size:11px; letter-spacing:0.1em; color:#8C97A3; margin-top:9px;">INTENSIDAD 8/10</p>
+    </div>
+    <div style="width:228px; text-align:right;">
+      <p class="mono" style="font-size:18px; letter-spacing:0.01em;">214,00&nbsp;€</p>
+      <span class="mono" style="display:inline-block; margin-top:12px; padding-bottom:4px; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; border-bottom:1px solid #D9542B;">Ver equipo</span>
+    </div>
+  </a>
+
+  <a href="CadenciaPieza.dc.html" style="display:flex; align-items:flex-start; padding:34px 0; border-bottom:1px solid rgba(233,238,242,0.14);">
+    <div style="width:436px;">
+      <h3 style="font-size:24px; font-weight:600; letter-spacing:-0.012em;">Series en pista, frío seco</h3>
+      <p style="font-size:14px; line-height:1.7; color:#8C97A3; margin-top:10px; max-width:392px;">Camiseta técnica Peñalara y malla corta Cotos.</p>
+    </div>
+    <div class="mono" style="width:150px; font-size:13px; letter-spacing:0.04em; color:#8C97A3; padding-top:6px;">45 min</div>
+    <div class="mono" style="width:160px; font-size:13px; letter-spacing:0.04em; color:#8C97A3; padding-top:6px;">−2 a 4 °C</div>
+    <div style="width:250px; padding-top:4px;">
+      <div style="display:flex; gap:3px;">
+        <span class="barra on"></span><span class="barra on"></span><span class="barra on"></span><span class="barra on"></span><span class="barra on"></span><span class="barra on"></span><span class="barra on"></span><span class="barra on"></span><span class="barra on"></span><span class="barra"></span>
+      </div>
+      <p class="mono" style="font-size:11px; letter-spacing:0.1em; color:#8C97A3; margin-top:9px;">INTENSIDAD 9/10</p>
+    </div>
+    <div style="width:228px; text-align:right;">
+      <p class="mono" style="font-size:18px; letter-spacing:0.01em;">118,00&nbsp;€</p>
+      <span class="mono" style="display:inline-block; margin-top:12px; padding-bottom:4px; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; border-bottom:1px solid #D9542B;">Ver equipo</span>
+    </div>
+  </a>
+
+  <a href="CadenciaPieza.dc.html" style="display:flex; align-items:flex-start; padding:34px 0; border-bottom:1px solid rgba(233,238,242,0.14);">
+    <div style="width:436px;">
+      <h3 style="font-size:24px; font-weight:600; letter-spacing:-0.012em;">Rodaje de recuperación</h3>
+      <p style="font-size:14px; line-height:1.7; color:#8C97A3; margin-top:10px; max-width:392px;">Camiseta técnica Peñalara, sola.</p>
+    </div>
+    <div class="mono" style="width:150px; font-size:13px; letter-spacing:0.04em; color:#8C97A3; padding-top:6px;">50 min</div>
+    <div class="mono" style="width:160px; font-size:13px; letter-spacing:0.04em; color:#8C97A3; padding-top:6px;">4 a 10 °C</div>
+    <div style="width:250px; padding-top:4px;">
+      <div style="display:flex; gap:3px;">
+        <span class="barra on"></span><span class="barra on"></span><span class="barra on"></span><span class="barra"></span><span class="barra"></span><span class="barra"></span><span class="barra"></span><span class="barra"></span><span class="barra"></span><span class="barra"></span>
+      </div>
+      <p class="mono" style="font-size:11px; letter-spacing:0.1em; color:#8C97A3; margin-top:9px;">INTENSIDAD 3/10</p>
+    </div>
+    <div style="width:228px; text-align:right;">
+      <p class="mono" style="font-size:18px; letter-spacing:0.01em;">48,00&nbsp;€</p>
+      <span class="mono" style="display:inline-block; margin-top:12px; padding-bottom:4px; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; border-bottom:1px solid #D9542B;">Ver equipo</span>
+    </div>
+  </a>
+
+  <!-- ── Grupo: sala ── -->
+  <div style="display:flex; align-items:baseline; justify-content:space-between; padding-bottom:14px; margin-top:64px; border-bottom:1px solid rgba(233,238,242,0.30);">
+    <h2 class="mono" style="font-size:13px; font-weight:500; letter-spacing:0.16em; text-transform:uppercase; color:#E9EEF2;">Sala</h2>
+    <span class="mono" style="font-size:11px; letter-spacing:0.08em; color:#8C97A3;">2 sesiones</span>
+  </div>
+
+  <a href="CadenciaPieza.dc.html" style="display:flex; align-items:flex-start; padding:34px 0; border-bottom:1px solid rgba(233,238,242,0.14);">
+    <div style="width:436px;">
+      <h3 style="font-size:24px; font-weight:600; letter-spacing:-0.012em;">Fuerza en sala</h3>
+      <p style="font-size:14px; line-height:1.7; color:#8C97A3; margin-top:10px; max-width:392px;">Camiseta técnica Peñalara y pantalón corto Cotos.</p>
+    </div>
+    <div class="mono" style="width:150px; font-size:13px; letter-spacing:0.04em; color:#8C97A3; padding-top:6px;">60 min</div>
+    <div class="mono" style="width:160px; font-size:13px; letter-spacing:0.04em; color:#8C97A3; padding-top:6px;">14 a 18 °C</div>
+    <div style="width:250px; padding-top:4px;">
+      <div style="display:flex; gap:3px;">
+        <span class="barra on"></span><span class="barra on"></span><span class="barra on"></span><span class="barra on"></span><span class="barra on"></span><span class="barra on"></span><span class="barra"></span><span class="barra"></span><span class="barra"></span><span class="barra"></span>
+      </div>
+      <p class="mono" style="font-size:11px; letter-spacing:0.1em; color:#8C97A3; margin-top:9px;">INTENSIDAD 6/10</p>
+    </div>
+    <div style="width:228px; text-align:right;">
+      <p class="mono" style="font-size:18px; letter-spacing:0.01em;">96,00&nbsp;€</p>
+      <span class="mono" style="display:inline-block; margin-top:12px; padding-bottom:4px; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; border-bottom:1px solid #D9542B;">Ver equipo</span>
+    </div>
+  </a>
+
+  <a href="CadenciaPieza.dc.html" style="display:flex; align-items:flex-start; padding:34px 0; border-bottom:1px solid rgba(233,238,242,0.14);">
+    <div style="width:436px;">
+      <h3 style="font-size:24px; font-weight:600; letter-spacing:-0.012em;">Movilidad y core</h3>
+      <p style="font-size:14px; line-height:1.7; color:#8C97A3; margin-top:10px; max-width:392px;">Camiseta técnica Peñalara, sola.</p>
+    </div>
+    <div class="mono" style="width:150px; font-size:13px; letter-spacing:0.04em; color:#8C97A3; padding-top:6px;">30 min</div>
+    <div class="mono" style="width:160px; font-size:13px; letter-spacing:0.04em; color:#8C97A3; padding-top:6px;">18 a 22 °C</div>
+    <div style="width:250px; padding-top:4px;">
+      <div style="display:flex; gap:3px;">
+        <span class="barra on"></span><span class="barra on"></span><span class="barra on"></span><span class="barra"></span><span class="barra"></span><span class="barra"></span><span class="barra"></span><span class="barra"></span><span class="barra"></span><span class="barra"></span>
+      </div>
+      <p class="mono" style="font-size:11px; letter-spacing:0.1em; color:#8C97A3; margin-top:9px;">INTENSIDAD 3/10</p>
+    </div>
+    <div style="width:228px; text-align:right;">
+      <p class="mono" style="font-size:18px; letter-spacing:0.01em;">48,00&nbsp;€</p>
+      <span class="mono" style="display:inline-block; margin-top:12px; padding-bottom:4px; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; border-bottom:1px solid #D9542B;">Ver equipo</span>
+    </div>
+  </a>
+
+  <!-- ── Grupo: remo ── -->
+  <div style="display:flex; align-items:baseline; justify-content:space-between; padding-bottom:14px; margin-top:64px; border-bottom:1px solid rgba(233,238,242,0.30);">
+    <h2 class="mono" style="font-size:13px; font-weight:500; letter-spacing:0.16em; text-transform:uppercase; color:#E9EEF2;">Remo</h2>
+    <span class="mono" style="font-size:11px; letter-spacing:0.08em; color:#8C97A3;">2 sesiones</span>
+  </div>
+
+  <a href="CadenciaPieza.dc.html" style="display:flex; align-items:flex-start; padding:34px 0; border-bottom:1px solid rgba(233,238,242,0.14);">
+    <div style="width:436px;">
+      <h3 style="font-size:24px; font-weight:600; letter-spacing:-0.012em;">Remo, cuarenta minutos</h3>
+      <p style="font-size:14px; line-height:1.7; color:#8C97A3; margin-top:10px; max-width:392px;">Camiseta sin mangas Valsaín y malla corta Cotos.</p>
+    </div>
+    <div class="mono" style="width:150px; font-size:13px; letter-spacing:0.04em; color:#8C97A3; padding-top:6px;">40 min</div>
+    <div class="mono" style="width:160px; font-size:13px; letter-spacing:0.04em; color:#8C97A3; padding-top:6px;">16 a 20 °C</div>
+    <div style="width:250px; padding-top:4px;">
+      <div style="display:flex; gap:3px;">
+        <span class="barra on"></span><span class="barra on"></span><span class="barra on"></span><span class="barra on"></span><span class="barra on"></span><span class="barra on"></span><span class="barra on"></span><span class="barra"></span><span class="barra"></span><span class="barra"></span>
+      </div>
+      <p class="mono" style="font-size:11px; letter-spacing:0.1em; color:#8C97A3; margin-top:9px;">INTENSIDAD 7/10</p>
+    </div>
+    <div style="width:228px; text-align:right;">
+      <p class="mono" style="font-size:18px; letter-spacing:0.01em;">88,00&nbsp;€</p>
+      <span class="mono" style="display:inline-block; margin-top:12px; padding-bottom:4px; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; border-bottom:1px solid #D9542B;">Ver equipo</span>
+    </div>
+  </a>
+
+  <a href="CadenciaPieza.dc.html" style="display:flex; align-items:flex-start; padding:34px 0; border-bottom:1px solid rgba(233,238,242,0.14);">
+    <div style="width:436px;">
+      <h3 style="font-size:24px; font-weight:600; letter-spacing:-0.012em;">Remo largo</h3>
+      <p style="font-size:14px; line-height:1.7; color:#8C97A3; margin-top:10px; max-width:392px;">Camiseta sin mangas Valsaín, malla corta Cotos y manguitos térmicos.</p>
+    </div>
+    <div class="mono" style="width:150px; font-size:13px; letter-spacing:0.04em; color:#8C97A3; padding-top:6px;">70 min</div>
+    <div class="mono" style="width:160px; font-size:13px; letter-spacing:0.04em; color:#8C97A3; padding-top:6px;">15 a 19 °C</div>
+    <div style="width:250px; padding-top:4px;">
+      <div style="display:flex; gap:3px;">
+        <span class="barra on"></span><span class="barra on"></span><span class="barra on"></span><span class="barra on"></span><span class="barra on"></span><span class="barra on"></span><span class="barra on"></span><span class="barra on"></span><span class="barra"></span><span class="barra"></span>
+      </div>
+      <p class="mono" style="font-size:11px; letter-spacing:0.1em; color:#8C97A3; margin-top:9px;">INTENSIDAD 8/10</p>
+    </div>
+    <div style="width:228px; text-align:right;">
+      <p class="mono" style="font-size:18px; letter-spacing:0.01em;">132,00&nbsp;€</p>
+      <span class="mono" style="display:inline-block; margin-top:12px; padding-bottom:4px; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; border-bottom:1px solid #D9542B;">Ver equipo</span>
+    </div>
+  </a>
+
+  <!-- ── Grupo: alta montaña ── -->
+  <div style="display:flex; align-items:baseline; justify-content:space-between; padding-bottom:14px; margin-top:64px; border-bottom:1px solid rgba(233,238,242,0.30);">
+    <h2 class="mono" style="font-size:13px; font-weight:500; letter-spacing:0.16em; text-transform:uppercase; color:#E9EEF2;">Alta montaña</h2>
+    <span class="mono" style="font-size:11px; letter-spacing:0.08em; color:#8C97A3;">2 sesiones</span>
+  </div>
+
+  <a href="CadenciaPieza.dc.html" style="display:flex; align-items:flex-start; padding:34px 0; border-bottom:1px solid rgba(233,238,242,0.14);">
+    <div style="width:436px;">
+      <h3 style="font-size:24px; font-weight:600; letter-spacing:-0.012em;">Ascensión a Peñalara con viento</h3>
+      <p style="font-size:14px; line-height:1.7; color:#8C97A3; margin-top:10px; max-width:392px;">Cercedilla, Navacerrada, Fuenfría y guantes técnicos.</p>
+      <p class="mono" style="font-size:10.5px; letter-spacing:0.14em; text-transform:uppercase; color:#8C97A3; padding-top:9px;">Sale mañana · lote corto</p>
+    </div>
+    <div class="mono" style="width:150px; font-size:13px; letter-spacing:0.04em; color:#8C97A3; padding-top:6px;">150 min</div>
+    <div class="mono" style="width:160px; font-size:13px; letter-spacing:0.04em; color:#8C97A3; padding-top:6px;">−8 a 0 °C</div>
+    <div style="width:250px; padding-top:4px;">
+      <div style="display:flex; gap:3px;">
+        <span class="barra on"></span><span class="barra on"></span><span class="barra on"></span><span class="barra on"></span><span class="barra on"></span><span class="barra on"></span><span class="barra on"></span><span class="barra on"></span><span class="barra on"></span><span class="barra"></span>
+      </div>
+      <p class="mono" style="font-size:11px; letter-spacing:0.1em; color:#8C97A3; margin-top:9px;">INTENSIDAD 9/10</p>
+    </div>
+    <div style="width:228px; text-align:right;">
+      <p class="mono" style="font-size:18px; letter-spacing:0.01em;">268,00&nbsp;€</p>
+      <span class="mono" style="display:inline-block; margin-top:12px; padding-bottom:4px; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; border-bottom:1px solid #D9542B;">Ver equipo</span>
+    </div>
+  </a>
+
+  <a href="CadenciaPieza.dc.html" style="display:flex; align-items:flex-start; padding:34px 0; border-bottom:1px solid rgba(233,238,242,0.42);">
+    <div style="width:436px;">
+      <h3 style="font-size:24px; font-weight:600; letter-spacing:-0.012em;">Trail nocturno en Siete Picos</h3>
+      <p style="font-size:14px; line-height:1.7; color:#8C97A3; margin-top:10px; max-width:392px;">Camiseta térmica Cercedilla y cortavientos Navacerrada.</p>
+    </div>
+    <div class="mono" style="width:150px; font-size:13px; letter-spacing:0.04em; color:#8C97A3; padding-top:6px;">80 min</div>
+    <div class="mono" style="width:160px; font-size:13px; letter-spacing:0.04em; color:#8C97A3; padding-top:6px;">−3 a 3 °C</div>
+    <div style="width:250px; padding-top:4px;">
+      <div style="display:flex; gap:3px;">
+        <span class="barra on"></span><span class="barra on"></span><span class="barra on"></span><span class="barra on"></span><span class="barra on"></span><span class="barra on"></span><span class="barra on"></span><span class="barra"></span><span class="barra"></span><span class="barra"></span>
+      </div>
+      <p class="mono" style="font-size:11px; letter-spacing:0.1em; color:#8C97A3; margin-top:9px;">INTENSIDAD 7/10</p>
+    </div>
+    <div style="width:228px; text-align:right;">
+      <p class="mono" style="font-size:18px; letter-spacing:0.01em;">188,00&nbsp;€</p>
+      <span class="mono" style="display:inline-block; margin-top:12px; padding-bottom:4px; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; border-bottom:1px solid #D9542B;">Ver equipo</span>
+    </div>
+  </a>
+
+</section>
+
+<!-- ============================ NOTA DE FICHAS ============================ -->
+<section style="padding:80px 108px 0;">
+  <p style="font-size:14px; line-height:1.7; color:#8C97A3; max-width:640px;">Cada equipo lleva su ficha con la prueba de banco y la tabla de tallas. Hoy sólo «Fondo largo en frío» tiene ficha propia: el resto de la temporada se sube sesión a sesión.</p>
+</section>
+
+<!-- ============================ PIE ============================ -->
+<footer style="padding:112px 108px 72px;">
+  <div style="display:flex; gap:80px; padding-top:34px; border-top:1px solid rgba(233,238,242,0.22);">
+    <div style="width:512px;">
+      <p style="font-size:22px; font-weight:700; letter-spacing:0.26em;">CADENCIA</p>
+      <p style="width:404px; font-size:15px; line-height:1.76; color:#8C97A3; margin-top:18px;">Ropa para entrenar en frío, probada en la sierra de Guadarrama. Taller y banco de pruebas en Valsaín, Segovia.</p>
+    </div>
+    <div style="display:flex; gap:80px;">
+      <ul>
+        <li class="mono" style="font-size:11px; letter-spacing:0.22em; text-transform:uppercase; color:#8C97A3; margin-bottom:20px;">Tienda</li>
+        <li style="margin-bottom:12px;"><a href="Categoria.dc.html" style="font-size:15px;">Sesiones</a></li>
+        <li style="margin-bottom:12px;"><a href="Cadencia.dc.html" style="font-size:15px;">Prendas</a></li>
+        <li style="margin-bottom:12px;"><a href="Cadencia.dc.html" style="font-size:15px;">Tallas y medidas</a></li>
+        <li><a href="Cadencia.dc.html" style="font-size:15px;">Tarjeta regalo</a></li>
+      </ul>
+      <ul>
+        <li class="mono" style="font-size:11px; letter-spacing:0.22em; text-transform:uppercase; color:#8C97A3; margin-bottom:20px;">La casa</li>
+        <li style="margin-bottom:12px;"><a href="LaMarca.dc.html" style="font-size:15px;">El banco de pruebas</a></li>
+        <li style="margin-bottom:12px;"><a href="Cadencia.dc.html" style="font-size:15px;">El diario</a></li>
+        <li style="margin-bottom:12px;"><a href="Cadencia.dc.html" style="font-size:15px;">Reparaciones</a></li>
+        <li><a href="Contacto.dc.html" style="font-size:15px;">Contacto</a></li>
+      </ul>
+      <ul>
+        <li class="mono" style="font-size:11px; letter-spacing:0.22em; text-transform:uppercase; color:#8C97A3; margin-bottom:20px;">Condiciones</li>
+        <li style="margin-bottom:12px;"><a href="Cadencia.dc.html" style="font-size:15px;">Envíos y devoluciones</a></li>
+        <li style="margin-bottom:12px;"><a href="Cadencia.dc.html" style="font-size:15px;">Aviso legal</a></li>
+        <li style="margin-bottom:12px;"><a href="Cadencia.dc.html" style="font-size:15px;">Privacidad</a></li>
+        <li><a href="Cadencia.dc.html" style="font-size:15px;">Cookies</a></li>
+      </ul>
+    </div>
+  </div>
+  <div style="display:flex; justify-content:space-between; margin-top:72px; padding-top:22px; border-top:1px solid rgba(233,238,242,0.14);">
+    <p class="mono" style="font-size:13px; letter-spacing:0.03em; color:#8C97A3;">CADENCIA S. L. — Valsaín, Segovia · hola@cadencia.es · 921 47 30 16</p>
+    <p class="mono" style="font-size:13px; letter-spacing:0.03em; color:#8C97A3;">© 2026</p>
+  </div>
+</footer>
+
+</div>
+</x-dc>
+</body>
+</html>

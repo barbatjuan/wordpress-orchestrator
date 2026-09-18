@@ -1,0 +1,47 @@
+{
+  "artboards": [
+    {
+      "file": "Cadencia.dc.html",
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 4920,
+      "title": "CADENCIA · portada"
+    },
+    {
+      "file": "CadenciaPieza.dc.html",
+      "x": 1600,
+      "y": 0,
+      "w": 1440,
+      "h": 2735,
+      "title": "CADENCIA · ficha"
+    },
+    {
+      "file": "Categoria.dc.html",
+      "x": 0,
+      "y": 5080,
+      "w": 1440,
+      "h": 2760,
+      "title": "CADENCIA · categoría"
+    },
+    {
+      "file": "LaMarca.dc.html",
+      "x": 1600,
+      "y": 5080,
+      "w": 1440,
+      "h": 1947,
+      "title": "CADENCIA · la marca"
+    },
+    {
+      "file": "Contacto.dc.html",
+      "x": 3200,
+      "y": 5080,
+      "w": 1440,
+      "h": 1780,
+      "title": "CADENCIA · contacto"
+    }
+  ],
+  "launch": {
+    "view": "canvas"
+  }
+}

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;0,6..96,600;1,6..96,500&family=Jost:wght@300;400;500&family=Prata&family=Marcellus&family=Libre+Caslon+Display&family=Inter+Tight:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  html, body { margin: 0; padding: 0; background: #faf6f0; }
+  * { box-sizing: border-box; }
+  a { color: #6f5326; text-decoration: none; }
+  a:hover { color: #4f3a1a; }
+</style>
+</helmet>
+
+<div style="background:#faf6f0;color:#16120f;font-family:Jost,Helvetica,sans-serif;padding:48px max(22px,min(8vw,90px))">
+
+  <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:44px;max-width:60ch">
+    <span style="font-size:11px;letter-spacing:0.3em;text-transform:uppercase;color:#6f5326;font-weight:500">Test tipográfico · fondo claro</span>
+    <h1 style="margin:0;font-family:'Bodoni Moda',Georgia,serif;font-weight:500;font-size:34px;line-height:1.1">Tres arreglos con el mismo contenido</h1>
+    <p style="margin:0;font-size:14px;line-height:1.8;color:rgba(28,22,18,0.78)">Cada bloque repite los mismos tamaños reales de la plantilla: titular grande, nombre de producto, cita de reseña, meta en versalitas y precio. Compara los trazos finos en pantalla.</p>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(max(30%,min(100%,260px)),1fr));gap:28px">
+
+    <section style="display:flex;flex-direction:column;gap:24px;padding:30px;border:1px solid rgba(111,83,38,0.3);background:#f1eae0">
+      <div style="display:flex;flex-direction:column;gap:4px">
+        <span style="font-size:11px;letter-spacing:0.24em;text-transform:uppercase;color:#6f5326;font-weight:500">Opción A</span>
+        <span style="font-family:'Bodoni Moda',Georgia,serif;font-size:15px;color:rgba(28,22,18,0.8)">Bodoni Moda 500 + Jost 400</span>
+      </div>
+      <h2 style="margin:0;font-family:'Bodoni Moda',Georgia,serif;font-weight:500;font-size:52px;line-height:0.96;letter-spacing:-0.01em">Nuit<br><em style="font-style:italic;color:#6f5326">Absolue</em></h2>
+      <h3 style="margin:0;font-family:'Bodoni Moda',Georgia,serif;font-weight:500;font-size:23px">Chypre Royale</h3>
+      <p style="margin:0;font-family:'Bodoni Moda',Georgia,serif;font-weight:500;font-size:19px;line-height:1.55">La estela de Nuit Absolue dura toda la noche y nadie sabe identificarla.</p>
+      <p style="margin:0;font-family:Jost,sans-serif;font-weight:400;font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(28,22,18,0.75)">Iris negro · Incienso · Cuero</p>
+      <p style="margin:0;font-family:Jost,sans-serif;font-weight:400;font-size:14px;line-height:1.85;color:rgba(28,22,18,0.78)">Extracto compuesto en Grasse. Tirada de 300 frascos numerados a mano, con maceración de seis semanas.</p>
+      <span style="font-family:'Bodoni Moda',Georgia,serif;font-weight:500;font-size:19px;color:#6f5326">285 €</span>
+    </section>
+
+    <section style="display:flex;flex-direction:column;gap:24px;padding:30px;border:1px solid rgba(111,83,38,0.3);background:#f1eae0">
+      <div style="display:flex;flex-direction:column;gap:4px">
+        <span style="font-size:11px;letter-spacing:0.24em;text-transform:uppercase;color:#6f5326;font-weight:500">Opción B</span>
+        <span style="font-family:Prata,Georgia,serif;font-size:15px;color:rgba(28,22,18,0.8)">Prata + Jost 400</span>
+      </div>
+      <h2 style="margin:0;font-family:Prata,Georgia,serif;font-weight:400;font-size:52px;line-height:0.98;letter-spacing:-0.015em">Nuit<br><span style="color:#6f5326">Absolue</span></h2>
+      <h3 style="margin:0;font-family:Prata,Georgia,serif;font-weight:400;font-size:23px">Chypre Royale</h3>
+      <p style="margin:0;font-family:Prata,Georgia,serif;font-weight:400;font-size:18px;line-height:1.6">La estela de Nuit Absolue dura toda la noche y nadie sabe identificarla.</p>
+      <p style="margin:0;font-family:Jost,sans-serif;font-weight:400;font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(28,22,18,0.75)">Iris negro · Incienso · Cuero</p>
+      <p style="margin:0;font-family:Jost,sans-serif;font-weight:400;font-size:14px;line-height:1.85;color:rgba(28,22,18,0.78)">Extracto compuesto en Grasse. Tirada de 300 frascos numerados a mano, con maceración de seis semanas.</p>
+      <span style="font-family:Prata,Georgia,serif;font-size:19px;color:#6f5326">285 €</span>
+    </section>
+
+    <section style="display:flex;flex-direction:column;gap:24px;padding:30px;border:1px solid rgba(111,83,38,0.3);background:#f1eae0">
+      <div style="display:flex;flex-direction:column;gap:4px">
+        <span style="font-size:11px;letter-spacing:0.24em;text-transform:uppercase;color:#6f5326;font-weight:500">Opción C</span>
+        <span style="font-family:Marcellus,Georgia,serif;font-size:15px;color:rgba(28,22,18,0.8)">Marcellus + Inter Tight</span>
+      </div>
+      <h2 style="margin:0;font-family:Marcellus,Georgia,serif;font-weight:400;font-size:52px;line-height:1;letter-spacing:0.005em">Nuit<br><span style="color:#6f5326">Absolue</span></h2>
+      <h3 style="margin:0;font-family:Marcellus,Georgia,serif;font-weight:400;font-size:23px">Chypre Royale</h3>
+      <p style="margin:0;font-family:Marcellus,Georgia,serif;font-weight:400;font-size:18px;line-height:1.62">La estela de Nuit Absolue dura toda la noche y nadie sabe identificarla.</p>
+      <p style="margin:0;font-family:'Inter Tight',sans-serif;font-weight:500;font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(28,22,18,0.75)">Iris negro · Incienso · Cuero</p>
+      <p style="margin:0;font-family:'Inter Tight',sans-serif;font-weight:400;font-size:14px;line-height:1.8;color:rgba(28,22,18,0.78)">Extracto compuesto en Grasse. Tirada de 300 frascos numerados a mano, con maceración de seis semanas.</p>
+      <span style="font-family:Marcellus,Georgia,serif;font-size:19px;color:#6f5326">285 €</span>
+    </section>
+
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(max(30%,min(100%,260px)),1fr));gap:28px;margin-top:28px">
+    <div style="display:flex;flex-direction:column;gap:10px;padding:24px 30px;border-top:1px solid rgba(111,83,38,0.3)">
+      <span style="font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:#6f5326;font-weight:500">A · lo que cambia</span>
+      <span style="font-size:13px;line-height:1.75;color:rgba(28,22,18,0.78)">Misma didone de siempre, pero en peso 500: los trazos finos engordan sin perder el aire de perfumería clásica.</span>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;padding:24px 30px;border-top:1px solid rgba(111,83,38,0.3)">
+      <span style="font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:#6f5326;font-weight:500">B · lo que cambia</span>
+      <span style="font-size:13px;line-height:1.75;color:rgba(28,22,18,0.78)">Prata mantiene el contraste didone con astas más gruesas: aguanta mejor en 18-20 px sobre fondo claro.</span>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;padding:24px 30px;border-top:1px solid rgba(111,83,38,0.3)">
+      <span style="font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:#6f5326;font-weight:500">C · lo que cambia</span>
+      <span style="font-size:13px;line-height:1.75;color:rgba(28,22,18,0.78)">Marcellus es romana de inscripción, sin hairlines: el registro es más lapidario y menos couture.</span>
+    </div>
+  </div>
+
+</div>
+
+</x-dc>
+</body>
+</html>

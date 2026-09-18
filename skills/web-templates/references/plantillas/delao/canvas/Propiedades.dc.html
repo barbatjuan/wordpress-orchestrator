@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=Libre+Caslon+Display&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#F6F4F0;color:#17181A;-webkit-font-smoothing:antialiased}
+a{color:#17181A;text-decoration:none}
+a:hover{color:#8A7B5C}
+input,select,button{font-family:'Archivo',sans-serif}
+</style>
+</helmet>
+<dc-import name="Nav" hint-size="100%,78px"></dc-import>
+
+<section style="max-width:1440px;margin:0 auto;padding:72px 40px 0">
+  <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:64px;align-items:end;padding-bottom:36px">
+    <div style="display:flex;flex-direction:column;gap:20px">
+      <span style="font:500 9.5px/1 'Archivo',sans-serif;letter-spacing:.28em;text-transform:uppercase;color:#8A7B5C">Cartera · Agosto 2026</span>
+      <h1 style="margin:0;font:400 clamp(38px,4.6vw,66px)/1.03 'Libre Caslon Display',Georgia,serif;letter-spacing:-.015em">Propiedades</h1>
+    </div>
+    <p style="margin:0;font:400 15px/1.8 'Archivo',sans-serif;color:rgba(23,24,26,.62);text-wrap:pretty">Diecisiete propiedades bajo mandato. Las operaciones off market se comparten solo tras una primera conversación.</p>
+  </div>
+</section>
+
+<section style="background:#17181A;position:sticky;top:78px;z-index:40">
+  <div style="max-width:1440px;margin:0 auto;padding:0 40px">
+    <form style="display:grid;grid-template-columns:1fr 1.2fr 1fr 1.1fr auto;align-items:stretch">
+      <label style="display:flex;flex-direction:column;gap:9px;padding:22px 24px;border-right:1px solid rgba(246,244,240,.14)">
+        <span style="font:500 8.5px/1 'Archivo',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:rgba(246,244,240,.42)">Operación</span>
+        <select style="appearance:none;background:transparent;border:0;color:#F6F4F0;font:400 14px/1 'Archivo',sans-serif;outline:none;cursor:pointer">
+          <option>Venta</option><option>Alquiler</option><option>Alquiler de temporada</option>
+        </select>
+      </label>
+      <label style="display:flex;flex-direction:column;gap:9px;padding:22px 24px;border-right:1px solid rgba(246,244,240,.14)">
+        <span style="font:500 8.5px/1 'Archivo',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:rgba(246,244,240,.42)">Zona o municipio</span>
+        <input placeholder="Todas las zonas" style="background:transparent;border:0;color:#F6F4F0;font:400 14px/1 'Archivo',sans-serif;outline:none">
+      </label>
+      <label style="display:flex;flex-direction:column;gap:9px;padding:22px 24px;border-right:1px solid rgba(246,244,240,.14)">
+        <span style="font:500 8.5px/1 'Archivo',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:rgba(246,244,240,.42)">Tipo</span>
+        <select style="appearance:none;background:transparent;border:0;color:#F6F4F0;font:400 14px/1 'Archivo',sans-serif;outline:none;cursor:pointer">
+          <option>Todos</option><option>Villa</option><option>Ático</option><option>Apartamento</option><option>Finca</option>
+        </select>
+      </label>
+      <label style="display:flex;flex-direction:column;gap:9px;padding:22px 24px;border-right:1px solid rgba(246,244,240,.14)">
+        <span style="font:500 8.5px/1 'Archivo',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:rgba(246,244,240,.42)">Precio</span>
+        <select style="appearance:none;background:transparent;border:0;color:#F6F4F0;font:400 14px/1 'Archivo',sans-serif;outline:none;cursor:pointer">
+          <option>Sin límite</option><option>Hasta 1,5 M€</option><option>1,5 – 3 M€</option><option>3 – 6 M€</option><option>Más de 6 M€</option>
+        </select>
+      </label>
+      <button type="button" style="border:0;padding:0 40px;background:#8A7B5C;color:#fff;font:500 10.5px/1 'Archivo',sans-serif;letter-spacing:.22em;text-transform:uppercase;cursor:pointer" style-hover="background:#F6F4F0;color:#17181A">Filtrar</button>
+    </form>
+  </div>
+</section>
+
+<section style="max-width:1440px;margin:0 auto;padding:36px 40px 0">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:24px;padding-bottom:20px;border-bottom:1px solid rgba(23,24,26,.16)">
+    <span style="font:400 12.5px/1 'Archivo',sans-serif;color:rgba(23,24,26,.55)">17 propiedades</span>
+    <div style="display:flex;gap:22px;align-items:center">
+      <span style="font:500 9.5px/1 'Archivo',sans-serif;letter-spacing:.2em;text-transform:uppercase;color:rgba(23,24,26,.4)">Ordenar</span>
+      <a href="#" style="font:500 10px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;padding-bottom:4px;border-bottom:1px solid #8A7B5C">Recientes</a>
+      <a href="#" style="font:500 10px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:rgba(23,24,26,.5)">Precio ↑</a>
+      <a href="#" style="font:500 10px/1 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:rgba(23,24,26,.5)">Precio ↓</a>
+    </div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(23,24,26,.16)">
+    <sc-for list="{{ propiedades }}" as="p">
+      <a href="#ficha" style="display:flex;flex-direction:column;background:#F6F4F0;padding-bottom:30px" style-hover="background:#EFEBE4">
+        <div style="position:relative;aspect-ratio:4/3.1;background:#E4E0D7;background-image:repeating-linear-gradient(135deg,rgba(23,24,26,.055) 0 1px,transparent 1px 9px);overflow:hidden">
+          <span style="position:absolute;left:0;top:20px;background:#17181A;color:#F6F4F0;font:500 8.5px/1 'Archivo',sans-serif;letter-spacing:.22em;text-transform:uppercase;padding:8px 14px">{{ p.etiqueta }}</span>
+          <sc-if value="{{ p.foto }}">
+            <img src="{{ p.foto }}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
+          </sc-if>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:13px;padding:24px 24px 0">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px">
+            <span style="font:500 9.5px/1 'Archivo',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#8A7B5C">{{ p.zona }}</span>
+            <span style="font:400 9.5px/1 ui-monospace,Menlo,monospace;color:rgba(23,24,26,.4)">{{ p.ref }}</span>
+          </div>
+          <h3 style="margin:0;font:400 24px/1.15 'Libre Caslon Display',Georgia,serif">{{ p.titulo }}</h3>
+          <div style="display:flex;gap:16px;font:400 12.5px/1 'Archivo',sans-serif;color:rgba(23,24,26,.55)">
+            <span>{{ p.m2 }}</span><span>{{ p.hab }}</span><span>{{ p.banos }}</span>
+          </div>
+          <span style="margin-top:6px;font:400 19px/1 'Libre Caslon Display',Georgia,serif">{{ p.precio }}</span>
+        </div>
+      </a>
+    </sc-for>
+  </div>
+  <div style="display:flex;justify-content:center;padding:64px 0 104px">
+    <a href="#" style="font:500 10.5px/1 'Archivo',sans-serif;letter-spacing:.22em;text-transform:uppercase;border:1px solid rgba(23,24,26,.28);padding:19px 40px" style-hover="background:#17181A;color:#F6F4F0">Cargar más propiedades</a>
+  </div>
+</section>
+
+<dc-import name="Pie" hint-size="100%,420px"></dc-import>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    const p = [
+      ["En exclusiva","Sierra Blanca","Villa Alameda","642 m²","5 hab.","6 baños","4.950.000&nbsp;€","MB-1042","https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1600&q=70"],
+      ["Nueva","Milla de Oro","Ático Mar de Plata","318 m²","3 hab.","3 baños","3.200.000&nbsp;€","MB-1039","https://images.unsplash.com/photo-1600573472550-8090b5e0745e?auto=format&fit=crop&w=1600&q=70"],
+      ["Off market","La Zagaleta","Casa Los Cipreses","1.140 m²","7 hab.","8 baños","Precio a consultar","MB-1031","https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=70"],
+      ["En exclusiva","Sotogrande","Villa Bruma","505 m²","4 hab.","5 baños","2.750.000&nbsp;€","SG-0918","https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=1600&q=70"],
+      ["Nueva","Nueva Andalucía","Casa Vela","388 m²","4 hab.","4 baños","1.980.000&nbsp;€","NA-0877","https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1600&q=70"],
+      ["Reservada","Marbella Club","Ático Los Arcos","264 m²","3 hab.","3 baños","2.400.000&nbsp;€","MB-1027","https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1600&q=70"],
+      ["En exclusiva","Benahavís","Finca El Almendral","2.100 m²","6 hab.","6 baños","5.600.000&nbsp;€","BH-0803","https://images.unsplash.com/photo-1568605114967-8130f3a36994?auto=format&fit=crop&w=1600&q=70"],
+      ["Nueva","Estepona","Villa Serena","412 m²","4 hab.","4 baños","1.650.000&nbsp;€","EP-0791","https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?auto=format&fit=crop&w=1600&q=70"],
+      ["Off market","Guadalmina","Casa Duna","576 m²","5 hab.","5 baños","Precio a consultar","GM-0754","https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=1600&q=70"]
+    ];
+    return {
+      propiedades: p.map(([etiqueta,zona,titulo,m2,hab,banos,precio,ref,foto]) =>
+        ({etiqueta,zona,titulo,m2,hab,banos,precio,ref,foto}))
+    };
+  }
+}
+</script>
+</body>
+</html>

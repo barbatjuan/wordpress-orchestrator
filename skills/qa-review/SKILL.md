@@ -31,22 +31,20 @@ work?" / "verify".
      + front HTML. Divi's compiled-CSS artifact name is unconfirmed here (`divi-core` is a
      scaffold) → report UNVERIFIED, never PASS or FAIL; record the real name in
      `divi-core/references/gotchas.md`.
-2. **House rules**: run `references/house-rules.md` end to end (currency, cart icon + badge, theme,
-   logo → home, ONE menu, no dead links, header everywhere, sticky, header/footer verbatim, mobile
-   3-zone, the approved mockup's axis positions). One verdict per row, skip none silently.
-   The approved `html-mockup` output is the visual contract: row 31 compares its `:root` axis
-   positions against what the build resolved, and states plainly which axes it proved — scale and
-   elevation twice, ground and density once, composition never, that one being the user's eyes.
-3. **Responsive**: the per-device rules exist (mobile centering, 2-col grids, header one row on
-   desktop, full-width mobile CTA). Ask the user to eyeball ~430 / 768 / 1280 — you can't see it.
+2. **House rules**: run `references/house-rules.md` end to end — one verdict per row, skip none
+   silently. The approved maqueta is the visual contract: row 31 compares its `:root` axis positions
+   with what the build resolved and says which axes it proved (composition never — the user's eyes).
+   Row 37 counts HTML widgets and custom CSS rules against the Plantilla ficha's
+   `html_widgets_max` / `css_custom_max`, default 0: **a build above its ceiling is not done**, and
+   with no Plantilla slug to read the ceiling from, the row is UNVERIFIED.
+3. **Responsive**: the per-device rules exist. Ask the user to eyeball ~430 / 768 / 1280.
 4. **Measure a11y, best practices, SEO and performance** — do not eyeball them:
    `node assets/lighthouse-audit.mjs <url…>` (mobile by default, `--desktop` for a second pass).
    It reports the four category scores plus the failing audits BY NAME, and blocks under 50 on
    a11y / best-practices / SEO. Performance is recorded, never the sole blocker — house-rule
    row 15. Then judge what Lighthouse cannot: is the alt text *meaningful*, is a ghost button
    legible in BOTH states, are tap targets comfortable and not merely ≥ 44px.
-5. **Regression**: nothing adjacent broke (header not wrapping, no leftover template hijack,
-   kit/global CSS intact).
+5. **Regression**: nothing adjacent broke (header wrapping, leftover template hijack, kit CSS).
 6. **Built locally?** Name the world per row; some have no production arm. Run the pass locally
    first and compose both. `references/house-rules.md` → "The three worlds".
 

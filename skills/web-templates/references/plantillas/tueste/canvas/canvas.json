@@ -1,0 +1,47 @@
+{
+  "artboards": [
+    {
+      "file": "Tueste.dc.html",
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 4920,
+      "title": "TUESTE · portada"
+    },
+    {
+      "file": "Categoria.dc.html",
+      "x": 0,
+      "y": 5080,
+      "w": 1440,
+      "h": 1992,
+      "title": "TUESTE · orígenes"
+    },
+    {
+      "file": "Ficha.dc.html",
+      "x": 1600,
+      "y": 5080,
+      "w": 1440,
+      "h": 2200,
+      "title": "TUESTE · ficha (Huila)"
+    },
+    {
+      "file": "LaMarca.dc.html",
+      "x": 3200,
+      "y": 5080,
+      "w": 1440,
+      "h": 2113,
+      "title": "TUESTE · el tostadero"
+    },
+    {
+      "file": "Contacto.dc.html",
+      "x": 4800,
+      "y": 5080,
+      "w": 1440,
+      "h": 1773,
+      "title": "TUESTE · contacto"
+    }
+  ],
+  "launch": {
+    "view": "canvas"
+  }
+}

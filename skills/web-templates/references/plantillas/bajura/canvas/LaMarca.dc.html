@@ -1,0 +1,111 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Source+Sans+3:wght@400;600;700&display=swap">
+  <style>
+    html, body { margin: 0; background: #0F1714; color: #E9F1EC; font-family: "Source Sans 3", "Helvetica Neue", Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+    a { color: #FF8A3D; text-decoration: none; }
+    a:hover { color: #E9F1EC; text-decoration: underline; }
+    table { border-collapse: collapse; }
+    p { text-wrap: pretty; }
+  </style>
+</helmet>
+
+<div data-suelo style="width: 1440px; background: #0F1714; color: #E9F1EC; font-family: 'Source Sans 3', Helvetica, Arial, sans-serif;">
+
+  <div style="display: flex; align-items: center; justify-content: space-between; padding: 18px 64px; border-bottom: 1px solid rgba(233,241,236,0.14);">
+    <div style="font-family: 'Archivo', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 800; letter-spacing: 0.12em;">BAJURA</div>
+    <div style="display: flex; gap: 30px; font-size: 15px; color: #8FA398;">
+      <a href="#" style="color: #8FA398;">La subasta de hoy</a>
+      <a href="#" style="color: #8FA398;">Cómo se cobra el peso</a>
+      <a href="#" style="color: #8FA398;">Reparto</a>
+      <a href="#" style="color: #E9F1EC;">La lonja</a>
+      <a href="#" style="color: #8FA398;">Cesta (0)</a>
+    </div>
+  </div>
+
+  <div style="background: #18211D; padding: 20px 64px; display: flex; align-items: center; gap: 24px;">
+    <div style="font-family: 'Archivo', Helvetica, Arial, sans-serif; font-size: 21px; font-weight: 700; letter-spacing: -0.01em; flex-shrink: 0;">¿Llegamos a tu casa?</div>
+    <input type="text" value="27880" aria-label="Código postal" style="width: 128px; background: #0F1714; border: 1px solid rgba(233,241,236,0.32); color: #E9F1EC; font-family: 'Archivo', Helvetica, Arial, sans-serif; font-size: 19px; font-weight: 600; letter-spacing: 0.08em; padding: 11px 14px; border-radius: 2px; box-sizing: border-box;">
+    <a href="#" style="background: #FF8A3D; color: #0F1714; font-family: 'Archivo', Helvetica, Arial, sans-serif; font-size: 15px; font-weight: 700; letter-spacing: 0.04em; padding: 13px 26px; border-radius: 2px; flex-shrink: 0;">COMPROBAR</a>
+    <div style="font-size: 16px; color: #C7D4CC; flex-grow: 1;">Burela, Lugo. Estás en <span style="color: #FF8A3D; font-weight: 600;">Zona A</span>: mañana entre las 9:00 y las 14:00, envío 5,90&nbsp;€ y gratis desde&nbsp;60&nbsp;€.</div>
+    <div style="font-size: 15px; color: #8FA398; text-align: right; flex-shrink: 0; line-height: 1.4;">Pides antes de las 17:00,<br>lo tienes mañana.</div>
+  </div>
+
+  <div style="padding: 32px 64px 0 64px; font-size: 14px; color: #8FA398;"><a href="#" style="color: #8FA398;">Bajura</a> / <span style="color: #E9F1EC;">La lonja</span></div>
+
+  <div style="padding: 22px 64px 0 64px; max-width: 900px;">
+    <h1 style="margin: 0; font-family: 'Archivo', Helvetica, Arial, sans-serif; font-size: 50px; line-height: 1; font-weight: 800; letter-spacing: -0.03em; text-transform: uppercase;">La lonja de Burela</h1>
+    <p style="margin: 20px 0 0 0; font-size: 18px; line-height: 1.6; color: #C7D4CC;">No compramos a un mayorista. Puja BAJURA en el puesto 7, cada mañana, contra el resto de compradores de la rula — y lo que se lleva es exactamente lo que sale hoy en la lista.</p>
+  </div>
+
+  <!-- ===== Tres cifras ===== -->
+  <div style="padding: 48px 64px 0 64px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 40px;">
+    <div style="border-top: 3px solid #FF8A3D; padding-top: 20px;">
+      <div style="font-family: 'Archivo', Helvetica, Arial, sans-serif; font-size: 44px; font-weight: 800; color: #FF8A3D;">9</div>
+      <div style="margin-top: 8px; font-size: 17px; line-height: 1.5;">barcos de bajura descargan en el puesto 7, todos los días que salen a faenar.</div>
+    </div>
+    <div style="border-top: 3px solid rgba(233,241,236,0.34); padding-top: 20px;">
+      <div style="font-family: 'Archivo', Helvetica, Arial, sans-serif; font-size: 44px; font-weight: 800;">06:40</div>
+      <div style="margin-top: 8px; font-size: 17px; line-height: 1.5;">se cierra la subasta a la baja: empieza alta y baja hasta que alguien puja.</div>
+    </div>
+    <div style="border-top: 3px solid rgba(233,241,236,0.34); padding-top: 20px;">
+      <div style="font-family: 'Archivo', Helvetica, Arial, sans-serif; font-size: 44px; font-weight: 800;">17:00</div>
+      <div style="margin-top: 8px; font-size: 17px; line-height: 1.5;">sale el camión y la lista de hoy desaparece, aunque quede algo sin pedir.</div>
+    </div>
+  </div>
+
+  <!-- ===== Cómo funciona la subasta ===== -->
+  <div style="padding: 64px 64px 0 64px;">
+    <h2 style="margin: 0; font-family: 'Archivo', Helvetica, Arial, sans-serif; font-size: 38px; line-height: 1.05; font-weight: 800; letter-spacing: -0.02em; text-transform: uppercase;">Cómo funciona la subasta</h2>
+    <div style="margin-top: 32px; display: flex; flex-direction: column; gap: 22px;">
+      <div style="display: flex; gap: 22px; align-items: baseline;"><div style="font-family: 'Archivo', Helvetica, Arial, sans-serif; font-size: 22px; font-weight: 800; color: #FF8A3D; width: 34px; flex-shrink: 0;">1</div><div style="font-size: 17px; line-height: 1.55; color: #C7D4CC; max-width: 44em;">Los barcos entran entre las 04:30 y las 06:00 y descargan la captura por lotes, pesada y clasificada en la propia lonja.</div></div>
+      <div style="display: flex; gap: 22px; align-items: baseline;"><div style="font-family: 'Archivo', Helvetica, Arial, sans-serif; font-size: 22px; font-weight: 800; color: #FF8A3D; width: 34px; flex-shrink: 0;">2</div><div style="font-size: 17px; line-height: 1.55; color: #C7D4CC; max-width: 44em;">La subasta es a la baja: el reloj empieza en un precio alto y baja hasta que un comprador para el reloj. Termina a las 06:40, o antes si se vende todo.</div></div>
+      <div style="display: flex; gap: 22px; align-items: baseline;"><div style="font-family: 'Archivo', Helvetica, Arial, sans-serif; font-size: 22px; font-weight: 800; color: #FF8A3D; width: 34px; flex-shrink: 0;">3</div><div style="font-size: 17px; line-height: 1.55; color: #C7D4CC; max-width: 44em;">Lo que compramos sube a la web tal cual: mismo peso, mismo precio de puja más nuestro margen, mismos kilos que quedan.</div></div>
+      <div style="display: flex; gap: 22px; align-items: baseline;"><div style="font-family: 'Archivo', Helvetica, Arial, sans-serif; font-size: 22px; font-weight: 800; color: #FF8A3D; width: 34px; flex-shrink: 0;">4</div><div style="font-size: 17px; line-height: 1.55; color: #C7D4CC; max-width: 44em;">A las 17:00 sale el camión de reparto. Lo que no se pidió no se guarda para mañana: se vende al gremio o se retira.</div></div>
+    </div>
+  </div>
+
+  <!-- ===== Confianza: cadena de frío y registro ===== -->
+  <div style="margin-top: 64px; background: #18211D; padding: 56px 64px 60px 64px;">
+    <h2 style="margin: 0; font-family: 'Archivo', Helvetica, Arial, sans-serif; font-size: 30px; line-height: 1.05; font-weight: 800; letter-spacing: -0.02em; text-transform: uppercase;">Lo que comprobamos antes de que salga la caja</h2>
+    <table style="margin-top: 28px; width: 1312px; font-size: 16px;">
+      <tbody>
+        <tr style="border-bottom: 1px solid rgba(233,241,236,0.16);">
+          <td style="padding: 16px 0; width: 280px; font-family: 'Archivo', Helvetica, Arial, sans-serif; font-weight: 700;">Registro sanitario</td>
+          <td style="padding: 16px 0; color: #C7D4CC;">12.09876/LU, sobre la propia lonja de Burela</td>
+        </tr>
+        <tr style="border-bottom: 1px solid rgba(233,241,236,0.16);">
+          <td style="padding: 16px 0; font-family: 'Archivo', Helvetica, Arial, sans-serif; font-weight: 700;">Trazabilidad</td>
+          <td style="padding: 16px 0; color: #C7D4CC;">Cada caja lleva el ticket de lonja: barco, arte de pesca y hora de subasta</td>
+        </tr>
+        <tr style="border-bottom: 1px solid rgba(233,241,236,0.16);">
+          <td style="padding: 16px 0; font-family: 'Archivo', Helvetica, Arial, sans-serif; font-weight: 700;">Cadena de frío</td>
+          <td style="padding: 16px 0; color: #C7D4CC;">Hielo en gel y termómetro dentro de la caja; por encima de 4 °C, devolvemos el pedido entero</td>
+        </tr>
+        <tr>
+          <td style="padding: 16px 0; font-family: 'Archivo', Helvetica, Arial, sans-serif; font-weight: 700;">Peso</td>
+          <td style="padding: 16px 0; color: #C7D4CC;">Se pesa antes de limpiar y se cobra el peso real, nunca el tramo redondeado</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div style="border-top: 1px solid rgba(233,241,236,0.14); padding: 34px 64px 40px 64px; display: flex; align-items: flex-start; justify-content: space-between;">
+    <div>
+      <div style="font-family: 'Archivo', Helvetica, Arial, sans-serif; font-size: 20px; font-weight: 800; letter-spacing: 0.12em;">BAJURA</div>
+      <div style="margin-top: 10px; font-size: 15px; line-height: 1.7; color: #8FA398;">Lonja de Burela, puesto 7, Lugo · Registro sanitario 12.09876/LU</div>
+    </div>
+    <div style="font-size: 15px; line-height: 1.7; color: #8FA398; text-align: right;">982 58 41 20, de 7:00 a 15:00 de lunes a sábado<br>pedidos@bajura.gal</div>
+  </div>
+
+</div>
+</x-dc>
+</body>
+</html>

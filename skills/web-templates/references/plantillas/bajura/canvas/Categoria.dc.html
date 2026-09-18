@@ -1,0 +1,193 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Source+Sans+3:wght@400;600;700&display=swap">
+  <style>
+    html, body { margin: 0; background: #0F1714; color: #E9F1EC; font-family: "Source Sans 3", "Helvetica Neue", Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+    a { color: #FF8A3D; text-decoration: none; }
+    a:hover { color: #E9F1EC; text-decoration: underline; }
+    table { border-collapse: collapse; }
+    p { text-wrap: pretty; }
+  </style>
+</helmet>
+
+<div data-suelo style="width: 1440px; background: #0F1714; color: #E9F1EC; font-family: 'Source Sans 3', Helvetica, Arial, sans-serif;">
+
+  <div style="display: flex; align-items: center; justify-content: space-between; padding: 18px 64px; border-bottom: 1px solid rgba(233,241,236,0.14);">
+    <div style="font-family: 'Archivo', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 800; letter-spacing: 0.12em;">BAJURA</div>
+    <div style="display: flex; gap: 30px; font-size: 15px; color: #8FA398;">
+      <a href="#" style="color: #E9F1EC;">La subasta de hoy</a>
+      <a href="#" style="color: #8FA398;">Cómo se cobra el peso</a>
+      <a href="#" style="color: #8FA398;">Reparto</a>
+      <a href="#" style="color: #8FA398;">La lonja</a>
+      <a href="#" style="color: #8FA398;">Cesta (0)</a>
+    </div>
+  </div>
+
+  <div style="background: #18211D; padding: 20px 64px; display: flex; align-items: center; gap: 24px;">
+    <div style="font-family: 'Archivo', Helvetica, Arial, sans-serif; font-size: 21px; font-weight: 700; letter-spacing: -0.01em; flex-shrink: 0;">¿Llegamos a tu casa?</div>
+    <input type="text" value="27880" aria-label="Código postal" style="width: 128px; background: #0F1714; border: 1px solid rgba(233,241,236,0.32); color: #E9F1EC; font-family: 'Archivo', Helvetica, Arial, sans-serif; font-size: 19px; font-weight: 600; letter-spacing: 0.08em; padding: 11px 14px; border-radius: 2px; box-sizing: border-box;">
+    <a href="#" style="background: #FF8A3D; color: #0F1714; font-family: 'Archivo', Helvetica, Arial, sans-serif; font-size: 15px; font-weight: 700; letter-spacing: 0.04em; padding: 13px 26px; border-radius: 2px; flex-shrink: 0;">COMPROBAR</a>
+    <div style="font-size: 16px; color: #C7D4CC; flex-grow: 1;">Burela, Lugo. Estás en <span style="color: #FF8A3D; font-weight: 600;">Zona A</span>: mañana entre las 9:00 y las 14:00, envío 5,90&nbsp;€ y gratis desde&nbsp;60&nbsp;€.</div>
+    <div style="font-size: 15px; color: #8FA398; text-align: right; flex-shrink: 0; line-height: 1.4;">Pides antes de las 17:00,<br>lo tienes mañana.</div>
+  </div>
+
+  <div style="padding: 32px 64px 0 64px; font-size: 14px; color: #8FA398;"><a href="#" style="color: #8FA398;">Bajura</a> / <span style="color: #E9F1EC;">Todo lo de hoy</span></div>
+
+  <div style="padding: 22px 64px 8px 64px; display: flex; align-items: flex-end; justify-content: space-between;">
+    <div>
+      <h1 style="margin: 0; font-family: 'Archivo', Helvetica, Arial, sans-serif; font-size: 54px; line-height: 0.98; font-weight: 800; letter-spacing: -0.03em; text-transform: uppercase;">Todo lo de hoy</h1>
+      <div style="margin-top: 14px; font-size: 16px; color: #C7D4CC;">Sábado 13 de septiembre · Lonja de Burela · subasta cerrada a las 06:40 · nueve barcos de bajura</div>
+    </div>
+    <div style="max-width: 380px; font-size: 16px; line-height: 1.6; color: #8FA398; text-align: right;">No hay departamentos ni categorías: hay una lista, y la lista cambia cada mañana. Esto es lo que queda de la subasta de hoy.</div>
+  </div>
+
+  <!-- ===== Banda de cierre — organiza la página por la hora, no por la especie ===== -->
+  <div style="margin-top: 34px; background: #18211D; padding: 30px 64px; display: flex; align-items: center; justify-content: space-between; gap: 40px;">
+    <div style="display: flex; align-items: baseline; gap: 18px;">
+      <div style="font-family: 'Archivo', Helvetica, Arial, sans-serif; font-size: 40px; font-weight: 800; color: #FF8A3D; letter-spacing: -0.01em;">17:00</div>
+      <div style="font-size: 16px; line-height: 1.55; color: #E9F1EC; max-width: 460px;">Hora de corte. Lo que no se ha pedido a esa hora sube al camión igual, pero la lista de hoy desaparece y mañana es otra — no hay stock que pase de un día a otro.</div>
+    </div>
+    <div style="font-size: 15px; color: #8FA398; text-align: right; line-height: 1.6; flex-shrink: 0;">Subastado hoy entre las 06:05 y las 06:40.<br>Los kilos bajan según entran los pedidos.</div>
+  </div>
+
+  <!-- ===== Queda poco — ordenado por lo que se agota antes, no por especie ===== -->
+  <div style="padding: 56px 64px 0 64px;">
+    <div style="display: flex; align-items: baseline; gap: 16px; margin-bottom: 20px;">
+      <h2 style="margin: 0; font-family: 'Archivo', Helvetica, Arial, sans-serif; font-size: 26px; font-weight: 800; letter-spacing: -0.01em; text-transform: uppercase; color: #FF8A3D;">Queda poco</h2>
+      <div style="font-size: 15px; color: #8FA398;">Puede agotarse antes de las 17:00 — pide primero lo de aquí abajo.</div>
+    </div>
+    <table style="width: 1312px; font-size: 17px;">
+      <thead>
+        <tr>
+          <th style="text-align: left; padding: 0 16px 12px 16px; font-family: 'Archivo', Helvetica, Arial, sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.14em; color: #8FA398; border-bottom: 2px solid #FF8A3D; width: 330px;">ESPECIE</th>
+          <th style="text-align: left; padding: 0 16px 12px 16px; font-family: 'Archivo', Helvetica, Arial, sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.14em; color: #8FA398; border-bottom: 2px solid #FF8A3D; width: 210px;">ARTE DE PESCA</th>
+          <th style="text-align: left; padding: 0 16px 12px 16px; font-family: 'Archivo', Helvetica, Arial, sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.14em; color: #8FA398; border-bottom: 2px solid #FF8A3D; width: 230px;">PIEZA APROXIMADA</th>
+          <th style="text-align: right; padding: 0 16px 12px 16px; font-family: 'Archivo', Helvetica, Arial, sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.14em; color: #8FA398; border-bottom: 2px solid #FF8A3D; width: 180px;">PRECIO POR KILO</th>
+          <th style="text-align: right; padding: 0 16px 12px 16px; font-family: 'Archivo', Helvetica, Arial, sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.14em; color: #8FA398; border-bottom: 2px solid #FF8A3D; width: 152px;">QUEDAN</th>
+          <th style="border-bottom: 2px solid #FF8A3D;"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="background: #18211D;">
+          <td style="padding: 15px 16px; font-family: 'Archivo', Helvetica, Arial, sans-serif; font-size: 20px; font-weight: 600;">Langostino de Vilanova</td>
+          <td style="padding: 15px 16px; color: #C7D4CC;">Nasa</td>
+          <td style="padding: 15px 16px; color: #C7D4CC;">De 25 a 30 piezas por kilo</td>
+          <td style="padding: 15px 16px; text-align: right; font-family: 'Archivo', Helvetica, Arial, sans-serif; font-size: 20px; font-weight: 700; color: #FF8A3D; font-variant-numeric: tabular-nums;">46,00&nbsp;€/kg</td>
+          <td style="padding: 15px 16px; text-align: right; color: #C7D4CC; font-variant-numeric: tabular-nums;">6 kg</td>
+          <td style="padding: 15px 16px; text-align: right;"><a href="#" style="border: 1px solid #FF8A3D; padding: 8px 18px; border-radius: 2px; font-size: 14px; font-weight: 600;">Ver ficha</a></td>
+        </tr>
+        <tr>
+          <td style="padding: 15px 16px; font-family: 'Archivo', Helvetica, Arial, sans-serif; font-size: 20px; font-weight: 600;">Rodaballo</td>
+          <td style="padding: 15px 16px; color: #C7D4CC;">Enmalle</td>
+          <td style="padding: 15px 16px; color: #C7D4CC;">De 1,2 a 1,8 kg</td>
+          <td style="padding: 15px 16px; text-align: right; font-family: 'Archivo', Helvetica, Arial, sans-serif; font-size: 20px; font-weight: 700; color: #FF8A3D; font-variant-numeric: tabular-nums;">29,00&nbsp;€/kg</td>
+          <td style="padding: 15px 16px; text-align: right; color: #C7D4CC; font-variant-numeric: tabular-nums;">8 kg</td>
+          <td style="padding: 15px 16px; text-align: right;"><a href="#" style="border: 1px solid #FF8A3D; padding: 8px 18px; border-radius: 2px; font-size: 14px; font-weight: 600;">Ver ficha</a></td>
+        </tr>
+        <tr style="background: #18211D;">
+          <td style="padding: 15px 16px; font-family: 'Archivo', Helvetica, Arial, sans-serif; font-size: 20px; font-weight: 600;">Almeja babosa</td>
+          <td style="padding: 15px 16px; color: #C7D4CC;">Marisqueo a pie</td>
+          <td style="padding: 15px 16px; color: #C7D4CC;">De 45 a 55 piezas por kilo</td>
+          <td style="padding: 15px 16px; text-align: right; font-family: 'Archivo', Helvetica, Arial, sans-serif; font-size: 20px; font-weight: 700; color: #FF8A3D; font-variant-numeric: tabular-nums;">28,50&nbsp;€/kg</td>
+          <td style="padding: 15px 16px; text-align: right; color: #C7D4CC; font-variant-numeric: tabular-nums;">9 kg</td>
+          <td style="padding: 15px 16px; text-align: right;"><a href="#" style="border: 1px solid #FF8A3D; padding: 8px 18px; border-radius: 2px; font-size: 14px; font-weight: 600;">Ver ficha</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ===== Queda para todo el día ===== -->
+  <div style="padding: 48px 64px 0 64px;">
+    <h2 style="margin: 0 0 20px 0; font-family: 'Archivo', Helvetica, Arial, sans-serif; font-size: 26px; font-weight: 800; letter-spacing: -0.01em; text-transform: uppercase;">Queda para todo el día</h2>
+    <table style="width: 1312px; font-size: 17px;">
+      <thead>
+        <tr>
+          <th style="text-align: left; padding: 0 16px 12px 16px; font-family: 'Archivo', Helvetica, Arial, sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.14em; color: #8FA398; border-bottom: 2px solid #FF8A3D; width: 330px;">ESPECIE</th>
+          <th style="text-align: left; padding: 0 16px 12px 16px; font-family: 'Archivo', Helvetica, Arial, sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.14em; color: #8FA398; border-bottom: 2px solid #FF8A3D; width: 210px;">ARTE DE PESCA</th>
+          <th style="text-align: left; padding: 0 16px 12px 16px; font-family: 'Archivo', Helvetica, Arial, sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.14em; color: #8FA398; border-bottom: 2px solid #FF8A3D; width: 230px;">PIEZA APROXIMADA</th>
+          <th style="text-align: right; padding: 0 16px 12px 16px; font-family: 'Archivo', Helvetica, Arial, sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.14em; color: #8FA398; border-bottom: 2px solid #FF8A3D; width: 180px;">PRECIO POR KILO</th>
+          <th style="text-align: right; padding: 0 16px 12px 16px; font-family: 'Archivo', Helvetica, Arial, sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.14em; color: #8FA398; border-bottom: 2px solid #FF8A3D; width: 152px;">QUEDAN</th>
+          <th style="border-bottom: 2px solid #FF8A3D;"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="background: #18211D;">
+          <td style="padding: 15px 16px; font-family: 'Archivo', Helvetica, Arial, sans-serif; font-size: 20px; font-weight: 600;">Lubina salvaje</td>
+          <td style="padding: 15px 16px; color: #C7D4CC;">Volanta</td>
+          <td style="padding: 15px 16px; color: #C7D4CC;">De 900 g a 1,3 kg</td>
+          <td style="padding: 15px 16px; text-align: right; font-family: 'Archivo', Helvetica, Arial, sans-serif; font-size: 20px; font-weight: 700; color: #FF8A3D; font-variant-numeric: tabular-nums;">31,50&nbsp;€/kg</td>
+          <td style="padding: 15px 16px; text-align: right; color: #C7D4CC; font-variant-numeric: tabular-nums;">12 kg</td>
+          <td style="padding: 15px 16px; text-align: right;"><a href="#" style="border: 1px solid #FF8A3D; padding: 8px 18px; border-radius: 2px; font-size: 14px; font-weight: 600;">Ver ficha</a></td>
+        </tr>
+        <tr>
+          <td style="padding: 15px 16px; font-family: 'Archivo', Helvetica, Arial, sans-serif; font-size: 20px; font-weight: 600;">Merluza de pincho</td>
+          <td style="padding: 15px 16px; color: #C7D4CC;">Palangre de fondo</td>
+          <td style="padding: 15px 16px; color: #C7D4CC;">De 1,8 a 2,4 kg</td>
+          <td style="padding: 15px 16px; text-align: right; font-family: 'Archivo', Helvetica, Arial, sans-serif; font-size: 20px; font-weight: 700; color: #FF8A3D; font-variant-numeric: tabular-nums;">24,90&nbsp;€/kg</td>
+          <td style="padding: 15px 16px; text-align: right; color: #C7D4CC; font-variant-numeric: tabular-nums;">31 kg</td>
+          <td style="padding: 15px 16px; text-align: right;"><a href="#" style="border: 1px solid #FF8A3D; padding: 8px 18px; border-radius: 2px; font-size: 14px; font-weight: 600;">Ver ficha</a></td>
+        </tr>
+        <tr style="background: #18211D;">
+          <td style="padding: 15px 16px; font-family: 'Archivo', Helvetica, Arial, sans-serif; font-size: 20px; font-weight: 600;">Pulpo</td>
+          <td style="padding: 15px 16px; color: #C7D4CC;">Nasa</td>
+          <td style="padding: 15px 16px; color: #C7D4CC;">De 2 a 3 kg</td>
+          <td style="padding: 15px 16px; text-align: right; font-family: 'Archivo', Helvetica, Arial, sans-serif; font-size: 20px; font-weight: 700; color: #FF8A3D; font-variant-numeric: tabular-nums;">17,80&nbsp;€/kg</td>
+          <td style="padding: 15px 16px; text-align: right; color: #C7D4CC; font-variant-numeric: tabular-nums;">22 kg</td>
+          <td style="padding: 15px 16px; text-align: right;"><a href="#" style="border: 1px solid #FF8A3D; padding: 8px 18px; border-radius: 2px; font-size: 14px; font-weight: 600;">Ver ficha</a></td>
+        </tr>
+        <tr>
+          <td style="padding: 15px 16px; font-family: 'Archivo', Helvetica, Arial, sans-serif; font-size: 20px; font-weight: 600;">Bonito del norte</td>
+          <td style="padding: 15px 16px; color: #C7D4CC;">Cebo vivo</td>
+          <td style="padding: 15px 16px; color: #C7D4CC;">De 4 a 6 kg</td>
+          <td style="padding: 15px 16px; text-align: right; font-family: 'Archivo', Helvetica, Arial, sans-serif; font-size: 20px; font-weight: 700; color: #FF8A3D; font-variant-numeric: tabular-nums;">18,70&nbsp;€/kg</td>
+          <td style="padding: 15px 16px; text-align: right; color: #C7D4CC; font-variant-numeric: tabular-nums;">48 kg</td>
+          <td style="padding: 15px 16px; text-align: right;"><a href="#" style="border: 1px solid #FF8A3D; padding: 8px 18px; border-radius: 2px; font-size: 14px; font-weight: 600;">Ver ficha</a></td>
+        </tr>
+        <tr style="background: #18211D;">
+          <td style="padding: 15px 16px; font-family: 'Archivo', Helvetica, Arial, sans-serif; font-size: 20px; font-weight: 600;">Jurel</td>
+          <td style="padding: 15px 16px; color: #C7D4CC;">Cerco</td>
+          <td style="padding: 15px 16px; color: #C7D4CC;">De 250 a 400 g la pieza</td>
+          <td style="padding: 15px 16px; text-align: right; font-family: 'Archivo', Helvetica, Arial, sans-serif; font-size: 20px; font-weight: 700; color: #FF8A3D; font-variant-numeric: tabular-nums;">5,20&nbsp;€/kg</td>
+          <td style="padding: 15px 16px; text-align: right; color: #C7D4CC; font-variant-numeric: tabular-nums;">44 kg</td>
+          <td style="padding: 15px 16px; text-align: right;"><a href="#" style="border: 1px solid #FF8A3D; padding: 8px 18px; border-radius: 2px; font-size: 14px; font-weight: 600;">Ver ficha</a></td>
+        </tr>
+        <tr>
+          <td style="padding: 15px 16px; font-family: 'Archivo', Helvetica, Arial, sans-serif; font-size: 20px; font-weight: 600;">Sardina</td>
+          <td style="padding: 15px 16px; color: #C7D4CC;">Cerco</td>
+          <td style="padding: 15px 16px; color: #C7D4CC;">De 90 a 120 g la pieza</td>
+          <td style="padding: 15px 16px; text-align: right; font-family: 'Archivo', Helvetica, Arial, sans-serif; font-size: 20px; font-weight: 700; color: #FF8A3D; font-variant-numeric: tabular-nums;">6,40&nbsp;€/kg</td>
+          <td style="padding: 15px 16px; text-align: right; color: #C7D4CC; font-variant-numeric: tabular-nums;">60 kg</td>
+          <td style="padding: 15px 16px; text-align: right;"><a href="#" style="border: 1px solid #FF8A3D; padding: 8px 18px; border-radius: 2px; font-size: 14px; font-weight: 600;">Ver ficha</a></td>
+        </tr>
+        <tr style="background: #18211D;">
+          <td style="padding: 15px 16px; font-family: 'Archivo', Helvetica, Arial, sans-serif; font-size: 20px; font-weight: 600; color: #7E9088;">Xarda</td>
+          <td style="padding: 15px 16px; color: #7E9088;">Cerco</td>
+          <td style="padding: 15px 16px; color: #7E9088;">De 300 a 450 g la pieza</td>
+          <td style="padding: 15px 16px; text-align: right; font-family: 'Archivo', Helvetica, Arial, sans-serif; font-size: 20px; font-weight: 700; color: #7E9088; font-variant-numeric: tabular-nums;">4,80&nbsp;€/kg</td>
+          <td style="padding: 15px 16px; text-align: right; color: #7E9088;">Agotada</td>
+          <td style="padding: 15px 16px; text-align: right; color: #7E9088; font-size: 14px;">Vuelve el lunes</td>
+        </tr>
+      </tbody>
+    </table>
+    <div style="margin-top: 18px; padding-bottom: 64px; font-size: 15px; color: #8FA398;">Diez especies hoy, de nueve barcos de bajura. Sin filtro por categoría: mañana la lista entera es otra, y filtrar algo que dura un día no ahorra tiempo, lo hace perder.</div>
+  </div>
+
+  <div style="border-top: 1px solid rgba(233,241,236,0.14); padding: 34px 64px 40px 64px; display: flex; align-items: flex-start; justify-content: space-between;">
+    <div>
+      <div style="font-family: 'Archivo', Helvetica, Arial, sans-serif; font-size: 20px; font-weight: 800; letter-spacing: 0.12em;">BAJURA</div>
+      <div style="margin-top: 10px; font-size: 15px; line-height: 1.7; color: #8FA398;">Lonja de Burela, puesto 7, Lugo · Registro sanitario 12.09876/LU</div>
+    </div>
+    <div style="font-size: 15px; line-height: 1.7; color: #8FA398; text-align: right;">982 58 41 20, de 7:00 a 15:00 de lunes a sábado<br>pedidos@bajura.gal</div>
+  </div>
+
+</div>
+</x-dc>
+</body>
+</html>

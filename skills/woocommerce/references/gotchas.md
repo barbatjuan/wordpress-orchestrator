@@ -77,3 +77,9 @@ on any ancestor causes the same trap.
 After AJAX add, the button gets class `.added`. Relabel with CSS (no JS):
 `a.button.added{font-size:0} a.button.added::after{content:"Añadido ✓";font-size:13.5px}`.
 Hide the redundant inline link: `a.added_to_cart{display:none!important}`.
+
+## Añadir al carrito desde el listado
+
+When a shop grid must add to the cart without leaving the listing (including variable products,
+JetWooBuilder grids and Variation Swatches Pro), read `add-to-cart-from-listing.md` first: it tells
+you whether there is anything to fix at all before you build anything.

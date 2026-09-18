@@ -13,9 +13,10 @@ integrate the results and report.
 
 ## Before the first question: is there a manifest?
 If a NovaMira target is already connected, read `es_manifest_read()` before asking anything.
-It records what previous sessions established — builder, site type, chosen archetype and
-toggles, the design personality, the page map of slug to post id, the front page, what was
-approved. Then run `es_manifest_verify()` and read the DRIFT before trusting a single id: a page
+It records what previous sessions established — builder, site type, the design resolution, the
+page map of slug to post id, the front page, what was approved. The chosen Plantilla slug is not one
+of those fields yet: carry it in the `web-templates` decision record, and say so when a session
+resumes without it. Then run `es_manifest_verify()` and read the DRIFT before trusting a single id: a page
 can be deleted, renamed by hand or replaced between sessions, and the worst case looks the most
 normal — the same slug answered by a different post. Drift is reported, never repaired
 automatically: only the user knows which of the two truths was intended, so bring it to them.
@@ -32,7 +33,8 @@ Ask THIS before anything else — it decides whether to inspect WordPress at all
 connector round-trip inspecting a site that doesn't exist yet.
 - **New site (greenfield)**: usually no WordPress / connector yet, nothing to inspect. Do **NOT**
   run `project-context` now. The whole design phase is builder-agnostic and needs no WordPress —
-  go straight to: site type → brief/logo → `web-templates` → `ux-design-system` → `html-mockup`.
+  go straight to: site type → brief/logo → `web-templates` → `ux-design-system` → Claude Design →
+  `html-mockup` → veredicto.
   Run `project-context` **later, at the build gate**, once there IS a connected WP target (to
   confirm the connector, builder, theme, plugins before writing).
 - **Existing site**: invoke **`project-context`** FIRST — it detects the page builder (Elementor vs
@@ -42,37 +44,40 @@ connector round-trip inspecting a site that doesn't exist yet.
 ## Ask before you build (don't guess)
 Use `AskUserQuestion` when any of these is unknown and changes the work:
 - **New or existing site?** — ask FIRST (see "First move" above); it gates whether `project-context` runs.
-- **Site type**: ecommerce or corporate? (routes `web-templates` to the right archetypes)
+- **Site type**: ecommerce or corporate? (routes `web-templates` to the Objetivos and Plantillas of that type)
 - **Builder**: Elementor or Divi? For a new site, ask (default theme Hello Elementor for Elementor);
   for an existing site, take it from `project-context` and only ask if it can't determine it.
 - **Scope**: which pages/sections, this run.
 - **Business brief**: is there a web summary / brief describing the business? Ask for it up front
-  (or 2–3 lines on what they do, who they sell to). Feeds `web-templates` analysis + copy tone.
+  (or 2–3 lines on what they do, who they sell to). Feeds the Objetivo in `web-templates` + copy tone.
 - **Logo**: is there a logo (file / URL)? Ask for it up front — derive the palette from it and pass
   to `ux-design-system`. If none yet, note it and propose a palette to confirm.
 - **Brand**: palette, typography, tone (feeds `web-templates` → `ux-design-system`).
 - **Commerce**: does it need shop/product/cart? (routes `woocommerce`)
 - **Copy**: who writes the real text — the client, or us? If us, delegate to the
   `wordpress-copywriter` subagent; do NOT draft it in this thread. Writing is long-output work and
-  its ideal context is the opposite of this one. Pass it the brief, the chosen archetype with its
-  toggles, the tone AND the regional variant, and the explicit list of facts it may use. It hands
+  its ideal context is the opposite of this one. Pass it the brief, the chosen Plantilla's ficha and
+  page set, the tone AND the regional variant, and the explicit list of facts it may use. It hands
   back copy plus a FACTS NEEDED list — those gaps are questions for the client, not slots to fill
-  in yourself. Copy is approved with the mockup, before anything reaches WordPress.
-- **Images**: who supplies photography/media? NO skill owns image sourcing either. Mockups ship
-  placeholders only (Artifact CSP forbids remote images); the native build needs real assets or it
-  ships grey boxes. Agree the source before the build gate, not after.
+  in yourself. The client's lienzo carries the real copy, so it is written before Claude Design and
+  approved with the maqueta, before anything reaches WordPress.
+- **Images**: who supplies photography/media? NO skill owns image sourcing either. The client's
+  lienzo and maqueta carry the client's real photographs, replacing the Plantilla's role by role as
+  its image manifest describes them, embedded and never remote; the native build uploads the same
+  files. Agree the source before Claude Design, not at the build gate.
 - **Destructive/outward actions**: overwriting existing pages, deleting templates.
 One decision per question. Stop and wait. Do not invent answers.
-`web-templates` itself asks for 2–4 client references and confirms the recommended archetype —
-let it run that dialogue; don't front-run it.
+`web-templates` itself asks for 2–4 client references and confirms the Plantilla or the ruta a
+medida — let it run that dialogue; don't front-run it.
 
 ## Routing map
 | Need | Skill |
 |------|-------|
 | Detect stack, plugins, constraints, brand | `project-context` |
-| Choose page architecture (which sections, order) + recommend a template + references + toggles | `web-templates` |
-| Visual language: layout, spacing, hovers, cards, responsive (builder-agnostic) | `ux-design-system` |
-| Static HTML mockup for client approval before the native build | `html-mockup` |
+| Choose the starting point: Objetivo → a Plantilla from the library, or the ruta a medida, + references | `web-templates` |
+| Visual language: the Plantilla's Enfoque, the client's brand inside it, tokens for Elementor's global Site Settings | `ux-design-system` |
+| The client's lienzo, drawn from the Plantilla's lienzo (ruta a medida: from 2–4 low-fi directions) | Claude Design — the design skill, outside this repo |
+| The maqueta derived from the lienzo: ONE Artifact, for the veredicto and client approval | `html-mockup` |
 | Build/deploy on Elementor (raw PHP → `_elementor_data`) | `elementor-core` |
 | Build/deploy on Divi (builder data / shortcodes) — **scaffold, not proven; see below** | `divi-core` |
 | Header, footer and Theme Builder parts — built once, shown on every page (Elementor Pro) | `elementor-theme-parts` |
@@ -81,9 +86,9 @@ let it run that dialogue; don't front-run it.
 | Legal notice, privacy, cookies, terms + a consent banner that blocks before it asks | `wordpress-legal` |
 | Lazy load, image/CSS/JS weight, Core Web Vitals | `wordpress-performance` |
 | Titles, schema, metadata, sitemap | `wordpress-seo` |
-| Verify a change, review before hand-off | `qa-review` |
+| Verify a change, review before hand-off — house rules, the native ceiling count included | `qa-review` |
 | Judge a RENDER by eye — composition, alignment, proportion, responsive sweep | `visual-verification` |
-| Judge a MOCKUP blind — same studio as the last deliveries? does it look professional? | `blind-judges` |
+| Judge a Plantilla or a maqueta blind — professional? same hand as the library or the last deliveries? Writes the veredicto | `blind-judges` |
 | Audit the FRAMEWORK itself (not a site) before merging a skill change | `framework-audit` |
 
 Not a skill: **`wordpress-copywriter`** is a sibling SUBAGENT for writing the real copy. Reach it
@@ -92,33 +97,43 @@ the word "texto" mid-deploy would start rewriting a live site's content over a c
 
 ## Order that works
 **New site (greenfield) — no WordPress touched until the build gate:**
-`new/existing?` (new) → `web-templates` (site type → recommend a `TPL-*` + references + toggles) →
-`ux-design-system` (look/tokens) → `html-mockup` → `blind-judges` (differentiation) → (approve) →
+`new/existing?` (new) → `web-templates` (tipo → Objetivo → a Plantilla with a current veredicto, or
+the ruta a medida; references; confirmed decision record) → `ux-design-system` (the Plantilla's
+Enfoque + the client's brand; tokens for global Site Settings) → **Claude Design**, the design skill
+(the client's lienzo, starting from the Plantilla's lienzo) → `html-mockup` (the maqueta derived
+from that lienzo, ONE Artifact) → `blind-judges` + `visual-verification` (the maqueta's veredicto:
+every page at 430 / 768 / 1280, sealed where a tool can seal it) → client approval →
 **build gate** → `project-context` (now, to confirm the connected WP: connector, builder, theme) →
 `elementor-theme-parts` (header/footer FIRST, so the pages inherit them; **Elementor only** — on
 Divi the skill itself stops at step 1, no Theme Builder equivalent exists yet) →
-`elementor-core` | `divi-core` → `woocommerce` if commerce → `wordpress-legal` → `wordpress-forms`
-if the site takes enquiries → `wordpress-performance` / `wordpress-seo` → `qa-review` → `visual-verification`.
+`elementor-core` | `divi-core`, section by section from the ficha's Mapeo nativo → `woocommerce` if
+commerce (its own pages mapped as `web-templates/references/paginas-obligatorias.md` lists) →
+`wordpress-legal` → `wordpress-forms` if the site takes enquiries → `wordpress-performance` /
+`wordpress-seo` → `qa-review` (house rules, native ceiling count included) → `visual-verification`.
 
 **Existing site:**
 `new/existing?` (existing) → `project-context` (inspect) → `web-templates` → `ux-design-system` →
-`html-mockup` → `blind-judges` (differentiation) → (approve) → **build gate** →
-`elementor-theme-parts` (Elementor only, same caveat) →
-`elementor-core` | `divi-core` → `woocommerce` if commerce → `wordpress-legal` → `wordpress-forms`
-if the site takes enquiries → `wordpress-performance` / `wordpress-seo` → `qa-review` → `visual-verification`.
+Claude Design → `html-mockup` → `blind-judges` + `visual-verification` (veredicto) → client
+approval → **build gate** → `elementor-theme-parts` (Elementor only, same caveat) →
+`elementor-core` | `divi-core` from the Mapeo nativo → `woocommerce` if commerce → `wordpress-legal`
+→ `wordpress-forms` if the site takes enquiries → `wordpress-performance` / `wordpress-seo` →
+`qa-review` (native ceiling count included) → `visual-verification`.
 
-Either way, the design phase (`web-templates` → `ux-design-system` → `html-mockup`) is
-builder-agnostic and needs no WordPress; WordPress is only touched after the build gate.
+Either way, the design phase (`web-templates` → `ux-design-system` → Claude Design →
+`html-mockup` → veredicto) is builder-agnostic and needs no WordPress; WordPress is only touched
+after the build gate. The ruta a medida enters at Claude Design and leaves through the same gates.
 
-The HTML mockup is an approval gate and the visual contract — it is **never** imported into
-the builder. The native build reproduces it from the same spec + tokens.
+The maqueta is an approval gate and the visual contract — it is **never** imported into the
+builder. The native build reproduces it section by section from the ficha's Mapeo nativo, with the
+tokens in Elementor's global Site Settings, under the ficha's techo nativo.
 
-**Build gate (before touching WordPress).** Once the mockup is approved, STOP and ask the user
+**Build gate (before touching WordPress).** Once the maqueta has its veredicto and the client
+approved it, STOP and ask the user
 explicitly, e.g. *"¿El diseño está aprobado y final? ¿Lo paso al build nativo en WordPress
 (Elementor/Divi) por el conector NovaMira? Esto escribe en el sitio."* Wait for a clear **yes**
 before running builder-core — the native build is an outward, hard-to-reverse action. On an
-existing site, also confirm each page overwrite by name. No mockup approval + no explicit yes →
-no native build.
+existing site, also confirm each page overwrite by name. No veredicto, no client approval, no
+explicit yes → no native build.
 
 **Two routes, and this gate is where they diverge.** Everything before it is identical.
 - **Direct on the client's WordPress, through the connector.** The default, and the ONLY route for
@@ -278,37 +293,53 @@ nothing to notice.
 - **Never a form in the hero.** The hero carries headline + value prop + CTA — never a capture
   form. The lead form lives in the closing conversion band, which is fixed DNA, so nothing is lost
   by moving it: a form above the fold reads as a toll gate before the visitor knows what is on
-  offer. `TGL-LEAD-FORM` defaults to `solo CTA` in `TPL-C-01` for this reason; a project may still
-  flip it, but only deliberately and never as the starting point.
-  (no verifier: nothing inspects a built hero for a capture form; the template default is a starting point, not a gate.)
+  offer. No Plantilla's lienzo draws one; a client who still wants one decides it deliberately,
+  never as the starting point.
+  (no verifier: nothing inspects a built hero for a capture form; the Plantilla's lienzo is a starting point, not a gate.)
 - **Mobile header** (burger · logo · cart 3-zone) is a known-hard pattern on Elementor — builder-core
   must read `elementor-core/references/gotchas.md` ("Mobile 3-zone header") before building headers.
   (verifier: `qa-review` house-rule row 10 checks the mobile rules are present in the compiled CSS and then measures the three zones.)
-- **Mockups** (`html-mockup`): one Artifact with in-page navigation, header/announcement/footer as
-  global elements OUTSIDE the page containers; never split pages across Artifacts with `target="_top"`
-  links. Detail: `html-mockup/references/mockup-guide.md`.
+- **Maquetas** (`html-mockup`): one self-contained file published as one Artifact, hash routing
+  with a `<title>` per route, header/burger menu/footer OUTSIDE the page containers; never split pages
+  across Artifacts with `target="_top"` links. Detail: `html-mockup/references/mockup-guide.md`.
   (no verifier: nothing inspects a published Artifact's page switching; a mockup split across two Artifacts only shows up when the user clicks a dead link.)
-- **Site type picks the mockup CHASSIS.** Run `html-mockup/assets/gallery/_build-gallery.php` — it
-  writes `html-mockup/assets/chassis/ecommerce.html` for commerce and `chassis/corporate.html` for
-  corporate, never hand-copy either. Chassis means which pages exist and whether there is a cart.
-  Never start a corporate site from the ecommerce asset: it carries cart, prices and shop pages a
-  corporate site must not inherit.
-  (no verifier: nothing checks which asset a mockup started from; a corporate site built on the commerce one only shows up when a human opens it.)
-- **The ANCHOR picks the look, and it is a second decision.** Re-point the `AXIS POSITIONS` block
-  at the anchor `ux-design-system` resolved — five token lines and the `Anchor:` marker, together.
-  Each asset ships pointed at one only so it renders. While that line read `Default anchor` and
-  this step did not exist, every corporate project shipped `PERS-INSTITUTIONAL` and every commerce
-  one `PERS-MATTER` — not chosen, inherited — and those two are the quietest of the four assets in
-  the repo: 48px and 64px h1 caps against 88 and 120, and the only two at `--sp-scale: 1.0`.
-  (verifier: `RT_MOCKUP_AXES_MISMATCH` FAILs a starting asset whose five axis labels are not the ones its declared anchor holds, naming each axis and both positions, so a re-point that edits five of the six things cannot land.)
-- **A blind judge's verdict is not this thread's to overturn.** `blind-judges` runs on the mockup
-  before the build gate, and answers what no rule can: does this look like the same studio made the
-  last five deliveries. This thread holds the brief, the anchor and the axis positions — it is the
+- **Site type picks the page set and the Plantilla, never the other type's.** The pages are
+  `web-templates/references/paginas-obligatorias.md` for the type — legal pages, 404 and the
+  conversion page included, never asked. The starting Plantilla is one of that type: never start a
+  corporate site from an ecommerce Plantilla, which carries cart, prices and shop pages a corporate
+  site must not inherit. The legacy generator and its two chassis are not a starting point for any
+  client.
+  (no verifier: nothing records which Plantilla a client maqueta started from; a corporate site built on a shop only shows up when a human opens it.)
+- **The Plantilla's Enfoque is the look, and a different look is a different Plantilla.** The look
+  is never inherited from a default: it is the Enfoque of the Plantilla chosen by Objetivo and
+  checked against the client's references, with the client's brand applied inside it by
+  `ux-design-system`. References that ask for another Enfoque send the client to another Plantilla
+  or to the ruta a medida, never to a repaint. Colours and type go to Elementor's global Site
+  Settings, never to custom CSS. While the look was a re-pointed token block, every corporate project
+  shipped the same quiet default anchor and every commerce one another — not chosen, inherited.
+  (no verifier: the Enfoque check lives in the web-templates decision record, which no file here can read; the reviewer compares that record with the ficha.)
+- **Nativo o nada: a build stays under the Plantilla's techo nativo.** The ficha declares
+  `html_widgets_max` and `css_custom_max`, zero unless it states another number with its reason. A
+  section that needs an HTML widget or a custom CSS rule is redesigned in the lienzo, or its
+  exception is written in the ficha before building — never discovered afterwards. The library's own
+  helpers write custom CSS today, and those rules count like any other. A build above its ceiling is
+  not done.
+  (verifier: `qa-review` house-rule row 37 counts HTML widgets and custom CSS rules in the stored data of every page and template against the ficha's ceilings.)
+- **No client approval without a veredicto.** The client sees the maqueta only after `blind-judges`
+  and `visual-verification` wrote its veredicto — every page at 430, 768 and 1280 — and a change
+  after that re-derives and re-judges. A partial sweep is shown as PARCIAL; a self-judged run is
+  shown as SELF-JUDGED, and whether that is enough to put in front of the client is the user's call,
+  told so in those words.
+  (no verifier: no audit rule reads a client maqueta's veredicto, and the delivery ledger has no column for its hash yet; the reviewer checks the hand-off carries it.)
+- **A blind judge's verdict is not this thread's to overturn.** `blind-judges` runs on every
+  Plantilla and on the client's maqueta before client approval, and answers what no rule can: does
+  this look like the same hand made the library or the last five deliveries, and does it look
+  professional. This thread holds the brief, the Plantilla and its Enfoque — it is the
   party being judged, so it reconciles the two verdicts and reports both, and when they contradict
   each other it takes them to the user verbatim. Breaking the tie in here is exactly where the
   objectivity the whole step exists for dies. The judges are read-only: they render, look and
   report, and only this thread records the result afterwards. And the judge is never the model
-  family that produced the mockup: a model rates its own family's output higher, which is measured.
+  family that produced the design: a model rates its own family's output higher, which is measured.
   When no outside family is reachable — today, none is — the run is reported SELF-JUDGED, which is
   a third state beside PASS and FAIL and never reads as the first.
   (no verifier: which actor resolved a disagreement is a property of the conversation, and nothing in this repo can read a conversation)

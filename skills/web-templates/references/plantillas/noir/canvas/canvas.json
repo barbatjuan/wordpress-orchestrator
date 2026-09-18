@@ -1,0 +1,15 @@
+{
+  "artboards": [
+    {
+      "file": "Noir.dc.html",
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 4722,
+      "title": "MAISON NOIR · tienda (portada; tienda, ficha, cesta, pago, la Maison y contacto como estados de la misma lámina)"
+    }
+  ],
+  "launch": {
+    "view": "canvas"
+  }
+}

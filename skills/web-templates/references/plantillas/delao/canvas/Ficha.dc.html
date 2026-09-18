@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=Libre+Caslon+Display&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#F6F4F0;color:#17181A;-webkit-font-smoothing:antialiased}
+a{color:#17181A;text-decoration:none}
+a:hover{color:#8A7B5C}
+input,select,button{font-family:'Archivo',sans-serif}
+input[type=range]{-webkit-appearance:none;appearance:none;height:2px;background:rgba(23,24,26,.2);outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;border-radius:50%;background:#8A7B5C;cursor:pointer}
+input[type=range]::-moz-range-thumb{width:13px;height:13px;border:0;border-radius:50%;background:#8A7B5C;cursor:pointer}
+</style>
+</helmet>
+<dc-import name="Nav" hint-size="100%,78px"></dc-import>
+
+<div style="border-bottom:1px solid rgba(23,24,26,.14)">
+  <div style="max-width:1440px;margin:0 auto;padding:16px 40px;display:flex;justify-content:space-between;gap:24px;font:400 11px/1 'Archivo',sans-serif;letter-spacing:.1em;text-transform:uppercase;color:rgba(23,24,26,.5)">
+    <div style="display:flex;gap:10px"><a href="#inicio">Inicio</a><span>/</span><a href="#propiedades">Propiedades</a><span>/</span><span style="color:#17181A">Villa Alameda</span></div>
+    <span style="font-family:ui-monospace,Menlo,monospace;letter-spacing:.08em">Ref. MB-1042</span>
+  </div>
+</div>
+
+<section style="max-width:1440px;margin:0 auto;padding:64px 40px 44px;display:grid;grid-template-columns:1.5fr 1fr;gap:64px;align-items:end">
+  <div style="display:flex;flex-direction:column;gap:22px">
+    <span style="font:500 9.5px/1 'Archivo',sans-serif;letter-spacing:.28em;text-transform:uppercase;color:#8A7B5C">Sierra Blanca, Marbella · En exclusiva</span>
+    <h1 style="margin:0;font:400 clamp(44px,5.4vw,80px)/1 'Libre Caslon Display',Georgia,serif;letter-spacing:-.02em">Villa Alameda</h1>
+    <p style="margin:0;max-width:52ch;font:400 16.5px/1.7 'Archivo',sans-serif;color:rgba(23,24,26,.62);text-wrap:pretty">Obra de 2019 sobre una parcela en ladera, con orientación sur y vistas continuas a La Concha y al mar.</p>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:10px;border-left:1px solid rgba(23,24,26,.16);padding-left:34px">
+    <span style="font:500 9.5px/1 'Archivo',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:rgba(23,24,26,.45)">Precio de salida</span>
+    <span style="font:400 clamp(34px,3.6vw,50px)/1 'Libre Caslon Display',Georgia,serif;letter-spacing:-.01em">4.950.000&nbsp;€</span>
+    <span style="font:400 13px/1 'Archivo',sans-serif;color:rgba(23,24,26,.5)">7.710&nbsp;€/m² construido</span>
+  </div>
+</section>
+
+<section style="max-width:1440px;margin:0 auto;padding:0 40px">
+  <div style="display:grid;grid-template-columns:2fr 1fr;grid-template-rows:repeat(2,minmax(0,1fr));gap:1px;background:rgba(23,24,26,.16);height:clamp(440px,58vw,720px)">
+    <div style="grid-row:span 2;position:relative;background:#E4E0D7;background-image:repeating-linear-gradient(135deg,rgba(23,24,26,.055) 0 1px,transparent 1px 9px)">
+      <img src="https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=1600&q=70" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+    </div>
+    <div style="position:relative;background:#DFDACF;background-image:repeating-linear-gradient(135deg,rgba(23,24,26,.05) 0 1px,transparent 1px 9px)">
+      <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1600&q=70" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+    </div>
+    <div style="position:relative;background:#DFDACF;background-image:repeating-linear-gradient(135deg,rgba(23,24,26,.05) 0 1px,transparent 1px 9px)">
+      <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1600&q=70" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+      <a href="#ficha" style="position:absolute;right:0;bottom:0;background:#17181A;color:#F6F4F0;font:500 9.5px/1 'Archivo',sans-serif;letter-spacing:.2em;text-transform:uppercase;padding:16px 22px" style-hover="background:#8A7B5C">Ver 34 fotos</a>
+    </div>
+  </div>
+</section>
+
+<section style="max-width:1440px;margin:0 auto;padding:0 40px">
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid rgba(23,24,26,.16)">
+    <sc-for list="{{ datosClave }}" as="d" hint-placeholder-count="4">
+      <div style="display:flex;flex-direction:column;gap:9px;padding:34px 0 30px;border-right:1px solid rgba(23,24,26,.12)">
+        <span style="font:400 30px/1 'Libre Caslon Display',Georgia,serif">{{ d.valor }}</span>
+        <span style="font:500 9px/1 'Archivo',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:rgba(23,24,26,.45)">{{ d.etiqueta }}</span>
+      </div>
+    </sc-for>
+  </div>
+</section>
+
+<section id="galeria" style="max-width:1440px;margin:0 auto;padding:88px 40px 0;display:grid;grid-template-columns:1.55fr 1fr;gap:80px;align-items:start">
+  <div style="display:flex;flex-direction:column;gap:64px">
+    <div style="display:flex;flex-direction:column;gap:26px">
+      <span style="font:500 9.5px/1 'Archivo',sans-serif;letter-spacing:.28em;text-transform:uppercase;color:#8A7B5C">La propiedad</span>
+      <p style="margin:0;font:400 23px/1.6 'Libre Caslon Display',Georgia,serif;text-wrap:pretty">Villa Alameda ocupa la cota más alta de su calle. El acceso se produce por un patio cerrado, de modo que la casa no se muestra hasta que se atraviesa el vestíbulo y el salón se abre por completo hacia el sur.</p>
+      <p style="margin:0;font:400 15.5px/1.85 'Archivo',sans-serif;color:rgba(23,24,26,.68);text-wrap:pretty">La planta principal reúne salón, comedor y cocina en un solo volumen de 132 m² con carpintería de suelo a techo y salida directa a la terraza y la piscina de desbordamiento. Todos los dormitorios tienen baño propio, vestidor y terraza; el principal ocupa el ala oeste completa, con estudio anexo.</p>
+      <p style="margin:0;font:400 15.5px/1.85 'Archivo',sans-serif;color:rgba(23,24,26,.68);text-wrap:pretty">En el sótano hay garaje para cuatro vehículos, bodega climatizada, gimnasio con spa, sala de cine y apartamento de servicio independiente. La casa cuenta con domótica integrada, suelo radiante por agua, aerotermia y certificación energética A. Se vende amueblada por acuerdo separado.</p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:rgba(23,24,26,.16)">
+      <sc-for list="{{ caracteristicas }}" as="c" hint-placeholder-count="8">
+        <div style="background:#F6F4F0;padding:20px 22px;display:flex;justify-content:space-between;gap:16px;align-items:baseline">
+          <span style="font:500 9.5px/1.4 'Archivo',sans-serif;letter-spacing:.18em;text-transform:uppercase;color:rgba(23,24,26,.45)">{{ c.k }}</span>
+          <span style="font:400 14px/1.4 'Archivo',sans-serif;text-align:right">{{ c.v }}</span>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:22px">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;gap:24px">
+        <h2 style="margin:0;font:400 30px/1.1 'Libre Caslon Display',Georgia,serif">Ubicación</h2>
+        <span style="font:400 12.5px/1 'Archivo',sans-serif;color:rgba(23,24,26,.5)">La dirección exacta se facilita en la visita</span>
+      </div>
+      <div style="position:relative;aspect-ratio:16/9;background:#E9E5DD;background-image:linear-gradient(rgba(23,24,26,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(23,24,26,.07) 1px,transparent 1px);background-size:44px 44px">
+        <div style="position:absolute;left:47%;top:44%;width:14px;height:14px;background:#8A7B5C;border-radius:50%;box-shadow:0 0 0 8px rgba(138,123,92,.18)"></div>
+        <span style="position:absolute;left:18px;bottom:14px;font:400 9.5px/1 ui-monospace,Menlo,monospace;letter-spacing:.14em;text-transform:uppercase;color:rgba(23,24,26,.45)">mapa · zona aproximada, Sierra Blanca</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(23,24,26,.16)">
+        <sc-for list="{{ distancias }}" as="d" hint-placeholder-count="4">
+          <div style="background:#F6F4F0;padding:18px 0;display:flex;flex-direction:column;gap:6px">
+            <span style="font:400 17px/1 'Libre Caslon Display',Georgia,serif">{{ d.valor }}</span>
+            <span style="font:500 9px/1 'Archivo',sans-serif;letter-spacing:.2em;text-transform:uppercase;color:rgba(23,24,26,.45)">{{ d.etiqueta }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+
+  <aside style="position:sticky;top:110px;display:flex;flex-direction:column;gap:1px;background:rgba(23,24,26,.16)">
+    <div style="background:#17181A;color:#F6F4F0;padding:36px 32px;display:flex;flex-direction:column;gap:20px">
+      <span style="font:500 9px/1 'Archivo',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#8A7B5C">Visitas concertadas</span>
+      <p style="margin:0;font:400 20px/1.45 'Libre Caslon Display',Georgia,serif">Enseñamos esta villa dos días por semana, con cita previa.</p>
+      <a href="#contacto" style="background:#8A7B5C;color:#fff;text-align:center;font:500 10.5px/1 'Archivo',sans-serif;letter-spacing:.22em;text-transform:uppercase;padding:18px 0" style-hover="background:#F6F4F0;color:#17181A">Solicitar visita</a>
+      <a href="tel:+34952000000" style="color:rgba(246,244,240,.68);text-align:center;font:400 13px/1 'Archivo',sans-serif">o llame al +34 952 00 00 00</a>
+    </div>
+    <div style="background:#F6F4F0;padding:32px;display:flex;flex-direction:column;gap:24px">
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <span style="font:500 9px/1 'Archivo',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:rgba(23,24,26,.45)">Simulador de hipoteca</span>
+        <span style="font:400 34px/1.1 'Libre Caslon Display',Georgia,serif">{{ cuota }} <span style="font:400 13px/1 'Archivo',sans-serif;color:rgba(23,24,26,.5)">/ mes</span></span>
+      </div>
+      <label style="display:flex;flex-direction:column;gap:10px">
+        <span style="display:flex;justify-content:space-between;font:400 12.5px/1 'Archivo',sans-serif;color:rgba(23,24,26,.6)">Entrada<b style="font-weight:500;color:#17181A">{{ entradaTxt }}</b></span>
+        <input type="range" min="20" max="80" step="5" value="{{ entrada }}" onChange="{{ setEntrada }}">
+      </label>
+      <label style="display:flex;flex-direction:column;gap:10px">
+        <span style="display:flex;justify-content:space-between;font:400 12.5px/1 'Archivo',sans-serif;color:rgba(23,24,26,.6)">Plazo<b style="font-weight:500;color:#17181A">{{ anosTxt }}</b></span>
+        <input type="range" min="10" max="30" step="1" value="{{ anos }}" onChange="{{ setAnos }}">
+      </label>
+      <label style="display:flex;flex-direction:column;gap:10px">
+        <span style="display:flex;justify-content:space-between;font:400 12.5px/1 'Archivo',sans-serif;color:rgba(23,24,26,.6)">Interés<b style="font-weight:500;color:#17181A">{{ tasaTxt }}</b></span>
+        <input type="range" min="15" max="60" step="1" value="{{ tasa }}" onChange="{{ setTasa }}">
+      </label>
+      <p style="margin:0;font:400 11px/1.6 'Archivo',sans-serif;color:rgba(23,24,26,.42)">Cálculo orientativo sobre un capital de {{ capitalTxt }}. No constituye oferta de financiación.</p>
+    </div>
+  </aside>
+</section>
+
+<section style="max-width:1440px;margin:0 auto;padding:104px 40px 112px">
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:40px;padding-bottom:28px;border-bottom:1px solid rgba(23,24,26,.16)">
+    <h2 style="margin:0;font:400 clamp(28px,3vw,40px)/1.1 'Libre Caslon Display',Georgia,serif">Propiedades similares</h2>
+    <a href="#propiedades" style="font:500 10.5px/1 'Archivo',sans-serif;letter-spacing:.2em;text-transform:uppercase;padding-bottom:6px;border-bottom:1px solid rgba(23,24,26,.3)">Ver toda la cartera</a>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(23,24,26,.16)">
+    <sc-for list="{{ similares }}" as="s">
+      <a href="#ficha" style="display:flex;flex-direction:column;background:#F6F4F0;padding-bottom:28px" style-hover="background:#EFEBE4">
+        <div style="position:relative;aspect-ratio:4/3;background:#E4E0D7;background-image:repeating-linear-gradient(135deg,rgba(23,24,26,.055) 0 1px,transparent 1px 9px)">
+          <sc-if value="{{ s.foto }}">
+            <img src="{{ s.foto }}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
+          </sc-if>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px;padding:24px 24px 0">
+          <span style="font:500 9.5px/1 'Archivo',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#8A7B5C">{{ s.zona }}</span>
+          <h3 style="margin:0;font:400 23px/1.15 'Libre Caslon Display',Georgia,serif">{{ s.titulo }}</h3>
+          <span style="font:400 18px/1 'Libre Caslon Display',Georgia,serif">{{ s.precio }}</span>
+        </div>
+      </a>
+    </sc-for>
+  </div>
+</section>
+
+<dc-import name="Pie" hint-size="100%,420px"></dc-import>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { entrada: 30, anos: 25, tasa: 32 };
+  fmt(n, d) { return n.toLocaleString('es-ES', {minimumFractionDigits: d || 0, maximumFractionDigits: d || 0}); }
+  renderVals() {
+    const precio = 4950000;
+    const { entrada, anos, tasa } = this.state;
+    const rate = tasa / 10;
+    const capital = precio * (1 - entrada / 100);
+    const i = rate / 100 / 12, n = anos * 12;
+    const cuota = i === 0 ? capital / n : capital * i / (1 - Math.pow(1 + i, -n));
+    return {
+      entrada, anos, tasa,
+      entradaTxt: entrada + ' %',
+      anosTxt: anos + ' años',
+      tasaTxt: this.fmt(rate, 1) + ' %',
+      capitalTxt: this.fmt(capital) + ' €',
+      cuota: this.fmt(cuota) + ' €',
+      setEntrada: e => this.setState({ entrada: +e.target.value }),
+      setAnos: e => this.setState({ anos: +e.target.value }),
+      setTasa: e => this.setState({ tasa: +e.target.value }),
+      datosClave: [
+        {valor:'642 m²', etiqueta:'Construidos'},
+        {valor:'1.860 m²', etiqueta:'Parcela'},
+        {valor:'5 / 6', etiqueta:'Habitaciones / baños'},
+        {valor:'2019', etiqueta:'Año de construcción'}
+      ],
+      caracteristicas: [
+        {k:'Tipo', v:'Villa independiente'},
+        {k:'Orientación', v:'Sur'},
+        {k:'Plantas', v:'3 + sótano'},
+        {k:'Piscina', v:'Desbordamiento, climatizada'},
+        {k:'Garaje', v:'4 plazas'},
+        {k:'Certificado energético', v:'A'},
+        {k:'Climatización', v:'Aerotermia y suelo radiante'},
+        {k:'Comunidad', v:'520&nbsp;€/mes · seguridad 24 h'},
+        {k:'IBI', v:'6.140&nbsp;€/año'},
+        {k:'Disponibilidad', v:'Inmediata'}
+      ],
+      distancias: [
+        {valor:'6 min', etiqueta:'Puerto Banús'},
+        {valor:'9 min', etiqueta:'Centro de Marbella'},
+        {valor:'12 min', etiqueta:'Colegio internacional'},
+        {valor:'42 min', etiqueta:'Aeropuerto de Málaga'}
+      ],
+      similares: [
+        {zona:'La Zagaleta', titulo:'Casa Los Cipreses', precio:'Precio a consultar', foto:'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=70'},
+        {zona:'Benahavís', titulo:'Finca El Almendral', precio:'5.600.000&nbsp;€', foto:'https://images.unsplash.com/photo-1568605114967-8130f3a36994?auto=format&fit=crop&w=1600&q=70'},
+        {zona:'Sotogrande', titulo:'Villa Bruma', precio:'2.750.000&nbsp;€', foto:'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=1600&q=70'}
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,443 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..600&family=Inter+Tight:wght@300..600&display=swap">
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #FDF7F4; color: #2A1B1F; font-family: 'Inter Tight', 'Helvetica Neue', Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+    img { display: block; }
+    p { margin: 0; }
+    h1, h2, h3, h4 { margin: 0; font-weight: 400; }
+    ul { margin: 0; padding: 0; list-style: none; }
+    a { color: #B03A5B; text-decoration: none; }
+    a:hover { color: #7E2540; }
+  </style>
+</helmet>
+
+<div style="width: 1440px; background: #FDF7F4; overflow: hidden">
+
+  <!-- masthead -->
+  <div style="display: flex; align-items: center; justify-content: space-between; padding: 30px 64px 26px">
+    <div style="font-family: 'Fraunces', Georgia, serif; font-size: 25px; letter-spacing: 0.05em; color: #2A1B1F">Lumière</div>
+    <div style="display: flex; align-items: center; gap: 34px">
+      <a href="#" style="font-size: 14.5px; color: #2A1B1F">Rituales</a>
+      <a href="#" style="font-size: 14.5px; color: #2A1B1F">Bonos</a>
+      <a href="#" style="font-size: 14.5px; color: #2A1B1F">Equipo</a>
+      <a href="#" style="font-size: 14.5px; color: #2A1B1F">La casa</a>
+      <a href="#" style="font-size: 14.5px; font-weight: 500; color: #FDF7F4; background: #B03A5B; padding: 11px 22px; border-radius: 4px">Comprar un bono</a>
+    </div>
+  </div>
+
+  <!-- hero: full-bleed room, text on the clear wall, no floating card -->
+  <div style="position: relative; width: 1440px; height: 640px">
+    <img src="lumiere-cabina.webp" alt="Cabina de tratamiento de Lumière" style="position: absolute; top: 0; left: 0; width: 1440px; height: 640px; object-fit: cover; object-position: 50% 4%">
+
+    <div style="position: absolute; left: 288px; top: 40px; width: 570px">
+      <h1 style="font-family: 'Fraunces', Georgia, serif; font-size: 62px; font-weight: 300; line-height: 1.05; letter-spacing: -0.02em; color: #2A1B1F; text-wrap: pretty">Un buen resultado<br>no cabe en una tarde.</h1>
+      <p style="margin-top: 20px; width: 560px; font-size: 18px; font-weight: 300; line-height: 1.55; color: #3E2A2F">Trabajamos por rituales: cada uno dice con qué sales, cuánto dura y cuánto cuesta. Y se compran en bono.</p>
+      <p style="margin-top: 16px; font-size: 13.5px; font-weight: 500; letter-spacing: 0.02em; color: #4A3238">Chamberí, Madrid · Cuatro cabinas · Bonos de 5, 8 y 10 sesiones</p>
+    </div>
+  </div>
+
+  <!-- los cuatro más pedidos · banda entintada bajo la foto, leída como una carta -->
+  <div style="background: #F5E6E0; padding: 46px 96px 48px">
+    <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 32px; padding-bottom: 20px; border-bottom: 1px solid rgba(42,27,31,0.14)">
+      <h2 style="font-family: 'Fraunces', Georgia, serif; font-size: 28px; font-weight: 300; letter-spacing: -0.01em; color: #2A1B1F">Los cuatro más pedidos</h2>
+      <span style="font-size: 14px; line-height: 1.45; color: #4A3238">Precio de una sesión suelta. En bono baja entre un 10 % y un 15 %.</span>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 0; margin-top: 4px">
+      <div style="display: flex; align-items: baseline; gap: 32px; padding: 20px 0; border-bottom: 1px solid rgba(42,27,31,0.08)">
+        <div style="width: 300px; flex-shrink: 0; font-family: 'Fraunces', Georgia, serif; font-size: 22px; color: #2A1B1F">Luz Fría</div>
+        <div style="flex-grow: 1; font-size: 15px; line-height: 1.5; color: #4A3238">Sales con el poro cerrado y la piel mate.</div>
+        <div style="width: 84px; flex-shrink: 0; text-align: right; font-size: 14px; color: #7A5D64">60 min</div>
+        <div style="width: 108px; flex-shrink: 0; text-align: right; font-size: 19px; font-weight: 600; color: #2A1B1F; font-variant-numeric: tabular-nums">68,00&nbsp;€</div>
+      </div>
+      <div style="display: flex; align-items: baseline; gap: 32px; padding: 20px 0; border-bottom: 1px solid rgba(42,27,31,0.08)">
+        <div style="width: 300px; flex-shrink: 0; font-family: 'Fraunces', Georgia, serif; font-size: 22px; color: #2A1B1F">Descarga</div>
+        <div style="flex-grow: 1; font-size: 15px; line-height: 1.5; color: #4A3238">Sales sin el nudo del trapecio.</div>
+        <div style="width: 84px; flex-shrink: 0; text-align: right; font-size: 14px; color: #7A5D64">50 min</div>
+        <div style="width: 108px; flex-shrink: 0; text-align: right; font-size: 19px; font-weight: 600; color: #2A1B1F; font-variant-numeric: tabular-nums">58,00&nbsp;€</div>
+      </div>
+      <div style="display: flex; align-items: baseline; gap: 32px; padding: 20px 0; border-bottom: 1px solid rgba(42,27,31,0.08)">
+        <div style="width: 300px; flex-shrink: 0; font-family: 'Fraunces', Georgia, serif; font-size: 22px; color: #2A1B1F">Láser piernas enteras</div>
+        <div style="flex-grow: 1; font-size: 15px; line-height: 1.5; color: #4A3238">Sales con las dos piernas hechas en media hora.</div>
+        <div style="width: 84px; flex-shrink: 0; text-align: right; font-size: 14px; color: #7A5D64">25 min</div>
+        <div style="width: 108px; flex-shrink: 0; text-align: right; font-size: 19px; font-weight: 600; color: #2A1B1F; font-variant-numeric: tabular-nums">95,00&nbsp;€</div>
+      </div>
+      <div style="display: flex; align-items: baseline; gap: 32px; padding: 20px 0">
+        <div style="width: 300px; flex-shrink: 0; font-family: 'Fraunces', Georgia, serif; font-size: 22px; color: #2A1B1F">Manicura rusa</div>
+        <div style="flex-grow: 1; font-size: 15px; line-height: 1.5; color: #4A3238">Sales con la uña limpia tres semanas.</div>
+        <div style="width: 84px; flex-shrink: 0; text-align: right; font-size: 14px; color: #7A5D64">75 min</div>
+        <div style="width: 108px; flex-shrink: 0; text-align: right; font-size: 19px; font-weight: 600; color: #2A1B1F; font-variant-numeric: tabular-nums">42,00&nbsp;€</div>
+      </div>
+    </div>
+
+    <p style="margin-top: 26px; font-size: 15px; line-height: 1.6; color: #4A3238">La carta completa son 15 rituales en cuatro zonas. <a href="#" style="font-weight: 600; color: #B03A5B; text-decoration: underline; text-underline-offset: 3px">Ver la carta</a></p>
+  </div>
+
+  <!-- manifesto -->
+  <div style="display: flex; align-items: flex-start; gap: 80px; padding: 152px 96px 116px">
+    <div style="width: 620px">
+      <h2 style="font-family: 'Fraunces', Georgia, serif; font-size: 42px; font-weight: 300; line-height: 1.12; letter-spacing: -0.015em; color: #2A1B1F; text-wrap: pretty">Nadie deshincha unas piernas en una sesión, y quien te lo venda te está vendiendo otra cosa.</h2>
+    </div>
+    <div style="width: 500px; margin-top: 54px">
+      <p style="font-size: 16.5px; line-height: 1.7; color: #4A3238">Lumière abrió en 2013 con una idea aburrida y honesta: decir cuántas sesiones hacen falta antes de cobrar la primera. Por eso la carta se lee como una carta —efecto, duración, precio— y por eso el cierre es un bono y no un botón de reserva.</p>
+      <div style="display: flex; flex-direction: column; gap: 14px; margin-top: 30px">
+        <div style="font-size: 15px; line-height: 1.5; color: #2A1B1F"><span style="font-weight: 600">Sin permanencia.</span> El bono se paga una vez y se reserva sesión a sesión.</div>
+        <div style="font-size: 15px; line-height: 1.5; color: #2A1B1F"><span style="font-weight: 600">Sin sorpresas.</span> Si en la primera sesión vemos que no es tu tratamiento, te lo decimos y no hay bono.</div>
+        <div style="font-size: 15px; line-height: 1.5; color: #2A1B1F"><span style="font-weight: 600">Se comparte.</span> El bono libre lo pueden gastar dos personas.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- carta de rituales -->
+  <div style="padding: 0 96px 40px">
+    <h2 style="font-family: 'Fraunces', Georgia, serif; font-size: 46px; font-weight: 300; letter-spacing: -0.015em; color: #2A1B1F">La carta de rituales</h2>
+    <p style="margin-top: 14px; width: 620px; font-size: 16.5px; line-height: 1.65; color: #4A3238">Cuatro zonas, quince rituales. El precio que ves es el de una sesión suelta; abajo está lo que cuesta el mismo ritual comprado en bono.</p>
+  </div>
+
+  <!-- zona 1 · rostro (tinted) -->
+  <div style="padding: 44px 96px 0">
+    <div style="display: flex; gap: 56px; background: #F5E6E0; border-radius: 4px; padding: 44px">
+      <img src="lumiere-rostro.webp" alt="Tratamiento de rostro" style="width: 460px; height: 400px; object-fit: cover; border-radius: 2px; flex-shrink: 0">
+      <div style="flex-grow: 1">
+        <div style="display: flex; align-items: baseline; justify-content: space-between">
+          <h3 style="font-family: 'Fraunces', Georgia, serif; font-size: 31px; color: #2A1B1F">Rostro</h3>
+          <span style="font-size: 13px; color: #6E5A5F">Cabina 1 y 2 · Noa y Pilar</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 26px; margin-top: 30px">
+          <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 28px">
+            <div style="flex-grow: 1; max-width: 480px">
+              <div style="font-size: 17px; font-weight: 600; color: #2A1B1F">Luz Fría</div>
+              <div style="margin-top: 4px; font-size: 14.5px; line-height: 1.55; color: #5C464B">Higiene profunda con extracción manual y ácido mandélico. Sales con el poro cerrado y la piel mate.</div>
+            </div>
+            <div style="text-align: right; flex-shrink: 0; width: 108px">
+              <div style="font-size: 13px; color: #7A5D64">60 min</div>
+              <div style="font-size: 19px; font-weight: 600; color: #2A1B1F; font-variant-numeric: tabular-nums">68,00&nbsp;€</div>
+            </div>
+          </div>
+          <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 28px">
+            <div style="flex-grow: 1; max-width: 480px">
+              <div style="font-size: 17px; font-weight: 600; color: #2A1B1F">Óvalo</div>
+              <div style="margin-top: 4px; font-size: 14.5px; line-height: 1.55; color: #5C464B">Radiofrecuencia y kobido a cuatro manos. Sales con la línea de la mandíbula levantada y sin la cara apagada.</div>
+            </div>
+            <div style="text-align: right; flex-shrink: 0; width: 108px">
+              <div style="font-size: 13px; color: #7A5D64">75 min</div>
+              <div style="font-size: 19px; font-weight: 600; color: #2A1B1F; font-variant-numeric: tabular-nums">89,00&nbsp;€</div>
+            </div>
+          </div>
+          <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 28px">
+            <div style="flex-grow: 1; max-width: 480px">
+              <div style="font-size: 17px; font-weight: 600; color: #2A1B1F">Piel Nueva</div>
+              <div style="margin-top: 4px; font-size: 14.5px; line-height: 1.55; color: #5C464B">Peeling de ácido láctico al 30 %. Sales con la mancha un tono más clara; hacen falta cuatro para verla irse.</div>
+            </div>
+            <div style="text-align: right; flex-shrink: 0; width: 108px">
+              <div style="font-size: 13px; color: #7A5D64">45 min</div>
+              <div style="font-size: 19px; font-weight: 600; color: #2A1B1F; font-variant-numeric: tabular-nums">74,00&nbsp;€</div>
+            </div>
+          </div>
+          <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 28px">
+            <div style="flex-grow: 1; max-width: 480px">
+              <div style="font-size: 17px; font-weight: 600; color: #2A1B1F">Ojos Despiertos</div>
+              <div style="margin-top: 4px; font-size: 14.5px; line-height: 1.55; color: #5C464B">Drenaje periocular y radiofrecuencia suave. Sales sin la bolsa de la mañana.</div>
+            </div>
+            <div style="text-align: right; flex-shrink: 0; width: 108px">
+              <div style="font-size: 13px; color: #7A5D64">30 min</div>
+              <div style="font-size: 19px; font-weight: 600; color: #2A1B1F; font-variant-numeric: tabular-nums">46,00&nbsp;€</div>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top: 32px; font-size: 14px; color: #6E5A5F">Bono de 5 en Rostro: <span style="font-weight: 600; color: #B03A5B">desde&nbsp;207,00&nbsp;€</span> · Bono de 10: <span style="font-weight: 600; color: #B03A5B">desde&nbsp;391,00&nbsp;€</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- zona 2 · cuerpo (white floating, photo right) -->
+  <div style="padding: 40px 96px 0">
+    <div style="display: flex; gap: 56px; background: #FFFDFC; border-radius: 4px; padding: 44px; box-shadow: 0 20px 52px rgba(42, 27, 31, 0.10)">
+      <div style="flex-grow: 1">
+        <div style="display: flex; align-items: baseline; justify-content: space-between">
+          <h3 style="font-family: 'Fraunces', Georgia, serif; font-size: 31px; color: #2A1B1F">Cuerpo</h3>
+          <span style="font-size: 13px; color: #6E5A5F">Cabina 3 · Hugo</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 26px; margin-top: 30px">
+          <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 28px">
+            <div style="flex-grow: 1; max-width: 480px">
+              <div style="font-size: 17px; font-weight: 600; color: #2A1B1F">Descarga</div>
+              <div style="margin-top: 4px; font-size: 14.5px; line-height: 1.55; color: #5C464B">Masaje profundo de espalda, cervicales y trapecio. Sales sin el nudo del ordenador y girando el cuello entero.</div>
+            </div>
+            <div style="text-align: right; flex-shrink: 0; width: 108px">
+              <div style="font-size: 13px; color: #7A5D64">50 min</div>
+              <div style="font-size: 19px; font-weight: 600; color: #2A1B1F; font-variant-numeric: tabular-nums">58,00&nbsp;€</div>
+            </div>
+          </div>
+          <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 28px">
+            <div style="flex-grow: 1; max-width: 480px">
+              <div style="font-size: 17px; font-weight: 600; color: #2A1B1F">Drenaje Lento</div>
+              <div style="margin-top: 4px; font-size: 14.5px; line-height: 1.55; color: #5C464B">Drenaje linfático manual de pierna entera, a ritmo bajo. Sales sin pesadez de la rodilla para abajo.</div>
+            </div>
+            <div style="text-align: right; flex-shrink: 0; width: 108px">
+              <div style="font-size: 13px; color: #7A5D64">60 min</div>
+              <div style="font-size: 19px; font-weight: 600; color: #2A1B1F; font-variant-numeric: tabular-nums">65,00&nbsp;€</div>
+            </div>
+          </div>
+          <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 28px">
+            <div style="flex-grow: 1; max-width: 480px">
+              <div style="font-size: 17px; font-weight: 600; color: #2A1B1F">Vientre</div>
+              <div style="margin-top: 4px; font-size: 14.5px; line-height: 1.55; color: #5C464B">Maderoterapia abdominal y presoterapia. Sales con el abdomen deshinchado y la digestión en marcha.</div>
+            </div>
+            <div style="text-align: right; flex-shrink: 0; width: 108px">
+              <div style="font-size: 13px; color: #7A5D64">70 min</div>
+              <div style="font-size: 19px; font-weight: 600; color: #2A1B1F; font-variant-numeric: tabular-nums">78,00&nbsp;€</div>
+            </div>
+          </div>
+          <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 28px">
+            <div style="flex-grow: 1; max-width: 480px">
+              <div style="font-size: 17px; font-weight: 600; color: #2A1B1F">Espalda Limpia</div>
+              <div style="margin-top: 4px; font-size: 14.5px; line-height: 1.55; color: #5C464B">Higiene de espalda con extracción y peeling enzimático. Sales con la espalda lisa para el vestido de escote.</div>
+            </div>
+            <div style="text-align: right; flex-shrink: 0; width: 108px">
+              <div style="font-size: 13px; color: #7A5D64">55 min</div>
+              <div style="font-size: 19px; font-weight: 600; color: #2A1B1F; font-variant-numeric: tabular-nums">62,00&nbsp;€</div>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top: 32px; font-size: 14px; color: #6E5A5F">Bono de 5 en Cuerpo: <span style="font-weight: 600; color: #B03A5B">desde&nbsp;261,00&nbsp;€</span> · Bono de 10: <span style="font-weight: 600; color: #B03A5B">desde&nbsp;493,00&nbsp;€</span></div>
+      </div>
+      <img src="lumiere-cuerpo.webp" alt="Masaje de cuerpo" style="width: 460px; height: 400px; object-fit: cover; border-radius: 2px; flex-shrink: 0">
+    </div>
+  </div>
+
+  <!-- zona 3 · depilación (tinted) -->
+  <div style="padding: 40px 96px 0">
+    <div style="display: flex; gap: 56px; background: #F5E6E0; border-radius: 4px; padding: 44px">
+      <img src="lumiere-depilacion.webp" alt="Depilación láser" style="width: 460px; height: 400px; object-fit: cover; border-radius: 2px; flex-shrink: 0">
+      <div style="flex-grow: 1">
+        <div style="display: flex; align-items: baseline; justify-content: space-between">
+          <h3 style="font-family: 'Fraunces', Georgia, serif; font-size: 31px; color: #2A1B1F">Depilación</h3>
+          <span style="font-size: 13px; color: #6E5A5F">Cabina 4 · Hugo y Noa</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 26px; margin-top: 30px">
+          <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 28px">
+            <div style="flex-grow: 1; max-width: 480px">
+              <div style="font-size: 17px; font-weight: 600; color: #2A1B1F">Láser Piernas Enteras</div>
+              <div style="margin-top: 4px; font-size: 14.5px; line-height: 1.55; color: #5C464B">Diodo refrigerado de alta potencia. Sales con las dos piernas hechas en menos de media hora.</div>
+            </div>
+            <div style="text-align: right; flex-shrink: 0; width: 108px">
+              <div style="font-size: 13px; color: #7A5D64">25 min</div>
+              <div style="font-size: 19px; font-weight: 600; color: #2A1B1F; font-variant-numeric: tabular-nums">95,00&nbsp;€</div>
+            </div>
+          </div>
+          <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 28px">
+            <div style="flex-grow: 1; max-width: 480px">
+              <div style="font-size: 17px; font-weight: 600; color: #2A1B1F">Láser Axilas e Ingles</div>
+              <div style="margin-top: 4px; font-size: 14.5px; line-height: 1.55; color: #5C464B">Sesión corta, sin anestesia. Sales pudiendo ducharte esa misma noche.</div>
+            </div>
+            <div style="text-align: right; flex-shrink: 0; width: 108px">
+              <div style="font-size: 13px; color: #7A5D64">15 min</div>
+              <div style="font-size: 19px; font-weight: 600; color: #2A1B1F; font-variant-numeric: tabular-nums">58,00&nbsp;€</div>
+            </div>
+          </div>
+          <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 28px">
+            <div style="flex-grow: 1; max-width: 480px">
+              <div style="font-size: 17px; font-weight: 600; color: #2A1B1F">Láser Facial</div>
+              <div style="margin-top: 4px; font-size: 14.5px; line-height: 1.55; color: #5C464B">Labio, mentón y patillas. Sales sin la sombra que tapabas con maquillaje.</div>
+            </div>
+            <div style="text-align: right; flex-shrink: 0; width: 108px">
+              <div style="font-size: 13px; color: #7A5D64">15 min</div>
+              <div style="font-size: 19px; font-weight: 600; color: #2A1B1F; font-variant-numeric: tabular-nums">45,00&nbsp;€</div>
+            </div>
+          </div>
+          <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 28px">
+            <div style="flex-grow: 1; max-width: 480px">
+              <div style="font-size: 17px; font-weight: 600; color: #2A1B1F">Cera Tibia de Baja Fusión</div>
+              <div style="margin-top: 4px; font-size: 14.5px; line-height: 1.55; color: #5C464B">Media pierna e ingles, sin tirones. Sales sin rojeces a las dos horas.</div>
+            </div>
+            <div style="text-align: right; flex-shrink: 0; width: 108px">
+              <div style="font-size: 13px; color: #7A5D64">30 min</div>
+              <div style="font-size: 19px; font-weight: 600; color: #2A1B1F; font-variant-numeric: tabular-nums">32,00&nbsp;€</div>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top: 32px; font-size: 14px; color: #6E5A5F">El láser se vende sólo en bono: la pauta son 8 sesiones cada 6 semanas. <span style="font-weight: 600; color: #B03A5B">Piernas enteras ×8 · 668,00&nbsp;€</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- zona 4 · manos (white floating, photo right) -->
+  <div style="padding: 40px 96px 0">
+    <div style="display: flex; gap: 56px; background: #FFFDFC; border-radius: 4px; padding: 44px; box-shadow: 0 20px 52px rgba(42, 27, 31, 0.10)">
+      <div style="flex-grow: 1">
+        <div style="display: flex; align-items: baseline; justify-content: space-between">
+          <h3 style="font-family: 'Fraunces', Georgia, serif; font-size: 31px; color: #2A1B1F">Manos y pies</h3>
+          <span style="font-size: 13px; color: #6E5A5F">Mesa de recepción · Pilar</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 26px; margin-top: 30px">
+          <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 28px">
+            <div style="flex-grow: 1; max-width: 480px">
+              <div style="font-size: 17px; font-weight: 600; color: #2A1B1F">Manicura Rusa</div>
+              <div style="margin-top: 4px; font-size: 14.5px; line-height: 1.55; color: #5C464B">Cutícula al torno y esmaltado semipermanente. Sales con la uña limpia tres semanas, no diez días.</div>
+            </div>
+            <div style="text-align: right; flex-shrink: 0; width: 108px">
+              <div style="font-size: 13px; color: #7A5D64">75 min</div>
+              <div style="font-size: 19px; font-weight: 600; color: #2A1B1F; font-variant-numeric: tabular-nums">42,00&nbsp;€</div>
+            </div>
+          </div>
+          <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 28px">
+            <div style="flex-grow: 1; max-width: 480px">
+              <div style="font-size: 17px; font-weight: 600; color: #2A1B1F">Pedicura Clínica</div>
+              <div style="margin-top: 4px; font-size: 14.5px; line-height: 1.55; color: #5C464B">Retirada de durezas y trabajo de uña encarnada. Sales pudiendo andar sin la molestia del dedo gordo.</div>
+            </div>
+            <div style="text-align: right; flex-shrink: 0; width: 108px">
+              <div style="font-size: 13px; color: #7A5D64">60 min</div>
+              <div style="font-size: 19px; font-weight: 600; color: #2A1B1F; font-variant-numeric: tabular-nums">48,00&nbsp;€</div>
+            </div>
+          </div>
+          <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 28px">
+            <div style="flex-grow: 1; max-width: 480px">
+              <div style="font-size: 17px; font-weight: 600; color: #2A1B1F">Manos de Invierno</div>
+              <div style="margin-top: 4px; font-size: 14.5px; line-height: 1.55; color: #5C464B">Peeling, parafina y masaje. Sales sin la piel tirante de la calefacción.</div>
+            </div>
+            <div style="text-align: right; flex-shrink: 0; width: 108px">
+              <div style="font-size: 13px; color: #7A5D64">35 min</div>
+              <div style="font-size: 19px; font-weight: 600; color: #2A1B1F; font-variant-numeric: tabular-nums">34,00&nbsp;€</div>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top: 32px; font-size: 14px; color: #6E5A5F">Bono de 10 manicuras (una al mes): <span style="font-weight: 600; color: #B03A5B">357,00&nbsp;€</span> · sale a 35,70&nbsp;€ la sesión</div>
+      </div>
+      <img src="lumiere-manos.webp" alt="Manicura" style="width: 460px; height: 400px; object-fit: cover; border-radius: 2px; flex-shrink: 0">
+    </div>
+  </div>
+
+  <!-- producto · bleeds right -->
+  <div style="display: flex; align-items: center; gap: 72px; margin-top: 116px">
+    <div style="flex-grow: 1; padding-left: 96px">
+      <h2 style="font-family: 'Fraunces', Georgia, serif; font-size: 38px; font-weight: 300; line-height: 1.15; letter-spacing: -0.015em; color: #2A1B1F">Una sola línea, y te decimos qué no necesitas</h2>
+      <p style="margin-top: 20px; max-width: 58ch; font-size: 16.5px; line-height: 1.7; color: #4A3238">Trabajamos con un laboratorio español, sin perfume y con los activos declarados al porcentaje. Lo que usamos en cabina te lo puedes llevar a casa, pero la rutina que te mandamos rara vez pasa de tres productos: limpiador, un activo y protección solar.</p>
+      <p style="margin-top: 18px; max-width: 58ch; font-size: 16.5px; line-height: 1.7; color: #4A3238">Si vienes con doce botes, los revisamos contigo y te decimos cuáles se pueden ir a la basura. Ese rato no se cobra.</p>
+      <div style="margin-top: 28px; font-size: 15px; font-weight: 600; color: #B03A5B">Consulta de rutina · 25 min · gratuita con cualquier bono</div>
+    </div>
+    <img src="lumiere-cosmetica.webp" alt="Cosmética de cabina" style="width: 620px; height: 460px; object-fit: cover; flex-shrink: 0">
+  </div>
+
+  <!-- equipo · staggered portraits -->
+  <div style="padding: 120px 96px 0">
+    <h2 style="font-family: 'Fraunces', Georgia, serif; font-size: 38px; font-weight: 300; letter-spacing: -0.015em; color: #2A1B1F">Tres personas, y siempre la misma contigo</h2>
+    <p style="margin-top: 14px; max-width: 62ch; font-size: 16.5px; line-height: 1.7; color: #4A3238">El bono se asigna a quien te atiende la primera vez. Si te toca cambiar, te lo avisamos antes de reservar.</p>
+
+    <div style="display: flex; align-items: flex-start; gap: 44px; margin-top: 52px">
+      <div style="width: 380px">
+        <img src="lumiere-noa.webp" alt="Noa Ferreira" style="width: 380px; height: 380px; object-fit: cover; border-radius: 4px">
+        <div style="margin-top: 18px; font-family: 'Fraunces', Georgia, serif; font-size: 23px; color: #2A1B1F">Noa Ferreira</div>
+        <div style="margin-top: 5px; font-size: 14.5px; color: #6E5A5F">Directora técnica · aparatología y láser · 12 años</div>
+      </div>
+      <div style="width: 380px; margin-top: 76px">
+        <img src="lumiere-pilar.webp" alt="Pilar Sanchís" style="width: 380px; height: 380px; object-fit: cover; border-radius: 4px">
+        <div style="margin-top: 18px; font-family: 'Fraunces', Georgia, serif; font-size: 23px; color: #2A1B1F">Pilar Sanchís</div>
+        <div style="margin-top: 5px; font-size: 14.5px; color: #6E5A5F">Peelings y protocolos de rostro · 9 años</div>
+      </div>
+      <div style="width: 380px; margin-top: 32px">
+        <img src="lumiere-hugo.webp" alt="Hugo Belmonte" style="width: 380px; height: 380px; object-fit: cover; border-radius: 4px">
+        <div style="margin-top: 18px; font-family: 'Fraunces', Georgia, serif; font-size: 23px; color: #2A1B1F">Hugo Belmonte</div>
+        <div style="margin-top: 5px; font-size: 14.5px; color: #6E5A5F">Masaje terapéutico y drenaje · 7 años</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- el bono · band with straddling panel -->
+  <div style="margin-top: 140px; background: #F5E6E0; padding: 0 96px 110px">
+    <div style="background: #FFFDFC; border-radius: 4px; box-shadow: 0 28px 70px rgba(42, 27, 31, 0.14); padding: 52px 52px 46px; transform: translateY(-84px); margin-bottom: -84px">
+      <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 64px">
+        <div style="width: 480px">
+          <h2 style="font-family: 'Fraunces', Georgia, serif; font-size: 44px; font-weight: 300; line-height: 1.1; letter-spacing: -0.02em; color: #2A1B1F">El bono</h2>
+          <p style="margin-top: 18px; font-size: 16.5px; line-height: 1.7; color: #4A3238">Es la forma normal de comprar aquí. Se paga una vez, se reserva sesión a sesión y no caduca hasta que lo dice su fecha. Si te sobran sesiones, se las puedes pasar a otra persona.</p>
+        </div>
+        <div style="flex-grow: 1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px">
+          <div>
+            <div style="font-family: 'Fraunces', Georgia, serif; font-size: 22px; color: #2A1B1F">Esencial</div>
+            <div style="margin-top: 6px; font-size: 13.5px; color: #6E5A5F">5 sesiones del mismo ritual · 6 meses</div>
+            <div style="margin-top: 20px; font-size: 34px; font-weight: 600; color: #B03A5B; font-variant-numeric: tabular-nums">−10 %</div>
+            <div style="margin-top: 8px; font-size: 14px; line-height: 1.5; color: #4A3238">Luz Fría ×5<br><span style="font-weight: 600">306,00&nbsp;€</span> en vez de 340,00&nbsp;€</div>
+          </div>
+          <div>
+            <div style="font-family: 'Fraunces', Georgia, serif; font-size: 22px; color: #2A1B1F">Constancia</div>
+            <div style="margin-top: 6px; font-size: 13.5px; color: #6E5A5F">10 sesiones del mismo ritual · 12 meses</div>
+            <div style="margin-top: 20px; font-size: 34px; font-weight: 600; color: #B03A5B; font-variant-numeric: tabular-nums">−15 %</div>
+            <div style="margin-top: 8px; font-size: 14px; line-height: 1.5; color: #4A3238">Luz Fría ×10<br><span style="font-weight: 600">578,00&nbsp;€</span> en vez de 680,00&nbsp;€</div>
+          </div>
+          <div>
+            <div style="font-family: 'Fraunces', Georgia, serif; font-size: 22px; color: #2A1B1F">Libre</div>
+            <div style="margin-top: 6px; font-size: 13.5px; color: #6E5A5F">8 sesiones a repartir entre zonas y entre dos personas · 12 meses</div>
+            <div style="margin-top: 20px; font-size: 34px; font-weight: 600; color: #B03A5B; font-variant-numeric: tabular-nums">−12 %</div>
+            <div style="margin-top: 8px; font-size: 14px; line-height: 1.5; color: #4A3238">Luz Fría ×8<br><span style="font-weight: 600">478,72&nbsp;€</span> en vez de 544,00&nbsp;€</div>
+          </div>
+        </div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 20px; margin-top: 44px">
+        <a href="#" style="font-size: 15.5px; font-weight: 600; color: #FDF7F4; background: #B03A5B; padding: 16px 34px; border-radius: 4px">Comprar un bono</a>
+        <a href="#" style="font-size: 15.5px; font-weight: 500; color: #2A1B1F; background: #F5E6E0; padding: 16px 30px; border-radius: 4px">Hablar antes con nosotras · 913 44 08 21</a>
+        <span style="font-size: 13.5px; line-height: 1.5; color: #6E5A5F">Se paga en el estudio o por transferencia. No hay domiciliación ni permanencia.</span>
+      </div>
+    </div>
+
+    <!-- visita -->
+    <div style="display: flex; align-items: center; gap: 64px; margin-top: 34px">
+      <img src="lumiere-recepcion.webp" alt="Recepción de Lumière" style="width: 540px; height: 380px; object-fit: cover; border-radius: 4px; flex-shrink: 0">
+      <div style="flex-grow: 1">
+        <h3 style="font-family: 'Fraunces', Georgia, serif; font-size: 32px; font-weight: 300; color: #2A1B1F">Dónde estamos</h3>
+        <div style="display: flex; flex-direction: column; gap: 16px; margin-top: 24px">
+          <div style="font-size: 16.5px; line-height: 1.6; color: #4A3238">Calle Fernández de los Ríos, 74 · bajo izquierda<br>28015 Chamberí, Madrid</div>
+          <div style="font-size: 16.5px; line-height: 1.6; color: #4A3238">Lunes a viernes, 10:00 – 20:30<br>Sábados, 10:00 – 15:00</div>
+          <div style="font-size: 16.5px; line-height: 1.6; color: #4A3238">Metro Moncloa e Islas Filipinas, a siete minutos.<br>Sin escalones en la entrada.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- footer -->
+  <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 60px; padding: 76px 96px 56px">
+    <div style="width: 340px">
+      <div style="font-family: 'Fraunces', Georgia, serif; font-size: 24px; letter-spacing: 0.05em; color: #2A1B1F">Lumière</div>
+      <p style="margin-top: 14px; font-size: 14.5px; line-height: 1.65; color: #6E5A5F">Estudio de belleza en Chamberí desde&nbsp;2013. Rituales por zona, comprados en bono.</p>
+    </div>
+    <div>
+      <div style="font-size: 14.5px; font-weight: 600; color: #2A1B1F">La carta</div>
+      <div style="display: flex; flex-direction: column; gap: 9px; margin-top: 14px">
+        <a href="#" style="font-size: 14.5px; color: #6E5A5F">Rostro</a>
+        <a href="#" style="font-size: 14.5px; color: #6E5A5F">Cuerpo</a>
+        <a href="#" style="font-size: 14.5px; color: #6E5A5F">Depilación</a>
+        <a href="#" style="font-size: 14.5px; color: #6E5A5F">Manos y pies</a>
+      </div>
+    </div>
+    <div>
+      <div style="font-size: 14.5px; font-weight: 600; color: #2A1B1F">Bonos</div>
+      <div style="display: flex; flex-direction: column; gap: 9px; margin-top: 14px">
+        <a href="#" style="font-size: 14.5px; color: #6E5A5F">Esencial</a>
+        <a href="#" style="font-size: 14.5px; color: #6E5A5F">Constancia</a>
+        <a href="#" style="font-size: 14.5px; color: #6E5A5F">Libre</a>
+        <a href="#" style="font-size: 14.5px; color: #6E5A5F">Regalar un bono</a>
+      </div>
+    </div>
+    <div style="width: 260px">
+      <div style="font-size: 14.5px; font-weight: 600; color: #2A1B1F">Contacto</div>
+      <div style="display: flex; flex-direction: column; gap: 9px; margin-top: 14px">
+        <span style="font-size: 14.5px; color: #6E5A5F">913 44 08 21</span>
+        <span style="font-size: 14.5px; color: #6E5A5F">hola@lumiere-estudio.es</span>
+        <span style="font-size: 14.5px; color: #6E5A5F">WhatsApp 682 11 09 34</span>
+      </div>
+    </div>
+  </div>
+  <div style="padding: 0 96px 48px; font-size: 13px; color: #7A5D64">Lumière Estudio de Belleza S.L. · B-88 402 116 · Aviso legal · Privacidad · Condiciones de los bonos</div>
+
+</div>
+</x-dc>
+</body>
+</html>

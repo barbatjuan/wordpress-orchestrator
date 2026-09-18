@@ -1,0 +1,23 @@
+{
+  "artboards": [
+    {
+      "file": "Amalia.dc.html",
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 6499,
+      "title": "AMALIA · lienzo completo (siete vistas; abre en Inicio)"
+    },
+    {
+      "file": "HeroA.dc.html",
+      "x": 1600,
+      "y": 0,
+      "w": 1440,
+      "h": 1086,
+      "title": "AMALIA · exploración de hero A (superada, no se deriva)"
+    }
+  ],
+  "launch": {
+    "view": "canvas"
+  }
+}

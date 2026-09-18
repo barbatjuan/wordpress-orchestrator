@@ -240,7 +240,7 @@ php skills/html-mockup/assets/gallery/_build-gallery.php
 First, offline — no WordPress, no connector, both run in a second:
 
 ```bash
-php skills/framework-audit/assets/framework-audit.php && php tests/test-container-hygiene.php && php tests/test-framework-audit.php && php tests/test-audit-signals.php && php tests/test-write-path.php && php tests/test-replay.php
+php skills/framework-audit/assets/framework-audit.php && php tests/test-container-hygiene.php && php tests/test-framework-audit.php && php tests/test-audit-signals.php && php tests/test-write-path.php && php tests/test-replay.php && php tests/test-herramientas.php
 ```
 
 The audit enforces everything on this page that a machine can decide: frontmatter, the word
@@ -258,7 +258,10 @@ is the only way to reach branches a real site reaches only when something has al
 `test-replay.php` asserts the property migration-by-replay rests on: that a build reproduces
 itself. It shares `test-write-path.php`'s fake WordPress through `tests/lib/fake-wp.php` rather
 than copying it, because two fake WordPresses drift and the day they differ is the day one suite
-proves determinism the other one has already lost.
+proves determinism the other one has already lost. `test-herramientas.php` guards the shared
+`skills/html-mockup/assets/herramientas/` toolbox (`color.php`, `scrim.php`, `huella.php`):
+both halves of each dual-mode file, the library functions in-process and the CLI's own `0`/`1`/`2`
+exit contract through real child processes.
 
 This chain is a static `&&` list, not a glob, so a new test file that nobody adds here would
 silently never run. There is a check, and it is worth knowing exactly what it proves: the audit

@@ -1,0 +1,156 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Martian+Mono:wght@400;500&display=swap">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  /* El suelo va tambien en body: el frame del artboard pinta su propio blanco donde el
+     contenido no llega. */
+  html, body { margin: 0; padding: 0; background: #EDEFEE; }
+  x-dc { display: block; }
+  [data-suelo] h1, [data-suelo] h2, [data-suelo] h3, [data-suelo] h4,
+  [data-suelo] p, [data-suelo] ul, [data-suelo] li, [data-suelo] dl, [data-suelo] dd, [data-suelo] dt,
+  [data-suelo] figure, [data-suelo] figcaption {
+    margin: 0; padding: 0;
+  }
+  [data-suelo] ul { list-style: none; }
+  [data-suelo] img { display: block; border: 0; }
+  [data-suelo] a { color: inherit; text-decoration: none; }
+  .mono { font-family: "Martian Mono", ui-monospace, monospace; }
+  /* El ocre es la UNICA pieza de color y NUNCA lleva texto encima. Ver Escuadra.dc.html. */
+  .cota { height: 9px; border-top: 2px solid #9C6D12; border-left: 1px solid #9C6D12; border-right: 1px solid #9C6D12; }
+  .placa { border: 1px solid rgba(30,42,50,0.38); }
+</style>
+</helmet>
+
+<div data-suelo style="width:1440px;background:#EDEFEE;color:#1E2A32;font-family:'Instrument Sans','Helvetica Neue',Arial,sans-serif;font-weight:400;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility">
+
+<!-- ============================ CABECERA ============================
+     Idéntica a Escuadra.dc.html: mismas dos filas, mismas seis columnas de 204. Cocina lleva
+     el peso porque esta lámina es su página de departamento. ================================ -->
+<header style="border-bottom:1px solid rgba(30,42,50,0.16);">
+  <div style="display:flex; align-items:baseline; justify-content:space-between; padding:24px 108px 20px;">
+    <a href="Escuadra.dc.html" style="display:flex; align-items:baseline; gap:14px;">
+      <span style="font-size:22px; font-weight:600; letter-spacing:0.22em;">ESCUADRA</span>
+      <span class="mono" style="font-size:10px; color:#55636A;">todo para la casa</span>
+    </a>
+    <div style="display:flex; gap:26px; align-items:baseline;">
+      <a href="Escuadra.dc.html" class="mono" style="font-size:11px; color:#55636A;">Buscar</a>
+      <a href="Escuadra.dc.html" class="mono" style="font-size:11px; color:#55636A;">Guías de montaje</a>
+      <a href="Escuadra.dc.html" class="mono" style="font-size:11px; color:#55636A;">Tiendas</a>
+      <a href="Escuadra.dc.html" class="mono" style="font-size:11px;">Carro · 0</a>
+    </div>
+  </div>
+  <nav style="padding:0 108px; border-top:1px solid rgba(30,42,50,0.1);">
+    <ul style="display:flex;">
+      <li style="width:204px;"><a href="Escuadra.dc.html" style="display:block; padding:15px 0; font-size:15px; color:#55636A;">Salón</a></li>
+      <li style="width:204px;"><a href="Categoria.dc.html" style="display:block; padding:15px 0; font-size:15px; font-weight:500;">Cocina</a></li>
+      <li style="width:204px;"><a href="Escuadra.dc.html" style="display:block; padding:15px 0; font-size:15px; color:#55636A;">Dormitorio</a></li>
+      <li style="width:204px;"><a href="Escuadra.dc.html" style="display:block; padding:15px 0; font-size:15px; color:#55636A;">Baño</a></li>
+      <li style="width:204px;"><a href="Escuadra.dc.html" style="display:block; padding:15px 0; font-size:15px; color:#55636A;">Almacenaje</a></li>
+      <li style="width:204px;"><a href="Escuadra.dc.html" style="display:block; padding:15px 0; font-size:15px; color:#55636A;">Iluminación</a></li>
+    </ul>
+  </nav>
+</header>
+
+<!-- ============================ EL DEPARTAMENTO ============================
+     Misma pareja de fotografías que la portada (recorte índice + foto entera): aquí la foto
+     entera hace de cabecera del departamento, a su tamaño real, sin ampliarla. ================ -->
+<section style="padding:44px 108px 0;">
+  <p class="mono" style="font-size:10px; letter-spacing:0.06em; text-transform:uppercase; color:#55636A;">Departamentos · Cocina</p>
+
+  <div style="display:flex; gap:32px; margin-top:34px; align-items:flex-start;">
+    <img class="placa" src="escuadra-cocina.webp" alt="Rincón de cocina con balda de contrachapado, vajilla blanca apilada, tarros de vidrio, una tabla de madera y una sartén de acero colgada" width="596" height="447" style="width:596px; height:447px; object-fit:cover;">
+    <div style="width:596px;">
+      <h1 style="font-size:52px; font-weight:600; line-height:1.06; letter-spacing:-0.03em;">Cocina</h1>
+      <div style="display:flex; align-items:baseline; justify-content:space-between; margin-top:24px; padding-top:16px; border-top:1px solid rgba(30,42,50,0.16);">
+        <p class="mono" style="font-size:11px; color:#55636A;">386 artículos</p>
+        <p class="mono" style="font-size:11px; color:#55636A;">Desde&nbsp;1,50&nbsp;€</p>
+      </div>
+      <p style="font-size:15px; line-height:1.76; color:#55636A; margin-top:20px;">Vajilla, menaje, tarros de conserva y todo lo que cuelga sobre la encimera. Cada pieza lleva su medida en centímetros y, si es para guardar algo, la capacidad en litros.</p>
+      <p style="font-size:15px; line-height:1.76; color:#55636A; margin-top:14px;">Lo que se monta lleva sus minutos cronometrados; lo que no, un guion en esa columna.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ EL REGISTRO — misma rejilla que "El catálogo acotado" de la
+     portada, ninguna miniatura por fila: una fotografía de departamento ya está arriba, y doce
+     fotos de producto en una fila serían la tercera rejilla que el ADN prohíbe. ================ -->
+<section style="padding:88px 108px 0;">
+  <div style="display:flex; align-items:baseline; justify-content:space-between;">
+    <p class="mono" style="font-size:10px; letter-spacing:0.06em; text-transform:uppercase; color:#55636A;">12 de 386, ordenados por precio</p>
+    <p class="mono" style="font-size:10px; letter-spacing:0.06em; text-transform:uppercase; color:#55636A;">Actualizado hoy</p>
+  </div>
+
+  <ul style="margin-top:24px; border-top:1px solid rgba(30,42,50,0.28);">
+    <li style="display:flex; align-items:baseline; padding:15px 0; border-bottom:1px solid rgba(30,42,50,0.22);">
+      <span class="mono" style="width:112px; font-size:10px; letter-spacing:0.06em; text-transform:uppercase; color:#55636A;">Ref.</span>
+      <span class="mono" style="width:392px; font-size:10px; letter-spacing:0.06em; text-transform:uppercase; color:#55636A;">Artículo</span>
+      <span class="mono" style="width:252px; font-size:10px; letter-spacing:0.06em; text-transform:uppercase; color:#55636A;">Medida en cm</span>
+      <span class="mono" style="width:130px; font-size:10px; letter-spacing:0.06em; text-transform:uppercase; color:#55636A;">Bultos</span>
+      <span class="mono" style="width:130px; font-size:10px; letter-spacing:0.06em; text-transform:uppercase; color:#55636A;">Montaje</span>
+      <span class="mono" style="width:208px; font-size:10px; letter-spacing:0.06em; text-transform:uppercase; color:#55636A; text-align:right;">Precio</span>
+    </li>
+    <li style="display:flex; align-items:baseline; padding:16px 0; border-bottom:1px solid rgba(30,42,50,0.12);"><span class="mono" style="width:112px; font-size:11px; color:#55636A;">MN-006</span><a href="EscuadraPieza.dc.html" style="width:392px; font-size:15px;">Servilleta de Papel, paquete de cien</a><span class="mono" style="width:252px; font-size:12px; color:#55636A;">33 × 33</span><span class="mono" style="width:130px; font-size:12px; color:#55636A;">—</span><span class="mono" style="width:130px; font-size:12px; color:#55636A;">—</span><span class="mono" style="width:208px; font-size:15px; text-align:right;">1,50&nbsp;€</span></li>
+    <li style="display:flex; align-items:baseline; padding:16px 0; border-bottom:1px solid rgba(30,42,50,0.12);"><span class="mono" style="width:112px; font-size:11px; color:#55636A;">MN-009</span><a href="EscuadraPieza.dc.html" style="width:392px; font-size:15px;">Tarro de Conserva, cierre hermético</a><span class="mono" style="width:252px; font-size:12px; color:#55636A;">Ø9 × 18 · 1 l</span><span class="mono" style="width:130px; font-size:12px; color:#55636A;">—</span><span class="mono" style="width:130px; font-size:12px; color:#55636A;">—</span><span class="mono" style="width:208px; font-size:15px; text-align:right;">5,00&nbsp;€</span></li>
+    <li style="display:flex; align-items:baseline; padding:16px 0; border-bottom:1px solid rgba(30,42,50,0.12);"><span class="mono" style="width:112px; font-size:11px; color:#55636A;">TX-018</span><a href="EscuadraPieza.dc.html" style="width:392px; font-size:15px;">Paño de Cocina, juego de tres</a><span class="mono" style="width:252px; font-size:12px; color:#55636A;">50 × 70</span><span class="mono" style="width:130px; font-size:12px; color:#55636A;">—</span><span class="mono" style="width:130px; font-size:12px; color:#55636A;">—</span><span class="mono" style="width:208px; font-size:15px; text-align:right;">12,00&nbsp;€</span></li>
+    <li style="display:flex; align-items:baseline; padding:16px 0; border-bottom:1px solid rgba(30,42,50,0.12);"><span class="mono" style="width:112px; font-size:11px; color:#55636A;">MN-014</span><a href="EscuadraPieza.dc.html" style="width:392px; font-size:15px;">Juego de Tarros, tres tamaños</a><span class="mono" style="width:252px; font-size:12px; color:#55636A;">Ø9–14</span><span class="mono" style="width:130px; font-size:12px; color:#55636A;">—</span><span class="mono" style="width:130px; font-size:12px; color:#55636A;">—</span><span class="mono" style="width:208px; font-size:15px; text-align:right;">14,00&nbsp;€</span></li>
+    <li style="display:flex; align-items:baseline; padding:16px 0; border-bottom:1px solid rgba(30,42,50,0.12);"><span class="mono" style="width:112px; font-size:11px; color:#55636A;">IL-052</span><a href="EscuadraPieza.dc.html" style="width:392px; font-size:15px;">Colgador de Utensilios, seis ganchos</a><span class="mono" style="width:252px; font-size:12px; color:#55636A;">60 × 6 × 10</span><span class="mono" style="width:130px; font-size:12px; color:#55636A;">1</span><span class="mono" style="width:130px; font-size:12px; color:#55636A;">10 min</span><span class="mono" style="width:208px; font-size:15px; text-align:right;">19,00&nbsp;€</span></li>
+    <li style="display:flex; align-items:baseline; padding:16px 0; border-bottom:1px solid rgba(30,42,50,0.12);"><span class="mono" style="width:112px; font-size:11px; color:#55636A;">MN-045</span><a href="EscuadraPieza.dc.html" style="width:392px; font-size:15px;">Tabla de Cortar, haya maciza</a><span class="mono" style="width:252px; font-size:12px; color:#55636A;">40 × 28 × 2</span><span class="mono" style="width:130px; font-size:12px; color:#55636A;">—</span><span class="mono" style="width:130px; font-size:12px; color:#55636A;">—</span><span class="mono" style="width:208px; font-size:15px; text-align:right;">22,00&nbsp;€</span></li>
+    <li style="display:flex; align-items:baseline; padding:16px 0; border-bottom:1px solid rgba(30,42,50,0.12);"><span class="mono" style="width:112px; font-size:11px; color:#55636A;">MN-018</span><a href="EscuadraPieza.dc.html" style="width:392px; font-size:15px;">Escurreplatos de acero</a><span class="mono" style="width:252px; font-size:12px; color:#55636A;">46 × 34 × 24</span><span class="mono" style="width:130px; font-size:12px; color:#55636A;">1</span><span class="mono" style="width:130px; font-size:12px; color:#55636A;">8 min</span><span class="mono" style="width:208px; font-size:15px; text-align:right;">24,00&nbsp;€</span></li>
+    <li style="display:flex; align-items:baseline; padding:16px 0; border-bottom:1px solid rgba(30,42,50,0.12);"><span class="mono" style="width:112px; font-size:11px; color:#55636A;">MN-024</span><a href="EscuadraPieza.dc.html" style="width:392px; font-size:15px;">Sartén Llano, acero de tres capas</a><span class="mono" style="width:252px; font-size:12px; color:#55636A;">Ø24 × 5</span><span class="mono" style="width:130px; font-size:12px; color:#55636A;">—</span><span class="mono" style="width:130px; font-size:12px; color:#55636A;">—</span><span class="mono" style="width:208px; font-size:15px; text-align:right;">26,00&nbsp;€</span></li>
+    <li style="display:flex; align-items:baseline; padding:16px 0; border-bottom:1px solid rgba(30,42,50,0.12);"><span class="mono" style="width:112px; font-size:11px; color:#55636A;">MN-058</span><a href="EscuadraPieza.dc.html" style="width:392px; font-size:15px;">Juego de Cuchillos, cinco piezas y taco</a><span class="mono" style="width:252px; font-size:12px; color:#55636A;">32 × 10 × 24</span><span class="mono" style="width:130px; font-size:12px; color:#55636A;">—</span><span class="mono" style="width:130px; font-size:12px; color:#55636A;">—</span><span class="mono" style="width:208px; font-size:15px; text-align:right;">45,00&nbsp;€</span></li>
+    <li style="display:flex; align-items:baseline; padding:16px 0; border-bottom:1px solid rgba(30,42,50,0.12);"><span class="mono" style="width:112px; font-size:11px; color:#55636A;">MN-052</span><a href="EscuadraPieza.dc.html" style="width:392px; font-size:15px;">Vajilla Llana, dieciocho piezas</a><span class="mono" style="width:252px; font-size:12px; color:#55636A;">Ø27 plato llano</span><span class="mono" style="width:130px; font-size:12px; color:#55636A;">1</span><span class="mono" style="width:130px; font-size:12px; color:#55636A;">—</span><span class="mono" style="width:208px; font-size:15px; text-align:right;">49,00&nbsp;€</span></li>
+    <li style="display:flex; align-items:baseline; padding:16px 0; border-bottom:1px solid rgba(30,42,50,0.12);"><span class="mono" style="width:112px; font-size:11px; color:#55636A;">ES-071</span><a href="EscuadraPieza.dc.html" style="width:392px; font-size:15px;">Estante de Pared, tres baldas</a><span class="mono" style="width:252px; font-size:12px; color:#55636A;">60 × 20 × 70</span><span class="mono" style="width:130px; font-size:12px; color:#55636A;">2</span><span class="mono" style="width:130px; font-size:12px; color:#55636A;">25 min</span><span class="mono" style="width:208px; font-size:15px; text-align:right;">69,00&nbsp;€</span></li>
+    <li style="display:flex; align-items:baseline; padding:16px 0; border-bottom:1px solid rgba(30,42,50,0.12);"><span class="mono" style="width:112px; font-size:11px; color:#55636A;">AL-062</span><a href="EscuadraPieza.dc.html" style="width:392px; font-size:15px;">Carro de Cocina, dos baldas con ruedas</a><span class="mono" style="width:252px; font-size:12px; color:#55636A;">45 × 35 × 82</span><span class="mono" style="width:130px; font-size:12px; color:#55636A;">1</span><span class="mono" style="width:130px; font-size:12px; color:#55636A;">22 min</span><span class="mono" style="width:208px; font-size:15px; text-align:right;">79,00&nbsp;€</span></li>
+  </ul>
+  <p style="font-size:13px; color:#55636A; margin-top:20px;">Doce de trescientos ochenta y seis. El listado completo se filtra por medida, por precio y por si el bulto cabe en el ascensor, igual que el catálogo entero.</p>
+</section>
+
+<!-- ============================ PIE ============================ -->
+<footer style="padding:112px 108px 72px; margin-top:104px;">
+  <div style="display:flex; gap:80px; padding-top:34px; border-top:1px solid rgba(30,42,50,0.28);">
+    <div style="width:512px;">
+      <p style="font-size:22px; font-weight:600; letter-spacing:0.22em;">ESCUADRA</p>
+      <p style="width:404px; font-size:15px; line-height:1.76; color:#55636A; margin-top:18px;">Mil setecientos artículos para la casa, todos con su medida puesta. Almacén y tienda en Alaquàs, Valencia.</p>
+    </div>
+    <div style="display:flex; gap:80px;">
+      <ul>
+        <li class="mono" style="font-size:10px; letter-spacing:0.06em; text-transform:uppercase; color:#55636A; margin-bottom:20px;">Departamentos</li>
+        <li style="margin-bottom:12px;"><a href="Escuadra.dc.html" style="font-size:15px;">Salón y comedor</a></li>
+        <li style="margin-bottom:12px;"><a href="Categoria.dc.html" style="font-size:15px;">Cocina y menaje</a></li>
+        <li style="margin-bottom:12px;"><a href="Escuadra.dc.html" style="font-size:15px;">Dormitorio y textil</a></li>
+        <li><a href="Escuadra.dc.html" style="font-size:15px;">Baño y almacenaje</a></li>
+      </ul>
+      <ul>
+        <li class="mono" style="font-size:10px; letter-spacing:0.06em; text-transform:uppercase; color:#55636A; margin-bottom:20px;">La casa</li>
+        <li style="margin-bottom:12px;"><a href="LaMarca.dc.html" style="font-size:15px;">Cómo compramos</a></li>
+        <li style="margin-bottom:12px;"><a href="Escuadra.dc.html" style="font-size:15px;">Tiendas y horarios</a></li>
+        <li style="margin-bottom:12px;"><a href="Escuadra.dc.html" style="font-size:15px;">Guías de montaje</a></li>
+        <li><a href="Contacto.dc.html" style="font-size:15px;">Contacto</a></li>
+      </ul>
+      <ul>
+        <li class="mono" style="font-size:10px; letter-spacing:0.06em; text-transform:uppercase; color:#55636A; margin-bottom:20px;">Condiciones</li>
+        <li style="margin-bottom:12px;"><a href="Escuadra.dc.html" style="font-size:15px;">Envíos y devoluciones</a></li>
+        <li style="margin-bottom:12px;"><a href="Escuadra.dc.html" style="font-size:15px;">Aviso legal</a></li>
+        <li style="margin-bottom:12px;"><a href="Escuadra.dc.html" style="font-size:15px;">Privacidad</a></li>
+        <li><a href="Escuadra.dc.html" style="font-size:15px;">Cookies</a></li>
+      </ul>
+    </div>
+  </div>
+  <div style="display:flex; justify-content:space-between; margin-top:72px; padding-top:22px; border-top:1px solid rgba(30,42,50,0.12);">
+    <p class="mono" style="font-size:11px; color:#55636A;">ESCUADRA S. L. U. — Alaquàs, Valencia · hola@escuadra.es · 963 24 71 08</p>
+    <p class="mono" style="font-size:11px; color:#55636A;">© 2026</p>
+  </div>
+</footer>
+
+</div>
+</x-dc>
+</body>
+</html>

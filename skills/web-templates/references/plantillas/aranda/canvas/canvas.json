@@ -1,0 +1,47 @@
+{
+  "artboards": [
+    {
+      "file": "Aranda.dc.html",
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 3602,
+      "title": "ARANDA · portada"
+    },
+    {
+      "file": "Listado.dc.html",
+      "x": 1520,
+      "y": 0,
+      "w": 1440,
+      "h": 1837,
+      "title": "ARANDA · listado"
+    },
+    {
+      "file": "Ficha.dc.html",
+      "x": 0,
+      "y": 3726,
+      "w": 1440,
+      "h": 1647,
+      "title": "ARANDA · ficha"
+    },
+    {
+      "file": "Nosotros.dc.html",
+      "x": 1520,
+      "y": 3726,
+      "w": 1440,
+      "h": 1842,
+      "title": "ARANDA · nosotros"
+    },
+    {
+      "file": "Contacto.dc.html",
+      "x": 3040,
+      "y": 3726,
+      "w": 1440,
+      "h": 1166,
+      "title": "ARANDA · contacto"
+    }
+  ],
+  "launch": {
+    "view": "canvas"
+  }
+}

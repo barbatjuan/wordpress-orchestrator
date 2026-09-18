@@ -100,6 +100,26 @@ function fail( $msg ) {
 	exit( 1 );
 }
 
+/* THE COLOUR/CONTRAST ENGINE AND THE SCRIM SWEEP NOW LIVE IN herramientas/, extracted rather than
+   duplicated (openspec/changes/plantillas-reales/design.md, "the toolbox lives in
+   html-mockup/assets/herramientas/"). `srgb_lum`/`srgb_lum_rgb`/`contrast`/`ratio_str`/`css_mix`
+   and the house-ink derivation `ink_tint`/`ink_ends`/`ink_curve` moved to `herramientas/color.php`;
+   `worst_pixel`/`ink_mean`/`ink_pixel`/`fe_table` moved to `herramientas/scrim.php`. Every
+   coefficient, threshold and call site here is unchanged — `worst_pixel()` keeps its exact
+   original signature precisely so this file needs no call-site edits beyond this block. The two
+   files throw typed exceptions (`NmHerramientaEntorno`/`NmHerramientaMedida`) where this file's own
+   `fail()` used to run directly, because they are now also a CLI with its own three-way exit
+   contract; the handler below maps both back onto `fail()` so this generator's behaviour is
+   unchanged. */
+require_once $DIR . '/../herramientas/color.php';
+require_once $DIR . '/../herramientas/scrim.php';
+set_exception_handler( function ( $e ) {
+	if ( $e instanceof NmHerramientaEntorno || $e instanceof NmHerramientaMedida ) {
+		fail( $e->getMessage() );
+	}
+	throw $e;
+} );
+
 function h( $s ) {
 	return htmlspecialchars( $s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8' );
 }
@@ -216,32 +236,8 @@ function img( $slug ) {
 //
 // WCAG 2.1: L = 0.2126R + 0.7152G + 0.0722B over linearised sRGB, ratio = (Lhi+.05)/(Llo+.05).
 // The same formula `design-system.md` states and `tests/test-write-path.php` recomputes.
-
-function srgb_lum( $hex ) {
-	$hex = ltrim( $hex, '#' );
-	if ( 6 !== strlen( $hex ) ) {
-		fail( "not a 6-digit hex: #$hex" );
-	}
-	$l = 0.0;
-	foreach ( array( 0 => 0.2126, 2 => 0.7152, 4 => 0.0722 ) as $off => $coeff ) {
-		$c  = hexdec( substr( $hex, $off, 2 ) ) / 255;
-		$c  = ( $c <= 0.04045 ) ? $c / 12.92 : pow( ( $c + 0.055 ) / 1.055, 2.4 );
-		$l += $coeff * $c;
-	}
-	return $l;
-}
-
-function contrast( $a, $b ) {
-	$la = srgb_lum( $a );
-	$lb = srgb_lum( $b );
-	$hi = max( $la, $lb );
-	$lo = min( $la, $lb );
-	return ( $hi + 0.05 ) / ( $lo + 0.05 );
-}
-
-function ratio_str( $a, $b ) {
-	return number_format( contrast( $a, $b ), 2, '.', '' ) . ':1';
-}
+// `srgb_lum()`/`contrast()`/`ratio_str()` now live in `herramientas/color.php` (required above) —
+// one contrast engine, not two.
 
 // ─────────────────────────────────────────────────────────────── 3 · the five axes
 //
@@ -938,180 +934,8 @@ $INK_TINT_BY_STYLE = array(
 	'institutional' => 0.60,
 );
 
-/* THE CURVE'S STOP COUNT. Five, because two cannot bend: a two-entry `tableValues` is a straight
-   line from shadow ink to highlight ink, which tints the midtones as hard as it tints the ends and
-   is the "faded" look this grade exists to avoid. Five interior stops is enough for the split tone
-   to fall off before the midtones and for `gamma` to have somewhere to put an S. */
-define( 'INK_STOPS', 5 );
-
-/**
- * `$base`, pushed toward `$accent`, then put back on `$base`'s own luminance.
- *
- * THE LUMINANCE IS THE POINT. Mixing a bright accent into a near-black endpoint raises it, and a
- * raised black endpoint is a lifted black — the photograph goes milky and the page reads as a cheap
- * filter. The binary search is over a single scalar multiplier, so the result keeps the mix's hue
- * and loses only its weight.
- *
- * RETURNS THE UNROUNDED TRIPLE AS WELL, because the two assertions it feeds are different
- * assertions. The search itself has to land on the target to float precision — that is arithmetic,
- * and 1e-9 is the bar. What comes out the other side is an 8-BIT HEX, and 8-bit rounding moves
- * luminance by an amount nobody chose: on these shadow values it is ~1.4e-4, which is a hundred
- * times 1e-6. Checking the rounded value against a tolerance somebody typed would mean picking a
- * number until it passed. The caller derives the bound from the quantisation instead.
- */
-function ink_tint( $base, $accent, $w ) {
-	$mixed  = css_mix( $base, 1 - $w, $accent );
-	$src    = array( hexdec( substr( $mixed, 1, 2 ) ), hexdec( substr( $mixed, 3, 2 ) ), hexdec( substr( $mixed, 5, 2 ) ) );
-	$target = srgb_lum( $base );
-	$lo     = 0.0;
-	$hi     = 2.0;
-	for ( $i = 0; $i < 64; $i++ ) {
-		$k   = ( $lo + $hi ) / 2;
-		$lum = srgb_lum_rgb( min( 255, $src[0] * $k ), min( 255, $src[1] * $k ), min( 255, $src[2] * $k ) );
-		if ( $lum < $target ) {
-			$lo = $k;
-		} else {
-			$hi = $k;
-		}
-	}
-	$k     = ( $lo + $hi ) / 2;
-	$exact = array( min( 255, $src[0] * $k ), min( 255, $src[1] * $k ), min( 255, $src[2] * $k ) );
-	return array(
-		'hex'   => sprintf( '#%02X%02X%02X', (int) round( $exact[0] ), (int) round( $exact[1] ), (int) round( $exact[2] ) ),
-		'exact' => $exact,
-	);
-}
-
-/**
- * The most an 8-bit rounding of `$hex` can have moved its luminance: half a step on every channel.
- *
- * DERIVED RATHER THAN TYPED, which is the whole reason this function exists instead of a constant.
- * The bound is a property of WHERE the colour sits — the sRGB transfer curve is flat near black and
- * steep near white, so the same half-step is worth ~1.4e-4 in a shadow ink and ~7e-4 in a highlight
- * one. A single tolerance covering both would be loose enough at the dark end to hide a real lift.
- */
-function ink_quant_bound( $hex ) {
-	$c = array( hexdec( substr( $hex, 1, 2 ) ), hexdec( substr( $hex, 3, 2 ) ), hexdec( substr( $hex, 5, 2 ) ) );
-	$hi = srgb_lum_rgb( min( 255, $c[0] + 0.5 ), min( 255, $c[1] + 0.5 ), min( 255, $c[2] + 0.5 ) );
-	$lo = srgb_lum_rgb( max( 0, $c[0] - 0.5 ), max( 0, $c[1] - 0.5 ), max( 0, $c[2] - 0.5 ) );
-	return ( $hi - $lo ) / 2;
-}
-
-/**
- * The two inks for one ground: the accent in the shadows, the ground's own light in the highlights.
- *
- * THE 94/96 PULL IS ASSERTED, not merely applied, and the assertion is about the PAGE rather than
- * about the photograph. An endpoint that lands exactly on `--c-bg` or `--c-text` welds the frame to
- * the surface it sits on: a shadow the same value as the page's own black has no boundary, so the
- * photograph stops having an edge and starts being a stain. Found by mutation — removing the pull
- * moved the measured contrast from 6.64 to 6.15 and failed nothing, because contrast is not the
- * property the pull is protecting.
- */
-function ink_ends( $gr, $accent, $tint ) {
-	$dark_src  = ( srgb_lum( $gr['bg'] ) < srgb_lum( $gr['text'] ) ) ? $gr['bg'] : $gr['text'];
-	$light_src = ( $dark_src === $gr['bg'] ) ? $gr['text'] : $gr['bg'];
-	$neutral   = css_mix( $dark_src, 0.94, $light_src );
-	$tinted    = ink_tint( $neutral, $accent, $tint );
-	$ends      = array(
-		'dark'    => $tinted['hex'],
-		'light'   => css_mix( $light_src, 0.96, $dark_src ),
-		'neutral' => $neutral,
-	);
-
-	/* THE TINT CHANGED THE HUE AND NOT THE WEIGHT, asserted twice because it is two claims.
-	   First the search: it either solved for the neutral endpoint's own luminance or it did not,
-	   and that is arithmetic. Then the hex: 8-bit rounding moves luminance by an amount nobody
-	   chose, so the bound comes from `ink_quant_bound()` — the half-step this colour is actually
-	   worth — rather than from a tolerance picked until it passed. Set `$INK_TINT` high enough that
-	   the mix clips a channel and the second one fires. */
-	$ink_target = srgb_lum( $neutral );
-	if ( abs( srgb_lum_rgb( $tinted['exact'][0], $tinted['exact'][1], $tinted['exact'][2] ) - $ink_target ) > 1e-9 ) {
-		fail( sprintf(
-			'the tint search for the shadow ink over %s did not converge on its own luminance'
-				. ' (%.12f against %.12f) — a channel clipped, so there is no scalar that puts this'
-				. ' mix back where the neutral endpoint was, and the shadow would ship lifted',
-			$neutral,
-			srgb_lum_rgb( $tinted['exact'][0], $tinted['exact'][1], $tinted['exact'][2] ),
-			$ink_target
-		) );
-	}
-	$ink_bound = ink_quant_bound( $ends['dark'] );
-	if ( abs( srgb_lum( $ends['dark'] ) - $ink_target ) > $ink_bound ) {
-		fail( sprintf(
-			'the shadow ink %s sits at L=%.8f where the neutral endpoint %s it replaced is L=%.8f, a'
-				. ' gap of %.2e against the %.2e an 8-bit rounding of this colour can explain — the tint'
-				. ' moved the shadow\'s WEIGHT, not just its hue, and a shadow ink that got lighter is a'
-				. ' lifted black. That is the faded-print defect, which is what a cheap filter looks like.',
-			$ends['dark'],
-			srgb_lum( $ends['dark'] ),
-			$neutral,
-			$ink_target,
-			abs( srgb_lum( $ends['dark'] ) - $ink_target ),
-			$ink_bound
-		) );
-	}
-
-	/* THE SHADOW INK HAS TO CARRY HUE, which is the whole retraction above stated as a number. The
-	   retired duotone's shadow inks measured 5 / 5 / 16 / 17 on this spread, and the complaint that
-	   started this pass — "no se ven colores" — was made about all four of them. 20 is above every
-	   one of them, so a regression to any endpoint the duotone would have produced fails here. */
-	$ink_spread = max( hexdec( substr( $ends['dark'], 1, 2 ) ), hexdec( substr( $ends['dark'], 3, 2 ) ), hexdec( substr( $ends['dark'], 5, 2 ) ) )
-		- min( hexdec( substr( $ends['dark'], 1, 2 ) ), hexdec( substr( $ends['dark'], 3, 2 ) ), hexdec( substr( $ends['dark'], 5, 2 ) ) );
-	if ( $ink_spread < 20 ) {
-		fail( sprintf(
-			'the shadow ink %s has a channel spread of %d, which is a neutral — the retired duotone'
-				. ' measured 5 / 5 / 16 / 17 here and read as greyscale on all four anchors. A two-colour'
-				. ' map whose dark ink is grey is not a two-colour map.',
-			$ends['dark'],
-			$ink_spread
-		) );
-	}
-
-	foreach ( array( 'dark', 'light' ) as $ink_which ) {
-		foreach ( array( 'bg', 'text' ) as $ink_extreme ) {
-			if ( strtoupper( $ends[ $ink_which ] ) === strtoupper( $gr[ $ink_extreme ] ) ) {
-				fail( "the house ink's $ink_which endpoint resolves to {$ends[ $ink_which ]}, which IS"
-					. " this ground's --c-$ink_extreme. An endpoint on the page's own extreme gives the"
-					. ' photograph a shadow (or a highlight) indistinguishable from the surface behind'
-					. ' it, so the frame loses its edge' );
-			}
-		}
-	}
-	return $ends;
-}
-
-/**
- * The per-channel curve, as the exact strings the browser will parse.
- *
- * `$gamma` bends the input before the tone is applied: `s(x)` pushes quarter-tones down and
- * three-quarter-tones up by an amount that vanishes at both ends, so the endpoints stay exactly the
- * two inks no matter how deep the curve. The split tone then falls off as (1−s)² toward the shadow
- * ink and s² toward the highlight ink, which is why a midtone comes through nearly unchanged and a
- * black comes through as the ink itself.
- *
- * RETURNED AS STRINGS BECAUSE THE STRING IS WHAT THE BROWSER GETS. The sweep below re-parses these
- * with `floatval()` rather than recomputing the floats, so PHP cannot measure a curve at a
- * precision the emitted `tableValues` does not have. The retired code formatted to 4 decimals for
- * the page and measured at full double precision — a gap of one part in 20,000, harmless here and
- * exactly the shape of thing that stops being harmless.
- */
-function ink_curve( $ends, $gamma ) {
-	$rows = array();
-	for ( $ch = 0; $ch < 3; $ch++ ) {
-		$s   = hexdec( substr( $ends['dark'], 1 + $ch * 2, 2 ) ) / 255;
-		$h   = hexdec( substr( $ends['light'], 1 + $ch * 2, 2 ) ) / 255;
-		$row = array();
-		for ( $i = 0; $i < INK_STOPS; $i++ ) {
-			$x  = $i / ( INK_STOPS - 1 );
-			$sx = 0.5 + ( $x - 0.5 ) * ( 1 + $gamma * ( 1 - pow( 2 * $x - 1, 2 ) ) );
-			$sx = max( 0.0, min( 1.0, $sx ) );
-			$v  = $sx + $s * pow( 1 - $sx, 2 ) + ( $h - 1 ) * pow( $sx, 2 );
-			$row[] = rtrim( rtrim( sprintf( '%.5f', max( 0.0, min( 1.0, $v ) ) ), '0' ), '.' );
-		}
-		$rows[] = implode( ' ', $row );
-	}
-	return $rows;
-}
+/* `INK_STOPS`, `ink_tint()`, `ink_quant_bound()`, `ink_ends()` (the accent gate) and `ink_curve()`
+   now live in `herramientas/color.php` (required above) — one house-ink derivation, not two. */
 
 /**
  * Everything the browser and the sweep both need for one anchor, resolved once.
@@ -1554,200 +1378,12 @@ $TOGGLES = array(
 // hero that inverted to white-on-near-black would make that readout false exactly where the
 // reader is looking.
 
-/**
- * Luminance of an r/g/b triple. `srgb_lum()` takes hex; the pixel loop below has integers.
- *
- * The coefficients are the VALUES and the channels the keys, not the other way round: PHP casts a
- * float array key to int, so `array( 0.2126 => $r, 0.7152 => $g, 0.0722 => $b )` is one entry at
- * key 0 holding the blue channel, and this function would have returned 7% of the blue channel
- * for every colour on the page while still looking like the WCAG formula.
- */
-function srgb_lum_rgb( $r, $g, $b ) {
-	$l = 0.0;
-	foreach ( array( array( 0.2126, $r ), array( 0.7152, $g ), array( 0.0722, $b ) ) as $pair ) {
-		$c  = $pair[1] / 255;
-		$c  = ( $c <= 0.04045 ) ? $c / 12.92 : pow( ( $c + 0.055 ) / 1.055, 2.4 );
-		$l += $pair[0] * $c;
-	}
-	return $l;
-}
-
-/**
- * The worst contrast any pixel of `$slug` can reach under a `$alpha` veil of `$scrim`, against
- * `$text`. Every second pixel on both axes: a 4× cheaper sweep over a 1440×810 frame that cannot
- * miss a REGION, only a lone pixel inside one — and a lone pixel is not what text lands on. The
- * stride is stated here rather than hidden because it is the one approximation in this file.
- *
- * RETURNS THE SURFACE AS WELL AS THE RATIO, and that is not a convenience. The per-ink checks
- * below need the composited surface, and the first version of this file RE-DERIVED it algebraically
- * from the ratio — which mutation testing killed: setting that one line to a constant deleted every
- * ink override and no check noticed, because the tripwire guarding it compared against a bound the
- * constant happened to sit exactly on. Two numbers out of one sweep, with the identity between them
- * asserted at the call site, is a thing that cannot be quietly rewritten.
- */
-/**
- * `feFunc* type="table"`, per the SVG spec: piecewise-linear over n entries.
- *
- * For n values v0…v(n−1) and an input C in 0..1, with k = floor(C·(n−1)) clamped to n−2:
- *   C' = v[k] + (C·(n−1) − k) × (v[k+1] − v[k])
- * Two entries collapse to the straight line the retired duotone used, so this is the same
- * primitive that was here, generalised to a curve that can bend.
- */
-function fe_table( $c, $values ) {
-	$n = count( $values );
-	if ( $n < 2 ) {
-		fail( 'a `tableValues` with fewer than two entries is not a transfer function' );
-	}
-	$c = max( 0.0, min( 1.0, $c ) );
-	$k = (int) floor( $c * ( $n - 1 ) );
-	if ( $k > $n - 2 ) {
-		$k = $n - 2;
-	}
-	return $values[ $k ] + ( $c * ( $n - 1 ) - $k ) * ( $values[ $k + 1 ] - $values[ $k ] );
-}
-
-/**
- * The SVG filter, in PHP, so the sweep below measures the pixels the browser will actually paint.
- *
- * THIS IS THE HALF THAT MAKES THE INK SAFE. `filter` runs at PAINT time — after `object-fit`, under
- * the scrim, invisible to every DOM measurement — so a build that graded the photographs and kept
- * measuring the originals would be reporting the contrast of an image nobody sees. The two stages
- * match the two SVG primitives exactly:
- *   feColorMatrix type="saturate" → THE SPEC'S OWN COEFFICIENTS, 0.213 / 0.715 / 0.072, which are
- *     NOT the WCAG 0.2126 / 0.7152 / 0.0722 this file uses for luminance everywhere else. The two
- *     triples differ in the third decimal and the difference is not rounding: it is the difference
- *     between measuring the image the browser paints and measuring a nearby one. The filter carries
- *     `color-interpolation-filters="sRGB"` for the same class of reason — in the default linearRGB
- *     the shadows crush, and PHP would again be describing a different picture.
- *   feComponentTransfer → a five-entry `type="table"` per channel, applied to THAT CHANNEL'S OWN
- *     value rather than to a luminance. That one word is the whole retraction: mapping luminance
- *     through two inks replaces the colour, mapping each channel through its own curve biases it.
- *
- * `$ink['table']` arrives as the emitted STRINGS and is parsed here, so the measurement cannot run
- * at a precision the page does not have.
- */
-function ink_pixel( $r, $g, $b, $ink ) {
-	$s = (float) $ink['sat'];
-	$p = array(
-		( 0.213 + 0.787 * $s ) * $r + ( 0.715 - 0.715 * $s ) * $g + ( 0.072 - 0.072 * $s ) * $b,
-		( 0.213 - 0.213 * $s ) * $r + ( 0.715 + 0.285 * $s ) * $g + ( 0.072 - 0.072 * $s ) * $b,
-		( 0.213 - 0.213 * $s ) * $r + ( 0.715 - 0.715 * $s ) * $g + ( 0.072 + 0.928 * $s ) * $b,
-	);
-	$out = array();
-	for ( $i = 0; $i < 3; $i++ ) {
-		$values = array_map( 'floatval', explode( ' ', $ink['table'][ $i ] ) );
-		$out[]  = 255 * fe_table( max( 0.0, min( 255.0, $p[ $i ] ) ) / 255, $values );
-	}
-	return $out;
-}
-
-function worst_pixel( $slug, $scrim, $alpha, $text, $ink = null ) {
-	global $IMG_DIR;
-	if ( ! function_exists( 'imagecreatefromwebp' ) ) {
-		fail( 'PHP has no GD WebP support — the slider scrim cannot be measured, and an unmeasured'
-			. ' scrim over a photograph is the 1.95:1 defect this build already shipped once' );
-	}
-	$im = @imagecreatefromwebp( $IMG_DIR . '/' . $slug . '.webp' );
-	if ( false === $im ) {
-		fail( "cannot decode img/$slug.webp to measure the slider scrim" );
-	}
-	$sr    = hexdec( substr( ltrim( $scrim, '#' ), 0, 2 ) );
-	$sg    = hexdec( substr( ltrim( $scrim, '#' ), 2, 2 ) );
-	$sb    = hexdec( substr( ltrim( $scrim, '#' ), 4, 2 ) );
-	$l_txt = srgb_lum( $text );
-	$w       = imagesx( $im );
-	$hgt     = imagesy( $im );
-	$worst   = INF;
-	$surface = INF;
-	for ( $y = 0; $y < $hgt; $y += 2 ) {
-		for ( $x = 0; $x < $w; $x += 2 ) {
-			$p  = imagecolorat( $im, $x, $y );
-			$px = array( ( $p >> 16 ) & 0xFF, ( $p >> 8 ) & 0xFF, $p & 0xFF );
-			if ( null !== $ink ) {
-				$px = ink_pixel( $px[0], $px[1], $px[2], $ink );
-			}
-			$l   = srgb_lum_rgb(
-				$px[0] * ( 1 - $alpha ) + $sr * $alpha,
-				$px[1] * ( 1 - $alpha ) + $sg * $alpha,
-				$px[2] * ( 1 - $alpha ) + $sb * $alpha
-			);
-			$hi  = max( $l, $l_txt );
-			$lo  = min( $l, $l_txt );
-			$rat = ( $hi + 0.05 ) / ( $lo + 0.05 );
-			if ( $rat < $worst ) {
-				$worst   = $rat;
-				$surface = $l;
-			}
-		}
-	}
-	imagedestroy( $im );
-	return array( 'ratio' => $worst, 'surface_l' => $surface );
-}
-
-/**
- * The mean r/g/b of `$slug` under `$ink`, which is the number the swatch complaint was made in.
- *
- * MEAN AND NOT p95, deliberately. The retired exemption's evidence is a sentence in this file —
- * "their mean colours are (183,184,185) and (196,196,197)" — and the check that replaces it has to
- * be answerable in the same units, or it is a different claim wearing the old one's clothes.
- */
-function ink_mean( $slug, $ink ) {
-	global $IMG_DIR;
-	$im = @imagecreatefromwebp( $IMG_DIR . '/' . $slug . '.webp' );
-	if ( false === $im ) {
-		fail( "cannot decode img/$slug.webp to measure the house ink against it" );
-	}
-	$w   = imagesx( $im );
-	$h   = imagesy( $im );
-	$sum = array( 0.0, 0.0, 0.0 );
-	$n   = 0;
-	for ( $y = 0; $y < $h; $y += 2 ) {
-		for ( $x = 0; $x < $w; $x += 2 ) {
-			$p  = imagecolorat( $im, $x, $y );
-			$px = ink_pixel( ( $p >> 16 ) & 0xFF, ( $p >> 8 ) & 0xFF, $p & 0xFF, $ink );
-			for ( $i = 0; $i < 3; $i++ ) {
-				$sum[ $i ] += max( 0.0, min( 255.0, $px[ $i ] ) );
-			}
-			$n++;
-		}
-	}
-	imagedestroy( $im );
-	if ( 0 === $n ) {
-		fail( "img/$slug.webp decoded to zero pixels" );
-	}
-	return array( $sum[0] / $n, $sum[1] / $n, $sum[2] / $n );
-}
-
-/** `color-mix(in srgb, $a $p%, $b)`, in PHP, so a token derived in CSS can be measured here. */
-function css_mix( $a, $p, $b ) {
-	$a   = ltrim( $a, '#' );
-	$b   = ltrim( $b, '#' );
-	$out = '';
-	for ( $i = 0; $i < 3; $i++ ) {
-		$out .= sprintf(
-			'%02X',
-			(int) round( hexdec( substr( $a, $i * 2, 2 ) ) * $p + hexdec( substr( $b, $i * 2, 2 ) ) * ( 1 - $p ) )
-		);
-	}
-	return '#' . $out;
-}
-
-/* TWO FORMULAS, ONE ANSWER, CHECKED. `srgb_lum_rgb()` is a second implementation of a formula this
-   file already has, which is exactly the shape of thing that drifts silently — the float-key bug
-   above returned plausible numbers, not obviously broken ones. So the two are made to agree on the
-   four ground extremes before either is trusted with a pixel. 1e-12 is float noise, not tolerance. */
-foreach ( array( '#FFFFFF', '#15181A', '#0E1113', '#8C3A1F' ) as $lum_probe ) {
-	$lum_hex = srgb_lum( $lum_probe );
-	$lum_rgb = srgb_lum_rgb(
-		hexdec( substr( $lum_probe, 1, 2 ) ),
-		hexdec( substr( $lum_probe, 3, 2 ) ),
-		hexdec( substr( $lum_probe, 5, 2 ) )
-	);
-	if ( abs( $lum_hex - $lum_rgb ) > 1e-12 ) {
-		fail( "srgb_lum_rgb() disagrees with srgb_lum() on $lum_probe ($lum_rgb vs $lum_hex)"
-			. ' — the scrim would be measured with a formula that is not the one the rest of the file uses' );
-	}
-}
+/* `srgb_lum_rgb()`, `fe_table()`, `ink_pixel()`, `worst_pixel()`, `ink_mean()` and `css_mix()` now
+   live in `herramientas/scrim.php` / `herramientas/color.php` (both required above). The
+   two-formulas-agree self-check that used to run here on every build moved to
+   `tests/test-herramientas.php` — it proves an invariant of the shared library, not of this
+   generator, and a build-time re-check of a library both files already trust is the exact
+   duplicate-implementation risk this extraction removes. */
 
 /* The three `hero 16:9` frames the manifest carries — the whole role, in manifest order, so the
    slider cannot quietly become two frames or reach for a card crop. */

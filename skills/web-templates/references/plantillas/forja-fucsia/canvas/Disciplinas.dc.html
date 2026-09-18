@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;500;600&family=Barlow+Condensed:wght@500;600&display=swap" rel="stylesheet" />
+<style>
+  html, body { margin:0; background:#080808; }
+  body { color:#F4F4F1; -webkit-font-smoothing:antialiased; }
+  * { box-sizing:border-box; }
+  a { color:#FF1F6B; text-decoration:none; }
+  a:hover { color:#F4F4F1; }
+  @keyframes om-marquee-b { from { transform:translateX(0); } to { transform:translateX(-50%); } }
+  [data-reveal] { opacity:0; transform:translateY(24px); transition:opacity .7s cubic-bezier(.2,.7,.2,1), transform .7s cubic-bezier(.2,.7,.2,1); }
+  [data-reveal].is-in { opacity:1; transform:none; }
+  @media print { [data-reveal] { opacity:1 !important; transform:none !important; transition:none !important; } }
+  @media (prefers-reduced-motion: reduce) { [data-reveal] { opacity:1; transform:none; transition:none; } }
+</style>
+</helmet>
+<div style="background:#080808;font-family:Archivo,system-ui,sans-serif;overflow-x:hidden">
+<!-- NAV -->
+  <header style="position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:24px;padding:16px 8vw;background:#080808;backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.1)">
+    <span style="font-family:'Archivo Black',Impact,sans-serif;font-size:19px;letter-spacing:-.02em;color:#F4F4F1;text-transform:uppercase">FORJA<span style="color:#FF1F6B">BOX</span></span>
+    <nav style="display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;column-gap:20px;row-gap:10px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;letter-spacing:.14em;text-transform:uppercase">
+      <a href="ForjaFucsia.dc.html" style="color:rgba(244,244,241,.7)">Inicio</a>
+      <a href="Disciplinas.dc.html" style="color:#FF1F6B">Disciplinas</a>
+      <a href="ElBox.dc.html" style="color:rgba(244,244,241,.7)">El box</a>
+      <a href="Coaches.dc.html" style="color:rgba(244,244,241,.7)">Coaches</a>
+      <a href="Planes.dc.html" style="color:rgba(244,244,241,.7)">Planes</a>
+      <a href="Contacto.dc.html" style="color:rgba(244,244,241,.7)">Contacto</a>
+      <a href="Contacto.dc.html" style="display:inline-block;padding:10px 18px;background:#FF1F6B;color:#080808;letter-spacing:.12em">Prueba gratis</a>
+    </nav>
+  </header>
+
+  <section style="position:relative;display:flex;align-items:center;justify-content:center;padding:11vw 8vw 9vw;background:repeating-linear-gradient(135deg,#121212 0 14px,#171717 14px 28px)">
+    <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,8,8,.74) 0%,rgba(8,8,8,.9) 100%)"></div>
+    <div style="position:relative;width:100%;max-width:960px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:26px">
+      <p style="margin:0;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:600;letter-spacing:.26em;text-transform:uppercase;color:#FF1F6B">Programación</p>
+      <h1 style="margin:0;font-family:'Archivo Black',Impact,sans-serif;text-transform:uppercase;font-size:clamp(38px,6.4vw,104px);line-height:1.02;letter-spacing:-.04em;color:#F4F4F1">Ocho formas<br />de entrenar</h1>
+      <p style="max-width:54ch;margin:0;font-size:18px;line-height:1.65;color:rgba(244,244,241,.78)">Bloques de ocho semanas, escalados por nivel y programados por el equipo de coaches. Todas las clases entran en el plan ilimitado.</p>
+    </div>
+  </section>
+
+<!-- DISCIPLINAS sobre blanco -->
+  <section id="disciplinas" style="padding:8vw 8vw 9vw;background:#F4F4F1;color:#080808">
+    <div style="max-width:1440px;margin:0 auto">
+      <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px">
+        <sc-for list="{{ disciplinas }}" as="d" hint-placeholder-count="8">
+          <article data-reveal style="display:flex;flex-direction:column;justify-content:space-between;gap:28px;min-height:280px;padding:26px 24px 28px;background:#FFFFFF;border:1px solid rgba(8,8,8,.14)" style-hover="border-color:#FF1F6B;box-shadow:0 12px 32px rgba(8,8,8,.09)">
+            <div style="font-family:ui-monospace,monospace;font-size:12px;letter-spacing:.14em;color:#D71A5A">{{ d.num }}</div>
+            <div>
+              <h3 style="margin:0 0 12px;font-family:'Archivo Black',Impact,sans-serif;text-transform:uppercase;font-size:21px;line-height:1.14;letter-spacing:-.03em;overflow-wrap:break-word;hyphens:auto">{{ d.titulo }}</h3>
+              <p style="margin:0;font-size:15px;line-height:1.6;color:rgba(8,8,8,.68)">{{ d.texto }}</p>
+              <div style="margin-top:18px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:rgba(8,8,8,.6)">{{ d.meta }}</div>
+            </div>
+          </article>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <!-- NUTRICION Y RECUPERACION sobre negro -->
+  <section style="padding:9vw 8vw;background:#080808">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:52px;align-items:center;max-width:1440px;margin:0 auto">
+      <div>
+        <p data-reveal style="margin:0 0 22px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:600;letter-spacing:.26em;text-transform:uppercase;color:#FF1F6B">Nutrición y recuperación</p>
+        <h2 data-reveal style="margin:0 0 22px;font-family:'Archivo Black',Impact,sans-serif;text-transform:uppercase;font-size:clamp(32px,4vw,62px);line-height:1.06;letter-spacing:-.035em;color:#F4F4F1">El trabajo sigue fuera del box</h2>
+        <p data-reveal style="margin:0 0 32px;max-width:48ch;font-size:17px;line-height:1.7;color:rgba(244,244,241,.72)">Plan nutricional con revisión mensual, fisioterapia dentro del centro y protocolos de movilidad para cada bloque de entrenamiento.</p>
+        <div data-reveal style="display:grid;gap:1px;background:rgba(255,255,255,.12);max-width:560px">
+          <sc-for list="{{ recuperacion }}" as="r" hint-placeholder-count="3">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;gap:24px;padding:20px 4px;background:#080808">
+              <span style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#F4F4F1">{{ r.titulo }}</span>
+              <span style="font-size:15px;color:rgba(244,244,241,.65);text-align:right">{{ r.detalle }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      <div data-reveal style="aspect-ratio:1/1;background:repeating-linear-gradient(135deg,#121212 0 14px,#171717 14px 28px);border:1px solid rgba(255,255,255,.12);display:flex;align-items:flex-end;padding:20px">
+        <span style="font-family:ui-monospace,monospace;font-size:12px;letter-spacing:.05em;color:rgba(255,31,107,.9)">[ foto — zona de recuperación / fisio, cuadrada 1400×1400 ]</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA FINAL -->
+  <section id="prueba" style="padding:10vw 8vw;background:#FF1F6B;color:#080808">
+    <div style="max-width:1100px;margin:0 auto;display:flex;flex-direction:column;align-items:center;text-align:center;gap:30px">
+      <p style="margin:0;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:600;letter-spacing:.26em;text-transform:uppercase;color:#080808">Primera clase gratis</p>
+      <h2 style="margin:0;font-family:'Archivo Black',Impact,sans-serif;text-transform:uppercase;font-size:clamp(42px,7vw,116px);line-height:1;letter-spacing:-.04em">Ven y prueba</h2>
+      <p style="margin:0;max-width:46ch;font-size:18px;line-height:1.6;color:#080808">Reserva una sesión sin compromiso. Solo necesitas ropa deportiva y ganas.</p>
+      <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:14px">
+        <a href="Contacto.dc.html" style="display:inline-block;padding:19px 38px;background:#F4F4F1;color:#080808;font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:600;letter-spacing:.14em;text-transform:uppercase">Reservar prueba gratis</a>
+        <a href="Contacto.dc.html" style="display:inline-block;padding:19px 38px;border:1px solid rgba(8,8,8,.45);color:#080808;font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:600;letter-spacing:.14em;text-transform:uppercase">Hablar con un coach</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer style="padding:68px 8vw 36px;background:#080808;border-top:1px solid rgba(255,255,255,.1)">
+    <div style="max-width:1440px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:44px">
+      <div>
+        <span style="display:block;margin-bottom:16px;font-family:'Archivo Black',Impact,sans-serif;font-size:20px;letter-spacing:-.02em;text-transform:uppercase;color:#F4F4F1">FORJA<span style="color:#FF1F6B">BOX</span></span>
+        <p style="margin:0;font-size:15px;line-height:1.7;color:rgba(244,244,241,.6)">Calle del Yunque 14<br />28019 Madrid<br />910 38 62 47</p>
+      </div>
+      <div>
+        <div style="margin-bottom:14px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:rgba(244,244,241,.5)">Horario</div>
+        <p style="margin:0;font-size:15px;line-height:1.8;color:rgba(244,244,241,.7)">Lun&nbsp;–&nbsp;Vie · 06:30&nbsp;–&nbsp;22:00<br />Sábado · 09:00&nbsp;–&nbsp;14:00<br />Domingo · Open box 10:00&nbsp;–&nbsp;13:00</p>
+      </div>
+      <div>
+        <div style="margin-bottom:14px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:rgba(244,244,241,.5)">Secciones</div>
+        <div style="display:flex;flex-direction:column;gap:10px;font-size:15px">
+          <a href="Disciplinas.dc.html" style="color:rgba(244,244,241,.7)">Disciplinas</a>
+          <a href="ElBox.dc.html" style="color:rgba(244,244,241,.7)">El box</a>
+          <a href="Coaches.dc.html" style="color:rgba(244,244,241,.7)">Coaches</a>
+          <a href="Planes.dc.html" style="color:rgba(244,244,241,.7)">Planes</a>
+        </div>
+      </div>
+      <div>
+        <div style="margin-bottom:14px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:rgba(244,244,241,.5)">Síguenos</div>
+        <div style="display:flex;flex-direction:column;gap:10px;font-size:15px">
+          <span style="color:rgba(244,244,241,.7)">Instagram · @forjabox</span>
+          <span style="color:rgba(244,244,241,.7)">YouTube · Forja Box</span>
+          <span style="color:rgba(244,244,241,.7)">WhatsApp · 644 27 19 83</span>
+        </div>
+      </div>
+    </div>
+    <div style="max-width:1440px;margin:48px auto 0;padding-top:22px;border-top:1px solid rgba(255,255,255,.1);display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;font-size:13px;color:rgba(244,244,241,.55)">
+      <span>© 2026 Forja Box</span>
+      <span>Aviso legal · Privacidad · Cookies</span>
+    </div>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;rosa&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#FF1F6B&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;options&quot;:[&quot;#FF1F6B&quot;,&quot;#FF3D8B&quot;,&quot;#E8175D&quot;,&quot;#FF0F5A&quot;],&quot;section&quot;:&quot;Marca&quot;},&quot;amarillo&quot;:{&quot;editor&quot;:null,&quot;default&quot;:&quot;#FFD11A&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  state = { p: 0 };
+
+  componentDidMount() {
+    this.sweep = () => {
+      const hid = document.hidden;
+      if (hid) document.querySelectorAll('[data-reveal]').forEach((n) => {
+        n.style.transition = 'none'; n.classList.add('is-in'); n.style.opacity = '1'; n.style.transform = 'none';
+      });
+      document.querySelectorAll('[data-reveal]:not(.is-in)').forEach((n) => {
+        if (n.getBoundingClientRect().top < window.innerHeight - 40) {
+          n.classList.add('is-in'); n.style.opacity = '1'; n.style.transform = 'none';
+        }
+      });
+      const first = document.querySelector('[data-reveal]');
+      if (!this.started && first && first.getBoundingClientRect().top < window.innerHeight) { this.started = true; this.run(); }
+      if (this.started && !document.querySelector('[data-reveal]:not(.is-in)')) clearInterval(this.poll);
+    };
+    this.onScroll = () => {
+      if (this.raf) return;
+      this.raf = requestAnimationFrame(() => { this.raf = null; this.sweep(); });
+    };
+    document.addEventListener('visibilitychange', this.onScroll);
+    window.addEventListener('scroll', this.onScroll, { passive: true });
+    window.addEventListener('resize', this.onScroll);
+    this.poll = setInterval(this.sweep, 250);
+    this.sweep();
+    this.fallback = setTimeout(() => {
+      document.querySelectorAll('[data-reveal]').forEach((n) => {
+        if (document.hidden) n.style.transition = 'none';
+        n.classList.add('is-in'); n.style.opacity = '1'; n.style.transform = 'none';
+      });
+      if (!this.started) { this.started = true; this.setState({ p: 1 }); }
+    }, 2500);
+  }
+
+  componentDidUpdate() { if (this.sweep) this.sweep(); }
+
+  componentWillUnmount() {
+    clearInterval(this.t); clearInterval(this.poll); clearTimeout(this.fallback);
+    window.removeEventListener('scroll', this.onScroll);
+    window.removeEventListener('resize', this.onScroll);
+    document.removeEventListener('visibilitychange', this.onScroll);
+  }
+
+  run() {
+    const dur = 1400, t0 = performance.now();
+    clearInterval(this.t);
+    this.t = setInterval(() => {
+      const k = Math.min(1, (performance.now() - t0) / dur);
+      this.setState({ p: 1 - Math.pow(1 - k, 3) });
+      if (k >= 1) clearInterval(this.t);
+    }, 30);
+  }
+
+  n(v) { return Math.round(v * this.state.p).toLocaleString('es-ES'); }
+
+  renderVals() {
+    const rosa = this.props.rosa ?? '#FF1F6B';
+    return {
+      c1: this.n(420) + '+',
+      c2: this.n(64),
+      c3: this.n(900),
+      c4: this.n(9),
+      disciplinas: [
+        { num: '01', titulo: 'Fuerza', texto: 'Ciclos de sentadilla, press y peso muerto con cargas progresivas y registro individual.', meta: '60 min · todos los niveles' },
+        { num: '02', titulo: 'Metcon', texto: 'Acondicionamiento metabólico de alta intensidad con trabajo por tiempo y rondas.', meta: '50 min · intensidad alta' },
+        { num: '03', titulo: 'Halterofilia', texto: 'Técnica de arrancada y dos tiempos desglosada en progresiones semanales.', meta: '75 min · técnica' },
+        { num: '04', titulo: 'Gimnástico', texto: 'Dominadas estrictas, anillas, pino y control corporal con escalado real.', meta: '55 min · progresivo' },
+        { num: '05', titulo: 'Endurance', texto: 'Remo, bici y carrera en intervalos largos para subir tu base aeróbica.', meta: '45 min · cardio' },
+        { num: '06', titulo: 'Movilidad', texto: 'Sesión guiada de rango articular y respiración para cerrar la semana.', meta: '40 min · recuperación' },
+        { num: '07', titulo: 'Iniciación', texto: 'Cuatro semanas de fundamentos para aprender los movimientos desde cero.', meta: '60 min · sin experiencia' },
+        { num: '08', titulo: 'Open box', texto: 'Entrenamiento libre con coach en sala para trabajar tus puntos débiles.', meta: '90 min · acceso libre' }
+      ],
+      instalaciones: [
+        { slot: '[ foto — zona de racks, 900×1125 ]', titulo: 'Zona de fuerza', detalle: '12 racks con plataforma de madera' },
+        { slot: '[ foto — pista y rig, 900×1125 ]', titulo: 'Rig y pista', detalle: '30 m de pista de sprint y trineo' },
+        { slot: '[ foto — cardio, 900×1125 ]', titulo: 'Cardio', detalle: 'Remo, bici de aire y SkiErg' },
+        { slot: '[ foto — vestuarios, 900×1125 ]', titulo: 'Vestuarios', detalle: 'Taquillas, duchas y sauna seca' }
+      ],
+      coaches: [
+        { slot: '[ retrato 900×1200 ]', nombre: 'Marta Ferrer', rol: 'Head coach', cert: 'CF-L3 · Halterofilia nivel II' },
+        { slot: '[ retrato 900×1200 ]', nombre: 'Iván Losada', rol: 'Fuerza', cert: 'CF-L2 · Powerlifting IPF' },
+        { slot: '[ retrato 900×1200 ]', nombre: 'Nora Blanco', rol: 'Gimnástico', cert: 'CF-L2 · Gimnasia artística' },
+        { slot: '[ retrato 900×1200 ]', nombre: 'Samuel Ruiz', rol: 'Endurance', cert: 'CF-L1 · Entrenador de triatlón' }
+      ],
+      planes: [
+        { etiqueta: 'Entrada', nombre: '2 días', precio: '49\u00A0€', periodo: '/mes', incluye: ['2 clases por semana', 'Acceso a open box', 'App de seguimiento', 'Sin permanencia'], cta: 'Empezar', bg: '#FFFFFF', borde: 'rgba(8,8,8,.16)', ink: '#080808', kicker: 'rgba(8,8,8,.6)', btnBg: 'transparent', btnBorde: '1px solid rgba(8,8,8,.3)', btnInk: '#080808' },
+        { etiqueta: 'El más elegido', nombre: 'Ilimitado', precio: '79\u00A0€', periodo: '/mes', incluye: ['Clases ilimitadas', 'Test de nivel trimestral', 'Plan nutricional básico', '1 sesión de fisio al mes', 'Sin permanencia'], cta: 'Reservar plaza', bg: rosa, borde: rosa, ink: '#080808', kicker: '#080808', btnBg: '#080808', btnBorde: '1px solid #080808', btnInk: '#F4F4F1' },
+        { etiqueta: 'Rendimiento', nombre: 'Coaching 1:1', precio: '149\u00A0€', periodo: '/mes', incluye: ['Todo el plan ilimitado', '4 sesiones individuales', 'Programación personalizada', 'Seguimiento nutricional completo'], cta: 'Solicitar', bg: '#080808', borde: '#080808', ink: '#F4F4F1', kicker: 'rgba(244,244,241,.6)', btnBg: 'transparent', btnBorde: '1px solid rgba(244,244,241,.35)', btnInk: '#F4F4F1' }
+      ],
+      recuperacion: [
+        { titulo: 'Plan nutricional', detalle: 'Revisión mensual con dietista' },
+        { titulo: 'Fisioterapia', detalle: 'En el centro, cita en 48 h' },
+        { titulo: 'Sauna y contraste', detalle: 'Acceso libre con cualquier plan' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

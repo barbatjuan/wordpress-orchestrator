@@ -9,14 +9,15 @@ metadata:
 
 # WooCommerce
 
-Build the storefront: shop archive, single product, side cart, and the account/checkout
-flows. Native widgets only. Deploys through the active builder's core skill; this skill owns
-the commerce-specific structure and gotchas.
+Build the storefront: shop archive, single product, side cart, account and checkout. Native
+widgets only, deployed through the builder's core skill.
 
-**Elementor-only in practice.** Every execution step here is Elementor Pro Theme Builder, both
-assets are `es_*` examples, and the output contract greps for `elementor-<id>`. There is no Divi
-equivalent in this repo — `divi-core` is a scaffold with no helpers. On a Divi site, say so and
-stop; do not improvise a Divi path and do not present one as supported.
+**Elementor-only in practice.** On a Divi site, say so and stop; why: `references/knowledge.md`.
+
+**From an ecommerce Plantilla.** Carro, pago, pedido recibido and mi cuenta are WooCommerce's own
+pages with the native widgets `web-templates/references/paginas-obligatorias.md` lists; the
+catalogue and the product page follow the ficha's Mapeo nativo. Every `custom_css` a step writes
+counts against the ficha's `css_custom_max`. Detail: `references/knowledge.md`.
 
 ## Activation Contract
 Use when `project-context` reports WooCommerce active and the task touches shop, product,
@@ -63,9 +64,8 @@ On an existing site, confirm every page/template you would overwrite by name fir
 
 ## Output Contract
 Report templates built (ids), conditions registered, the container-audit verdict line, and the
-server-side checks (front HTML uses `elementor-<id>`, gallery/tabs/related present). Note
-WC-native limits (e.g. single-product add-to-cart is a form submit unless AJAX-add is enabled).
-A missing conditions registration is reported by `es_warn()` on stdout — if you see it, the
+server-side checks (front HTML uses `elementor-<id>`, gallery/tabs/related present), and the
+WC-native limits `references/knowledge.md` lists. A missing conditions registration is reported by `es_warn()` on stdout — if you see it, the
 template exists in the library and renders NOWHERE. That is a failure, not a warning to skim.
 
 ## References

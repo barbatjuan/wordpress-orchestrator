@@ -1,0 +1,187 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter+Tight:wght@400;500;600&display=swap">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; background: #E8DFD0; color: #20180E; font-family: "Inter Tight", "Helvetica Neue", Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+    [data-suelo] h1, [data-suelo] h2, [data-suelo] h3, [data-suelo] h4,
+    [data-suelo] p, [data-suelo] ul, [data-suelo] li, [data-suelo] dl, [data-suelo] dd, [data-suelo] dt {
+      margin: 0; padding: 0;
+    }
+    [data-suelo] ul { list-style: none; }
+    [data-suelo] img { display: block; border: 0; }
+    a { color: #0F5C28; text-decoration: none; }
+    a:hover { color: #20180E; text-decoration: underline; }
+    p { text-wrap: pretty; }
+  </style>
+</helmet>
+
+<div data-suelo style="width: 1440px; background: #E8DFD0; color: #20180E; font-family: 'Inter Tight', Helvetica, Arial, sans-serif;">
+
+  <!-- ============================ CABECERA — idéntica a Tueste.dc.html ============================ -->
+  <div style="display: flex; align-items: center; justify-content: space-between; padding: 24px 144px;">
+    <a href="Tueste.dc.html" style="font-family: 'Fraunces', Georgia, 'Times New Roman', serif; font-size: 25px; font-weight: 700; letter-spacing: -0.01em; color: #20180E;">Tueste Norte</a>
+    <div style="display: flex; align-items: center; gap: 32px; font-size: 15px; color: #57493A;">
+      <a href="Tueste.dc.html" style="color: #57493A;">La suscripción</a>
+      <a href="Categoria.dc.html" style="color: #57493A;">Orígenes</a>
+      <a href="Tueste.dc.html" style="color: #57493A;">Bolsas sueltas</a>
+      <a href="LaMarca.dc.html" style="color: #57493A;">El tostadero</a>
+      <a href="Tueste.dc.html" style="background: #0F5C28; color: #FFFFFF; padding: 11px 24px; border-radius: 999px; font-size: 15px; font-weight: 500;">Entrar</a>
+    </div>
+  </div>
+
+  <!-- ============================ MIGA ============================ -->
+  <div style="padding: 32px 144px 0 144px; font-size: 14px; color: #57493A;">
+    <a href="Tueste.dc.html" style="color: #57493A;">Tueste Norte</a> / <a href="Categoria.dc.html" style="color: #57493A;">Orígenes</a> / <span style="color: #20180E;">Huila</span>
+  </div>
+
+  <!-- ============================ LA PIEZA — foto + ficha corta, mismo reparto que el hero de
+       portada (632 de texto / resto de imagen), aquí invertido: la foto a la izquierda porque el
+       precio flotante ya vive en el hero y una segunda tarjeta idéntica repetiría el recurso. ==== -->
+  <div style="display: flex; align-items: flex-start; gap: 88px; padding: 56px 144px 0 144px;">
+    <div style="width: 480px; flex-shrink: 0; position: relative;">
+      <img src="tueste-bolsa.webp" alt="Bolsa de 250 g de Tueste Norte" style="display: block; width: 100%; height: 560px; object-fit: cover;">
+      <div style="position: absolute; left: 24px; bottom: -32px; width: 300px; background: #DBD0BD; padding: 22px 24px;">
+        <div style="font-size: 13px; letter-spacing: 0.04em; text-transform: uppercase; color: #57493A;">Lote actual</div>
+        <div style="margin-top: 8px; font-family: 'Fraunces', Georgia, 'Times New Roman', serif; font-size: 20px; font-weight: 600;">Tostado el martes 9</div>
+        <div style="margin-top: 4px; font-size: 14px; color: #3D3125;">Quedan 22 kg de este lote</div>
+      </div>
+    </div>
+
+    <div style="flex-grow: 1; padding-top: 8px;">
+      <p style="font-size: 14px; letter-spacing: 0.04em; text-transform: uppercase; color: #57493A;">Colombia · finca La Esperanza</p>
+      <h1 style="margin: 14px 0 0 0; font-family: 'Fraunces', Georgia, 'Times New Roman', serif; font-size: 58px; line-height: 1.05; font-weight: 700; letter-spacing: -0.02em;">Huila</h1>
+      <p style="margin: 22px 0 0 0; max-width: 460px; font-size: 17px; line-height: 1.65; color: #3D3125;">El café de todos los días: dulce sin ser plano, con un cuerpo que aguanta leche y una acidez que no pide disculpas. Es el que más repetimos en la suscripción, y el primero que mandamos a quien no sabe por dónde empezar.</p>
+
+      <div style="margin-top: 36px; display: flex; align-items: baseline; gap: 18px;">
+        <div style="font-family: 'Fraunces', Georgia, 'Times New Roman', serif; font-size: 36px; font-weight: 700; letter-spacing: -0.015em;">9,80&nbsp;€</div>
+        <div style="font-size: 15px; color: #57493A;">bolsa de 250&nbsp;g, envío aparte</div>
+      </div>
+
+      <div style="margin-top: 24px; display: flex; align-items: center; gap: 18px;">
+        <a href="Tueste.dc.html" style="background: #0F5C28; color: #FFFFFF; padding: 16px 34px; border-radius: 999px; font-size: 16px; font-weight: 600;">Añadir al carro</a>
+        <a href="Tueste.dc.html" style="font-size: 15px; color: #57493A; text-decoration: underline;">o suscribirme y que llegue solo</a>
+      </div>
+
+      <div style="margin-top: 44px; display: flex; flex-direction: column; gap: 20px;">
+        <div style="display: flex; gap: 20px; align-items: baseline; padding-top: 18px; border-top: 1px solid rgba(32,24,14,0.2);">
+          <div style="width: 130px; flex-shrink: 0; font-size: 14px; color: #57493A;">Altitud</div>
+          <div style="font-size: 15px;">1.750 m</div>
+        </div>
+        <div style="display: flex; gap: 20px; align-items: baseline; padding-top: 18px; border-top: 1px solid rgba(32,24,14,0.2);">
+          <div style="width: 130px; flex-shrink: 0; font-size: 14px; color: #57493A;">Variedad</div>
+          <div style="font-size: 15px;">Caturra</div>
+        </div>
+        <div style="display: flex; gap: 20px; align-items: baseline; padding-top: 18px; border-top: 1px solid rgba(32,24,14,0.2);">
+          <div style="width: 130px; flex-shrink: 0; font-size: 14px; color: #57493A;">Proceso</div>
+          <div style="font-size: 15px;">Lavado, 36 h de fermentación</div>
+        </div>
+        <div style="display: flex; gap: 20px; align-items: baseline; padding-top: 18px; border-top: 1px solid rgba(32,24,14,0.2); padding-bottom: 18px; border-bottom: 1px solid rgba(32,24,14,0.2);">
+          <div style="width: 130px; flex-shrink: 0; font-size: 14px; color: #57493A;">Tueste</div>
+          <div style="font-size: 15px;">Medio, el martes de esta semana</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================ LA RECETA — mismo idioma numerado que "Lo que abres el día 3"
+       de la portada, aquí aplicado a un solo origen en vez de a la caja entera. ================= -->
+  <div style="padding: 112px 144px 0 144px;">
+    <h2 style="margin: 0; font-family: 'Fraunces', Georgia, 'Times New Roman', serif; font-size: 40px; line-height: 1.1; font-weight: 600; letter-spacing: -0.02em;">Cómo sacarle el mejor sabor</h2>
+    <div style="margin-top: 40px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 56px;">
+      <div style="display: flex; gap: 20px; align-items: baseline;">
+        <div style="font-family: 'Fraunces', Georgia, 'Times New Roman', serif; font-size: 28px; font-weight: 600; color: #0F5C28; width: 30px; flex-shrink: 0;">1</div>
+        <div style="font-size: 16px; line-height: 1.6; color: #3D3125;">Filtro: 60 g por litro, agua a 94&nbsp;°C. La dulzura de la panela sale mejor con un vertido lento.</div>
+      </div>
+      <div style="display: flex; gap: 20px; align-items: baseline;">
+        <div style="font-family: 'Fraunces', Georgia, 'Times New Roman', serif; font-size: 28px; font-weight: 600; color: #0F5C28; width: 30px; flex-shrink: 0;">2</div>
+        <div style="font-size: 16px; line-height: 1.6; color: #3D3125;">Espresso: 18&nbsp;g dentro, 38&nbsp;g fuera, 28 segundos. Sube la molienda si sale amargo.</div>
+      </div>
+      <div style="display: flex; gap: 20px; align-items: baseline;">
+        <div style="font-family: 'Fraunces', Georgia, 'Times New Roman', serif; font-size: 28px; font-weight: 600; color: #0F5C28; width: 30px; flex-shrink: 0;">3</div>
+        <div style="font-size: 16px; line-height: 1.6; color: #3D3125;">Se conserva dos semanas con la válvula cerrada. Pasado ese punto, sigue sirviendo para italiana.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================ LLÉVATELO EN TU SUSCRIPCIÓN — mismas tres filas de plan y los
+       mismos selectores de cadencia y molienda de la portada, reencuadrados desde este origen en
+       vez de desde "el café del mes". Ningún dato nuevo: es el mismo sistema, mirado desde la
+       ficha de un solo café. ===================================================================== -->
+  <div style="background: #DBD0BD; margin-top: 96px; padding: 88px 144px 96px 144px;">
+    <h2 style="margin: 0; max-width: 640px; font-family: 'Fraunces', Georgia, 'Times New Roman', serif; font-size: 40px; line-height: 1.1; font-weight: 600; letter-spacing: -0.02em;">O que Huila sea tu primer envío</h2>
+    <p style="margin: 18px 0 0 0; max-width: 560px; font-size: 16px; line-height: 1.62; color: #3D3125;">La suscripción no fija un origen para siempre: elige cuánto café quieres cada mes y con qué frecuencia, y el primer envío sale de este mismo lote.</p>
+
+    <div style="margin-top: 48px; display: flex; gap: 40px;">
+      <div style="flex: 1; background: #E8DFD0; padding: 28px 30px; text-align: center;">
+        <div style="font-family: 'Fraunces', Georgia, 'Times New Roman', serif; font-size: 22px; font-weight: 700;">Una bolsa</div>
+        <div style="margin-top: 6px; font-size: 14px; color: #57493A;">250 g al mes</div>
+        <div style="margin-top: 16px; font-family: 'Fraunces', Georgia, 'Times New Roman', serif; font-size: 26px; font-weight: 700;">21,50&nbsp;€</div>
+      </div>
+      <div style="flex: 1; background: #E8DFD0; padding: 28px 30px; text-align: center; border: 2px solid #0F5C28;">
+        <div style="font-family: 'Fraunces', Georgia, 'Times New Roman', serif; font-size: 22px; font-weight: 700;">Dos bolsas</div>
+        <div style="margin-top: 6px; font-size: 14px; color: #57493A;">500 g al mes · la que más se pide</div>
+        <div style="margin-top: 16px; font-family: 'Fraunces', Georgia, 'Times New Roman', serif; font-size: 26px; font-weight: 700;">39,00&nbsp;€</div>
+      </div>
+      <div style="flex: 1; background: #E8DFD0; padding: 28px 30px; text-align: center;">
+        <div style="font-family: 'Fraunces', Georgia, 'Times New Roman', serif; font-size: 22px; font-weight: 700;">Cafetera llena</div>
+        <div style="margin-top: 6px; font-size: 14px; color: #57493A;">750 g al mes</div>
+        <div style="margin-top: 16px; font-family: 'Fraunces', Georgia, 'Times New Roman', serif; font-size: 26px; font-weight: 700;">55,50&nbsp;€</div>
+      </div>
+    </div>
+
+    <div style="margin-top: 44px; display: flex; align-items: center; justify-content: space-between;">
+      <div style="display: flex; gap: 10px;">
+        <span style="border: 1px solid rgba(32,24,14,0.28); padding: 10px 20px; border-radius: 999px; font-size: 15px;">Cada 2 semanas</span>
+        <span style="background: #0F5C28; color: #FFFFFF; padding: 11px 21px; border-radius: 999px; font-size: 15px; font-weight: 500;">Cada mes</span>
+        <span style="border: 1px solid rgba(32,24,14,0.28); padding: 10px 20px; border-radius: 999px; font-size: 15px;">Cada 2 meses</span>
+      </div>
+      <a href="Tueste.dc.html" style="background: #0F5C28; color: #FFFFFF; padding: 17px 36px; border-radius: 999px; font-size: 16px; font-weight: 600; white-space: nowrap;">Empezar con Huila</a>
+    </div>
+  </div>
+
+  <!-- ============================ PIE — mismo pie extendido de Categoria.dc.html ============== -->
+  <footer style="background: #20180E; color: #E8DFD0; padding: 88px 144px 0 144px;">
+    <div style="display: flex; gap: 96px; padding-bottom: 56px; border-bottom: 1px solid rgba(232,223,208,0.16);">
+      <div style="width: 400px; flex-shrink: 0;">
+        <div style="font-family: 'Fraunces', Georgia, 'Times New Roman', serif; font-size: 24px; font-weight: 600;">Tueste Norte</div>
+        <p style="margin-top: 14px; font-size: 15px; line-height: 1.7; color: #BFB3A0;">Café por suscripción, tostado en Llanera, Asturias. Un origen distinto cada envío, elegido por quien lo tuesta.</p>
+      </div>
+      <div style="display: flex; gap: 72px;">
+        <div>
+          <div style="font-size: 13px; letter-spacing: 0.04em; text-transform: uppercase; color: #9C8D77; margin-bottom: 18px;">La tienda</div>
+          <a href="Tueste.dc.html" style="display: block; font-size: 15px; color: #E8DFD0; margin-bottom: 12px;">La suscripción</a>
+          <a href="Categoria.dc.html" style="display: block; font-size: 15px; color: #E8DFD0; margin-bottom: 12px;">Orígenes</a>
+          <a href="Tueste.dc.html" style="display: block; font-size: 15px; color: #E8DFD0;">Bolsas sueltas</a>
+        </div>
+        <div>
+          <div style="font-size: 13px; letter-spacing: 0.04em; text-transform: uppercase; color: #9C8D77; margin-bottom: 18px;">El tostadero</div>
+          <a href="LaMarca.dc.html" style="display: block; font-size: 15px; color: #E8DFD0; margin-bottom: 12px;">La marca</a>
+          <a href="Contacto.dc.html" style="display: block; font-size: 15px; color: #E8DFD0;">Contacto</a>
+        </div>
+        <div>
+          <div style="font-size: 13px; letter-spacing: 0.04em; text-transform: uppercase; color: #9C8D77; margin-bottom: 18px;">Condiciones</div>
+          <a href="Tueste.dc.html" style="display: block; font-size: 15px; color: #E8DFD0; margin-bottom: 12px;">Condiciones de venta y envíos</a>
+          <a href="Tueste.dc.html" style="display: block; font-size: 15px; color: #E8DFD0; margin-bottom: 12px;">Aviso legal</a>
+          <a href="Tueste.dc.html" style="display: block; font-size: 15px; color: #E8DFD0; margin-bottom: 12px;">Privacidad</a>
+          <a href="Tueste.dc.html" style="display: block; font-size: 15px; color: #E8DFD0;">Cookies</a>
+        </div>
+      </div>
+    </div>
+    <div style="display: flex; justify-content: space-between; padding: 24px 0 28px 0; font-size: 14px; color: #9C8D77;">
+      <div>Tueste Norte · Polígono de Silvota, nave 12, Llanera, Asturias</div>
+      <div>985 77 30 41 · hola@tuestenorte.es</div>
+    </div>
+  </footer>
+
+</div>
+</x-dc>
+</body>
+</html>

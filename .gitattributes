@@ -1,0 +1,35 @@
+# Plantilla library — LF-normalised text, raw binaries.
+#
+# WHY THIS FILE EXISTS. `skills/html-mockup/assets/herramientas/huella.php` commits a fingerprint
+# of every Plantilla's bytes (see openspec/changes/plantillas-reales/design.md, "huella.php
+# normalises text by extension allowlist"). That digest is COMMITTED — unlike the gallery's own
+# untracked fingerprint (`_gallery-fingerprint.php`), it has to survive a checkout. A Windows
+# contributor with `core.autocrlf=true` who commits `ficha.md` must produce the exact same digest
+# as a Linux contributor committing identical content, or the fingerprint would be reporting the
+# checkout's platform as a defect in the Plantilla itself.
+#
+# BELT AND BRACES, ON PURPOSE. `eol=lf` keeps the DIFF clean for every byte git actually checks
+# out; huella.php's own LF normalisation (`\r\n` → `\n` before hashing) keeps the HASH right for
+# bytes a local tool wrote without going through git at all (PowerShell redirection emits CRLF).
+# Either alone leaves a gap the other closes.
+#
+# THE BINARY SET IS NEVER NORMALISED, IN EITHER PLACE. Sniffing text-vs-binary and getting it
+# wrong on a `.woff2` or a `.webp` is silent corruption of the very check huella.php exists to
+# run — the same reasoning `_gallery-fingerprint.php:35-38` already states for its own, untracked
+# digest. So the extension allowlist below matches huella.php's `NM_HUELLA_TEXT_EXT` exactly, and
+# every other extension under the library is pinned `binary` rather than left to git's own
+# guess.
+
+skills/web-templates/references/plantillas/**/*.md text eol=lf
+skills/web-templates/references/plantillas/**/*.html text eol=lf
+skills/web-templates/references/plantillas/**/*.json text eol=lf
+skills/web-templates/references/plantillas/**/*.css text eol=lf
+skills/web-templates/references/plantillas/**/*.js text eol=lf
+skills/web-templates/references/plantillas/**/*.svg text eol=lf
+skills/web-templates/references/plantillas/**/*.txt text eol=lf
+
+skills/web-templates/references/plantillas/**/*.webp binary
+skills/web-templates/references/plantillas/**/*.woff2 binary
+skills/web-templates/references/plantillas/**/*.png binary
+skills/web-templates/references/plantillas/**/*.jpg binary
+skills/web-templates/references/plantillas/**/*.avif binary

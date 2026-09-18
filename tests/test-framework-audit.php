@@ -409,7 +409,7 @@ function fx_sty_precharge( $root, $id, $axes_from, array $tgl_rows ) {
 
    $heading overrides the id written INSIDE the file, which the FILENAME does not decide: the
    anchor a mockup may point at is read from the heading (`_bespoke-route.md`'s own template heads
-   the file `BSP-<project-id>`, and the real BSP-tuscapas.md does), while `BSP-` on the filename is
+   the file `BSP-<project-id>`, and the real BSP-vitrina.md does), while `BSP-` on the filename is
    only what puts the file in the glob. Left null the two agree, which is what every scenario
    written before this parameter existed wanted -- and those ids are lowercase on purpose, so they
    match no heading regex and register no anchor at all. */
@@ -3756,7 +3756,7 @@ fx_rrmdir( $r112 );
 
 /* ---------------------------------------------------------------------------
    style-catalog PR 4a (tasks.md 4a.1) — the font-budget constraint the whole catalog is locked
-   to: `skills/html-mockup/assets/fonts/_fonts.php:63-69` embeds exactly 7 faces (Fraunces,
+   to: `skills/html-mockup/assets/fonts/_fonts.php` embedded exactly 7 faces at the time (Fraunces,
    Instrument Serif, Inter Tight, DM Sans, Source Sans 3, Archivo, Archivo Expanded), which is WHY
    the catalog ships 8 entries in v1 instead of the 12 first proposed. `RT_MOCKUP_FONT_NOT_EMBEDDED`
    above is the mechanism that would catch a `STY-*.md` naming a family outside that list once it
