@@ -58,6 +58,7 @@ No visual or builder code.
 - `references/recomendador.md` — Objetivos, Objetivo → Plantilla, procedure, ruta a medida.
 - `references/enfoques.md` — eight Enfoques on eight axes, and who embodies each.
 - `references/paginas-obligatorias.md` — page set per type, artboard or derived.
+- `references/estado-formato.md` — the client's `diseno/estado.md`, handed from phase to phase.
 - `references/plantillas/_indice.md` — the library and each Plantilla's veredicto.
 - `references/veredicto-formato.md` — what a `veredicto.md` holds and how it is sealed.
 - Legacy, not offered to new clients, removal pending: `references/recommender.md`,
