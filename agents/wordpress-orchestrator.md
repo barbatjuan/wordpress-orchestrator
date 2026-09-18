@@ -152,6 +152,34 @@ explicit yes → no native build.
 Ask which one, do not assume. The builder skills do not know or care: they write to whichever
 WordPress is in front of them.
 
+## Ejecución por fases
+Measured on real Elementor builds, 76–90 % of a build's cost is re-reading the context on every
+turn, and one build went from 132k to 402k tokens per turn only by running long in one session.
+This thread cannot compact itself on demand; an agent's context is discarded when it returns. So
+this thread only coordinates, and each phase runs in a fresh agent that hands state over through one
+file — automatically, without the user opening a session.
+- **Phases**: lienzo (`ux-design-system` + Claude Design) → maqueta (`html-mockup`) → veredicto
+  (`blind-judges` + `visual-verification`) → build (`project-context`, `elementor-theme-parts`,
+  `elementor-core` | `divi-core` and the rest of the order above) → QA/ajustes (`qa-review` +
+  `visual-verification`). A phase that runs long is split, never continued: theme parts first, then
+  one build agent per page, and each round of ajustes is a new agent.
+- **The brief is short**: the client folder, the path of `diseno/estado.md` and the phase's
+  skill(s). Nothing pasted; the agent reads what it needs.
+- **The agent does the phase, rewrites `diseno/estado.md` and returns at most ~150 words**: what was
+  done, where the artifacts are, what needs the user. Format: `web-templates/references/estado-formato.md`.
+- **This thread reads `estado.md`, never the work.** No screenshot, full maqueta or builder JSON
+  enters it; a doubt about an artifact is a new agent, not a look from here.
+- **Human gates stay here**: lienzo OK, client approval, build gate, the questions under «Ask before
+  you build», and a `web-templates` decision the encargo does not already carry. Ask in this thread,
+  record the answer and who gave it under Decisiones tomadas, then launch the next agent. The build
+  gate is asked over the `es_overwrite_preflight()` block an agent brought back verbatim; the yes and
+  its slugs go into `estado.md` and into every build brief, the only place a write-capable skill
+  inside an agent can find it. Two judges that disagree come back verbatim, untied.
+- **A resumed or new session reads `diseno/estado.md` and nothing else**: Siguiente paso is the next
+  brief, Pendiente del usuario the next question. The manifest is read and verified by the agent that
+  touches WordPress, and its DRIFT comes back as Pendiente. If the runtime refuses an agent inside an
+  agent (the judges, the visual sweep), launch them from here with the same brief.
+
 ## Transfer phase — when the site was built locally
 A site built on a local WordPress moves to production as a COPY of itself, made by an off-the-shelf
 migration plugin. Building locally is what buys the freedom to work without limits: a rebuild
