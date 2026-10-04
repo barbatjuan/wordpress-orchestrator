@@ -28,15 +28,15 @@ Los ocho ids: `editorial`, `directo`, `materia`, `vitrina`, `institucional`, `te
 
 Seis de los ocho enfoques están encarnados por una plantilla de la biblioteca; `institucional`
 y `brutalista` no tienen plantilla todavía, y un cliente cuyas referencias apunten a ellos va por la ruta a
-medida. Ningún par de plantillas comparte tipo + objetivo + enfoque. El estado de cada plantilla (maqueta, veredicto) no se repite aquí: lo
-lleva `plantillas/_indice.md`.
+medida. Ningún par de plantillas comparte tipo + objetivo + enfoque. El estado de cada plantilla (maqueta, veredicto) no se repite aquí: el
+veredicto se lee con `veredicto.php --comprobar <slug>`.
 
 ## Cómo leer los ejes
 
-Las posiciones salen del catálogo de estilos anterior. Cada tabla de enfoque tiene la **posición**
+Las posiciones son las de la tabla de ejes de abajo. Cada tabla de enfoque tiene la **posición**
 del enfoque y una columna por plantilla que lo encarna, con **cómo la resuelve**, sacado de su ficha.
 Cuando las dos no coinciden, **manda la plantilla**: es un sitio real diseñado y aprobado, y la
-posición del catálogo anterior queda como el extremo del enfoque, no como una obligación. Donde la
+posición del enfoque queda como el extremo, no como una obligación. Donde la
 ficha no fija un eje, la celda lo dice en lugar de inventarlo.
 
 | Eje | Qué decide | Posiciones |

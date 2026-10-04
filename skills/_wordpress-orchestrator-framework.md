@@ -119,12 +119,9 @@ paste code inline. What exists:
   dependency.
 - `woocommerce/assets/es-shop-template.example.php`,
   `woocommerce/assets/es-product-single.example.php`.
-- `html-mockup/assets/gallery/_build-gallery.php` generates `html-mockup/assets/chassis/ecommerce.html`
-  and `html-mockup/assets/chassis/corporate.html` — the brand-neutral reference CHASSIS; the
-  orchestrator mandates running the generator and starting from the one matching the SITE TYPE.
-  Never start a corporate site from the ecommerce one. Running the generator is half the step:
-  each ships pointed at one anchor so it renders, and the `AXIS POSITIONS` block must then be
-  re-pointed at the anchor the dialogue resolved (`RT_MOCKUP_AXES_MISMATCH` gates it).
+- `html-mockup/assets/herramientas/` — the measuring and sealing tools (`veredicto.php`,
+  `huella.php`, `barrido.mjs`, ...). The maqueta is derived by hand from the client's lienzo; the
+  legacy generator and its two chassis are not a starting point for any client.
 - `wordpress-security/assets/es-security.php` — one mu-plugin deployed to `wp-content/mu-plugins/`.
 - `qa-review/assets/lighthouse-audit.mjs` — the server-side evidence script other skills' gates
   point at.

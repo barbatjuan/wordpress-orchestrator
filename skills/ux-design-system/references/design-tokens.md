@@ -111,10 +111,11 @@ Mapeo nativo Nota column with its reason — never slipped into `custom_css`.
 
 **Divi**: its global colours play the same role; the mapping is not validated in this repo.
 
-## Perceptual axes
+## The Enfoque's eight axes
 Eight axes carry what makes two sites feel different; the accent COLOUR is NOT one of them, it
-derives from the brand (the accent's POLICY — reserved, duotone, gradient… — is the axis).
-Values live in `web-templates/references/design-system.md`.
+derives from the brand (the accent's POLICY — reserved, duotone, gradient… — is the axis). They are
+vocabulary, not tokens: the Plantilla's ficha and maqueta already resolved them, and
+`web-templates/references/enfoques.md` names each position.
 - **Scale** — the RANGE between body and display, and how tight the display leads. The single
   largest perceptual difference between two sites, and the one the framework never varied.
 - **Ground** — what the page is made of. Choosing white is a decision and is recorded as one;

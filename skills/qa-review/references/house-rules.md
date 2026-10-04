@@ -114,7 +114,7 @@ inventing a fourth verdict to cover this would be the one thing this file exists
   attempt and retries three times with a backoff, which reduces it but does not eliminate it
   (antivirus holding the temp profile is the likely cause). Never report a site as unreachable off
   a single failed run.
-- **Row 30 covers four axes of five, and two of them only halfway.** Scale and elevation are
+- **Row 31 covers four axes of five, and two of them only halfway.** Scale and elevation are
   proven twice — declared and rendered. Ground and density are proven once, at the declaration
   only. Composition is not proven at all: it is named to the user and left to their eyes. That is
   the honest extent of "the build matches the approved mockup", and it is written here because the
