@@ -1311,7 +1311,7 @@ list( , $out32 ) = fx_run_ok( $audit, $r32 );
 ok( has( $out32, 'RT_MARKER_ABSENT' ), 'a bullet whose prose merely mentions the marker mid-sentence is RT_MARKER_ABSENT, not a false marker match', $out32 );
 fx_rrmdir( $r32 );
 
-echo "--- CRITICAL fixture: (no verifier: -) + trailing prose ending in a parenthetical is RT_MARKER_TRAILING_TEXT, not zero rows ---\n";
+echo "--- CRITICAL fixture: (no verifier: -) + trailing prose ending in a parenthetical is RT_MARKER_STOPWORD, not zero rows ---\n";
 /* Reproduces the proven exploit verbatim: under the rejected slice's greedy /s regex this fixture
    produced ZERO rows because the pattern matched from the marker's "(" all the way to the LAST
    ")" in the bullet, swallowing the whole trailing sentence into the payload. */
@@ -1325,11 +1325,11 @@ fx_wc_skill(
 	. "  More prose after the marker line, and it happens to end in a parenthetical (like this one).\n"
 );
 list( $code33, $out33 ) = fx_run_ok( $audit, $r33 );
-ok( has( $out33, 'RT_MARKER_TRAILING_TEXT' ), '(no verifier: -) followed by trailing prose ending in a parenthetical is RT_MARKER_TRAILING_TEXT', $out33 );
-ok( 1 === $code33, 'RT_MARKER_TRAILING_TEXT is a FAIL, exit code 1', $code33 );
+ok( has( $out33, 'RT_MARKER_STOPWORD' ), '(no verifier: -) followed by trailing prose ending in a parenthetical is RT_MARKER_STOPWORD: the payload is the marker\'s own, not the prose', $out33 );
+ok( 1 === $code33, 'RT_MARKER_STOPWORD is a FAIL, exit code 1', $code33 );
 fx_rrmdir( $r33 );
 
-echo "--- CRITICAL fixture: (verifier: dunno) + trailing prose naming an unrelated es_*() is RT_MARKER_TRAILING_TEXT, existence never resolves through the prose ---\n";
+echo "--- CRITICAL fixture: (verifier: dunno) + trailing prose naming an unrelated es_*() is RT_MARKER_STOPWORD, existence never resolves through the prose ---\n";
 $r34 = fx_tmp_root();
 fx_base( $r34 );
 fx_wc_skill(
@@ -1340,9 +1340,24 @@ fx_wc_skill(
 	. "  Unrelated trailing prose that happens to name es_container_audit() by accident.\n"
 );
 list( , $out34 ) = fx_run_ok( $audit, $r34 );
-ok( has( $out34, 'RT_MARKER_TRAILING_TEXT' ), '(verifier: dunno) followed by trailing prose naming an unrelated es_*() is RT_MARKER_TRAILING_TEXT', $out34 );
+ok( has( $out34, 'RT_MARKER_STOPWORD' ), '(verifier: dunno) followed by trailing prose naming an unrelated es_*() is RT_MARKER_STOPWORD', $out34 );
 ok( ! has( $out34, 'RT_MARKER_TARGET_MISSING' ) && ! has( $out34, 'es_container_audit' ), 'the existence check never resolves through the unrelated trailing prose', $out34 );
 fx_rrmdir( $r34 );
+
+echo "--- a valid marker followed by prose is still checked against its own payload, and passes ---\n";
+$r34b = fx_tmp_root();
+fx_base( $r34b );
+fx( $r34b, 'skills/woocommerce/assets/dummy.php', "<?php\nfunction es_trailing_target() {\n\treturn true;\n}\n" );
+fx_wc_skill(
+	$r34b,
+	'woocommerce',
+	"- A real constraint the rule describes.\n"
+	. "  (verifier: es_trailing_target() checks this rule on every build)\n"
+	. "  Prose after the marker is not part of the marker.\n"
+);
+list( , $out34b ) = fx_run_ok( $audit, $r34b );
+ok( array() === fx_lines_with( $out34b, array( 'woocommerce', 'RT_MARKER' ) ), 'a marker that resolves, with prose after it, raises no marker row', $out34b );
+fx_rrmdir( $r34b );
 
 echo "--- a payload wrapped across two lines, closing at the absolute end, is accepted ---\n";
 $r35 = fx_tmp_root();
@@ -1636,22 +1651,6 @@ list( $code54n, $out54 ) = fx_run_ok( $audit, $r54 );
 ok( array() !== fx_lines_with( $out54, array( 'qa-review', 'RT_NO_HARD_RULES' ) ), 'a non-write-capable skill missing "## Hard Rules" stays RT_NO_HARD_RULES', $out54 );
 ok( 0 === $code54n, 'RT_NO_HARD_RULES alone does not fail the build', $code54n );
 fx_rrmdir( $r54 );
-
-echo "--- D1'.1: a marker-shaped opener line OUTSIDE \"## Hard Rules\" is RT_MARKER_OUTSIDE_RULES (WARN), not silently free ---\n";
-$r55 = fx_tmp_root();
-fx_base( $r55 );
-fx(
-	$r55,
-	'skills/elementor-core/SKILL.md',
-	"---\nname: elementor-core\ndescription: \"Trigger: fixture.\"\nlicense: MIT\nmetadata:\n  author: fixture\n  version: \"1.0\"\n---\n\n"
-	. "Build gate: requires explicit **yes** before writing.\n\n"
-	. "A stray marker-shaped line sits here, outside any Hard Rules section:\n"
-	. "(no verifier: this line looks like a marker but is not inside Hard Rules)\n\n"
-	. "## Hard Rules\n- A normal rule with a real marker.\n  (no verifier: this one really is inside the rules section)\n"
-);
-list( , $out55 ) = fx_run_ok( $audit, $r55 );
-ok( has( $out55, 'RT_MARKER_OUTSIDE_RULES' ), 'a marker-shaped opener line outside "## Hard Rules" is RT_MARKER_OUTSIDE_RULES', $out55 );
-fx_rrmdir( $r55 );
 
 echo "--- a shape-2 target that climbs OUT of the audited root never counts as existing ---\n";
 /* The escaping target really exists on disk, one directory above the audited root, so this fails
@@ -2317,21 +2316,13 @@ ok( 0 === $code112, 'y el arbol sale con codigo 0', $code112 );
 fx_rrmdir( $r112 );
 
 /* ---------------------------------------------------------------------------
-   style-catalog PR 4a (tasks.md 4a.1) — the font-budget constraint the whole catalog is locked
-   to: `skills/html-mockup/assets/fonts/_fonts.php` embedded exactly 7 faces at the time (Fraunces,
-   Instrument Serif, Inter Tight, DM Sans, Source Sans 3, Archivo, Archivo Expanded), which is WHY
-   the catalog ships 8 entries in v1 instead of the 12 first proposed. `RT_MOCKUP_FONT_NOT_EMBEDDED`
-   above is the mechanism that would catch a `STY-*.md` naming a family outside that list once it
-   is rendered into a mockup, and it needs no new code: it already reads any mockup's font stack
-   against its own `@font-face` declarations, generically, regardless of which catalog format named
-   the family. THIS IS A "VALUE, NOT NOVELTY" RED, same discipline as 3b.1/3b.3: the mechanism is
-   pre-existing (r106 above already proves the general shape with `Fraunces`), so this scenario is
-   already green before any 4a code lands — its purpose is to lock the SPECIFIC example the
-   style-catalog spec names (`Canela Deck`, `specs/style-catalog/spec.md` Scenario "Unembedded
-   family named") into a real assertion, so a future PR cannot silently widen the font-embedded
-   check without this concrete catalog-budget case noticing. */
+   Font budget: `skills/html-mockup/assets/fonts/_fonts.php` embeds a fixed set of faces, and
+   `RT_MOCKUP_FONT_NOT_EMBEDDED` above reads any mockup's font stack against its own `@font-face`
+   declarations, generically. The scenarios below lock concrete cases into real assertions: a
+   family outside the embedded set (`Canela Deck`) fails, an embedded family reused at another
+   weight or stretch does not, and the mechanism is not tied to one fixed name. */
 
-echo "--- style-catalog PR 4a: una familia fuera del presupuesto de 7 caras (Canela Deck) FALLA ---\n";
+echo "--- font budget: una familia fuera de las caras embebidas (Canela Deck) FALLA ---\n";
 $r112b = fx_tmp_root();
 fx_base( $r112b );
 fx(
@@ -2341,10 +2332,10 @@ fx(
 );
 list( , $out112b ) = fx_run_ok( $audit, $r112b );
 ok( 'FAIL' === fx_row_level( $out112b, array( 'RT_MOCKUP_FONT_NOT_EMBEDDED' ) ), 'nombrar una familia ausente de nm_font_registry() FALLA', fx_row_level( $out112b, array( 'RT_MOCKUP_FONT_NOT_EMBEDDED' ) ) );
-ok( array() !== fx_lines_with( $out112b, array( 'RT_MOCKUP_FONT_NOT_EMBEDDED', 'Canela Deck' ) ), 'y nombra la familia que ningun STY-*.md puede pedir', $out112b );
+ok( array() !== fx_lines_with( $out112b, array( 'RT_MOCKUP_FONT_NOT_EMBEDDED', 'Canela Deck' ) ), 'y nombra la familia que no esta embebida', $out112b );
 fx_rrmdir( $r112b );
 
-echo "--- style-catalog PR 4a: reincrustar una familia embebida a otro peso/stretch NO FALLA (Archivo / Archivo Expanded) ---\n";
+echo "--- font budget: reincrustar una familia embebida a otro peso/stretch NO FALLA (Archivo / Archivo Expanded) ---\n";
 $r112c = fx_tmp_root();
 fx_base( $r112c );
 fx(
@@ -2367,18 +2358,11 @@ ok( 0 === $code112c, 'y el arbol conforme sale con codigo 0', $code112c );
 fx_rrmdir( $r112c );
 
 /* ---------------------------------------------------------------------------
-   style-catalog PR 4b (tasks.md 4b.1) — r112b/r112c above lock the mechanism against ONE reuse pair
-   (Archivo/Archivo Expanded) and ONE absent family (Canela Deck), both invented for the spec's own
-   worked examples. This is the same "value, not novelty" RED: `RT_MOCKUP_FONT_NOT_EMBEDDED` needs no
-   new code for PR 4b either, so the value here is locking PR 4b's OWN concrete font decisions — real
-   choices this PR actually ships, not a second copy of 4a's examples — into a real assertion.
-   `STY-TECH-SAAS` reuses `Inter Tight` as a PRIMARY for the first time in the catalog (every prior
-   use was secondary, `STY-EDITORIAL`/`STY-VITRINE`); `STY-NEO-BRUTALIST` reuses `Archivo` (not
-   `Archivo Expanded`) as a primary for the first time (its only prior use was `STY-DIRECT`'s
-   secondary). Both are real `--font-primary`/`--font-secondary` pairs from this PR's own `.md`
-   files, not synthetic stand-ins. */
+   More font-budget cases on the same rule: real primary/secondary pairs (`Inter Tight` + `Source
+   Sans 3`, `Archivo` + `DM Sans`) that are all embedded produce no row, and a second absent
+   family (`GT Walsheim`) fails exactly like `Canela Deck`. */
 
-echo "--- style-catalog PR 4b: STY-TECH-SAAS reincrusta Inter Tight como primary (antes solo secondary) NO FALLA ---\n";
+echo "--- font budget: Inter Tight como primary con Source Sans 3 como secondary NO FALLA ---\n";
 $r112d = fx_tmp_root();
 fx_base( $r112d );
 fx(
@@ -2400,7 +2384,7 @@ ok( array() === fx_lines_with( $out112d, array( 'RT_MOCKUP_FONT_NOT_EMBEDDED' ) 
 ok( 0 === $code112d, 'y el arbol conforme sale con codigo 0', $code112d );
 fx_rrmdir( $r112d );
 
-echo "--- style-catalog PR 4b: STY-NEO-BRUTALIST reincrusta Archivo (no Expanded) como primary NO FALLA ---\n";
+echo "--- font budget: Archivo (no Expanded) como primary con DM Sans como secondary NO FALLA ---\n";
 $r112e = fx_tmp_root();
 fx_base( $r112e );
 fx(
@@ -2422,7 +2406,7 @@ ok( array() === fx_lines_with( $out112e, array( 'RT_MOCKUP_FONT_NOT_EMBEDDED' ) 
 ok( 0 === $code112e, 'y el arbol conforme sale con codigo 0', $code112e );
 fx_rrmdir( $r112e );
 
-echo "--- style-catalog PR 4b: una segunda familia fuera del presupuesto, distinta de Canela Deck, FALLA igual ---\n";
+echo "--- font budget: una segunda familia fuera de las embebidas, distinta de Canela Deck, FALLA igual ---\n";
 $r112f = fx_tmp_root();
 fx_base( $r112f );
 fx(
@@ -2431,8 +2415,8 @@ fx(
 	fx_mockup( array( 'stack' => "'GT Walsheim', system-ui, sans-serif" ) )
 );
 list( , $out112f ) = fx_run_ok( $audit, $r112f );
-ok( 'FAIL' === fx_row_level( $out112f, array( 'RT_MOCKUP_FONT_NOT_EMBEDDED' ) ), 'nombrar una familia ausente distinta de la ya fijada en 4a tambien FALLA', fx_row_level( $out112f, array( 'RT_MOCKUP_FONT_NOT_EMBEDDED' ) ) );
-ok( array() !== fx_lines_with( $out112f, array( 'RT_MOCKUP_FONT_NOT_EMBEDDED', 'GT Walsheim' ) ), 'y nombra la familia -- el mecanismo no esta atado a un solo nombre fijado por 4a', $out112f );
+ok( 'FAIL' === fx_row_level( $out112f, array( 'RT_MOCKUP_FONT_NOT_EMBEDDED' ) ), 'nombrar una familia ausente distinta de Canela Deck tambien FALLA', fx_row_level( $out112f, array( 'RT_MOCKUP_FONT_NOT_EMBEDDED' ) ) );
+ok( array() !== fx_lines_with( $out112f, array( 'RT_MOCKUP_FONT_NOT_EMBEDDED', 'GT Walsheim' ) ), 'y nombra la familia -- el mecanismo no esta atado a un solo nombre fijado', $out112f );
 fx_rrmdir( $r112f );
 
 echo "--- imagenes sin manifiesto al lado FALLAN, contandolas ---\n";

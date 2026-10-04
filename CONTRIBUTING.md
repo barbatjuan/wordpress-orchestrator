@@ -38,10 +38,10 @@ An agent stating no House rules is `RT_AGENT_NO_HOUSE_RULES` (FAIL).
 
 - **A rule with no verifier is a wish.** Every bullet under a write-capable skill's `## Hard Rules`
   must carry a **verifier marker**: `(verifier: <what checks it>)` or `(no verifier: <the admitted gap>)`,
-  as its own line, the LAST thing in the bullet (nothing after the closing `)`), exact lowercase token.
-  The audit enforces the marker's SHAPE, never its wording.
+  as its own line, exact lowercase token. The audit enforces that a marker PARSES and is not a
+  placeholder, never its wording.
   - **FAIL**: missing closing paren (`RT_MARKER_UNCLOSED`); two markers on one bullet
-    (`RT_MARKER_MULTIPLE`); text after the closing `)` (`RT_MARKER_TRAILING_TEXT`); token case not
+    (`RT_MARKER_MULTIPLE`); token case not
     exactly `verifier:`/`no verifier:` (`RT_MARKER_CASE`); payload empty (`RT_MARKER_EMPTY`), under 12
     characters (`RT_MARKER_TOO_SHORT`), a placeholder like `TODO`/`n/a`/`x` (`RT_MARKER_STOPWORD`), or
     over 40 words (`RT_MARKER_OVERSIZE`); a `(verifier: …)` naming a row type, function, `tests/` path,
@@ -59,8 +59,7 @@ An agent stating no House rules is `RT_AGENT_NO_HOUSE_RULES` (FAIL).
     and must be backticked so a passing mention cannot silence the target the marker actually named.
     Function existence is checked with PHP's tokenizer: a name only in a comment or string does not count.
   - Marker lines are excluded from the `SKILL.md` word budget, capped at 40 words each on **every**
-    skill (a marker over the cap is not excluded). A marker-shaped line outside `## Hard Rules` is
-    `RT_MARKER_OUTSIDE_RULES` (WARN) and stays counted.
+    skill (a marker over the cap is not excluded).
 - **A warning only in `error_log()` is a warning nobody reads.** The sandbox returns STDOUT; the
   server's PHP log is never fetched. Route every warning through `es_warn()` (or echo alongside
   `error_log()` where the helper library may not be loaded).
@@ -69,7 +68,7 @@ An agent stating no House rules is `RT_AGENT_NO_HOUSE_RULES` (FAIL).
 - **Every file under `references/` or `assets/` must be REACHABLE, at any depth**
   (`RT_ORPHAN_FILE`). Reachability starts at `SKILL.md` and spreads only through files already
   reachable. A file is named by its path, by its filename **with the extension**, or by its family
-  prefix (`TPL-C-01` reaches `TPL-C-01-services-leadgen.md`), never by the bare stem. A pointer at a
+  prefix (`TPL-DEEP-01` reaches `TPL-DEEP-01-first.md`), never by the bare stem. A pointer at a
   directory reaches its DIRECT children only (a pointer at `references/plantillas/` reaches
   `_indice.md`, which names the folders below); the skill's own `references/`/`assets/` roots are not
   pointers. A filename that occurs twice in one skill must be cited by its **full path from the skill root**.
@@ -106,7 +105,6 @@ lists them) and mirrored here. An ID missing from this table is a FAIL (`RT_ROWT
 | `RT_MARKER_MULTIPLE` | FAIL | a Hard Rule bullet carries two or more verifier markers |
 | `RT_MARKER_CASE` | FAIL | a verifier marker token is not the exact lowercase literal |
 | `RT_MARKER_UNCLOSED` | FAIL | a verifier marker's opening paren is never closed |
-| `RT_MARKER_TRAILING_TEXT` | FAIL | text follows a verifier marker's closing paren |
 | `RT_MARKER_EMPTY` | FAIL | a verifier marker's payload is empty |
 | `RT_MARKER_STOPWORD` | FAIL | a verifier marker's payload is a stop-word placeholder |
 | `RT_MARKER_TOO_SHORT` | FAIL | a verifier marker's payload is under 12 characters |
@@ -114,7 +112,6 @@ lists them) and mirrored here. An ID missing from this table is a FAIL (`RT_ROWT
 | `RT_MARKER_TARGET_MISSING` | FAIL | a `(verifier: …)` marker names a target that does not exist |
 | `RT_MARKER_MISLABEL` | JUDGE | a `(no verifier: …)` marker names a target that DOES exist (backticked `tests/…` paths exempt) |
 | `RT_MARKER_PROSE_ONLY` | JUDGE | a `(verifier: …)` marker names no locatable target |
-| `RT_MARKER_OUTSIDE_RULES` | WARN | a verifier-marker-shaped line sits outside `## Hard Rules` |
 | `RT_ERRORLOG_NO_STDOUT` | FAIL | an error_log call has no paired stdout channel |
 | `RT_CAPTURE_OUT_DEFAULTED` | FAIL | a `.mjs` asset gives `--out` a default instead of requiring it |
 | `RT_ROWTYPE_PHANTOM` | FAIL | prose in `skills/` or `agents/` cites a row type `ROW_TYPES` does not declare |

@@ -45,7 +45,7 @@ three steps below.
   narration cut, overlapping rows merged only where the check is identical; `es-builder.php`
   incident narration in comments cut (comments only, golden fixture unchanged).
 
-- [ ] T4 Further optimisation (owner, 2026-10-04: "optimiza todo"), reversible in-repo items only:
+- [x] T4 Further optimisation (owner, 2026-10-04: "optimiza todo"), reversible in-repo items only:
   - collapse the verifier-marker grammar to "a named verifier exists or the gap is admitted";
     retire the `RT_MARKER_*` rows that only police trailer syntax, with their fixtures
   - move finished process history (`docs/`, archived `openspec/` changes and specs for deleted
@@ -127,3 +127,16 @@ house-rules 62,188 → 50,771 (42 rows, none renumbered or merged); es-builder.p
 (comments only); mockup-guide and knowledge trimmed. One stale pointer fixed (3-zone header recipe
 lives in elementor-theme-parts gotchas). Audit `0 FAIL / 3 WARN`, all tests unchanged and green.
 Candidate for owner: row 31(a) can compare axis variables on only 1 of 17 maquetas.
+
+T4 (2026-10-04, delegated writer): removed `es_record_style_resolution` and the `color.php` ink
+functions with their tests (no caller in the current flow); retired 2 of 13 `RT_MARKER_*` rows
+(`TRAILING_TEXT`, `OUTSIDE_RULES` — placement policing only; the other 11 each protect whether a
+rule is really verified and stay); removed 34 files of closed process history under `docs/` and
+`openspec/` (active change `plantillas-reales` and everything still cited stay). `RT_*` ids 53 → 51.
+43 files, +63 / −7,986. Audit `0 FAIL / 3 WARN`; tests audit-signals 22, container-hygiene 124,
+framework-audit 455 (~28 s), herramientas 320, replay 11, security 43, write-path 561.
+Deviation: the writer removed the ink functions although `scrim.php` was kept; `scrim.php` no longer
+has a producer for its `$ink` path.
+Open owner decisions: remove `scrim.php` (no flow step uses it) or keep; retire the two bleed rows
+that cannot fire on the current library or keep them as guards for future Plantillas; narrow row
+31(a) to the ground axis (only `delao` declares the other three) or keep; `colour-and-tone-system` spec.

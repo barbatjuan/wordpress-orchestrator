@@ -53,12 +53,9 @@
   chained builds need because `es_tokens( array() )` returns the PREVIOUS build's palette.
   Both, plus how a finished site reaches production and the three things the migration plugin does
   not know about it: `references/migration.md`.
-  `es_record_style_resolution($sty_id, $negative_brief, $rejected_tone)` belongs to the retired
-  style catalog: the current flow resolves no `STY-*` id, so a build does NOT call it and the
-  manifest's `design` section stays empty. The values Step 2 passes to `es_tokens()` come
-  from the approved maqueta's `:root` (the brand `ux-design-system` placed inside the Plantilla's
-  Enfoque; `qa-review` row 31 compares them), not from a catalog entry. If called, it fails closed — any of the three empty and
-  nothing is written, `es_manifest_record()`'s own contract.
+  The manifest's `design` section is empty in the current flow. The values Step 2 passes to
+  `es_tokens()` come from the approved maqueta's `:root` (the brand `ux-design-system` placed
+  inside the Plantilla's Enfoque; `qa-review` row 31 compares them).
   `es_manifest_verify()` contrasts the recorded page map and front page against the LIVE site and
   returns drift lines: page gone, slug moved by hand, same slug answered by a different post id
   (the worst, because everything looks fine), front page repointed. It reports and never repairs:

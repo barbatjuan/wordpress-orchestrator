@@ -2245,9 +2245,8 @@ function es_manifest_read() {
  * something this function should assert.
  *
  * Observed today: `pages` is written by `elementor-core` step 8 (slug => id); `site` by that same step
- * (`front_page_id`) and read back by `es_manifest_verify()`; `design` by `es_record_style_resolution()`
- * once intake resolves a style; `delivery` by nothing and read by nothing (named so the gap is
- * countable). `build` holds what the site was built WITH (`es_build_fingerprint()`), written by
+ * (`front_page_id`) and read back by `es_manifest_verify()`; `design` and `delivery` by nothing and
+ * read by nothing (named so the gap is countable). `build` holds what the site was built WITH (`es_build_fingerprint()`), written by
  * `elementor-core` SKILL.md step 8 alongside `pages`; it lets a later check tell whether production
  * runs the same PHP, WordPress, Elementor and Elementor Pro as the QA pass.
  */
@@ -2321,43 +2320,6 @@ function es_manifest_record( $section, array $data ) {
 	}
 
 	return true;
-}
-
-/**
- * THE call site `es_manifest_record('design', …)` never had (`art-direction-ledger`,
- * style-catalog Slice 5a) — the retired style-catalog intake resolved a
- * `STY-*` id, a negative brief (what was explicitly rejected) and a rejected colour temperature;
- * this is where those three answers land in the manifest, once `es-builder.php` is live in the
- * sandbox to write them.
- *
- * Fails CLOSED: an empty id, brief or tone is not partial progress — it is exactly the silent
- * default this whole change exists to stop reproducing (`mockup-guide.md:436-447`) — so nothing
- * is written and `false` comes back, same contract as `es_manifest_record()` itself.
- *
- * Re-resolving mid-session (a design change mid-build) OVERWRITES this section, never appends:
- * `es_manifest_record()` replaces `sections['design']` wholesale, and no history is kept here.
- */
-function es_record_style_resolution( $sty_id, $negative_brief, $rejected_tone ) {
-	$sty_id         = trim( (string) $sty_id );
-	$negative_brief = trim( (string) $negative_brief );
-	$rejected_tone  = trim( (string) $rejected_tone );
-
-	if ( '' === $sty_id || '' === $negative_brief || '' === $rejected_tone ) {
-		es_warn(
-			'resolucion de estilo incompleta: hacen falta los tres campos (id de estilo, brief negativo '
-			. 'y tono rechazado) antes de escribir en el manifiesto — no se guarda una resolucion a medias.'
-		);
-		return false;
-	}
-
-	return es_manifest_record(
-		'design',
-		array(
-			'style'          => $sty_id,
-			'negative_brief' => $negative_brief,
-			'rejected_tone'  => $rejected_tone,
-		)
-	);
 }
 
 /**

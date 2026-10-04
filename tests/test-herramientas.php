@@ -112,26 +112,6 @@ echo "--- css_mix() ---\n";
 ok( '#808080' === css_mix( '#000000', 0.5, '#FFFFFF' ), 'a 50/50 mix of black and white is mid-grey' );
 ok( '#000000' === css_mix( '#000000', 1.0, '#FFFFFF' ), '100% of $a is $a untouched' );
 
-echo "--- the accent gate (ink_ends): a real ground+accent derives without throwing ---\n";
-try {
-	$ends = ink_ends( array( 'bg' => '#FFFFFF', 'text' => '#15181A' ), '#8C3A1F', 0.45 );
-	ok( isset( $ends['dark'], $ends['light'] ), 'ink_ends() returns dark + light endpoints for a real ground/accent pair' );
-	$curve = ink_curve( $ends, 0.12 );
-	ok( 3 === count( $curve ) && INK_STOPS === count( explode( ' ', $curve[0] ) ), 'ink_curve() returns one row per channel, INK_STOPS values each' );
-} catch ( Exception $e ) {
-	ok( false, 'ink_ends()/ink_curve() should not throw on a well-formed real ground+accent pair: ' . $e->getMessage() );
-}
-
-echo "--- the accent gate (ink_ends): a channel spread under 20 throws NmHerramientaMedida, not a silent pass ---\n";
-try {
-	ink_ends( array( 'bg' => '#FFFFFF', 'text' => '#15181A' ), '#20203A', 0.45 );
-	ok( false, 'a shadow ink with a channel spread under 20 must throw, not return' );
-} catch ( NmHerramientaMedida $e ) {
-	ok( false !== strpos( $e->getMessage(), 'channel spread of' ), 'the message names the measured spread: ' . $e->getMessage() );
-} catch ( Exception $e ) {
-	ok( false, 'wrong exception type for a measured invariant: ' . get_class( $e ) );
-}
-
 echo "--- color.php --contraste: RED below 4.5:1, GREEN at/above it ---\n";
 $r = run_cli( 'color.php', '--contraste "#777777" "#888888"' );
 ok( 1 === $r['code'], "a pair below 4.5:1 exits 1 (measured failure): {$r['out']}" );

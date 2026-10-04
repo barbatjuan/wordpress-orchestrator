@@ -747,44 +747,6 @@ foreach ( $secciones as $s ) {
 }
 ok( 0 < $n && array() === $mal, 'cada nombre que es_manifest_sections() declara acepta un es_manifest_record() y se relee igual' );
 
-/* art-direction-ledger (style-catalog Slice 5a): la resolucion de estilo — id, brief negativo,
-   tono rechazado — es EL llamado que 'design' no tenia (manifest-section-contract, delta). */
-echo "--- la resolucion de estilo se graba con es_record_style_resolution() ---\n";
-
-wp_fake_reset();
-ok(
-	true === es_record_style_resolution( 'STY-EDITORIAL', 'sin foto de stock, sin hero con gradiente', 'frio' ),
-	'las tres respuestas completas se graban'
-);
-$m = es_manifest_read();
-ok( 'STY-EDITORIAL' === $m['sections']['design']['data']['style'], 'el id resuelto queda en la seccion design' );
-ok( '' !== $m['sections']['design']['data']['negative_brief'], 'con su brief negativo' );
-ok( '' !== $m['sections']['design']['data']['rejected_tone'], 'y su tono rechazado' );
-
-/* Una resolucion incompleta no es progreso parcial: es exactamente el default silencioso que esta
-   funcion existe para dejar de reproducir — falla CERRADO, no graba una resolucion a medias. */
-wp_fake_reset();
-$r = grab(
-	function () {
-		return es_record_style_resolution( 'STY-EDITORIAL', '', 'frio' );
-	}
-);
-ok( false === $r['ret'], 'un brief negativo vacio no se graba' );
-ok( has( $r['out'], 'resolucion de estilo incompleta' ), 'y avisa por que' );
-ok( array() === es_manifest_read()['sections'], 'nada quedo escrito: ni siquiera el id, que si llego completo' );
-
-/* Re-resolver en la misma sesion (un cambio de diseno a mitad de build) PISA la seccion 'design',
-   nunca la acumula — el historial de entregas no vive en esta seccion. */
-wp_fake_reset();
-es_record_style_resolution( 'STY-EDITORIAL', 'sin foto de stock', 'frio' );
-es_record_style_resolution( 'STY-MATTER', 'sin tipografia script', 'calido' );
-$m = es_manifest_read();
-ok( 'STY-MATTER' === $m['sections']['design']['data']['style'], 'la segunda resolucion reemplaza a la primera, no la acumula' );
-ok(
-	'sin tipografia script' === $m['sections']['design']['data']['negative_brief'],
-	'con TODOS sus campos pisados, no solo el id'
-);
-
 /* Escribir no es haber escrito, igual que en la portada y en el camino de escritura. */
 wp_fake_reset();
 $GLOBALS['wp']['option_ro'] = array( 'es_novamira_manifest' );
@@ -1989,17 +1951,11 @@ foreach ( explode( "\n", (string) file_get_contents( $ds_ruta ) ) as $linea ) {
 	   abajo habria medido contra una referencia que no es la del eje.
 	   La tabla del eje tiene tres colores seguidos; ninguna otra del fichero los
 	   tiene, y esa es la forma que se exige aqui.
-	   NUEVE posiciones, no cuatro —— style-catalog PR 3a: `paper`/`warm`/`cool` se
-	   quedan donde estaban, `ink` tambien, y se suman `cream`/`earth`/`saturated`
-	   (claras) y `ink-warm`/`ink-cool` (oscuras). El hueco que este axis tapaba —
-	   tres de cuatro fondos casi blancos — se cierra con posiciones nuevas, no
-	   renombrando las viejas: `ink` sigue siendo `ink` porque framework-audit.php's
-	   `nm_axes()` y los cinco anchors de design-personalities.md ya lo declaraban por
-	   ese nombre cuando se escribio este comentario, y tocarlo era trabajo de Slice 4,
-	   no de PR 3a. style-catalog PR 4c ya hizo ese trabajo: `nm_axes()` ahora declara
-	   estas mismas nueve posiciones y el catalogo (ocho `STY-*.md`, design-personalities.md
-	   retirado) las usa por el mismo nombre, asi que renombrar `ink` seguiria sin tener
-	   beneficio -- esa es la parte de este razonamiento que no caduca. */
+	   NUEVE posiciones, no cuatro: `paper`/`warm`/`cool` y `ink` se quedan donde estaban, y se
+	   suman `cream`/`earth`/`saturated` (claras) y `ink-warm`/`ink-cool` (oscuras). El hueco que
+	   este axis tapaba — tres de cuatro fondos casi blancos — se cierra con posiciones nuevas, no
+	   renombrando las viejas: `ink` sigue siendo `ink` porque `nm_axes()` de framework-audit.php
+	   declara estas mismas nueve posiciones por ese nombre. */
 	if ( count( $celdas ) >= 4
 		&& in_array( $celdas[0], array( 'paper', 'warm', 'cool', 'cream', 'earth', 'saturated', 'ink', 'ink-warm', 'ink-cool' ), true )
 		&& preg_match( '/^#[0-9A-Fa-f]{6}$/', $celdas[1] )
@@ -2142,90 +2098,6 @@ $r = grab(
 ok( '' === $r['ret'], 'un valor que no es hex no se convierte en un neutro plausible al mezclarlo' );
 ok( has( $r['out'], 'azul' ), 'y lo dice en voz alta nombrando el valor que no supo leer' );
 es_tokens( $es_defaults );
-
-/* ---------------------------------------------------------------------------
- * style-catalog PR 3b: tinta por estilo, la posicion `none`, y el piso de
- * spread=20 -- tres fixtures de comportamiento REAL, no reimplementados.
- *
- * ink_tint()/ink_quant_bound()/ink_ends()/ink_of() reciben cada entrada por
- * parametro -- ni un global -- asi que se pueden extraer del propio fichero
- * y ejecutar de verdad, en vez de reescribir su formula aqui (exactamente el
- * riesgo de "dos llamadas de acuerdo" que el propio docblock de ink_of() ya
- * retracto una vez). fail() sale con exit(1) dentro de esos gates; por eso
- * el extracto corre en un PROCESO HIJO, la misma aislacion que ya usa
- * "si falta la dependencia, se dice; no se muere en silencio" mas arriba --
- * un exit(1) alli abajo no puede tumbar esta suite.
- * ------------------------------------------------------------------------- */
-function ink_probe_run( $php_body, $driver ) {
-	$dir = sys_get_temp_dir() . '/nm-ink-probe-' . getmypid() . '-' . mt_rand( 1000, 9999 );
-	@mkdir( $dir, 0777, true );
-	$probe = $dir . '/probe.php';
-	file_put_contents( $probe, "<?php\n" . $php_body . "\n" . $driver . "\n" );
-	$out  = array();
-	$code = -1;
-	exec( escapeshellarg( PHP_BINARY ) . ' ' . escapeshellarg( $probe ) . ' 2>&1', $out, $code );
-	@unlink( $probe );
-	@rmdir( $dir );
-	return array( 'out' => implode( "\n", $out ), 'code' => $code );
-}
-
-/* `srgb_lum`/`srgb_lum_rgb`/`css_mix`/`ink_tint`/`ink_quant_bound`/`ink_ends` live in
-   `herramientas/color.php` (openspec/changes/plantillas-reales PR 1a) -- one contrast/ink engine,
-   not a text-extracted copy of it. The probe REQUIREs the real file directly, which is strictly more
-   faithful than extracting its text: it is the exact bytes that ship, not a regex's idea of them.
-   Those functions throw `NmHerramientaEntorno`/`NmHerramientaMedida` instead of exiting (they are
-   also a dual-mode CLI, see color.php's own header), so the probe installs a small
-   exception-to-exit bridge: the process leaves with exit 1 and the message on stderr, which is the
-   contract this probe asserts. The gallery generator that used to supply `fail()` is gone, so the
-   bridge carries its own. */
-$color_ruta = dirname( __DIR__ ) . '/skills/html-mockup/assets/herramientas/color.php';
-ok( is_file( $color_ruta ), 'herramientas/color.php existe para que el probe de tinta lo requiera' );
-$ink_fn_body = 'require_once ' . var_export( $color_ruta, true ) . ";\n"
-	. <<<'PHP'
-function fail( $msg ) {
-	fwrite( STDERR, "FAIL: $msg\n" );
-	exit( 1 );
-}
-set_exception_handler( function ( $e ) {
-	if ( $e instanceof NmHerramientaEntorno || $e instanceof NmHerramientaMedida ) {
-		fail( $e->getMessage() );
-	}
-	throw $e;
-} );
-
-PHP;
-
-if ( ! function_exists( 'exec' ) ) {
-	ok( false, 'ENTORNO, no el cambio: exec() esta deshabilitado, los fixtures de tinta no se pudieron correr aqui' );
-} else {
-	echo "--- 3b.1: dos tintes reales por estilo (0.30/0.60) dan hues distintos, los dos dentro de la propia convergencia de ink_ends() ---\n";
-	$r3b1 = ink_probe_run(
-		$ink_fn_body,
-		'$a = ink_ends(' . var_export( array( 'bg' => $suelos['warm']['bg'], 'text' => $suelos['warm']['text'] ), true ) . ", '#0F5C1A', 0.30);\n"
-			. '$b = ink_ends(' . var_export( array( 'bg' => $suelos['cool']['bg'], 'text' => $suelos['cool']['text'] ), true ) . ", '#8C1A28', 0.60);\n"
-			. "echo 'A=' . \$a['dark'] . \"\\n\";\n"
-			. "echo 'B=' . \$b['dark'] . \"\\n\";\n"
-			. "echo \"LLEGO\\n\";\n"
-	);
-	ok( 0 === $r3b1['code'], 'los dos tintes conservan las tres comprobaciones internas de ink_ends() (convergencia, peso, colision de endpoint) sin FAIL', $r3b1['out'] );
-	ok( has( $r3b1['out'], 'LLEGO' ), 'y el proceso llega al final, no se corta a mitad', $r3b1['out'] );
-	preg_match( '/A=(#[0-9A-F]{6})/', $r3b1['out'], $ink_ma );
-	preg_match( '/B=(#[0-9A-F]{6})/', $r3b1['out'], $ink_mb );
-	ok( isset( $ink_ma[1] ) && isset( $ink_mb[1] ), 'los dos tintes devuelven una tinta legible', $r3b1['out'] );
-	if ( isset( $ink_ma[1] ) && isset( $ink_mb[1] ) ) {
-		ok( $ink_ma[1] !== $ink_mb[1], "0.30 y 0.60 dan tintas de sombra DISTINTAS sobre su propio fondo+acento real: {$ink_ma[1]} vs {$ink_mb[1]} -- la variedad tonal ya no la fija un solo \$INK_TINT compartido" );
-	}
-
-	echo "--- 3b.3: un spread de canal de 14 (bajo el piso de 20) SIGUE fallando -- `none` no ablando el gate para nadie mas ---\n";
-	$r3b3 = ink_probe_run(
-		$ink_fn_body,
-		'$e = ink_ends(' . var_export( array( 'bg' => $suelos['paper']['bg'], 'text' => $suelos['paper']['text'] ), true ) . ", '#20203A', 0.45);\n"
-			. "echo \"INALCANZABLE\\n\";\n"
-	);
-	ok( 1 === $r3b3['code'], 'un spread de 14 SI corta el build -- exit 1', $r3b3['out'] );
-	ok( has( $r3b3['out'], 'channel spread of 14' ), 'y el mensaje nombra el spread medido, 14, por debajo del piso de 20', $r3b3['out'] );
-	ok( ! has( $r3b3['out'], 'INALCANZABLE' ), 'y el proceso NUNCA llega a la linea de despues del fail()', $r3b3['out'] );
-}
 
 /* ---------------------------------------------------------------------------
  * La etiqueta del boton primario: `on_accent`, medida y no fijada.

@@ -71,7 +71,6 @@ const ROW_TYPES = array(
 	'RT_MARKER_MULTIPLE'         => 'FAIL  — a Hard Rule bullet carries two or more verifier markers',
 	'RT_MARKER_CASE'             => 'FAIL  — a verifier marker token is not the exact lowercase literal',
 	'RT_MARKER_UNCLOSED'         => 'FAIL  — a verifier marker\'s opening paren is never closed',
-	'RT_MARKER_TRAILING_TEXT'    => 'FAIL  — text follows a verifier marker\'s closing paren',
 	'RT_MARKER_EMPTY'            => 'FAIL  — a verifier marker\'s payload is empty',
 	'RT_MARKER_STOPWORD'         => 'FAIL  — a verifier marker\'s payload is a stop-word placeholder',
 	'RT_MARKER_TOO_SHORT'        => 'FAIL  — a verifier marker\'s payload is under 12 characters',
@@ -79,7 +78,6 @@ const ROW_TYPES = array(
 	'RT_MARKER_TARGET_MISSING'   => 'FAIL  — a "(verifier: …)" marker names a target that does not exist',
 	'RT_MARKER_MISLABEL'         => 'JUDGE — a "(no verifier: …)" marker names a target that DOES exist',
 	'RT_MARKER_PROSE_ONLY'       => 'JUDGE — a "(verifier: …)" marker names no locatable target',
-	'RT_MARKER_OUTSIDE_RULES'    => 'WARN  — a verifier-marker-shaped line sits outside "## Hard Rules"',
 	'RT_ERRORLOG_NO_STDOUT'      => 'FAIL  — an error_log call has no paired stdout channel',
 	'RT_HELPER_UNROUTABLE'       => 'WARN  — an asset function no asset calls is named by no markdown either',
 	'RT_WRITE_NOT_LISTED'        => 'FAIL  — code writes to WordPress but the skill is missing from $WRITE_CAPABLE',
@@ -169,8 +167,8 @@ function slurp( $path ) {
 
 /* ---------------------------------------------------- verifier-marker grammar (D1', slice B1)
  *
- * Marker shape: own-line, terminal, case-sensitive — `(verifier: …)` or `(no verifier: …)`. The
- * token must OPEN the line; its closing `)` must be the LAST character of the bullet. Parsed from
+ * Marker shape: own-line, case-sensitive — `(verifier: …)` or `(no verifier: …)`. The
+ * token must OPEN the line and its closing `)` must exist. Parsed from
  * a line array plus a paren-depth balance, never a regex over the whole bullet: a greedy
  * dot-matches-newline regex anchored at end-of-bullet accepts ANY bullet whose LAST character is
  * ")" and absorbs all intervening prose into the payload — proven twice by mutation on the
@@ -219,7 +217,6 @@ function marker_parse( $rule ) {
 		'negated'  => $negated,
 		'span'     => $span,
 		'closed'   => ( -1 !== $close ),
-		'terminal' => ( $close === strlen( $tail ) - 1 ),
 		'payload'  => isset( $pm[1] ) ? trim( $pm[1] ) : '',
 	);
 }
@@ -365,8 +362,8 @@ function skill_files( $dir ) {
 }
 
 /* Every token by which a file may legitimately be named. Recursion ALONE is wrong here and would
- * have added 21 false rows: almost nothing in this repo is cited by its full filename. An archetype
- * is cited by its family (`TPL-C-01`, never the whole slug), a directory is cited as a directory,
+ * have added 21 false rows: almost nothing in this repo is cited by its full filename. A file with
+ * a family id in its name is cited by that family (`TPL-DEEP-01`, never the whole name), a directory is cited as a directory,
  * and ten page archetypes are cited only by the README that indexes them. A pointer at a directory
  * reaches that directory's DIRECT children and no deeper — "look in pages/" tells you to open
  * pages/, where the README tells you the rest; that is exactly the hop the check must require. */
@@ -376,7 +373,7 @@ function file_handles( $rel, array $ambiguous = array() ) {
 		return preg_quote( $s, '#' );
 	};
 	/* Boundary-anchored patterns, never bare substrings. A citation BEGINS where a filename
-	   begins: unanchored, "gotchas.md" credited "a.md" and "TPL-P-11" credited "TPL-P-1", so a
+	   begins: unanchored, "gotchas.md" credited "a.md" and "TPL-PAGE-11" credited "TPL-PAGE-1", so a
 	   file nobody had ever written about was reachable because of a longer name that happened to
 	   end the same way. There is deliberately NO stem handle either — a name without its
 	   extension is an ordinary English word, and matching one against whole files credited
@@ -391,8 +388,8 @@ function file_handles( $rel, array $ambiguous = array() ) {
 	if ( ! isset( $ambiguous[ $base ] ) ) {
 		$h[] = '#(?<![\w.\-/])' . $q( $base ) . '(?![\w\-])#';
 	}
-	/* The family prefix keeps a trailing-digit guard only: "TPL-C-01" is legitimately followed by
-	   "-services-leadgen.md" in a filename and by ".." in a range, but never by another digit. */
+	/* The family prefix keeps a trailing-digit guard only: "TPL-DEEP-01" is legitimately followed by
+	   "-first.md" in a filename and by ".." in a range, but never by another digit. */
 	if ( preg_match( '/^([A-Z]{2,}(?:-[A-Z]+)*-\d+)/', $base, $m ) ) {
 		$h[] = '#(?<![\w.\-])' . $q( $m[1] ) . '(?!\d)#';
 	}
@@ -521,13 +518,7 @@ function marker_walk( $where, array $rules, $report, $noun, $own_skill ) {
 			}
 			continue;
 		}
-		if ( ! $mp['terminal'] ) {
-			if ( $report ) {
-				add( 'RT_MARKER_TRAILING_TEXT', 'FAIL', $where, marker_short( $rule ) . '… — text follows the closing ")": the marker must be the last thing in the rule' );
-			}
-			continue;
-		}
-		/* Structurally valid (closed && terminal) regardless of what its payload says below — free
+		/* Structurally valid (closed) regardless of what its payload says below — free
 		   from the word budget either way (D1'.1), but only WITHIN the 40-word cap, which is
 		   evaluated here, ABOVE the scope gate. The strip is what makes a marker free, so a cap
 		   running only where rows are reported is not a cap: it left the unreported files an
@@ -627,10 +618,6 @@ foreach ( $skill_dirs as $dir ) {
 	 * legitimately appears.
 	 */
 	$is_write_capable = in_array( $name, $WRITE_CAPABLE, true );
-	$hard_rules_block = null;
-	if ( preg_match( '/^## Hard Rules\n(.*?)(?=\n## |\z)/ms', $body, $hr ) ) {
-		$hard_rules_block = $hr[1];
-	}
 	/* The verdict is driven by the BULLETS actually parsed, never by the heading: the lazy capture
 	   matches the empty string happily, so testing the block for null let a write-capable skill
 	   past the FAIL by typing "## Hard Rules" and stopping — free, where the escape this design
@@ -647,16 +634,6 @@ foreach ( $skill_dirs as $dir ) {
 	}
 
 	$valid_spans = marker_walk( $name, $rules, $is_write_capable, 'Hard Rule', $name );
-
-	/* A marker-shaped OPENER line outside "## Hard Rules" is not free: markers are provenance for
-	   the rule they document, not a general licence, so a line shaped like one anywhere else in
-	   the body is WARN'd and stays counted toward the budget below. */
-	$rest_of_body = ( null !== $hard_rules_block ) ? str_replace( $hard_rules_block, '', $body ) : $body;
-	foreach ( explode( "\n", $rest_of_body ) as $ln ) {
-		if ( preg_match( '/^[ \t]*\((no[ \t]+)?verifier:/', $ln ) ) {
-			add( 'RT_MARKER_OUTSIDE_RULES', 'WARN', $name, 'verifier-marker-shaped line outside "## Hard Rules": "' . trim( $ln ) . '"' );
-		}
-	}
 
 	/* --- body budget (CONTRIBUTING §2: aim ~500, hard ceiling ~600) ---
 	   Structurally valid marker spans are excluded (D1'.1): a marker documents what CHECKS a
