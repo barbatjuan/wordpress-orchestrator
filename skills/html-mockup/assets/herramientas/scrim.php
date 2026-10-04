@@ -29,7 +29,7 @@ require_once __DIR__ . '/color.php';
 
 /**
  * `feFunc* type="table"`, per the SVG spec: piecewise-linear over n entries. Lifted from
- * the retired gallery generator — the exact primitive the browser applies to `ink_curve()`'s
+ * the retired gallery generator — the exact primitive the browser applies to the ink curve's
  * output, so a sweep that skipped this would be measuring a picture the browser never paints.
  */
 function fe_table( $c, $values ) {

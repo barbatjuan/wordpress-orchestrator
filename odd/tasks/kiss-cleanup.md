@@ -140,3 +140,12 @@ has a producer for its `$ink` path.
 Open owner decisions: remove `scrim.php` (no flow step uses it) or keep; retire the two bleed rows
 that cannot fire on the current library or keep them as guards for future Plantillas; narrow row
 31(a) to the ground axis (only `delao` declares the other three) or keep; `colour-and-tone-system` spec.
+
+Final independent verification (2026-10-04) of 988566b, 5f21055, f7e2fa4: pass with findings, no
+blocker, no lost rule/threshold/command/trailer; marker evasion attempts all counted as hand-written
+except editing inside a helper block (accepted limit); commits carry only the GitHub noreply address.
+Two comment-level findings fixed (stale `ink_curve()` mention, a client build name in a test comment).
+Not run by anyone: Elementor's rendered-CSS minifier vs the marker (irrelevant while row 37 reads
+stored data); `install.ps1` self-install guard and `--clean` under Windows PowerShell 5.1.
+Still open, pre-existing: orchestrator line on Permalinks/404 overstates what `migration.md` measured.
+Next: owner decides PR vs merge; then `install.ps1 --clean` to update `~/.claude`.
