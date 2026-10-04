@@ -12,34 +12,50 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /* The one place that decides which headers go out, as a pure function so it can be asserted on.
-   HSTS stays at 30 days with no subdomains and no preload: both are hard to undo. */
-function es_security_headers( $ssl ) {
+   HSTS stays at 30 days with no subdomains and no preload: both are hard to undo. A header the
+   host already sends (names in $sent, any case) is never replaced: the host knows more than we do. */
+function es_security_headers( $ssl, $sent = array() ) {
 	$headers = array(
 		'X-Content-Type-Options' => 'nosniff',
 		'X-Frame-Options'        => 'SAMEORIGIN',
 		'Referrer-Policy'        => 'strict-origin-when-cross-origin',
-		'Permissions-Policy'     => 'camera=(), microphone=(), geolocation=()',
+		'Permissions-Policy'     => 'camera=(), microphone=()',
 	);
 	if ( $ssl ) {
 		$headers['Strict-Transport-Security'] = 'max-age=' . ( 30 * 86400 );
 	}
+	$have = array_map( 'strtolower', $sent );
+	foreach ( array_keys( $headers ) as $name ) {
+		if ( in_array( strtolower( $name ), $have, true ) ) {
+			unset( $headers[ $name ] );
+		}
+	}
 	return $headers;
 }
-add_action( 'send_headers', function () {
-	if ( headers_sent() ) {
-		return;
+/* $emit is header() in production and a recorder in the test. */
+function es_security_send( $ssl, $sent, $emit ) {
+	foreach ( es_security_headers( $ssl, $sent ) as $name => $value ) {
+		$emit( $name . ': ' . $value );
 	}
-	foreach ( es_security_headers( is_ssl() ) as $name => $value ) {
-		header( $name . ': ' . $value );
+}
+add_action( 'send_headers', function () {
+	if ( ! headers_sent() ) {
+		es_security_send( is_ssl(), array_map( function ( $line ) {
+			return trim( strstr( $line, ':', true ) );
+		}, headers_list() ), 'header' );
 	}
 } );
 
-/* xmlrpc off, unless Jetpack needs it. */
+/* xmlrpc off, unless Jetpack needs it or wp-config.php says define( 'ES_SECURITY_KEEP_XMLRPC', true )
+   (the WordPress mobile app, for one). */
+function es_security_keeps_xmlrpc() {
+	return class_exists( 'Jetpack' ) || ( defined( 'ES_SECURITY_KEEP_XMLRPC' ) && ES_SECURITY_KEEP_XMLRPC );
+}
 add_filter( 'xmlrpc_enabled', function ( $enabled ) {
-	return class_exists( 'Jetpack' ) ? $enabled : false;
+	return es_security_keeps_xmlrpc() ? $enabled : false;
 } );
 add_filter( 'xmlrpc_methods', function ( $methods ) {
-	if ( ! class_exists( 'Jetpack' ) ) {
+	if ( ! es_security_keeps_xmlrpc() ) {
 		unset( $methods['pingback.ping'], $methods['pingback.extensions.getPingbacks'] );
 	}
 	return $methods;
@@ -53,9 +69,10 @@ add_filter( 'rest_endpoints', function ( $routes ) {
 	return $routes;
 } );
 
-/* ?author=N would redirect to /author/<login>/ and hand out the login. Answer 404 instead. */
+/* ?author=N would redirect to /author/<login>/ and hand out the login. Answer 404 instead. Core
+   reads the leading digits, so any value holding a digit, and any array, counts as a probe. */
 add_action( 'template_redirect', function () {
-	if ( is_admin() || is_user_logged_in() || ! isset( $_GET['author'] ) || ! is_numeric( $_GET['author'] ) ) {
+	if ( is_admin() || is_user_logged_in() || ! isset( $_GET['author'] ) || ! ( is_array( $_GET['author'] ) || preg_match( '/\d/', $_GET['author'] ) ) ) {
 		return;
 	}
 	global $wp_query;

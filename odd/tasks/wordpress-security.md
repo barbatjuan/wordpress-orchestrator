@@ -54,3 +54,4 @@ Out of scope: login rate limiting, hiding the WordPress version, firewall/malwar
 - Deviation: `?author=N` answers 404 instead of merely not redirecting.
 - Not checked: behaviour on a live site (connector auth with `/wp/v2/users` closed to anonymous).
 - Next: live check on one staging site, then PR.
+- Independent verification (2026-10-04, tier high, RDD off): pass with findings; one bounded correction applied — host headers never downgraded, `?author=` digit/array variants, real header assertions, `geolocation` dropped, `ES_SECURITY_KEEP_XMLRPC` opt-out, last absolute-ban string reworded, rows 36–42 back inside the table. `php tests/test-security.php`: `43 OK / 0 FAIL`.

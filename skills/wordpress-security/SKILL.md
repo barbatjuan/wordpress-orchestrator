@@ -13,8 +13,8 @@ Closes the common scanner findings with one mu-plugin and reports what only a hu
 Runs after the pages exist and before `qa-review`.
 
 ## Activation Contract
-Use at hand-off, or when the user brings a scanner report. Read `project-context` first: it says
-whether Jetpack is active; ask whether the WordPress mobile app is used.
+Use at hand-off or on a scanner report. Read `project-context` first: it says
+whether Jetpack is active; ask whether the WordPress mobile app is used and, if so, tell the human to add the constant.
 
 **Build gate — blocking.** This skill writes to a live WordPress site. Do not run until the user
 has given an explicit **yes** for THIS build. Reached directly instead of routed by the
@@ -35,8 +35,9 @@ The mu-plugin is PHP outside the sandbox, so it also needs the separate authoriz
   (verifier: `tests/test-security.php` asserts the header value.)
 - The REST users route closes only for anonymous requests, because the connector authenticates over REST.
   (verifier: `tests/test-security.php` asserts that a logged-in request keeps every endpoint.)
-- xmlrpc stays on when Jetpack or the WordPress mobile app is in use; say so in the report.
-  (no verifier: the mu-plugin sees Jetpack, but nothing detects the mobile app, so ask the client.)
+- xmlrpc stays on when Jetpack is active, or when the site defines `ES_SECURITY_KEEP_XMLRPC` in
+  `wp-config.php`, which is how the WordPress mobile app is kept working. Say which in the report.
+  (verifier: `tests/test-security.php` asserts the opt-out leaves xmlrpc on.)
 - The connector user's application password is revoked, or the user removed, before hand-off.
   (verifier: `qa-review` house-rule row 41 checks the connector user.)
 - Outdated core, plugins and theme are listed with versions. A human decides; never update here.
@@ -54,9 +55,8 @@ The mu-plugin is PHP outside the sandbox, so it also needs the separate authoriz
 4. Recommend the Two-Factor plugin for administrators. Each human enrolls their own device, and
    application passwords bypass 2FA, which is why step 5 matters.
 5. Revoke the connector user's application password, or remove the user, at hand-off.
-6. Verify with `qa-review` rows 38 to 42 against the served site.
+6. Verify with `qa-review` rows 38 to 42.
 
 ## Output Contract
-Report what the mu-plugin closed, what was found and left to a human (with versions), and what
-could not be verified. Out of scope: login rate limiting, hiding the WordPress version,
+Report what was closed, what is left to a human (with versions), and what could not be verified. Out of scope: login rate limiting, hiding the WordPress version,
 firewall or malware scanning.
