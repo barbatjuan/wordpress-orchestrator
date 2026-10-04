@@ -151,8 +151,8 @@ function es_build_product_single() {
 									'button_typography_font_size'   => es_size( 15 ),
 									'button_typography_font_weight' => '600',
 									'_margin'                       => es_box( 0, 0, 26, 0 ),
-									'custom_css'                    => 'selector .button,selector .single_add_to_cart_button{background-color:' . es_t( 'accent' ) . '!important;border-color:' . es_t( 'accent' ) . '!important;color:' . es_t( 'on_accent' ) . '!important;border-radius:8px!important;transition:background-color .3s ' . es_t( 'ease' ) . ',box-shadow .35s ' . es_t( 'ease' ) . ',transform .35s ' . es_t( 'ease' ) . '!important;}'
-										. 'selector .button:hover,selector .single_add_to_cart_button:hover{background-color:' . es_t( 'accent_hover' ) . '!important;border-color:' . es_t( 'accent_hover' ) . '!important;transform:translateY(-2px);box-shadow:' . es_t( 'elev_accent' ) . '!important;}',
+									'custom_css'                    => es_helper_css( 'selector .button,selector .single_add_to_cart_button{background-color:' . es_t( 'accent' ) . '!important;border-color:' . es_t( 'accent' ) . '!important;color:' . es_t( 'on_accent' ) . '!important;border-radius:8px!important;transition:background-color .3s ' . es_t( 'ease' ) . ',box-shadow .35s ' . es_t( 'ease' ) . ',transform .35s ' . es_t( 'ease' ) . '!important;}'
+										. 'selector .button:hover,selector .single_add_to_cart_button:hover{background-color:' . es_t( 'accent_hover' ) . '!important;border-color:' . es_t( 'accent_hover' ) . '!important;transform:translateY(-2px);box-shadow:' . es_t( 'elev_accent' ) . '!important;}' ),
 								)
 							),
 							/* Trust list */

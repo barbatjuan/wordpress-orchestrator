@@ -1256,6 +1256,31 @@ if ( ! function_exists( 'exec' ) ) {
 		nm_inst_dest_poblado( $dest );
 		$r = nm_inst_run( $kind, $repo, $home, array( 'INSTALL_DEST' => $dest ), '--limpiar' );
 		ok( 2 === $r['code'] && file_exists( "$dest/skills/alpha/retirado.md" ) && false !== strpos( nm_inst_leer( "$dest/agents/orquestador.md" ), 'viejo' ), "$installer: an unknown argument exits 2 and changes nothing: {$r['out']}" );
+
+		// 6. A destination that IS the checkout would copy onto itself, and --clean would delete the
+		//    repo's own skills/ and agents/. Refused with or without --clean, spelled plainly or not.
+		foreach ( array( '', '--clean' ) as $flag ) {
+			foreach ( array( 'plain' => '%s', 'dotted' => '%s/agents/..' ) as $forma => $tpl ) {
+				$repo = nm_inst_repo( $installer );
+				$r    = nm_inst_run( $kind, $repo, $home, array( 'INSTALL_DEST' => sprintf( $tpl, $repo ) ), $flag );
+				ok(
+					2 === $r['code'] && "# alpha\n" === nm_inst_leer( "$repo/skills/alpha/SKILL.md" ) && "# nuevo agente\n" === nm_inst_leer( "$repo/agents/orquestador.md" ) && "# resumen nuevo\n" === nm_inst_leer( "$repo/skills/_resumen.md" ),
+					"$installer: INSTALL_DEST = the checkout ($forma) with '$flag' exits 2 and the repo's own skills/ and agents/ survive: {$r['out']}"
+				);
+			}
+		}
+
+		// 7. --clean and the copy step agree on dotfiles: a dot entry the repo ships is replaced, not left stale.
+		$repo = nm_inst_repo( $installer );
+		nm_write( "$repo/skills/.oculta/nueva.md", "# nueva\n" );
+		nm_write( "$repo/skills/.suelto.md", "# suelto nuevo\n" );
+		$dest = nm_tmpdir( "inst-dest-$kind" );
+		nm_write( "$dest/skills/.oculta/retirada.md", "# retirada\n" );
+		nm_write( "$dest/skills/.suelto.md", "# suelto viejo\n" );
+		nm_write( "$dest/skills/.ajena/x.md", "# de otra fuente\n" );
+		$r = nm_inst_run( $kind, $repo, $home, array( 'INSTALL_DEST' => $dest ), '--clean' );
+		ok( 0 === $r['code'] && ! file_exists( "$dest/skills/.oculta/retirada.md" ) && file_exists( "$dest/skills/.oculta/nueva.md" ), "$installer: --clean removes a stale file inside a dot folder the repo ships: {$r['out']}" );
+		ok( "# suelto nuevo\n" === nm_inst_leer( "$dest/skills/.suelto.md" ) && file_exists( "$dest/skills/.ajena/x.md" ), "$installer: --clean replaces a shipped dotfile and leaves a foreign dot folder alone" );
 	}
 
 	// 5. install.sh only: an EMPTY INSTALL_DEST is refused, never read as "use the default".

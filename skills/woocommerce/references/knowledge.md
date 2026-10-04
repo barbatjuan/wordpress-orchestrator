@@ -29,10 +29,10 @@ Use the archive loop on the archive template and say so in the report. Whether a
 widget exists for pedido recibido is unconfirmed here: check the installed Elementor Pro's widget list
 before claiming either way.
 
-**The native ceiling counts this skill's CSS.** The accent CTA rule, `es_products_css()` and the
-full-screen side cart below all write `custom_css`, and `qa-review` house-rule row 37 counts every
-rule against the ficha's `css_custom_max` (default 0). A Plantilla build either replaces them with
-native controls or declares the ceiling in the ficha with its reason; never ships over it silently.
+**The native ceiling counts only hand-written CSS.** `es_products_css()` and the shipped examples'
+CSS carry the helper marker, and `qa-review` house-rule row 37 does not count it. Any `custom_css`
+you write yourself counts against the ficha's `css_custom_max` (default 0): replace it with native
+controls or declare the ceiling in the ficha with its reason; never ship over it silently.
 
 ## Widgets (native)
 - Archive loop: `wc-archive-products` (columns / columns_tablet / columns_mobile, rows,

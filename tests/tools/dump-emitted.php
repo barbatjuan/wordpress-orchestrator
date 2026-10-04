@@ -220,6 +220,7 @@ function es_dump_visuals() {
 		'es_box_pct'        => es_box( 5, 0, 5, 0, '%' ),
 		'es_size'           => es_size( 19 ),
 		'es_size_em'        => es_size( 1.65, 'em' ),
+		'es_helper_css'     => es_helper_css( 'selector{display:block;}' ),
 		'es_card_hover_css' => es_card_hover_css(),
 		'es_products_css'   => es_products_css( 'selector .woocommerce-pagination{margin-top:32px;}' ),
 		'es_eyebrow'        => es_eyebrow( 'etiqueta' ),

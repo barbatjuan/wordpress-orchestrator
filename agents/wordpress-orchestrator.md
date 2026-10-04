@@ -349,8 +349,8 @@ nothing to notice.
 - **Nativo o nada: a build stays under the Plantilla's techo nativo.** The ficha declares
   `html_widgets_max` and `css_custom_max`, zero unless it states another number with its reason. A
   section that needs an HTML widget or a custom CSS rule is redesigned in the lienzo, or its
-  exception is written in the ficha before building — never discovered afterwards. The library's own
-  helpers write custom CSS today, and those rules count like any other. A build above its ceiling is
+  exception is written in the ficha before building — never discovered afterwards. CSS the library's own
+  helpers emit carries a marker and is not counted; hand-written CSS is. A build above its ceiling is
   not done.
   (verifier: `qa-review` house-rule row 37 counts HTML widgets and custom CSS rules in the stored data of every page and template against the ficha's ceilings.)
 - **No client approval without a veredicto.** The client sees the maqueta only after `blind-judges`

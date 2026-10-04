@@ -35,6 +35,17 @@ elseif ($env:INSTALL_DEST.Trim() -eq '') {
 }
 else { $dest = $env:INSTALL_DEST }
 
+# Copying a checkout onto itself is never meant, and --clean would delete the repo's own skills/ and
+# agents/. GetFullPath folds trailing slashes and .. ; Windows paths compare case-insensitively.
+foreach ($sub in 'skills', 'agents') {
+    $a = [System.IO.Path]::GetFullPath((Join-Path $dest $sub)).TrimEnd('\', '/')
+    $b = [System.IO.Path]::GetFullPath((Join-Path $src $sub)).TrimEnd('\', '/')
+    if ($a -eq $b) {
+        [Console]::Error.WriteLine("install.ps1: INSTALL_DEST resolves to this checkout ($sub/ is the source itself); refusing, nothing changed")
+        exit 2
+    }
+}
+
 if ($clean) {
     $replaced = @()
     foreach ($sub in 'skills', 'agents') {

@@ -35,7 +35,7 @@ separately before sending.
   lead going nowhere; text you wrote is the client's liability.
   (no verifier: nothing here can tell a real address from a plausible one — only the client can.)
 - **Never a form in the hero.** It belongs in the closing conversion band.
-  (no verifier: nothing inspects a built hero for a capture form; the `TGL-LEAD-FORM` default is a starting point, not a gate.)
+  (no verifier: nothing inspects a built hero for a capture form.)
 
 ## Execution Steps
 1. **Capability**: which plugin is active — Elementor Pro Forms, WPForms, CF7, Gravity, Fluent?

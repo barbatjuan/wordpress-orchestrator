@@ -296,11 +296,11 @@ function es_build_theme_parts() {
 				'toggle_border_radius'  => es_box( 10, 10, 10, 10 ),
 				/* Green underline only on desktop; in the mobile panel it read
 				   as odd green bars, so it is scoped out below. */
-				'custom_css'            => 'selector .elementor-nav-menu--dropdown{overflow:hidden;box-shadow:0 24px 50px -18px ' . es_rgba( es_t( 'text' ), '0.22' ) . ';}'
+				'custom_css'            => es_helper_css( 'selector .elementor-nav-menu--dropdown{overflow:hidden;box-shadow:0 24px 50px -18px ' . es_rgba( es_t( 'text' ), '0.22' ) . ';}'
 					. '@media(max-width:1024px){selector .elementor-menu-toggle{width:46px;height:46px;position:relative;z-index:100;}'
 					. 'selector .elementor-menu-toggle[aria-expanded="true"] ~ .elementor-nav-menu--dropdown{position:fixed!important;top:0!important;left:0!important;right:0!important;width:100vw!important;max-width:100vw!important;height:100vh!important;max-height:100vh!important;border:0!important;border-radius:0!important;box-shadow:none!important;background:' . es_t( 'bg' ) . '!important;display:flex!important;flex-direction:column!important;justify-content:center!important;padding:104px 22px 44px!important;overflow-y:auto!important;z-index:99!important;}'
 					. 'selector .elementor-menu-toggle[aria-expanded="true"] ~ .elementor-nav-menu--dropdown .elementor-nav-menu{width:100%;max-width:440px;margin:0 auto;}'
-					. 'selector .elementor-menu-toggle[aria-expanded="true"] ~ .elementor-nav-menu--dropdown .elementor-item{text-align:center!important;font-size:24px!important;padding:16px!important;border-radius:12px!important;}}'
+					. 'selector .elementor-menu-toggle[aria-expanded="true"] ~ .elementor-nav-menu--dropdown .elementor-item{text-align:center!important;font-size:24px!important;padding:16px!important;border-radius:12px!important;}}' )
 					/* Zone 1 of the mobile 3-zone header. The toggle ships its own
 					   horizontal margin:auto that re-centres it and ignores the row's
 					   alignment, and a CLOSED dropdown stays display:block at height 0
@@ -331,8 +331,8 @@ function es_build_theme_parts() {
 				   on the container itself creates a containing block that traps the
 				   fixed side-cart inside the header box; the pseudo-element keeps the
 				   frosted look while the cart is free to cover the viewport. */
-				'custom_css'            => 'selector{position:relative;}'
-					. 'selector::before{content:"";position:absolute;inset:0;z-index:-1;background:' . es_rgba( es_t( 'bg' ), '0.72' ) . ';backdrop-filter:saturate(180%) blur(16px);-webkit-backdrop-filter:saturate(180%) blur(16px);}',
+				'custom_css'            => es_helper_css( 'selector{position:relative;}'
+					. 'selector::before{content:"";position:absolute;inset:0;z-index:-1;background:' . es_rgba( es_t( 'bg' ), '0.72' ) . ';backdrop-filter:saturate(180%) blur(16px);-webkit-backdrop-filter:saturate(180%) blur(16px);}' ),
 				'sticky'                => 'top',
 				'sticky_on'             => array( 'desktop', 'tablet', 'mobile' ),
 				'sticky_effects_offset' => 0,
@@ -352,7 +352,7 @@ function es_build_theme_parts() {
 						   Burger and cart sit nested together inside the cluster while the logo
 						   is a separate sibling, so CSS `order` cannot interleave them - absolute
 						   positioning is the only way to get the three zones. */
-						'custom_css'           => '@media(max-width:767px){selector{position:relative!important;}}',
+						'custom_css'           => es_helper_css( '@media(max-width:767px){selector{position:relative!important;}}' ),
 					),
 					array(
 				/* Logo */
@@ -372,7 +372,7 @@ function es_build_theme_parts() {
 						/* Step 2: pinned to the exact centre of the top bar and taken out of
 						   flow, so the cluster below can span the full row width without the
 						   logo claiming any of it. */
-						'custom_css'                => '@media(max-width:767px){selector{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:1;width:auto;white-space:nowrap;}}',
+						'custom_css'                => es_helper_css( '@media(max-width:767px){selector{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:1;width:auto;white-space:nowrap;}}' ),
 					)
 				),
 				/* Right cluster: nav + phone + cart + CTA, right-aligned as one unit. */
@@ -391,8 +391,8 @@ function es_build_theme_parts() {
 						   This container is boxed (no content_width => full), so its real flex
 						   row is the generated .e-con-inner: justify-content on `selector` does
 						   nothing at all here and has to go on selector>.e-con-inner. */
-						'custom_css'       => '@media(max-width:767px){selector{width:100%!important;margin-left:0!important;}'
-							. 'selector>.e-con-inner{justify-content:space-between!important;align-items:center!important;}}',
+						'custom_css'       => es_helper_css( '@media(max-width:767px){selector{width:100%!important;margin-left:0!important;}'
+							. 'selector>.e-con-inner{justify-content:space-between!important;align-items:center!important;}}' ),
 					),
 					array_merge(
 						$nav_widgets,
@@ -410,7 +410,7 @@ function es_build_theme_parts() {
 						   the space-between above puts the burger hard left and this hard right.
 						   content_width is full here, so there is no .e-con-inner and
 						   justify-content belongs on `selector` itself. */
-						'custom_css'       => '@media(max-width:767px){selector{width:auto!important;flex:0 0 auto!important;justify-content:flex-end!important;}}',
+						'custom_css'       => es_helper_css( '@media(max-width:767px){selector{width:auto!important;flex:0 0 auto!important;justify-content:flex-end!important;}}' ),
 					),
 					array(
 						es_btn(
@@ -447,8 +447,8 @@ function es_build_theme_parts() {
 								'toggle_icon_size'         => es_size( 22 ),
 								'toggle_button_padding'    => es_box( 4, 4, 4, 4 ),
 								/* Just the icon, no square frame. */
-								'custom_css'               => 'selector .elementor-menu-cart__toggle .elementor-button{border:0!important;background:' . es_t( 'transparent' ) . '!important;box-shadow:none!important;}'
-									. '@media(max-width:767px){selector .elementor-menu-cart__container{width:100vw!important;max-width:100vw!important;}}',
+								'custom_css'               => es_helper_css( 'selector .elementor-menu-cart__toggle .elementor-button{border:0!important;background:' . es_t( 'transparent' ) . '!important;box-shadow:none!important;}'
+									. '@media(max-width:767px){selector .elementor-menu-cart__container{width:100vw!important;max-width:100vw!important;}}' ),
 								'items_indicator_text_color' => es_t( 'on_accent' ),
 								'items_indicator_background_color' => es_t( 'accent' ),
 								'view_cart_button_background_color' => es_t( 'surface_inverse' ),
@@ -490,9 +490,9 @@ function es_build_theme_parts() {
 						'hide_desktop'         => 'hidden-desktop',
 						'hide_tablet'          => 'hidden-tablet',
 						'_margin_mobile'       => es_box( 12, 0, 0, 0 ),
-						'custom_css'           => '@media(max-width:767px){selector{margin-left:auto!important;margin-right:auto!important;}'
+						'custom_css'           => es_helper_css( '@media(max-width:767px){selector{margin-left:auto!important;margin-right:auto!important;}'
 								. 'selector .elementor-widget-button{width:100%!important;}'
-								. 'selector .elementor-button{width:100%!important;justify-content:center!important;}}',
+								. 'selector .elementor-button{width:100%!important;justify-content:center!important;}}' ),
 					),
 					array(
 						es_btn(

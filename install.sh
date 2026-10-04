@@ -29,8 +29,18 @@ if [ -z "$DEST" ]; then
   exit 2
 fi
 
+# Copying a checkout onto itself is never meant, and --clean would delete the repo's own skills/ and
+# agents/. -ef compares the real directories, so a trailing slash, .. or a symlink cannot hide it.
+for sub in skills agents; do
+  if [ "$DEST/$sub" -ef "$SRC/$sub" ]; then
+    echo "install.sh: INSTALL_DEST resolves to this checkout ($sub/ is the source itself); refusing, nothing changed" >&2
+    exit 2
+  fi
+done
+
 if [ "$CLEAN" -eq 1 ]; then
   REPLACED=""
+  shopt -s dotglob   # the copy step below includes dotfiles, so the clean loop must too
   for sub in skills agents; do
     for entry in "$SRC/$sub"/*; do
       [ -e "$entry" ] || continue

@@ -88,7 +88,7 @@ Open owner decisions (not fixed, evidence in the T1 report):
 Owner decision (2026-10-04, delegated to the orchestrator's recommendation): qa-review row 37 counts
 only hand-written `custom_css`. Helper-emitted CSS is part of the tested builder and does not count
 against `css_custom_max`.
-- [ ] T2b Row 37 (delegated writer, after T2, strict TDD): helpers mark the CSS they emit with one
+- [x] T2b Row 37 (delegated writer, after T2, strict TDD): helpers mark the CSS they emit with one
   shared marker comment; one small counting function in `es-builder.php` reports hand-written
   `custom_css` only (replacing the hand-written walk the row admits no helper does); row 37 rewritten
   to name that function as its verifier. No ficha edited (seals stay intact).
@@ -108,3 +108,14 @@ New owner decision: `corte` maqueta FAQ has no `<details>` (real defect found by
 rule); reported at WARN as known debt in the audit until it is fixed and re-judged.
 Dead code for T4: `es_record_style_resolution` + tests, `color.php` ink functions, legacy labels in
 font-budget scenarios, `TPL-C-01` examples in `file_handles()`.
+
+Independent verification of T2 (2026-10-04, tier high, RDD off): pass with findings, no live check
+weakened; re-pointed rules proven by mutating a maqueta copy and by neutralising each rule.
+T2b (delegated writer, RED first): helper CSS is wrapped in `/* es:helper */ … /* /es:helper */`;
+`es_custom_css_audit()` counts `custom_css` with anything left outside helper blocks; row 37 names
+it as verifier. Accepted limits: an edit inside a helper block is not detected (no checksum, KISS);
+CSS in the shipped theme-part/shop examples is helper CSS. Golden fixture regenerated with
+`php tests/tools/dump-emitted.php`; differs from the old one only by markers and one new entry.
+Also: installers refuse a destination that is the checkout itself; bash clean loop includes
+dotfiles; dead `TGL-LEAD-FORM` clause dropped. Tests: container-hygiene 124, herramientas 323,
+write-path 578, replay 11, others unchanged; audit `0 FAIL / 3 WARN`.

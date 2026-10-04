@@ -1021,19 +1021,32 @@ function es_photo( $img_slug, $height = 420, array $extra = array() ) {
 }
 
 /**
+ * The one marker every helper puts around the CSS it emits. `qa-review` row 37 counts only
+ * hand-written `custom_css`; `es_custom_css_audit()` tells the two apart by this pair. A comment
+ * is valid CSS and carries no `selector`, so Elementor's replacement is untouched.
+ */
+const ES_HELPER_CSS_OPEN  = '/* es:helper */';
+const ES_HELPER_CSS_CLOSE = '/* /es:helper */';
+
+/** Wrap helper-emitted CSS in the marker. Empty CSS stays empty: nothing to mark. */
+function es_helper_css( $css ) {
+	return '' === trim( (string) $css ) ? '' : ES_HELPER_CSS_OPEN . $css . ES_HELPER_CSS_CLOSE;
+}
+
+/**
  * Card hover, applied through the container's native Custom CSS field so it
  * does not depend on Elementor's conditionally-enqueued animation assets
  * (which are not registered when the layout is written via the API).
  */
 function es_card_hover_css() {
 	$ease = es_t( 'ease' );
-	return 'selector .elementor-widget-image-box{transition:transform .5s ' . $ease . ',box-shadow .5s ' . $ease . ',border-color .5s ' . $ease . ';box-shadow:' . es_t( 'elev_rest' ) . ';will-change:transform;}'
+	return es_helper_css( 'selector .elementor-widget-image-box{transition:transform .5s ' . $ease . ',box-shadow .5s ' . $ease . ',border-color .5s ' . $ease . ';box-shadow:' . es_t( 'elev_rest' ) . ';will-change:transform;}'
 		. 'selector .elementor-widget-image-box:hover{transform:translateY(-4px);border-color:' . es_t( 'border_hover' ) . ';box-shadow:' . es_t( 'elev_hover' ) . ';}'
 		. 'selector .elementor-widget-image-box .elementor-image-box-img{overflow:hidden;}'
 		. 'selector .elementor-widget-image-box .elementor-image-box-img img{transition:transform .7s ' . $ease . ';will-change:transform;}'
 		. 'selector .elementor-widget-image-box:hover .elementor-image-box-img img{transform:scale(1.045);}'
 		. 'selector .elementor-widget-image-box .elementor-image-box-title{transition:color .4s ' . $ease . ';}'
-		. 'selector .elementor-widget-image-box:hover .elementor-image-box-title{color:' . es_t( 'accent' ) . ';}';
+		. 'selector .elementor-widget-image-box:hover .elementor-image-box-title{color:' . es_t( 'accent' ) . ';}' );
 }
 
 /**
@@ -1051,7 +1064,7 @@ function es_card_hover_css() {
  */
 function es_products_css( $extra_css = '' ) {
 	$ease = es_t( 'ease' );
-	return 'selector ul.products li.product{transition:transform .5s ' . $ease . ',box-shadow .5s ' . $ease . ';box-shadow:' . es_t( 'elev_rest' ) . ';border-radius:12px;overflow:hidden;padding:10px;will-change:transform;}'
+	return es_helper_css( 'selector ul.products li.product{transition:transform .5s ' . $ease . ',box-shadow .5s ' . $ease . ';box-shadow:' . es_t( 'elev_rest' ) . ';border-radius:12px;overflow:hidden;padding:10px;will-change:transform;}'
 		. 'selector ul.products li.product .woocommerce-loop-product__link img,selector ul.products li.product img{transition:transform .7s ' . $ease . ';border-radius:8px;will-change:transform;}'
 		. 'selector ul.products li.product:hover{transform:translateY(-4px);box-shadow:' . es_t( 'elev_hover' ) . ';}'
 		. 'selector ul.products li.product:hover img{transform:scale(1.045);}'
@@ -1061,7 +1074,7 @@ function es_products_css( $extra_css = '' ) {
 		. 'selector ul.products li.product .button:hover{background-color:' . es_t( 'accent_hover' ) . '!important;box-shadow:' . es_t( 'elev_accent' ) . '!important;}'
 		. 'selector ul.products li.product a.added_to_cart{display:none!important;}'
 		. 'selector ul.products li.product a.button.added{font-size:0!important;}'
-		. 'selector ul.products li.product a.button.added::after{content:"Añadido ✓"!important;font-size:13.5px!important;font-weight:600;}'
+		. 'selector ul.products li.product a.button.added::after{content:"Añadido ✓"!important;font-size:13.5px!important;font-weight:600;}' )
 		. $extra_css;
 }
 
@@ -1223,8 +1236,8 @@ function es_p( $html, array $extra = array() ) {
 function es_btn( $text, $link, $style = 'primary', array $extra = array() ) {
 	$ease  = es_t( 'ease' );
 	$trans = 'selector .elementor-button{transition:background-color .3s ' . $ease . ',color .3s ' . $ease . ',border-color .3s ' . $ease . ',box-shadow .35s ' . $ease . ',transform .35s ' . $ease . ';}';
-	$lift_green = $trans . 'selector .elementor-button:hover{transform:translateY(-2px);box-shadow:' . es_t( 'elev_accent' ) . ';}';
-	$lift_soft  = $trans . 'selector .elementor-button:hover{transform:translateY(-2px);}';
+	$lift_green = es_helper_css( $trans . 'selector .elementor-button:hover{transform:translateY(-2px);box-shadow:' . es_t( 'elev_accent' ) . ';}' );
+	$lift_soft  = es_helper_css( $trans . 'selector .elementor-button:hover{transform:translateY(-2px);}' );
 
 	$settings = array(
 		'text'                   => $text,
@@ -1449,12 +1462,12 @@ function es_feature_card( $icon, $title, $text, array $extra = array() ) {
 		'border_width'          => es_box_unscaled( 1, 1, 1, 1 ),
 		'border_color'          => es_t( 'border' ),
 		'border_radius'         => es_box_unscaled( 16, 16, 16, 16 ),
-		'custom_css'            => 'selector{position:relative;overflow:hidden;transition:transform .5s ' . $ease . ',box-shadow .5s ' . $ease . ',border-color .5s ' . $ease . ';box-shadow:' . es_t( 'elev_rest' ) . ';will-change:transform;}'
+		'custom_css'            => es_helper_css( 'selector{position:relative;overflow:hidden;transition:transform .5s ' . $ease . ',box-shadow .5s ' . $ease . ',border-color .5s ' . $ease . ';box-shadow:' . es_t( 'elev_rest' ) . ';will-change:transform;}'
 			. 'selector::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:' . es_t( 'accent' ) . ';transform:scaleX(0);transform-origin:left;transition:transform .55s ' . $ease . ';}'
 			. 'selector:hover{transform:translateY(-6px);box-shadow:' . es_t( 'elev_hover' ) . ';border-color:' . es_t( 'border_hover' ) . ';}'
 			. 'selector:hover::before{transform:scaleX(1);}'
 			. 'selector .es-feat-ico{transition:transform .5s ' . $ease . ';}'
-			. 'selector:hover .es-feat-ico{transform:translateY(-3px);}',
+			. 'selector:hover .es-feat-ico{transform:translateY(-3px);}' ),
 	);
 	return es_c(
 		array_merge( $defaults, $extra ),
@@ -1573,6 +1586,42 @@ function es_feature_card( $icon, $title, $text, array $extra = array() ) {
 function es_container_audit( array $elements ) {
 	$out = array( 'containers' => 0, 'widgets' => 0, 'max_depth' => 0, 'offenders' => array(), 'optimizable' => array(), 'unaudited' => array() );
 	es_container_walk( $elements, 0, '', $out );
+	return $out;
+}
+
+/**
+ * Is this `custom_css` hand-written? Cut every helper block (the marker pair), then every comment;
+ * anything left is somebody's own rule. The pair, not a lone prefix: a rule appended to or put in
+ * front of a helper's block lands OUTSIDE it and counts. Editing INSIDE a block is not detected —
+ * that is the accepted limit, and it needs a deliberate hand rather than an append.
+ */
+function es_css_is_handwritten( $css ) {
+	$css = preg_replace( '~' . preg_quote( ES_HELPER_CSS_OPEN, '~' ) . '.*?' . preg_quote( ES_HELPER_CSS_CLOSE, '~' ) . '~s', '', (string) $css );
+	$css = preg_replace( '~/\*.*?\*/~s', '', (string) $css );
+	return '' !== trim( (string) $css );
+}
+
+/**
+ * The verifier of `qa-review` row 37's `css_custom_max`: hand-written `custom_css` in an element
+ * tree (the input `es_container_audit()` takes). Helper CSS does not count.
+ *
+ * @return array{count:int,where:string[]} `where` lists `path elType [widgetType] #id`.
+ */
+function es_custom_css_audit( array $elements, $path = '' ) {
+	$out = array( 'count' => 0, 'where' => array() );
+	foreach ( $elements as $i => $el ) {
+		$here = $path . '/' . $i;
+		$css  = isset( $el['settings']['custom_css'] ) ? $el['settings']['custom_css'] : '';
+		if ( is_string( $css ) && es_css_is_handwritten( $css ) ) {
+			$out['count']++;
+			$out['where'][] = $here . ' ' . ( isset( $el['elType'] ) ? $el['elType'] : '?' ) . ( isset( $el['widgetType'] ) ? ' ' . $el['widgetType'] : '' ) . ( isset( $el['id'] ) ? ' #' . $el['id'] : '' );
+		}
+		if ( ! empty( $el['elements'] ) && is_array( $el['elements'] ) ) {
+			$sub = es_custom_css_audit( $el['elements'], $here );
+			$out['count'] += $sub['count'];
+			$out['where']  = array_merge( $out['where'], $sub['where'] );
+		}
+	}
 	return $out;
 }
 
