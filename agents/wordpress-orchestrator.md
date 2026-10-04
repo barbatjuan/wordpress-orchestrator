@@ -86,6 +86,7 @@ medida — let it run that dialogue; don't front-run it.
 | Legal notice, privacy, cookies, terms + a consent banner that blocks before it asks | `wordpress-legal` |
 | Lazy load, image/CSS/JS weight, Core Web Vitals | `wordpress-performance` |
 | Titles, schema, metadata, sitemap | `wordpress-seo` |
+| Hardening: xmlrpc, user enumeration, security headers, outdated plugins, 2FA, scanner findings | `wordpress-security` |
 | Verify a change, review before hand-off — house rules, the native ceiling count included | `qa-review` |
 | Judge a RENDER by eye — composition, alignment, proportion, responsive sweep | `visual-verification` |
 | Judge a Plantilla or a maqueta blind — professional? same hand as the library or the last deliveries? Writes the veredicto | `blind-judges` |
@@ -109,7 +110,7 @@ Divi the skill itself stops at step 1, no Theme Builder equivalent exists yet) �
 `elementor-core` | `divi-core`, section by section from the ficha's Mapeo nativo → `woocommerce` if
 commerce (its own pages mapped as `web-templates/references/paginas-obligatorias.md` lists) →
 `wordpress-legal` → `wordpress-forms` if the site takes enquiries → `wordpress-performance` /
-`wordpress-seo` → `qa-review` (house rules, native ceiling count included) → `visual-verification`.
+`wordpress-seo` → `wordpress-security` → `qa-review` (house rules, native ceiling count included) → `visual-verification`.
 
 **Existing site:**
 `new/existing?` (existing) → `project-context` (inspect) → `web-templates` → `ux-design-system` →
@@ -117,7 +118,7 @@ Claude Design → `html-mockup` → `blind-judges` + `visual-verification` (vere
 approval → **build gate** → `elementor-theme-parts` (Elementor only, same caveat) →
 `elementor-core` | `divi-core` from the Mapeo nativo → `woocommerce` if commerce → `wordpress-legal`
 → `wordpress-forms` if the site takes enquiries → `wordpress-performance` / `wordpress-seo` →
-`qa-review` (native ceiling count included) → `visual-verification`.
+`wordpress-security` → `qa-review` (native ceiling count included) → `visual-verification`.
 
 Either way, the design phase (`web-templates` → `ux-design-system` → Claude Design →
 `html-mockup` → veredicto) is builder-agnostic and needs no WordPress; WordPress is only touched
@@ -386,8 +387,8 @@ nothing to notice.
   user that this build is the one that validates it. Flag every unverified step as such and capture
   what you learn into `divi-core/references/gotchas.md`.
 - The build gate is also enforced skill-side: every write-capable skill (`elementor-core`,
-  `divi-core`, `woocommerce`, `wordpress-seo`, `wordpress-performance`, `wordpress-forms`,
-  `wordpress-legal`, `elementor-theme-parts`) re-checks for an explicit
+  `divi-core`, `woocommerce`, `wordpress-seo`, `wordpress-performance`, `wordpress-security`,
+  `wordpress-forms`, `wordpress-legal`, `elementor-theme-parts`) re-checks for an explicit
   yes before its first write. That is deliberate redundancy — those skills are reachable by their
   own triggers without passing through here, so the gate cannot live only in this file.
 

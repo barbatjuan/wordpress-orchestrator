@@ -2878,7 +2878,7 @@ function es_sandbox_purge() {
  *
  * So a file that hooks joins the list the purge already refuses to touch, next to subdirectories
  * and unknown extensions: it still BLOCKS delivery, it just needs a human. The right fix is always
- * to move it into the child theme — this framework may not write PHP outside the sandbox — and
+ * to move it into the child theme — this framework writes PHP outside the sandbox only with explicit human authorization obtained beforehand, naming the exact file and destination, and otherwise hands the move to a person — and
  * delete it here afterwards, never before.
  *
  * Detected by reading the source, not by loading it: loading is what the sandbox already does on
@@ -3057,8 +3057,8 @@ function es_migrate_slug( $from, $to ) {
 	es_warn(
 		'"' . $from . '" se movio a "' . $to . '" y quedo anotado en la opcion es_slug_redirects. AVISO: nada en este framework '
 		. 'SIRVE ese mapa todavia, asi que /' . $from . '/ sigue devolviendo 404 para quien llegue desde Google o desde un enlace viejo. '
-		. 'Este framework NO PUEDE cerrarlo solo: no le esta permitido escribir .php fuera del sandbox, y el sandbox se vacia al '
-		. 'entregar. Lo cierra una persona, de dos maneras: un plugin de redirecciones, o el mu-plugin de 15 lineas que lee esta '
+		. 'Este framework NO PUEDE cerrarlo solo: solo escribe .php fuera del sandbox con autorizacion humana explicita obtenida antes, y el sandbox se vacia al '
+		. 'entregar. Sin esa autorizacion lo cierra una persona, de dos maneras: un plugin de redirecciones, o el mu-plugin de 15 lineas que lee esta '
 		. 'misma opcion, copiado tal cual de elementor-core/references/knowledge.md ("Servir es_slug_redirects"). '
 		. 'Comprobalo despues con la fila 17 de qa-review, que hasta entonces FALLA a proposito.'
 	);

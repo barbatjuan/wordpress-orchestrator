@@ -176,7 +176,7 @@ echo 'framework-audit: ' . $root . "\n\n";
 /* Skills that write to a live WordPress site. The canonical list is the orchestrator's
    "the build gate is also enforced skill-side" paragraph; it is repeated here so the script
    can check it, and cross-checked below so a NEW write-capable skill cannot slip past. */
-$WRITE_CAPABLE = array( 'elementor-core', 'divi-core', 'woocommerce', 'wordpress-seo', 'wordpress-performance', 'wordpress-forms', 'wordpress-legal', 'elementor-theme-parts' );
+$WRITE_CAPABLE = array( 'elementor-core', 'divi-core', 'woocommerce', 'wordpress-seo', 'wordpress-performance', 'wordpress-security', 'wordpress-forms', 'wordpress-legal', 'elementor-theme-parts' );
 
 $rows = array();
 /* $id is a row-type ID from ROW_TYPES — see the block above. An ID this registry does not

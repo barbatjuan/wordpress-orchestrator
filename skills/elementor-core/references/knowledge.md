@@ -98,8 +98,8 @@
   page in the `<main>` landmark Hello Elementor does not print. That is the site's accessibility,
   not build scaffolding, and it was living in the one directory whose job is to empty itself — so
   hand-off day would have deleted it silently with every check green. A hooking file is MOVED into
-  the child theme and deleted here afterwards, never before; this framework may not write PHP
-  outside the sandbox, so that move is a human's. The detector reads the source rather than loading
+  the child theme and deleted here afterwards, never before; this framework writes PHP
+  outside the sandbox only with explicit human authorization obtained beforehand, naming the exact file and destination; without it that move is a human's. The detector reads the source rather than loading
   it (loading is what the sandbox already does every request, and re-running it inside a report is
   a side effect), skips comment lines so a docblock about a removed hook cannot keep a dead file
   alive, and returns the hook NAMES so the warning can say which ones.
@@ -116,9 +116,9 @@
 
 ### Servir `es_slug_redirects`
 
-This framework **cannot close this one itself**, and that is a rule rather than an omission: it is
-not allowed to write `.php` outside the sandbox, and the sandbox is emptied at hand-off — so
-anything it could install would be deleted by its own delivery phase. A person closes it, either
+This framework **does not close this one by itself**, and that is a rule rather than an omission: it
+writes `.php` outside the sandbox only with explicit human authorization obtained beforehand, naming the exact file and destination, and the sandbox is emptied at hand-off — so
+anything it installed there would be deleted by its own delivery phase. Without that authorization a person closes it, either
 with a redirect plugin, or by saving this as `wp-content/mu-plugins/nvm-slug-redirects.php`. It is
 a mu-plugin on purpose: those load before the theme and cannot be deactivated by accident.
 
@@ -274,7 +274,7 @@ Munich ruling of Jan 2022 being the one everybody cites. This framework's client
 `wordpress-legal`, which owns the consent side of the same problem.
 
 The procedure, and it is a **human's**, for the same reason `es_slug_redirects` is: this framework
-may not write `.php` outside the sandbox, and the sandbox is emptied at hand-off.
+writes `.php` outside the sandbox only with explicit human authorization obtained beforehand, naming the exact file and destination; without it nothing is written, and the sandbox is emptied at hand-off.
 
 1. **Download the family.** The families this repo ships as defaults are SIL Open Font License, so
    downloading the `woff2` files and serving them from the client's own domain is licensed. Take
@@ -284,7 +284,7 @@ may not write `.php` outside the sandbox, and the sandbox is emptied at hand-off
    does Elementor when it resolves `typography_font_family`. Upload one `woff2` per weight/style.
 3. **Without Elementor Pro:** the `woff2` files go in the child theme, with `@font-face` (and
    `font-display:swap`) plus a `wp_enqueue_style` for the stylesheet that declares them. That is PHP
-   outside the sandbox, so a person writes it.
+   outside the sandbox, so it needs that explicit authorization first; without it a person writes it.
 4. **Then turn Google's copy off**, or the self-hosted files are dead weight under a request that
    still leaks. In Elementor that is the *Google Fonts* dropdown under *Elementor → Settings*, set
    to *Disable* — the tab it sits on has moved between Elementor versions, so find the dropdown
