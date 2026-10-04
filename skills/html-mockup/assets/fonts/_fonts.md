@@ -226,9 +226,7 @@ different letter from the designed one, and as silent as the synthetic bold abov
 
 ## How the bytes reach a page
 
-`_fonts.php` holds the registry and emits the `@font-face` block.
-`_embed-fonts.php` writes that block into the four static mockups between
-`NM-FONTS:BEGIN` / `NM-FONTS:END` markers and is safe to re-run.
-`../gallery/_build-gallery.php` calls the same helper when it generates
-`index.html`. `framework-audit.php`'s `RT_MOCKUP_FONT_NOT_EMBEDDED` fails any
-mockup that names a family it does not embed, so this cannot quietly come undone.
+`_fonts.php` holds the registry and emits the `@font-face` block (`nm_font_faces()`), which a
+maqueta carries between `NM-FONTS:BEGIN` / `NM-FONTS:END` markers.
+`framework-audit.php`'s `RT_MOCKUP_FONT_NOT_EMBEDDED` fails any Plantilla maqueta that names a
+family it does not embed, so this cannot quietly come undone.

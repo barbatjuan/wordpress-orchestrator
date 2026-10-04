@@ -34,7 +34,7 @@ work?" / "verify".
 2. **House rules**: run `references/house-rules.md` end to end — one verdict per row, skip none
    silently. The approved maqueta is the visual contract: row 31 compares its `:root` axis positions
    with what the build resolved and says which axes it proved (composition never — the user's eyes).
-   Row 37 counts HTML widgets and custom CSS rules against the Plantilla ficha's
+   Row 37 counts HTML widgets and hand-written custom CSS against the Plantilla ficha's
    `html_widgets_max` / `css_custom_max`, default 0: **a build above its ceiling is not done**, and
    with no Plantilla slug to read the ceiling from, the row is UNVERIFIED. Rows 38 to 42 are the
    `wordpress-security` checks: served headers, xmlrpc, user enumeration, the connector's key, versions.

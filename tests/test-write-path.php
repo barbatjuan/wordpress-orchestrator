@@ -747,44 +747,6 @@ foreach ( $secciones as $s ) {
 }
 ok( 0 < $n && array() === $mal, 'cada nombre que es_manifest_sections() declara acepta un es_manifest_record() y se relee igual' );
 
-/* art-direction-ledger (style-catalog Slice 5a): la resolucion de estilo — id, brief negativo,
-   tono rechazado — es EL llamado que 'design' no tenia (manifest-section-contract, delta). */
-echo "--- la resolucion de estilo se graba con es_record_style_resolution() ---\n";
-
-wp_fake_reset();
-ok(
-	true === es_record_style_resolution( 'STY-EDITORIAL', 'sin foto de stock, sin hero con gradiente', 'frio' ),
-	'las tres respuestas completas se graban'
-);
-$m = es_manifest_read();
-ok( 'STY-EDITORIAL' === $m['sections']['design']['data']['style'], 'el id resuelto queda en la seccion design' );
-ok( '' !== $m['sections']['design']['data']['negative_brief'], 'con su brief negativo' );
-ok( '' !== $m['sections']['design']['data']['rejected_tone'], 'y su tono rechazado' );
-
-/* Una resolucion incompleta no es progreso parcial: es exactamente el default silencioso que esta
-   funcion existe para dejar de reproducir — falla CERRADO, no graba una resolucion a medias. */
-wp_fake_reset();
-$r = grab(
-	function () {
-		return es_record_style_resolution( 'STY-EDITORIAL', '', 'frio' );
-	}
-);
-ok( false === $r['ret'], 'un brief negativo vacio no se graba' );
-ok( has( $r['out'], 'resolucion de estilo incompleta' ), 'y avisa por que' );
-ok( array() === es_manifest_read()['sections'], 'nada quedo escrito: ni siquiera el id, que si llego completo' );
-
-/* Re-resolver en la misma sesion (un cambio de diseno a mitad de build) PISA la seccion 'design',
-   nunca la acumula — el historial de entregas es shipped-log.md (Slice 5b), no esta seccion. */
-wp_fake_reset();
-es_record_style_resolution( 'STY-EDITORIAL', 'sin foto de stock', 'frio' );
-es_record_style_resolution( 'STY-MATTER', 'sin tipografia script', 'calido' );
-$m = es_manifest_read();
-ok( 'STY-MATTER' === $m['sections']['design']['data']['style'], 'la segunda resolucion reemplaza a la primera, no la acumula' );
-ok(
-	'sin tipografia script' === $m['sections']['design']['data']['negative_brief'],
-	'con TODOS sus campos pisados, no solo el id'
-);
-
 /* Escribir no es haber escrito, igual que en la portada y en el camino de escritura. */
 wp_fake_reset();
 $GLOBALS['wp']['option_ro'] = array( 'es_novamira_manifest' );
@@ -1583,7 +1545,7 @@ $literal  = array();
 
 /* Un valor de token puede coincidir, byte a byte, con gramatica CSS que no
    tiene nada que ver con el. En cuanto la Tarea 2 anada 'elev_rest' => 'none',
-   `display:none!important` de es_products_css() (es-builder.php:337) ya esta en
+   `display:none!important` de es_products_css() (es-builder.php) ya esta en
    la salida, y la comprobacion de literales se pone ROJA sobre codigo CORRECTO.
    La salida barata para el siguiente implementador seria aflojar la afirmacion,
    que es justo lo que prohibe la Restriccion Global 1.
@@ -1989,17 +1951,11 @@ foreach ( explode( "\n", (string) file_get_contents( $ds_ruta ) ) as $linea ) {
 	   abajo habria medido contra una referencia que no es la del eje.
 	   La tabla del eje tiene tres colores seguidos; ninguna otra del fichero los
 	   tiene, y esa es la forma que se exige aqui.
-	   NUEVE posiciones, no cuatro —— style-catalog PR 3a: `paper`/`warm`/`cool` se
-	   quedan donde estaban, `ink` tambien, y se suman `cream`/`earth`/`saturated`
-	   (claras) y `ink-warm`/`ink-cool` (oscuras). El hueco que este axis tapaba —
-	   tres de cuatro fondos casi blancos — se cierra con posiciones nuevas, no
-	   renombrando las viejas: `ink` sigue siendo `ink` porque framework-audit.php's
-	   `nm_axes()` y los cinco anchors de design-personalities.md ya lo declaraban por
-	   ese nombre cuando se escribio este comentario, y tocarlo era trabajo de Slice 4,
-	   no de PR 3a. style-catalog PR 4c ya hizo ese trabajo: `nm_axes()` ahora declara
-	   estas mismas nueve posiciones y el catalogo (ocho `STY-*.md`, design-personalities.md
-	   retirado) las usa por el mismo nombre, asi que renombrar `ink` seguiria sin tener
-	   beneficio -- esa es la parte de este razonamiento que no caduca. */
+	   NUEVE posiciones, no cuatro: `paper`/`warm`/`cool` y `ink` se quedan donde estaban, y se
+	   suman `cream`/`earth`/`saturated` (claras) y `ink-warm`/`ink-cool` (oscuras). El hueco que
+	   este axis tapaba — tres de cuatro fondos casi blancos — se cierra con posiciones nuevas, no
+	   renombrando las viejas: `ink` sigue siendo `ink` porque `nm_axes()` de framework-audit.php
+	   declara estas mismas nueve posiciones por ese nombre. */
 	if ( count( $celdas ) >= 4
 		&& in_array( $celdas[0], array( 'paper', 'warm', 'cool', 'cream', 'earth', 'saturated', 'ink', 'ink-warm', 'ink-cool' ), true )
 		&& preg_match( '/^#[0-9A-Fa-f]{6}$/', $celdas[1] )
@@ -2015,43 +1971,6 @@ foreach ( explode( "\n", (string) file_get_contents( $ds_ruta ) ) as $linea ) {
    que se comprueba debajo es que las celdas `paper` son las del build, y
    despues el CONTRASTE. */
 ok( 9 === count( $suelos ), 'las nueve posiciones de ground se leen de design-system.md: ' . implode( ', ', array_keys( $suelos ) ) );
-
-/* ---------------------------------------------------------------------------
- * DERIVA: $GROUND en _build-gallery.php es un espejo A MANO de esta misma
- * tabla (su propio comentario en el array lo dice), y nada comprobaba que los
- * dos siguieran de acuerdo. style-catalog PR 2a encontro exactamente este
- * hueco en $ANCHORS; $GROUND tiene la misma forma y el mismo riesgo, y a
- * nueve familias en vez de cuatro el coste de que se desincronicen crece.
- * ------------------------------------------------------------------------- */
-$bg_ruta = dirname( __DIR__ ) . '/skills/html-mockup/assets/gallery/_build-gallery.php';
-$bg_src  = (string) file_get_contents( $bg_ruta );
-$gr_literal = array();
-if ( preg_match( '/\$GROUND\s*=\s*array\s*\(\s*\n(.*?)\n\);/s', $bg_src, $gm )
-	&& preg_match_all(
-		"/'([a-z-]+)'\s*=>\s*array\(\s*'bg'\s*=>\s*'(#[0-9A-Fa-f]{6})',\s*'alt'\s*=>\s*'(#[0-9A-Fa-f]{6})',\s*'text'\s*=>\s*'(#[0-9A-Fa-f]{6})'\s*\)/",
-		$gm[1],
-		$glm,
-		PREG_SET_ORDER
-	) ) {
-	foreach ( $glm as $g ) {
-		$gr_literal[ $g[1] ] = array( 'bg' => strtoupper( $g[2] ), 'alt' => strtoupper( $g[3] ), 'text' => strtoupper( $g[4] ) );
-	}
-}
-ok( array() !== $gr_literal, '_build-gallery.php tiene un array $GROUND reconocible para comparar contra design-system.md' );
-ok(
-	count( $gr_literal ) === count( $suelos ),
-	'$GROUND en _build-gallery.php declara el mismo numero de posiciones que design-system.md: '
-		. count( $gr_literal ) . ' vs ' . count( $suelos )
-);
-foreach ( $suelos as $sp => $sv ) {
-	if ( ! isset( $gr_literal[ $sp ] ) ) {
-		ok( false, "design-system.md documenta el ground `$sp` y \$GROUND en _build-gallery.php no lo tiene — el espejo se desincronizo" );
-		continue;
-	}
-	ok( $sv['bg'] === $gr_literal[ $sp ]['bg'], "\$GROUND['$sp']['bg'] coincide con design-system.md: " . $gr_literal[ $sp ]['bg'] );
-	ok( $sv['bg_alt'] === $gr_literal[ $sp ]['alt'], "\$GROUND['$sp']['alt'] coincide con design-system.md: " . $gr_literal[ $sp ]['alt'] );
-	ok( $sv['text'] === $gr_literal[ $sp ]['text'], "\$GROUND['$sp']['text'] coincide con design-system.md: " . $gr_literal[ $sp ]['text'] );
-}
 
 /* Los tres tokens que el eje DOCUMENTA tienen que ser, en el build, los de la
    fila `paper`. Nada comprobaba esto, y por eso bg_alt llevaba un cuarto ground
@@ -2115,7 +2034,7 @@ foreach ( $suelos as $posicion => $celdas ) {
  * (acento #FF3D8A en las filas oscuras.) Un hover que retrocede se lee como
  * DESACTIVADO: es un fallo de affordance, no de accesibilidad —— 3.95:1 sigue
  * pasando AA-large, asi que ninguna fila de qa-review lo caza y por eso llevaba
- * aqui sin verse. El build real de BSP-VITRINA lo parcheo a mano a #FF4D93
+ * aqui sin verse. Un build real de cliente lo parcheo a mano a #FF4D93
  * (5.67 -> 6.08, ACLARANDO), que es la prueba de que un humano ya se lo comio.
  *
  * Se afirma el SIGNO y no un hex a proposito, y es la misma razon por la que
@@ -2179,149 +2098,6 @@ $r = grab(
 ok( '' === $r['ret'], 'un valor que no es hex no se convierte en un neutro plausible al mezclarlo' );
 ok( has( $r['out'], 'azul' ), 'y lo dice en voz alta nombrando el valor que no supo leer' );
 es_tokens( $es_defaults );
-
-/* ---------------------------------------------------------------------------
- * style-catalog PR 3b: tinta por estilo, la posicion `none`, y el piso de
- * spread=20 -- tres fixtures de comportamiento REAL, no reimplementados.
- *
- * ink_tint()/ink_quant_bound()/ink_ends()/ink_of() reciben cada entrada por
- * parametro -- ni un global -- asi que se pueden extraer del propio fichero
- * y ejecutar de verdad, en vez de reescribir su formula aqui (exactamente el
- * riesgo de "dos llamadas de acuerdo" que el propio docblock de ink_of() ya
- * retracto una vez). fail() sale con exit(1) dentro de esos gates; por eso
- * el extracto corre en un PROCESO HIJO, la misma aislacion que ya usa
- * "si falta la dependencia, se dice; no se muere en silencio" mas arriba --
- * un exit(1) alli abajo no puede tumbar esta suite.
- * ------------------------------------------------------------------------- */
-function ink_fn_src( $src, $name ) {
-	if ( ! preg_match( '/\bfunction\s+' . preg_quote( $name, '/' ) . '\s*\(/', $src, $m, PREG_OFFSET_CAPTURE ) ) {
-		return '';
-	}
-	$start = $m[0][1];
-	$brace = strpos( $src, '{', $start );
-	if ( false === $brace ) {
-		return '';
-	}
-	$depth = 0;
-	$i     = $brace;
-	$len   = strlen( $src );
-	for ( ; $i < $len; $i++ ) {
-		if ( '{' === $src[ $i ] ) {
-			$depth++;
-		} elseif ( '}' === $src[ $i ] ) {
-			$depth--;
-			if ( 0 === $depth ) {
-				++$i;
-				break;
-			}
-		}
-	}
-	return substr( $src, $start, $i - $start );
-}
-
-function ink_probe_run( $php_body, $driver ) {
-	$dir = sys_get_temp_dir() . '/nm-ink-probe-' . getmypid() . '-' . mt_rand( 1000, 9999 );
-	@mkdir( $dir, 0777, true );
-	$probe = $dir . '/probe.php';
-	file_put_contents( $probe, "<?php\n" . $php_body . "\n" . $driver . "\n" );
-	$out  = array();
-	$code = -1;
-	exec( escapeshellarg( PHP_BINARY ) . ' ' . escapeshellarg( $probe ) . ' 2>&1', $out, $code );
-	@unlink( $probe );
-	@rmdir( $dir );
-	return array( 'out' => implode( "\n", $out ), 'code' => $code );
-}
-
-/* `srgb_lum`/`srgb_lum_rgb`/`css_mix`/`ink_tint`/`ink_quant_bound`/`ink_ends` moved to
-   `herramientas/color.php` (openspec/changes/plantillas-reales PR 1a) -- one contrast/ink engine,
-   not a text-extracted copy of it. The probe now REQUIREs the real file directly, which is
-   strictly more faithful than the text-extraction this comment used to describe: it is the exact
-   bytes that ship, not a regex's idea of them. `fail()` and `ink_of()` stay gallery-specific and
-   are still pulled from $bg_src exactly as before. Because the moved functions now throw
-   `NmHerramientaEntorno`/`NmHerramientaMedida` instead of calling `fail()` directly (they are also
-   a dual-mode CLI now, see color.php's own header), the probe re-installs the SAME
-   exception-to-fail() bridge `_build-gallery.php` itself installs, so this probe's exit-code and
-   message contract stays exactly what it was before the extraction. */
-$color_ruta = dirname( __DIR__ ) . '/skills/html-mockup/assets/herramientas/color.php';
-ok( is_file( $color_ruta ), 'herramientas/color.php existe para que el probe de tinta lo requiera' );
-$ink_fn_names = array( 'fail', 'ink_of' );
-$ink_fn_body  = "require_once " . var_export( $color_ruta, true ) . ";\n"
-	. "set_exception_handler( function ( \$e ) {\n"
-	. "\tif ( \$e instanceof NmHerramientaEntorno || \$e instanceof NmHerramientaMedida ) {\n"
-	. "\t\tfail( \$e->getMessage() );\n"
-	. "\t}\n"
-	. "\tthrow \$e;\n"
-	. "} );\n";
-foreach ( $ink_fn_names as $ink_fn_name ) {
-	$ink_fn_one = ink_fn_src( $bg_src, $ink_fn_name );
-	ok( '' !== $ink_fn_one, "_build-gallery.php todavia define \`$ink_fn_name()\` para que el probe de tinta lo extraiga" );
-	$ink_fn_body .= $ink_fn_one . "\n";
-}
-
-/* La MATEMATICA de ink_ends() ya aceptaba un tint por parametro antes de esta PR -- lo que NO
-   existia era el CABLEADO: un solo $INK_TINT alimentaba los dos call sites, asi que ningun anchor
-   real podia divergir de otro. Esto comprueba el cableado en si, no la formula. */
-ok( false !== strpos( $bg_src, '$INK_TINT_BY_STYLE = array(' ), '_build-gallery.php declara $INK_TINT_BY_STYLE, la tabla por estilo -- style-catalog PR 3b' );
-ok(
-	1 === preg_match( '/\$INK\[\s*\$ink_ak\s*\]\s*=\s*ink_of\(\s*\$ink_ak,\s*\$ANCHORS,\s*\$GROUND,\s*\$ACCENT_BY_GROUND,\s*\$INK_GRADE,\s*\$ink_tint_v\s*\);/', $bg_src ),
-	'el call site de ink_of() para anchors ya no pasa el $INK_TINT global fijo: pasa un valor resuelto POR ESTILO',
-	$bg_src
-);
-ok(
-	1 === preg_match( '/\$ink_bends\s*=\s*ink_ends\(\s*\$GROUND\[\s*\$ink_bg\s*\],\s*\$ACCENT_BY_GROUND\[\s*\$ink_bg\s*\],\s*\$ink_tint_v\s*\);/', $bg_src ),
-	'y el call site de brands tambien lee su propio $ink_tint_v, no el $INK_TINT compartido',
-	$bg_src
-);
-
-if ( ! function_exists( 'exec' ) ) {
-	ok( false, 'ENTORNO, no el cambio: exec() esta deshabilitado, los fixtures de tinta no se pudieron correr aqui' );
-} else {
-	echo "--- 3b.1: dos tintes reales por estilo (0.30/0.60) dan hues distintos, los dos dentro de la propia convergencia de ink_ends() ---\n";
-	$r3b1 = ink_probe_run(
-		$ink_fn_body,
-		'$a = ink_ends(' . var_export( array( 'bg' => $suelos['warm']['bg'], 'text' => $suelos['warm']['text'] ), true ) . ", '#0F5C1A', 0.30);\n"
-			. '$b = ink_ends(' . var_export( array( 'bg' => $suelos['cool']['bg'], 'text' => $suelos['cool']['text'] ), true ) . ", '#8C1A28', 0.60);\n"
-			. "echo 'A=' . \$a['dark'] . \"\\n\";\n"
-			. "echo 'B=' . \$b['dark'] . \"\\n\";\n"
-			. "echo \"LLEGO\\n\";\n"
-	);
-	ok( 0 === $r3b1['code'], 'los dos tintes conservan las tres comprobaciones internas de ink_ends() (convergencia, peso, colision de endpoint) sin FAIL', $r3b1['out'] );
-	ok( has( $r3b1['out'], 'LLEGO' ), 'y el proceso llega al final, no se corta a mitad', $r3b1['out'] );
-	preg_match( '/A=(#[0-9A-F]{6})/', $r3b1['out'], $ink_ma );
-	preg_match( '/B=(#[0-9A-F]{6})/', $r3b1['out'], $ink_mb );
-	ok( isset( $ink_ma[1] ) && isset( $ink_mb[1] ), 'los dos tintes devuelven una tinta legible', $r3b1['out'] );
-	if ( isset( $ink_ma[1] ) && isset( $ink_mb[1] ) ) {
-		ok( $ink_ma[1] !== $ink_mb[1], "0.30 y 0.60 dan tintas de sombra DISTINTAS sobre su propio fondo+acento real: {$ink_ma[1]} vs {$ink_mb[1]} -- la variedad tonal ya no la fija un solo \$INK_TINT compartido" );
-	}
-
-	echo "--- 3b.2: un grade de tinta `none` es una identidad, no un null -- ink_ends() nunca corre, ningun filtro se llegaria a emitir ---\n";
-	$r3b2 = ink_probe_run(
-		$ink_fn_body,
-		"\$grades = array( 'default' => array( 'sat' => 0.72, 'gamma' => 0.12 ), 'x' => 'none' );\n"
-			. '$anchors = array( "x" => array( "ground" => "paper" ) );' . "\n"
-			. '$grounds = array( "paper" => ' . var_export( array( 'bg' => $suelos['paper']['bg'], 'text' => $suelos['paper']['text'] ), true ) . " );\n"
-			. '$accents = array( "paper" => "#8C3A1F" );' . "\n"
-			. "\$o = ink_of( 'x', \$anchors, \$grounds, \$accents, \$grades, 0.45 );\n"
-			. "echo 'ENDS=' . var_export( \$o['ends'], true ) . \"\\n\";\n"
-			. "echo 'SAT=' . \$o['sat'] . \"\\n\";\n"
-			. "echo 'TABLE0=' . \$o['table'][0] . \"\\n\";\n"
-			. "echo \"LLEGO\\n\";\n"
-	);
-	ok( 0 === $r3b2['code'], 'un grade `none` no dispara fail() -- convergencia, spread y colision de endpoints nunca se evaluan para el', $r3b2['out'] );
-	ok( has( $r3b2['out'], 'ENDS=NULL' ), "'ends' es NULL, no un array -- ink_ends() nunca se invoco para este estilo", $r3b2['out'] );
-	ok( has( $r3b2['out'], 'SAT=1' ), "'sat' es la identidad de feColorMatrix (a s=1 la matriz devuelve r,g,b sin tocar)", $r3b2['out'] );
-	ok( has( $r3b2['out'], 'TABLE0=0 0.25 0.5 0.75 1' ), 'la tabla es la identidad de feComponentTransfer, no una tabla vacia', $r3b2['out'] );
-
-	echo "--- 3b.3: un spread de canal de 14 (bajo el piso de 20) SIGUE fallando -- `none` no ablando el gate para nadie mas ---\n";
-	$r3b3 = ink_probe_run(
-		$ink_fn_body,
-		'$e = ink_ends(' . var_export( array( 'bg' => $suelos['paper']['bg'], 'text' => $suelos['paper']['text'] ), true ) . ", '#20203A', 0.45);\n"
-			. "echo \"INALCANZABLE\\n\";\n"
-	);
-	ok( 1 === $r3b3['code'], 'un spread de 14 SI corta el build -- exit 1', $r3b3['out'] );
-	ok( has( $r3b3['out'], 'channel spread of 14' ), 'y el mensaje nombra el spread medido, 14, por debajo del piso de 20', $r3b3['out'] );
-	ok( ! has( $r3b3['out'], 'INALCANZABLE' ), 'y el proceso NUNCA llega a la linea de despues del fail()', $r3b3['out'] );
-}
 
 /* ---------------------------------------------------------------------------
  * La etiqueta del boton primario: `on_accent`, medida y no fijada.

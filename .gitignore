@@ -23,15 +23,6 @@ _p*.php
 _wire*.php
 _ins*.php
 
-# Generated gallery output — reproducible from _build-gallery.php, never hand-edited. Anchored:
-# a bare "index.html" would ignore every such file in the repo, not just this one.
-/skills/html-mockup/assets/gallery/index.html
-
-# The client chassis — the second artifact _build-gallery.php emits, same rule as index.html above.
-# Lives beside assets/gallery/, not inside it: framework-audit.php's RT_GALLERY_NOT_DISTINCT walk
-# treats anything under gallery/ as a candidate multi-strip catalog page.
-/skills/html-mockup/assets/chassis/
-
 # Local CodeGraph index; fully derived, machine-local
 .codegraph/
 

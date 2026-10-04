@@ -21,10 +21,10 @@ nothing on the site.
 ## Hard Rules
 - **Choose by Objetivo, never by taste or browsing.** Run `references/recomendador.md` in order.
   (no verifier: the routing dialogue is conversational; the person reviewing the orchestrator's routing step reads the decision record)
-- **A Plantilla without a current veredicto is never offered as ready.** Read its row in
-  `references/plantillas/_indice.md`; if maqueta or veredicto is missing, say so and ask: wait,
-  or ruta a medida.
-  (no verifier: no audit rule compares the index with the Plantilla folders yet; the reviewer opens the folder and its veredicto)
+- **A Plantilla without a current veredicto is never offered as ready.** Run
+  `php skills/html-mockup/assets/herramientas/veredicto.php --comprobar <slug>`; anything but
+  `vigente`, or a missing maqueta: say so and ask: wait, or ruta a medida.
+  (no verifier: the audit does not run the tool, so the reviewer reads its output in the decision record)
 - **Every rejected candidate gets one sentence of negative reasoning** in the decision record.
   (no verifier: the decision record lives in the conversation, and the reviewer of the routing step reads it)
 - **ADN is not negotiable.** A request against the ficha's ADN means another Plantilla or the ruta a
@@ -32,7 +32,7 @@ nothing on the site.
   (no verifier: reading a reference against an ADN is judgement; the reviewer reads the record's contradicted-ADN line)
 - **Ruta a medida is the expensive path, not a shortcut.** Declare Objetivo, Enfoque and section
   and page list before designing; then the same lienzo, maqueta, veredicto and techo nativo.
-  (no verifier: the old bespoke-declaration row still reads the retired format, so today the reviewer reads the declaration in the decision record)
+  (no verifier: the declaration lives in the decision record, so the reviewer of the routing step reads it there)
 - **The page set is not asked**: the full set for the type in `references/paginas-obligatorias.md`.
   (no verifier: no rule reads a client page set; the veredicto sweep covers every page the ficha lists)
 - **The Plantilla's copy and photographs are never the client's.** Only structure, roles and
@@ -42,7 +42,7 @@ nothing on the site.
 
 ## Execution Steps
 1. **Tipo**, then **Objetivo** — recomendador steps 1–2. A tie goes to the user, never decided alone.
-2. **Plantilla** — its `ficha.md` (what it serves, what not) and its index row (step 3).
+2. **Plantilla** — its `ficha.md` (what it serves, what not) and its veredicto state (step 3).
 3. **References** — 2–4, each described on the eight axes of `references/enfoques.md`; check ADN
    and Enfoque (step 4).
 4. **Decision record**, confirmed by the user before any design (step 5). Ruta a medida: step 6.
@@ -59,8 +59,6 @@ No visual or builder code.
 - `references/enfoques.md` — eight Enfoques on eight axes, and who embodies each.
 - `references/paginas-obligatorias.md` — page set per type, artboard or derived.
 - `references/estado-formato.md` — the client's `diseno/estado.md`, handed from phase to phase.
-- `references/plantillas/_indice.md` — the library and each Plantilla's veredicto.
+- `references/plantillas/_indice.md` — the library, one row per Plantilla (read the veredicto with the tool).
 - `references/veredicto-formato.md` — what a `veredicto.md` holds and how it is sealed.
-- Legacy, not offered to new clients, removal pending: `references/recommender.md`,
-  `references/toggles.md`, `references/design-system.md`, `references/templates/ecommerce/`,
-  `references/templates/corporate/`, `references/templates/pages/`.
+- `references/design-system.md` — the numeric token tables (scale, density, ground, elevation) the build and its tests pin.

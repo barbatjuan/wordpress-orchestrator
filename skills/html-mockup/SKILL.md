@@ -69,6 +69,3 @@ iteration what changed.
 - `references/mockup-guide.md` — derivation contract, publishing, handoff, tools.
 - `references/defectos-de-derivacion.md` — what goes wrong turning artboards into a maqueta.
 - `assets/fonts/` and `assets/herramientas/` — embedded faces; measuring and sealing tools.
-- Legacy, not used for clients, removal pending: `assets/gallery/_build-gallery.php`,
-  `assets/gallery/`, `assets/chassis/`, `assets/_axis-proof-content.md`,
-  `assets/proof-editorial-mockup.html`, `assets/proof-direct-mockup.html`.

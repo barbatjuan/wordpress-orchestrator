@@ -57,8 +57,8 @@ client maqueta**, after `html-mockup` publishes it and before client approval. N
 5. **Write the veredicto** in `web-templates/references/veredicto-formato.md`. The library judge A
    result goes to `plantillas/_biblioteca.md`, re-emitted whenever a Plantilla enters or changes.
 6. **Seal.** A Plantilla: `veredicto.php --sellar <slug>`, then `--comprobar <slug>`
-   (`html-mockup/assets/herramientas/`). A client maqueta: no tool seals it yet — record the date and
-   the maqueta's `sha256` in the delivery record, marked not tool-sealed.
+   (`html-mockup/assets/herramientas/`). A client maqueta: `veredicto.php --sellar-ruta <folder>`, then
+   `--comprobar-ruta <folder>`.
 7. **Record.** The orchestrator appends B's description and three thumbnails to the corpus.
 
 ## Output Contract

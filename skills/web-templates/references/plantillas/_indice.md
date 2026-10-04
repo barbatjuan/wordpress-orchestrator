@@ -1,27 +1,28 @@
 # Índice de la biblioteca de plantillas
 
-Una fila por plantilla. El veredicto es lo que separa una plantilla de una carpeta de ficheros:
-sin veredicto vigente, la plantilla no se ofrece a un cliente.
+Una fila por plantilla. Este índice no guarda el veredicto: caduca con cada resello. Se lee de la
+herramienta, `php skills/html-mockup/assets/herramientas/veredicto.php --comprobar <slug>` (o
+`--biblioteca` para todas), y sin veredicto vigente la plantilla no se ofrece a un cliente.
 
-| Slug | Objetivo | Enfoque | Tipo | Páginas | Veredicto |
-|---|---|---|---|---|---|
-| `delao` · Inmobiliaria de la O | `cartera-curada` | `editorial` | corporate | inicio · propiedades · ficha · nosotros · contacto | pendiente de firma |
-| `marzo` · MARZO | `tienda-talla` | `materia` | ecommerce | portada · categoría · ficha de producto · carro · pago · pedido recibido · mi cuenta · la marca · contacto · condiciones de venta y envíos · aviso legal · privacidad · cookies · 404 | sin veredicto |
-| `barro` · BARRO | `tienda-lote` | `lujo-oscuro` | ecommerce | portada · categoría · ficha de producto · carro · pago · pedido recibido · mi cuenta · la marca · contacto · condiciones de venta y envíos · aviso legal · privacidad · cookies · 404 | sin veredicto |
-| `cadencia` · CADENCIA | `equipo-por-uso` | `tecnologico` | ecommerce | portada · categoría · ficha de producto · carro · pago · pedido recibido · mi cuenta · la marca · contacto · condiciones de venta y envíos · aviso legal · privacidad · cookies · 404 | sin veredicto |
-| `escuadra` · ESCUADRA | `catalogo-amplio` | `directo` | ecommerce | portada · categoría · ficha de producto · carro · pago · pedido recibido · mi cuenta · la marca · contacto · condiciones de venta y envíos · aviso legal · privacidad · cookies · 404 | sin veredicto |
-| `aranda` · Motor Aranda | `stock-ocasion` | `tecnologico` | corporate | inicio · listado · detalle · nosotros · contacto · gracias · aviso legal · privacidad · cookies · 404 | sin veredicto |
-| `lumiere` · Lumière | `ritual-bono` | `materia` | corporate | inicio · rituales · ritual · nosotros · contacto · gracias · aviso legal · privacidad · cookies · 404 | sin veredicto |
-| `terrazza` · Casa Terrazza | `reservar-mesa` | `lujo-oscuro` | corporate | inicio · carta · plato · nosotros · contacto · gracias · aviso legal · privacidad · cookies · 404 | sin veredicto |
-| `bajura` · BAJURA | `subasta-diaria` | `tecnologico` | ecommerce | portada · categoría · ficha de producto · carro · pago · pedido recibido · mi cuenta · la marca · contacto · condiciones de venta y envíos · aviso legal · privacidad · cookies · 404 | sin veredicto |
-| `corte` · Corte Nueve | `prenda-a-medida` | `materia` | ecommerce | portada · categoría · ficha de producto · carro · pago · pedido recibido · mi cuenta · la marca · contacto · condiciones de venta y envíos · aviso legal · privacidad · cookies · 404 | sin veredicto |
-| `tueste` · Tueste Norte | `suscripcion` | `editorial` | ecommerce | portada · categoría · ficha de producto · carro · pago · pedido recibido · mi cuenta · la marca · contacto · condiciones de venta y envíos · aviso legal · privacidad · cookies · 404 | sin veredicto |
-| `amalia` · Amalia Yoga | `clase-de-prueba` | `editorial` | corporate | inicio · filosofía · planes · clase · diario · entrada · contacto · gracias · aviso legal · privacidad · cookies · 404 | sin veredicto |
-| `amalia-salvia` · Amalia · Sala verde | `clase-de-prueba` | `editorial` | corporate | inicio · filosofía · planes · clase · diario · entrada · contacto · gracias · aviso legal · privacidad · cookies · 404 | sin veredicto |
-| `forja` · Forja Box | `clase-de-prueba` | `directo` | corporate | inicio · el box · disciplinas · coaches · planes · contacto · gracias · aviso legal · privacidad · cookies · 404 | sin veredicto |
-| `forja-fucsia` · FORJA BOX · Fucsia | `clase-de-prueba` | `directo` | corporate | inicio · el box · disciplinas · coaches · planes · contacto · gracias · aviso legal · privacidad · cookies · 404 | sin veredicto |
-| `noir` · Maison Noir | `muestra-primero` | `vitrina` | ecommerce | portada · tienda · ficha de producto · set de descubrimiento · cesta · pago · pedido recibido · mi cuenta · la Maison · contacto · condiciones de venta y envíos · aviso legal · privacidad · cookies · 404 | sin veredicto |
-| `noir-claro` · Maison Noir · Claro | `muestra-primero` | `editorial` | ecommerce | portada · tienda · ficha de producto · set de descubrimiento · cesta · pago · pedido recibido · mi cuenta · la Maison · contacto · condiciones de venta y envíos · aviso legal · privacidad · cookies · 404 | sin veredicto |
+| Slug | Objetivo | Enfoque | Tipo | Páginas |
+|---|---|---|---|---|
+| `delao` · Inmobiliaria de la O | `cartera-curada` | `editorial` | corporate | inicio · propiedades · ficha · nosotros · contacto |
+| `marzo` · MARZO | `tienda-talla` | `materia` | ecommerce | portada · categoría · ficha de producto · carro · pago · pedido recibido · mi cuenta · la marca · contacto · condiciones de venta y envíos · aviso legal · privacidad · cookies · 404 |
+| `barro` · BARRO | `tienda-lote` | `lujo-oscuro` | ecommerce | portada · categoría · ficha de producto · carro · pago · pedido recibido · mi cuenta · la marca · contacto · condiciones de venta y envíos · aviso legal · privacidad · cookies · 404 |
+| `cadencia` · CADENCIA | `equipo-por-uso` | `tecnologico` | ecommerce | portada · categoría · ficha de producto · carro · pago · pedido recibido · mi cuenta · la marca · contacto · condiciones de venta y envíos · aviso legal · privacidad · cookies · 404 |
+| `escuadra` · ESCUADRA | `catalogo-amplio` | `directo` | ecommerce | portada · categoría · ficha de producto · carro · pago · pedido recibido · mi cuenta · la marca · contacto · condiciones de venta y envíos · aviso legal · privacidad · cookies · 404 |
+| `aranda` · Motor Aranda | `stock-ocasion` | `tecnologico` | corporate | inicio · listado · detalle · nosotros · contacto · gracias · aviso legal · privacidad · cookies · 404 |
+| `lumiere` · Lumière | `ritual-bono` | `materia` | corporate | inicio · rituales · ritual · nosotros · contacto · gracias · aviso legal · privacidad · cookies · 404 |
+| `terrazza` · Casa Terrazza | `reservar-mesa` | `lujo-oscuro` | corporate | inicio · carta · plato · nosotros · contacto · gracias · aviso legal · privacidad · cookies · 404 |
+| `bajura` · BAJURA | `subasta-diaria` | `tecnologico` | ecommerce | portada · categoría · ficha de producto · carro · pago · pedido recibido · mi cuenta · la marca · contacto · condiciones de venta y envíos · aviso legal · privacidad · cookies · 404 |
+| `corte` · Corte Nueve | `prenda-a-medida` | `materia` | ecommerce | portada · categoría · ficha de producto · carro · pago · pedido recibido · mi cuenta · la marca · contacto · condiciones de venta y envíos · aviso legal · privacidad · cookies · 404 |
+| `tueste` · Tueste Norte | `suscripcion` | `editorial` | ecommerce | portada · categoría · ficha de producto · carro · pago · pedido recibido · mi cuenta · la marca · contacto · condiciones de venta y envíos · aviso legal · privacidad · cookies · 404 |
+| `amalia` · Amalia Yoga | `clase-de-prueba` | `editorial` | corporate | inicio · filosofía · planes · clase · diario · entrada · contacto · gracias · aviso legal · privacidad · cookies · 404 |
+| `amalia-salvia` · Amalia · Sala verde | `clase-de-prueba` | `editorial` | corporate | inicio · filosofía · planes · clase · diario · entrada · contacto · gracias · aviso legal · privacidad · cookies · 404 |
+| `forja` · Forja Box | `clase-de-prueba` | `directo` | corporate | inicio · el box · disciplinas · coaches · planes · contacto · gracias · aviso legal · privacidad · cookies · 404 |
+| `forja-fucsia` · FORJA BOX · Fucsia | `clase-de-prueba` | `directo` | corporate | inicio · el box · disciplinas · coaches · planes · contacto · gracias · aviso legal · privacidad · cookies · 404 |
+| `noir` · Maison Noir | `muestra-primero` | `vitrina` | ecommerce | portada · tienda · ficha de producto · set de descubrimiento · cesta · pago · pedido recibido · mi cuenta · la Maison · contacto · condiciones de venta y envíos · aviso legal · privacidad · cookies · 404 |
+| `noir-claro` · Maison Noir · Claro | `muestra-primero` | `editorial` | ecommerce | portada · tienda · ficha de producto · set de descubrimiento · cesta · pago · pedido recibido · mi cuenta · la Maison · contacto · condiciones de venta y envíos · aviso legal · privacidad · cookies · 404 |
 
 **`forja` y `forja-fucsia` son los dos modelos de un mismo encargo**, el box de entrenamiento FORJA:
 el mismo texto y las mismas páginas, uno en tinta y ácido con Anton y otro en tinta y fucsia con
@@ -40,19 +41,6 @@ mismo texto y las mismas doce páginas—, una en papel crudo y terracota con ca
 otra en verde con carril lateral y slider. Comparten Objetivo, tipo y, medido eje por eje en los dos
 lienzos, Enfoque. Se ofrecen como alternativa entre sí para un mismo cliente, nunca como dos
 plantillas distintas de la biblioteca.
-
-**Las once plantillas tienen su juego completo de páginas** derivado en `maqueta/index.html` —
-`delao`, `aranda`, `lumiere` y `terrazza` con diez, y `marzo`, `barro`, `cadencia`, `escuadra`, `tueste`,
-`corte` y `bajura` con catorce— y a las once les falta sólo el veredicto. Hasta tener maqueta y veredicto, ninguna se ofrece a un
-cliente: una maqueta que nadie ha mirado es una carpeta de ficheros que pasa los tests.
-
-**El margen de página no es el mismo en todas, y es a propósito.** `delao`, `marzo`, `barro`,
-`cadencia` y `escuadra` usan el 7,5&nbsp;% del estándar de la casa; `lumiere` usa 6,667&nbsp;%,
-`aranda` 5&nbsp;%, `corte` 6,667&nbsp;%, `bajura` 4,444&nbsp;%, `terrazza` 3,333&nbsp;%, `tueste` 10&nbsp;%,
-`amalia` 4&nbsp;vw con carril de 1280&nbsp;px y `amalia-salvia` 4&nbsp;% junto a un carril lateral de 250&nbsp;px con la
-medida topada en 1120&nbsp;px, medidos en sus lienzos y declarados en sus fichas con su
-razón. Once plantillas con el
-mismo margen serían once plantillas hechas por la misma mano.
 
 ## Qué contiene cada plantilla
 
@@ -96,8 +84,7 @@ Una carpeta por slug, y dentro siempre lo mismo:
 - `references/plantillas/barro/canvas/` — `Barro`, `BarroPieza`, `Categoria`, `LaMarca`, `Contacto`,
   `canvas.json` y su `MANIFIESTO.md`
 - `references/plantillas/barro/maqueta/` — `index.html`
-- `references/plantillas/barro/img/` — treinta `.webp`, de los que sólo diez están en el manifiesto y
-  se usan; los otros veinte son huérfanos sin procedencia recuperable y no se tocan
+- `references/plantillas/barro/img/` — diez `.webp`, todos en el manifiesto
 - `references/plantillas/barro/veredicto.md`
 
 ## cadencia

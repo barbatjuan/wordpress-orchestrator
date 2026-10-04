@@ -120,9 +120,9 @@ function es_build_shop_template() {
 					   exists on the archive and nowhere else, is passed in as an extra. */
 					'custom_css'               => es_products_css(
 						/* Pagination in palette (was inheriting a pink link color) */
-						'selector .woocommerce-pagination .page-numbers,selector .elementor-pagination .page-numbers{color:' . es_t( 'muted' ) . '!important;border-color:' . es_t( 'border' ) . '!important;border-radius:8px!important;transition:color .25s ' . es_t( 'ease' ) . ',background-color .25s ' . es_t( 'ease' ) . ',border-color .25s ' . es_t( 'ease' ) . ';}'
+						es_helper_css( 'selector .woocommerce-pagination .page-numbers,selector .elementor-pagination .page-numbers{color:' . es_t( 'muted' ) . '!important;border-color:' . es_t( 'border' ) . '!important;border-radius:8px!important;transition:color .25s ' . es_t( 'ease' ) . ',background-color .25s ' . es_t( 'ease' ) . ',border-color .25s ' . es_t( 'ease' ) . ';}'
 						. 'selector .woocommerce-pagination a.page-numbers:hover,selector .elementor-pagination a.page-numbers:hover{color:' . es_t( 'accent' ) . '!important;border-color:' . es_t( 'accent' ) . '!important;}'
-						. 'selector .woocommerce-pagination .page-numbers.current,selector .elementor-pagination .page-numbers.current{color:' . es_t( 'on_accent' ) . '!important;background-color:' . es_t( 'accent' ) . '!important;border-color:' . es_t( 'accent' ) . '!important;}'
+						. 'selector .woocommerce-pagination .page-numbers.current,selector .elementor-pagination .page-numbers.current{color:' . es_t( 'on_accent' ) . '!important;background-color:' . es_t( 'accent' ) . '!important;border-color:' . es_t( 'accent' ) . '!important;}' )
 					),
 					/* Pagination */
 					'pagination_color'         => es_t( 'muted' ),

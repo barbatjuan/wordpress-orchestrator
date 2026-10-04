@@ -2,15 +2,16 @@
 
 La ESTRUCTURA de tokens (roles, pasos de escala, breakpoints) es compartida por TODAS las
 plantillas (ecommerce y corporate) y se define **una vez**. Lo que cambia entre proyectos es la
-POSICIÓN en los cinco ejes perceptuales — escala, ground, densidad, composición, elevación — que
-`ux-design-system` resuelve con el cliente, independiente de qué `TPL-*` se haya elegido. Diseñado
+POSICIÓN en los ejes de escala, ground, densidad y elevación — la que da el Enfoque de la
+plantilla (`web-templates/references/enfoques.md` y su ficha) y que `ux-design-system` ajusta a la
+marca del cliente. Diseñado
 mobile-first. Compatible con Elementor (Global Settings) y Divi (Theme Options + Global Presets),
 y con la skill `html-mockup` (variables `--*` en `:root`).
 
 Este archivo es la **autoridad sobre NOMBRES y VALORES de token**, incluidos los valores de cada
 posición de eje (`--type-ratio`, `--display-lh`, `--fs-h1-max`, `--sp-scale`, `--c-bg`,
 `--c-bg-alt`, `--c-text`, `--elev-rest`, `--elev-hover`): ver "Perceptual axes — token values" al
-final. `ux-design-system/references/style-catalog/` es la autoridad sobre QUÉ POSICIÓN toma cada ancla en cada eje y
+final. El Enfoque de cada plantilla (`enfoques.md`, su ficha) manda sobre QUÉ POSICIÓN toma en cada eje y
 sobre los nombres concretos de tipografía; no define valores de token.
 `ux-design-system/references/motion.md` manda sobre la curva y los rangos de duración/lift.
 `ux-design-system/references/design-tokens.md` explica los ROLES (para qué sirve cada token, cómo
@@ -189,9 +190,8 @@ párrafo era pagar ese párrafo con la página entera.
 | Inputs | `--radius-input` | `8px` |
 | Containers | `--radius-container` | `16px` |
 
-Estos son los defaults. El ancla resuelta puede moverlos cuando su **Card recipe** en
-`ux-design-system/references/style-catalog/` lo pide (p. ej. `STY-MATTER` pone la imagen al radio del contenedor);
-donde la receta calla, manda la tabla. Los NOMBRES de token no cambian nunca.
+Estos son los defaults. El Enfoque resuelto puede moverlos cuando la ficha de la plantilla lo pide (p. ej. la imagen al radio
+del contenedor); donde la ficha calla, manda la tabla. Los NOMBRES de token no cambian nunca.
 
 ## Notas de implementación
 
@@ -319,9 +319,8 @@ pair was contrast-checked against its OWN `--c-bg`, not against white. "very lig
 | `ink-warm` | `#171008` | `#221808` | `#F7EFE2` | 16.5:1 |
 | `ink-cool` | `#0B0F1C` | `#141B2E` | `#EAF0FF` | 16.7:1 |
 
-**Nine positions, not four (style-catalog PR 3a).** The hue anchor moves; the floors do not — every
-row still clears the same 7:1 AAA this axis has always required (`_build-gallery.php` now gates it
-for these nine directly, not only for the brands appended below). `paper`/`warm`/`cool`/`ink` are
+**Nine positions, not four.** The hue anchor moves; the floors do not — every
+row still clears the same 7:1 AAA this axis has always required. `paper`/`warm`/`cool`/`ink` are
 unchanged. `cream` and `earth` are warm without being `warm`'s own peach — a pale butter and a
 deeper sandy ochre. **Neither is a medium-value ground, and that is geometry, not timidity**: the
 7:1 AAA floor forces `--c-bg` toward one extreme or the other — a mid-luminance ground clears
@@ -368,9 +367,8 @@ contrast colour, and the ink on it IS the page's ground, so on `warm` an inverte
 brown carrying cream, not dark brown carrying a white that appears nowhere else in the palette.
 
 **These cells are evidence, not values, and that is why the position names in this table's header
-are not backticked.** `RT_AXIS_VALUE_MISSING` reads any table row containing a backticked position
-name and requires a token-shaped value beside it; a contrast ratio is not one, so backticking them
-here would fail the audit on correct documentation. The verifier for a derived token is not a column
+are not backticked.** A contrast ratio is not a token, so this table is never a source of values.
+The verifier for a derived token is not a column
 in this file — it is `tests/test-write-path.php`, which recomputes every ratio above on every run
 against all nine positions and requires body copy ≥ 4.5:1 and the inverse surface ≥ 3:1. That is
 strictly stronger than a documented literal, which is only ever as true as the day it was typed.
@@ -504,9 +502,9 @@ Three exclusions are part of the rule rather than holes in it:
 - **`box-shadow` is not a mark.** `--elev-rest: 0 0 0 1px …accent…` is the elevation axis spending
   its own token, which this file tables as `accent-glow`.
 
-**An anchor's card recipe outranks this whitelist.** `references/style-catalog/` gives
-`STY-INSTITUTIONAL` "chip de icono en accent" in as many words; a rule written here does not get
-to overrule a style's own definition. Name the exception under a role and move on.
+**A Plantilla's own card recipe outranks this whitelist.** A ficha that asks for an accent icon
+chip in as many words is a design's own definition, and a rule written here does not get to
+overrule it. Name the exception under a role and move on.
 
 **Where the biggest spend goes: the close.** A whitelist is only interesting because it lets you
 spend loudly somewhere. The closing band is that somewhere — see
@@ -585,7 +583,7 @@ justifies it**, so the next person can re-take it and find out it no longer does
 | `soft-shadow` | `0 1px 2px color-mix(in srgb,var(--c-text) 4%,transparent)` | `0 18px 40px -12px color-mix(in srgb,var(--c-text) 16%,transparent)` |
 | `accent-glow` | `0 0 0 1px color-mix(in srgb,var(--c-accent) 22%,transparent)` | `0 14px 34px -10px color-mix(in srgb,var(--c-accent) 40%,transparent)` |
 
-**`soft-shadow` tints off `--c-text`, style-catalog PR 3b.** The row above used to read
+**`soft-shadow` tints off `--c-text`.** The row above used to read
 `rgba(0,0,0,.04)` / `rgba(21,24,26,.16)` — a fixed cool near-black, which happens to be `paper`'s
 own `--c-text` and reads wrong on any other ground: nine ground families later (PR 3a) that literal
 sits either too cold (`warm`/`earth`/`cream`, whose text is warm-black) or backwards (any `ink-*`
@@ -593,134 +591,5 @@ ground, whose text is near-white). Same percentages the literal used, same `colo
 `accent-glow` already established one row down — **"tint the shadow, never lift it"** applied to
 elevation, not only to the photographic ink. On a light ground this still reads as a shadow
 (`--c-text` is dark); on a dark ground it reads as a glow (`--c-text` is light) rather than as no
-shadow at all, which is why `PERS-VITRINE` (ground `ink`, position `soft-shadow`) overrides its own
-rest state to `none` and keeps the derived value for hover only — see its § Imagery.
-
-### Composition (one blueprint per position)
-The only axis whose value is a layout rule rather than a number, so each position names a blueprint
-instead. The blueprints are defined in `ux-design-system/references/layout-patterns.md`, where each
-one fixes column count, where the content sits, and what an image may do — enough specificity that
-two anchors over identical content render as visibly different pages. Four prose sentences, which
-is what this table held before, were not: nothing downstream could act on them.
-
-| Position | Blueprint | In one line |
-|---|---|---|
-| `centered` | `LP-CENTERED` | one symmetric axis, nothing bleeds |
-| `asymmetric` | `LP-ASYMMETRIC` | copy on 7 of 12 columns, one image bleeding a viewport edge |
-| `strict-grid` | `LP-STRICT-GRID` | every element starts and ends on a column line |
-| `broken-grid` | `LP-BROKEN-GRID` | one element per section crosses the grid or overlaps a neighbour |
-
-### Chassis (one blueprint per position)
-A different axis from composition (composition fixes the grid, chassis fixes how each content
-BLOCK is bounded inside it), but the same shape: no property carries "carded" or "bordered", so
-each position names a blueprint. The blueprints are defined in
-`ux-design-system/references/layout-patterns.md` § "Chassis blueprints", beside the composition
-ones. `CHS-STRICT-GRID` is a distinct id from `LP-STRICT-GRID` even though both read "strict
-grid" in English — one fixes column alignment, the other fixes a block's own boundary — so the two
-never resolve against each other by accident.
-
-| Position | Blueprint | In one line |
-|---|---|---|
-| `bare` | `CHS-BARE` | no border, no fill, no shadow — spacing alone separates blocks |
-| `carded` | `CHS-CARDED` | a filled `--c-bg-alt` rectangle, no shadow, at rest or on hover |
-| `soft-carded` | `CHS-SOFT-CARDED` | filled at rest, `soft-shadow` reserved for hover/focus |
-| `bordered` | `CHS-BORDERED` | a hairline frame is the whole chrome, no fill step |
-| `rule-divided` | `CHS-RULE-DIVIDED` | no block boundary; a hairline rule separates content |
-| `hard-shadow` | `CHS-HARD-SHADOW` | a zero-blur offset shadow, present at rest, not just on hover |
-| `strict-grid` | `CHS-STRICT-GRID` | bare surface, but every edge lands on a fixed grid line |
-| `layered` | `CHS-LAYERED` | blocks overlap by a fixed offset, `z-index` sets the stack |
-
-### Accent (how loudly the ONE accent colour is deployed)
-`none` is a literal — the accent is spent nowhere beyond the whitelist's four roles, and a page can
-say so without a blueprint. Every other position changes HOW the accent itself is rendered, not
-where, so each one names a blueprint the same way composition does: a policy nobody wrote down is
-the "a position with no value is an adjective" failure in new clothes.
-
-| Position | Blueprint | In one line |
-|---|---|---|
-| `none` | `none` | the whitelist's four roles, nothing more |
-| `reserved` | `ACC-RESERVED` | the accent whitelist itself, spent nowhere it is not already named |
-| `tinted-field` | `ACC-TINTED-FIELD` | a bounded surface washed in a low-opacity mix of the accent |
-| `duotone` | `ACC-DUOTONE` | the accent is one of the two inks a photograph's duotone grade takes its chroma from |
-| `gradient` | `ACC-GRADIENT` | the accent runs as a two-stop fill on one bounded surface, never on text |
-| `metallic` | `ACC-METALLIC` | the accent carries a banded light/dark gradient simulating a brushed metal sheen |
-| `polychrome` | `ACC-POLYCHROME` | the ONE-colour rule is lifted, under a named exception, for a stated bounded set of marks |
-
-#### `ACC-RESERVED`
-- Is today's global accent whitelist (§ "The accent is spent by ROLE") verbatim, restated as a
-  blueprint so the axis has something to point at: CTAs, action icons, important links, active
-  states, plus anything an anchor's own card recipe names — nothing else.
-- No literal beyond the accent hex itself is introduced; this position spends what the whitelist
-  already allows and not one mark more.
-
-#### `ACC-TINTED-FIELD`
-- Exactly one bounded surface per page may carry `color-mix(in srgb, var(--c-accent) 8-14%,
-  var(--c-bg))` as its `background`. Body text inside it stays `--c-text`; the tint is a wash, not
-  a theme change.
-- The tinted surface still counts against the whitelist's roles: it earns the tint by hosting a
-  CTA, a form, or the close (`layout-patterns.md` § "The close is a designed moment"), never as
-  unclaimed decoration.
-
-#### `ACC-DUOTONE`
-- The accent supplies ONE of the duotone's two inks (see § "One treatment for the photographs" —
-  "take its inks from something that HAS chroma — the accent"); the other ink is the ground's own
-  dark neutral, never a second invented hue.
-- Applies to the photograph treatment only. Chrome, type and controls are unaffected — a duotone
-  photograph is not licence to duotone the page around it.
-
-#### `ACC-GRADIENT`
-- A `linear-gradient` between the accent and one `color-mix` step of it (never a second hue) fills
-  exactly one bounded surface per section — a button, a badge, or the close's own field.
-- Never on text and never full-bleed: a gradient across the whole viewport reads as a background,
-  not as the accent spending its one spend.
-
-#### `ACC-METALLIC`
-- A `linear-gradient` with at least three stops alternating lighter and darker `color-mix` steps of
-  the accent, simulating a brushed sheen, on the same bounded surfaces `ACC-GRADIENT` allows.
-- Reserved for surfaces the light is meant to catch — a CTA, a price tag, a badge — never a full
-  section background, which would read as foil wrap rather than a material.
-
-#### `ACC-POLYCHROME`
-- The ONE-colour rule is suspended for exactly one named, bounded set — a tag list, a category
-  swatch grid — and the exception is written down beside the set it covers, the same discipline
-  `references/style-catalog/` already asks of an anchor's own card-recipe exception.
-- Every mark outside that named set still answers to the ordinary whitelist; polychrome is scoped,
-  never ambient.
-
-### Ornament (the mark that is neither type, photograph, nor chrome)
-`none` is a literal — the page carries no ornament beyond type, photography and the chassis
-itself. Every other position is a blueprint, the same discipline composition and accent already
-use: a mark with no fixed shape is a doodle wearing a design-system name.
-
-| Position | Blueprint | In one line |
-|---|---|---|
-| `none` | `none` | no ornament beyond type, photography and chassis |
-| `rule` | `ORN-RULE` | a single hairline divider, never a filled band |
-| `texture` | `ORN-TEXTURE` | a low-contrast surface grain, applied to grounds, never to type |
-| `pattern` | `ORN-PATTERN` | a repeating geometric mark, bounded to named surfaces only |
-| `illustration` | `ORN-ILLUSTRATION` | line-art icons or figures accompanying specific section kinds |
-
-#### `ORN-RULE`
-- Exactly `--c-border` at `1px`, laid between two stacked elements (image/text, or two sections) —
-  the same hairline `elevation: hairline` already tables, reused as a divider rather than a frame.
-- Never doubled and never filled: a second parallel rule or a tinted band is `ORN-TEXTURE` or a
-  chassis position wearing this one's name.
-
-#### `ORN-TEXTURE`
-- An SVG noise or grain filter (`feTurbulence` + a low-opacity `feColorMatrix`) composited onto a
-  section's own ground, contrast unaffected — `--c-text` on `--c-bg` still clears the same ratio
-  with or without it, because the grain sits in an overlay layer, not in the type's own paint.
-- Applies to grounds and photograph mounts only; a textured control (a button, an input) is a
-  material glitch, not a personality.
-
-#### `ORN-PATTERN`
-- A repeating geometric motif (stripes, a dot grid, a hatch) at low contrast, confined to ONE named
-  surface per page — a section background or a card's own ground — never the whole viewport.
-- Never behind body copy: a pattern under running text is the accessibility failure `ORN-TEXTURE`'s
-  contrast rule exists to prevent, worn by a different mechanism.
-
-#### `ORN-ILLUSTRATION`
-- Custom line-art icons or small figures, one per section of a stated kind (a process step, a
-  feature), drawn at a single stroke weight so the set reads as one hand.
-- Never a stock icon font substituted at the last minute: an inconsistent stroke weight across the
-  set is the same "adjective with a code number" failure this axis exists to prevent.
+shadow at all, which is why a design on ground `ink` with position `soft-shadow` overrides its own
+rest state to `none` and keeps the derived value for hover only.

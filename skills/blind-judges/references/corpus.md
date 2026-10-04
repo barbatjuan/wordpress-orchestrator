@@ -24,8 +24,8 @@ verdicts have landed**, so nothing a judge saw can be altered by the same pass t
 **Capture recipe.** Never by hand and never by eye: `../assets/capture.mjs` owns it, at a frozen
 1280x860 viewport, one frame per screen capped at nine, JPEG quality 72. Three shots per delivery
 keeps five deliveries comfortably under a megabyte,
-which is the whole reason the delivered mockup HTML is not stored here: the two chassis measure
-roughly 630 KB each, and client work does not belong in this repository.
+which is the whole reason the delivered mockup HTML is not stored here: a delivered maqueta
+measures hundreds of KB, and client work does not belong in this repository.
 
 **Fold before decoration.** The hero shot is the one that matters. Sameness in this framework has
 always announced itself above the fold — the same dark ground, the same centred two-line headline
@@ -35,8 +35,7 @@ them does not.
 ## Retention
 
 Judge A is shown the **last five** entries plus the current mockup. Older entries stay on disk;
-they are simply not shown. Five matches the window `RT_STYLE_REPEATS_RECENT` uses, so the measured
-half and the seen half never disagree about what "recent" means.
+they are simply not shown.
 
 ## Index
 
@@ -46,10 +45,3 @@ schema order, so two rows can be read against each other directly.
 | Date | Project | Ground | Headline voice | Air | Composition | Ornament | Accent | Silhouette | Lift |
 |------|---------|--------|----------------|-----|-------------|----------|--------|------------|------|
 | _(empty — no delivery recorded yet)_ | | | | | | | | | |
-
-## Where this is going
-
-When the `art-direction-ledger` slice lands, `shipped-log.md` becomes the single ledger: this index
-merges into it as extra columns beside the date, the project id, the resolved `STY-*` and the
-eight-axis signature. Until that file exists this index is the interim home — deliberately one
-file, so the merge is a move rather than a reconciliation of two competing histories.

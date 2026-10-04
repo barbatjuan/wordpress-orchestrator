@@ -311,5 +311,71 @@ ok( 0 === es_audit_summary(), 'build limpio devuelve 0 offenders' );
 es_container_report( array( es_section( array( es_row( array( es_h( 'a' ), es_h( 'b' ) ) ) ) ) ), 'sucia' );
 ok( 1 === es_audit_summary(), 'build sucio devuelve el conteo' );
 
+echo "--- custom_css: el CSS de los ayudantes no cuenta, el escrito a mano si ---\n";
+$mk_open  = ES_HELPER_CSS_OPEN;
+$mk_close = ES_HELPER_CSS_CLOSE;
+$helper_css = array(
+	'es_btn primary'       => es_btn( 'x', '#', 'primary' )['settings']['custom_css'],
+	'es_btn dark'          => es_btn( 'x', '#', 'dark' )['settings']['custom_css'],
+	'es_btn outline'       => es_btn( 'x', '#', 'outline' )['settings']['custom_css'],
+	'es_btn outline-light' => es_btn( 'x', '#', 'outline-light' )['settings']['custom_css'],
+	'es_card_hover_css'    => es_card_hover_css(),
+	'es_products_css'      => es_products_css(),
+	'es_feature_card'      => es_feature_card( 'fas fa-check', 't', 'x' )['settings']['custom_css'],
+	'es_grid'              => es_grid( 3, array( es_p( 'a' ) ) )['settings']['custom_css'],
+);
+foreach ( $helper_css as $who => $css ) {
+	ok( 0 === strpos( $css, $mk_open ) && substr( $css, -strlen( $mk_close ) ) === $mk_close, "$who lleva el marcador al principio y al final" );
+	ok( false !== strpos( $css, 'selector' ) && false === strpos( $mk_open . $mk_close, 'selector' ), "$who conserva `selector` y el marcador no lo contiene" );
+	ok( substr_count( $css, '{' ) === substr_count( $css, '}' ), "$who sigue siendo CSS balanceado con el marcador" );
+}
+ok( '' === es_helper_css( '' ) && '' === es_helper_css( "  \n" ), 'es_helper_css no marca un CSS vacio' );
+
+$limpia = array( es_section( array(
+	es_btn( 'a', '#', 'primary' ), es_btn( 'b', '#', 'outline-light' ),
+	es_feature_card( 'fas fa-check', 't', 'x' ),
+	es_grid( 2, array( es_p( 'a' ) ) ),
+	es_c( array( 'custom_css' => es_products_css() ), array( es_p( 'z' ) ), true ),
+) ) );
+$r = es_custom_css_audit( $limpia );
+ok( 0 === $r['count'] && array() === $r['where'], 'una pagina solo con ayudantes cuenta 0 de CSS a mano' );
+
+$mano = es_w( 'html', array( 'custom_css' => 'selector{color:red;}' ) );
+$r = es_custom_css_audit( array( es_section( array( es_btn( 'a', '#', 'primary' ), $mano ) ) ) );
+ok( 1 === $r['count'] && 1 === count( $r['where'] ), 'un custom_css a mano cuenta 1' );
+ok( false !== strpos( $r['where'][0], $mano['id'] ) && false !== strpos( $r['where'][0], 'html' ), 'y dice el id y el widgetType: ' . $r['where'][0] );
+
+$prof = es_c( array( 'custom_css' => 'selector{gap:1px;}' ), array(
+	es_c( array(), array( es_w( 'heading', array( 'title' => 'h', 'custom_css' => '@media(max-width:767px){selector{color:red;}}' ) ), es_btn( 'a', '#', 'dark' ) ), true ),
+), true );
+$r = es_custom_css_audit( array( $prof ) );
+ok( 2 === $r['count'], 'recorre contenedores anidados: el contenedor y el widget profundo, no el boton del ayudante' );
+ok( 2 === count( $r['where'] ) && false !== strpos( $r['where'][0], '/0 container' ) && false !== strpos( $r['where'][1], '/0/0/0 widget heading' ), 'y cada ubicacion lleva su ruta y su tipo: ' . implode( ' | ', $r['where'] ) );
+
+foreach ( array( '', '   ', "\n\t", '/* solo un comentario */', $mk_open . $mk_close ) as $vacio ) {
+	ok( 0 === es_custom_css_audit( array( es_w( 'heading', array( 'title' => 'h', 'custom_css' => $vacio ) ) ) )['count'], 'CSS vacio o sin reglas cuenta 0: ' . json_encode( $vacio ) );
+}
+ok( 0 === es_custom_css_audit( array( es_w( 'heading', array( 'title' => 'h' ) ) ) )['count'], 'sin custom_css cuenta 0' );
+
+/* Decision: el marcador envuelve el bloque del ayudante (apertura y cierre). Lo que un humano escribe
+   FUERA del par cuenta como CSS a mano; con un solo prefijo, una regla anadida pasaba sin que nadie la viera. */
+$anexo = es_btn( 'a', '#', 'primary' );
+$anexo['settings']['custom_css'] .= 'selector{margin:0;}';
+ok( 1 === es_custom_css_audit( array( $anexo ) )['count'], 'ayudante + regla anadida a mano despues del cierre: cuenta 1' );
+$delante = es_btn( 'a', '#', 'primary' );
+$delante['settings']['custom_css'] = 'selector{margin:0;}' . $delante['settings']['custom_css'];
+ok( 1 === es_custom_css_audit( array( $delante ) )['count'], 'regla a mano delante del ayudante: cuenta 1' );
+$extra = es_w( 'html', array( 'custom_css' => es_products_css( 'selector .x{margin:0;}' ) ) );
+ok( 1 === es_custom_css_audit( array( $extra ) )['count'], 'es_products_css( $extra_css ): el extra a mano cuenta, la base no' );
+ok( es_css_is_handwritten( 'a{b:c}' ) && ! es_css_is_handwritten( es_card_hover_css() ) && ! es_css_is_handwritten( '' ), 'es_css_is_handwritten sirve tambien para el CSS de pagina y del kit' );
+
+echo "--- los ejemplos del framework escriben su CSS con el marcador ---\n";
+foreach ( array( 'skills/elementor-theme-parts/assets/es-theme-parts.example.php', 'skills/woocommerce/assets/es-shop-template.example.php', 'skills/woocommerce/assets/es-product-single.example.php' ) as $rel ) {
+	$src   = file_get_contents( dirname( __DIR__ ) . '/' . $rel );
+	$todos = preg_match_all( "/'custom_css'\\s*=>/", $src );
+	$vias  = preg_match_all( "/'custom_css'\\s*=>\\s*(es_helper_css|es_products_css|es_card_hover_css)\\(/", $src );
+	ok( $todos > 0 && $todos === $vias, "$rel: los $todos custom_css pasan por un ayudante de marcado ($vias)" );
+}
+
 echo "\n$pass OK / $fail FAIL\n";
 exit( $fail ? 1 : 0 );

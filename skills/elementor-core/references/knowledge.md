@@ -17,8 +17,7 @@
   (styles: primary / dark / outline / outline-light), `es_card`, `es_feature_card`, `es_iconbox`.
 - `es_cta_banner($img_slug,$title,$text,$btn_text,$btn_link,$bg)` — rounded closing-CTA band:
   full-bleed photo, dark scrim, copy and button on the left, wrapped in a normal section so it
-  keeps the page's boxed width. It was in this file for months named by nothing at all, which is
-  what `RT_HELPER_UNROUTABLE` now catches: a helper nobody can find gets rebuilt by hand.
+  keeps the page's boxed width.
 - `es_save_page($slug,$title,$elements,$tpl,&$action)` + `es_rebuild_css($post_id)`.
   `$action` reports FOUR outcomes: `created`, `updated`, `created-renamed` (WordPress published the
   page under a DIFFERENT slug because the one you asked for was taken — the URL you expect is not
@@ -29,80 +28,64 @@
 - `es_key_offenders($type,$settings)` — a setting on the WRONG element type. Elementor names the
   same control differently by location: a container takes `padding`, a widget takes `_padding`
   (wrapper controls carry the underscore). The wrong form saves, opens and renders and simply does
-  not apply. **MEASURED on Elementor 4.2.2**, by building a page and reading the regenerated
-  `post-<id>.css`: a widget with `_padding:33px` produced `.elementor-element-…{padding:33px 33px
-  33px 33px;}`, while a widget with `padding:44px` produced NO rule and `44px` appeared nowhere in
-  the file. Both directions and the layout keys behave the same — a container with `padding:55px`
-  emitted `--padding-top:55px`, one with `_padding:66px` emitted nothing, and `flex_direction` on a
-  widget emitted nothing. The wrong form never reaches the stylesheet at all.
-  `es_container_walk()` calls it, so these reach the verdict through the existing offender channel.
-  The key list is deliberately SHORT: `width` is excluded because it is both a container layout key
-  and a real widget control, and an invented offender costs more than a missed one.
-  **Re-measured by introspection** on Elementor 4.2.2 + Pro 4.2.1, walking all 128 widget types
-  that expose controls and asking each one. Two results, one confirming and one correcting:
-  - The five container-only keys are a real control on **zero** widgets, in either spelling —
-    and `width` is a real one on **ten**, so the hand-made exclusion was right for the right reason.
-  - `padding` is a real `dimensions` control on **three** widgets (`nested-tabs`,
-    `call-to-action`, `table-of-contents`) and `background_background` a real `choose` control on
-    **seven** (`button`, `archive-posts`, `loop-grid`, `off-canvas`, `posts`, `paypal-button`,
-    `stripe-button`). The checker was inventing an offender on all ten and telling their authors to
-    break working code. `es_owns_control($widget_type,$key)` now asks Elementor directly when it is
-    there, and falls back to that measured list offline. Re-run the introspection when Elementor
-    moves: a hardcoded roster goes stale silently, which is why the live question comes first.
+  not apply. **MEASURED on Elementor 4.2.2** (build a page, read the regenerated `post-<id>.css`):
+  a widget with `padding:44px`, a container with `_padding:66px` and `flex_direction` on a widget
+  each emitted NO rule and the value appeared nowhere in the file. `es_container_walk()` calls it,
+  so these reach the verdict through the existing offender channel. The key list is deliberately
+  SHORT: `width` is excluded because it is both a container layout key and a real widget control
+  (on ten widgets), and an invented offender costs more than a missed one.
+  **Introspected** on Elementor 4.2.2 + Pro 4.2.1 over all 128 widget types that expose controls:
+  the five container-only keys are a real control on **zero** widgets; `padding` is a real
+  `dimensions` control on **three** (`nested-tabs`, `call-to-action`, `table-of-contents`) and
+  `background_background` a real `choose` control on **seven** (`button`, `archive-posts`,
+  `loop-grid`, `off-canvas`, `posts`, `paypal-button`, `stripe-button`).
+  `es_owns_control($widget_type,$key)` asks Elementor directly when it is there and falls back to
+  that measured list offline. Re-run the introspection when Elementor moves.
 - **Manifest** (state between sessions): `es_manifest_read()` → `{schema, updated, sections}`;
   `es_manifest_record($section,$data)` merges ONE section, stamps it, READS IT BACK and returns
   false when it did not land. Section names come from `es_manifest_sections()`, so two skills
-  writing different things never overwrite each other's, which a flat map guarantees they
-  eventually will — `pages` holds slug → id ONLY, the front page id lives in `site`'s
-  `front_page_id`. It lives in a WordPress option and NOT beside this library, because the
-  library sits in a sandbox the delivery phase deletes — state that dies with the sandbox is not
-  state.
+  writing different things never overwrite each other's — `pages` holds slug → id ONLY, the front
+  page id lives in `site`'s `front_page_id`. It lives in a WordPress option and NOT beside this
+  library, because the library sits in a sandbox the delivery phase deletes.
   `es_build_fingerprint()` fills `build` — the library's own sha1 plus the PHP/WP/Elementor
   versions, so a replay can tell whether the SAME library emitted both sites; a version it cannot
   read is `unknown`, never a plausible default. `es_tokens_reset()` drops the token cache, which
   chained builds need because `es_tokens( array() )` returns the PREVIOUS build's palette.
   Both, plus how a finished site reaches production and the three things the migration plugin does
   not know about it: `references/migration.md`.
-  `es_record_style_resolution($sty_id, $negative_brief, $rejected_tone)` is `design`'s call site
-  (`art-direction-ledger`): call it once the style pick, negative brief and rejected colour
-  temperature are resolved (`web-templates/references/recommender.md`), e.g. right where Step 2
-  overrides `es_tokens()` with the same catalog entry. Fails closed — any of the three empty and
-  nothing is written, `es_manifest_record()`'s own contract, not a new one. A second resolution in
-  the same session overwrites `design`, never appends; delivery history is `shipped-log.md`'s job.
+  The manifest's `design` section is empty in the current flow. The values Step 2 passes to
+  `es_tokens()` come from the approved maqueta's `:root` (the brand `ux-design-system` placed
+  inside the Plantilla's Enfoque; `qa-review` row 31 compares them).
   `es_manifest_verify()` contrasts the recorded page map and front page against the LIVE site and
   returns drift lines: page gone, slug moved by hand, same slug answered by a different post id
-  (the worst, because everything looks fine), front page repointed. It reports and never repairs
-  — repairing means guessing which truth was intended, and only a human knows.
+  (the worst, because everything looks fine), front page repointed. It reports and never repairs:
+  only a human knows which truth was intended.
 - **Sandbox liveness**: `es_sandbox_state()` -> `{safe_mode, reason, files}`. Read from the
   Novamira loader's source: it `require_once`s every `*.php` there on EVERY request (NOT "on
   upload"), but returns early when `.crashed` exists — one file's fatal disables all of them,
-  announced only by a wp-admin banner no agent sees. Measured on two live sites: the one carrying
-  `.crashed` had NO `es_*` function defined at all. Catch: in safe mode this function is not
-  loaded either, so `project-context` step 8 reads the file directly, before this library exists.
-  Never delete `.crashed` without fixing the file named in it.
-- `es_safe_mode_check()` → the offending filename, or `''`. Called from `es_save_page()`, because
-  reporting safe mode was never the problem: `project-context` step 8 already reported it and the
-  next step walked straight past. `.crashed` stops the LOADER, not an explicit `require_once`, so a
-  build runs to completion and reports success over a site nobody repaired. It warns **once per
-  request** — the opposite of `es_approval_check()`, deliberately: an unapproved write is a fact
-  about one page, so falling silent would hide the rest, while safe mode is one fact about the site
-  and repeating it per page would bury the pages under it. It does not block, because the way out
-  of a crashed sandbox is to run something and a guard that blocks writes blocks the repair too.
+  announced only by a wp-admin banner no agent sees (on a site carrying `.crashed`, NO `es_*`
+  function is defined). Catch: in safe mode this function is not loaded either, so
+  `project-context` step 8 reads the file directly, before this library exists. Never delete
+  `.crashed` without fixing the file named in it.
+- `es_safe_mode_check()` → the offending filename, or `''`. Called from `es_save_page()`: `.crashed`
+  stops the LOADER, not an explicit `require_once`, so a build runs to completion and reports
+  success over a site nobody repaired. It warns **once per request** (the opposite of
+  `es_approval_check()`: an unapproved write is a fact about one page, safe mode one fact about the
+  site). It does not block, because the way out of a crashed sandbox is to run something and a guard
+  that blocks writes blocks the repair too.
 - **Delivery**: `es_sandbox_report()` lists what is still in `wp-content/novamira-sandbox/`;
   `es_sandbox_purge()` deletes the build scripts and then RE-READS, returning what SURVIVED —
   the proof is the re-read, because a purge blocked by permissions and one that worked look
   identical from `unlink()`. It never recurses, never touches unknown extensions, and never
   deletes a file that registers a WordPress hook; those still block delivery, they just need a
-  human. `es_sandbox_runtime_hooks($path)` is the last of those three and the one learned the hard
-  way, on a real client's sandbox: `es-dlo-a11y.php` hooked `template_redirect` and wrapped every
-  page in the `<main>` landmark Hello Elementor does not print. That is the site's accessibility,
-  not build scaffolding, and it was living in the one directory whose job is to empty itself — so
-  hand-off day would have deleted it silently with every check green. A hooking file is MOVED into
-  the child theme and deleted here afterwards, never before; this framework writes PHP
-  outside the sandbox only with explicit human authorization obtained beforehand, naming the exact file and destination; without it that move is a human's. The detector reads the source rather than loading
-  it (loading is what the sandbox already does every request, and re-running it inside a report is
-  a side effect), skips comment lines so a docblock about a removed hook cannot keep a dead file
-  alive, and returns the hook NAMES so the warning can say which ones.
+  human. `es_sandbox_runtime_hooks($path)` detects the last of those three: a hooking file may be
+  the site's own behaviour, not build scaffolding (a client's `es-dlo-a11y.php` hooked
+  `template_redirect` and wrapped every page in the `<main>` landmark Hello Elementor does not
+  print). A hooking file is MOVED into the child theme and deleted here afterwards, never before;
+  this framework writes PHP outside the sandbox only with explicit human authorization obtained
+  beforehand, naming the exact file and destination; without it that move is a human's. The detector
+  reads the source rather than loading it, skips comment lines, and returns the hook NAMES so the
+  warning can say which ones.
   `es_backup_keys($ids)` returns the restore keys per
   page, newest last. `es_indexing_state()` reads `blog_public` only — `0` is "discourage search
   engines" — and deliberately does NOT parse robots.txt, because a half-parser is a confident
@@ -187,21 +170,19 @@ is for.
   honest source for `es_manifest_record('pages', …)`.
 - `es_backup_page_state($id,$keys)` — parks the WHOLE displaced set (layout, page template, edit
   mode, template type, version, post fields, and `post_content`) in `_es_page_backup_<Ymd-His>`.
-  **Call it before the first write**: it cannot tell an old value from a new one, and it used to
-  run after four of the five keys had already been overwritten, preserving what had just been
-  written. Restore key by key. `es_save_page()` calls it only when updating — a page it just
-  created has nothing to displace.
+  **Call it before the first write**: it cannot tell an old value from a new one. Restore with
+  `es_restore_page_state()`. `es_save_page()` calls it only when updating — a page it just created
+  has nothing to displace.
 - `es_restore_page_state($id,$key='')` — puts a page back the way a backup found it, and **reads
   every piece back**, returning `{key, restored[], failed[], safety}`. Empty `$key` picks the NEWEST
   backup, which is what a human means by "undo that". It BACKS UP FIRST, because restoring is
   itself destructive: the state it overwrites gets its own key, so restoring twice returns you to
   where you started instead of stranding you. A partial restore says WHICH pieces are missing
   rather than returning a cheerful true — the page is then in a mixed state and the warning says
-  so. Handing over a key with no way to use it was the gap this closes: a backup nobody can restore
-  is not a backup.
+  so.
 - `es_prune_backups($id,$keep=5)` → `{kept[], deleted[], still_there[]}`. Backups are never pruned
-  by default — losing the one you needed costs more than the rows — but each now holds the whole
-  displaced state, so unbounded is not an option either. Deletes oldest-first and re-reads, because
+  by default (losing the one you needed costs more than the rows), but each holds the whole
+  displaced state. Deletes oldest-first and re-reads, because
   `delete_post_meta()` returns false both on failure and on nothing-to-delete. `$keep` is floored at
   1: keeping zero is not pruning, it is deleting the backups.
 - `es_front_page()` → `{mode:'posts'|'page', id, slug}` — the ONE resolver for "what does `/` serve".
@@ -230,29 +211,25 @@ is for.
   the verdict — and nothing else. It does NOT reach `es_warn()`: silencing routine output must
   never silence a warning.
 - `es_font_serving_check()` → `'sin-wordpress'` | `'sin-familias'` | `'alojada'` | `'google'` |
-  `'sin-confirmar'`. Called from `es_audit_summary()`, beside `es_front_page_check()` and for the
-  same reason: it is one fact about the SITE, so it belongs on the line the operator reads before
-  deploying rather than repeated on every page. It asks WordPress which registered post types have
-  "font" in the name and reads their published titles — derived, never a post-type constant copied
-  out of one plugin — and reads `$GLOBALS['wp_styles']` directly (never `wp_styles()`, which
-  instantiates the registry: a report may not change what it reports on) for a Google source among
-  the handles this request ENQUEUED (`queue`) or already printed (`done`). **A registration is not
-  proof:** core registers `open-sans` against `fonts.googleapis.com` on every installation and
-  enqueues it nowhere, so the older probe — a scan of `registered` — accused every site in the
-  world, and printed the RGPD warning at sites whose served HTML contains no `googleapis` at all.
-  **`'sin-confirmar'` is not a pass and warns.** A build runs in a REST/CLI request where the front
-  end's enqueues never fire, so nothing is enqueued here and that question has no answer from
+  `'sin-confirmar'`. Called from `es_audit_summary()`, beside `es_front_page_check()`: one fact about
+  the SITE, on the line the operator reads before deploying. It asks WordPress which registered post
+  types have "font" in the name and reads their published titles (derived, never a post-type
+  constant copied out of one plugin), and reads `$GLOBALS['wp_styles']` directly (never
+  `wp_styles()`, which instantiates the registry: a report may not change what it reports on) for a
+  Google source among the handles this request ENQUEUED (`queue`) or already printed (`done`).
+  **A registration is not proof:** core registers `open-sans` against `fonts.googleapis.com` on every
+  installation and enqueues it nowhere. **`'sin-confirmar'` is not a pass and warns.** A build runs in
+  a REST/CLI request where the front end's enqueues never fire, so that question has no answer from
   inside a build: `'alojada'` needs BOTH the families installed AND a front end that was actually
-  looked at, and the warning names which half it could not see instead of reporting a clean site —
-  a check made stricter until it goes quiet is worse than one that was loud and wrong, because
-  nobody notices. Generic and web-safe faces are skipped. The once-per-build latch is `$es_font_said`, a global rather than a
-  `static`, because a static cannot be reset and half the behaviour would be untestable.
+  looked at, and the warning names which half it could not see. Generic and web-safe faces are
+  skipped. The once-per-build latch is `$es_font_said`, a global rather than a `static`, because a
+  static cannot be reset and half the behaviour would be untestable.
 - `es_front_font_probe( $url = '' )` → `'sin-http'` | `'google'` | `'limpio'` | `'sin-confirmar'`.
   The OTHER END of the same question, and an **entry point**: nothing in the asset calls it,
   `qa-review` does (its Hard Rules name it). It fetches the served HTML — the only place the answer
   lives — and is the only thing that can honestly clear the build's permanent `'sin-confirmar'`.
-  Separate from `es_font_serving_check()` rather than a branch of it because that one is a report
-  and a report may not change what it reports on; this makes an HTTP request. **It demands a 200
+  Separate from `es_font_serving_check()` because that one is a report and a report may not change
+  what it reports on; this makes an HTTP request. **It demands a 200
   AND a closed document before it will say `'limpio'`:** a 401, a 500, an empty body and a holding
   page all contain zero occurrences of `googleapis`, so "I did not find it" is worth nothing until
   the bytes are known to be the page's. Both needles — `fonts.googleapis.com` is the stylesheet,
@@ -304,8 +281,8 @@ writes `.php` outside the sandbox only with explicit human authorization obtaine
   Target depth `section → grid|row → widget`. Padding alone is never a reason to exist — put it on
   the widget's `_padding`. `es_container_audit()` measures this; read its log line, and read the
   `NO AUDITABLE` block too: pre-3.6 `section`/`column` elTypes and kit imports are elements this
-  audit has no opinion about. They are counted and named there rather than skipped, because a page
-  built entirely of them used to measure 0 containers / 0 widgets / depth 0 and read as clean.
+  audit has no opinion about. They are counted and named there rather than skipped (a page built
+  entirely of them would otherwise read as clean).
 - Open question worth resolving on a real site: `es_section( es_grid(...) )` is this repo's dominant
   idiom and costs one level. A single grid container with `content_width:'boxed'` plus the section
   padding *should* collapse the pair into one. Plausible, NOT confirmed — the audit reports it as
@@ -328,12 +305,10 @@ writes `.php` outside the sandbox only with explicit human authorization obtaine
 - **`es_kit_apply()` is what does it.** It carries `es_tokens()` into the kit — the four system
   colours keyed by Elementor's own `_id`s, the body ground, and the link pair — MERGING into
   whatever the kit already holds, and returns the kit id only after reading the write back.
-  This line said "set global colors there" for weeks and nothing did: measured on the first real
-  build, five pages reported `VEREDICTO LIMPIO` with the type scale exact to the pixel and the
-  `h1` painted `rgb(110,193,228)` — Elementor's factory blue — on a WHITE body. `es_tokens()`
-  paints only where a helper writes a colour explicitly; the ground, an unstyled heading and every
-  link inherit from the kit, and a fresh kit's `_elementor_page_settings` is empty. Call it once
-  per build, before `es_rebuild_css()`, and regenerate the kit CSS after.
+  `es_tokens()` paints only where a helper writes a colour explicitly; the ground, an unstyled
+  heading and every link inherit from the kit, and a fresh kit's `_elementor_page_settings` is empty
+  (without this the `h1` renders in Elementor's factory blue on a white body). Call it once per
+  build, before `es_rebuild_css()`, and regenerate the kit CSS after.
 
 ## Control names that are easy to get wrong (introspect to confirm)
 - Archive products widget: `wc-archive-products` (NOT `archive-products`).

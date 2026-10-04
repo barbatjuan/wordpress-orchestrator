@@ -45,7 +45,7 @@ inset:0;z-index:-1;background:rgba(255,255,255,.72);backdrop-filter:saturate(180
   Measured on a hero CTA row stretched to 179.5px around a 21px label: the label's centre sat
   65.2px above the button's centre, with `text-align:center` present and every text-based check
   passing. This one is invisible to grep and visible only in a render, which is why `qa-review`
-  measures it on the built page (house-rules row 25) instead of looking for the declaration.
+  measures it on the built page (house-rules row 29) instead of looking for the declaration.
 - Solid accent: accent bg → darker accent on hover + `translateY(-2px)` + accent glow shadow.
 - Ghost/outline: transparent, dark text, soft border → on hover faint accent-tint bg +
   accent text + accent border (NOT white text, which vanishes on light bg).

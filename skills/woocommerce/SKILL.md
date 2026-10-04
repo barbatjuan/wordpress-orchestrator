@@ -16,8 +16,8 @@ widgets only, deployed through the builder's core skill.
 
 **From an ecommerce Plantilla.** Carro, pago, pedido recibido and mi cuenta are WooCommerce's own
 pages with the native widgets `web-templates/references/paginas-obligatorias.md` lists; the
-catalogue and the product page follow the ficha's Mapeo nativo. Every `custom_css` a step writes
-counts against the ficha's `css_custom_max`. Detail: `references/knowledge.md`.
+catalogue and the product page follow the ficha's Mapeo nativo. Hand-written `custom_css`
+counts against the ficha's `css_custom_max`; helper CSS (marked) does not. Detail: `references/knowledge.md`.
 
 ## Activation Contract
 Use when `project-context` reports WooCommerce active and the task touches shop, product,

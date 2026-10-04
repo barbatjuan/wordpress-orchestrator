@@ -5,8 +5,8 @@ tiene que conseguir para el negocio—, no por gusto ni hojeando una galería. D
 las referencias del cliente que el **Enfoque** de la plantilla no contradice lo que pide. Si nada
 encaja, la ruta a medida es un paso con nombre, no una salida silenciosa.
 
-Vocabulario: `glosario.md`. Enfoques y sus ejes: `enfoques.md`. Estado de cada plantilla:
-`plantillas/_indice.md`. Páginas que lleva todo sitio: `paginas-obligatorias.md`.
+Vocabulario: `glosario.md`. Enfoques y sus ejes: `enfoques.md`. La biblioteca:
+`plantillas/_indice.md`; su veredicto se lee con `veredicto.php --comprobar <slug>`. Páginas que lleva todo sitio: `paginas-obligatorias.md`.
 
 ## Catálogo de Objetivos
 
@@ -78,8 +78,8 @@ propio Objetivo.
 | `a-medida` | sin plantilla | — | — | ruta a medida |
 
 «En la biblioteca» significa que la carpeta existe, no que se pueda ofrecer: **sólo se ofrece a un
-cliente una plantilla con veredicto vigente en `plantillas/_indice.md`**. Esta tabla no copia el estado
-del veredicto para no quedarse vieja; se lee siempre del índice.
+cliente una plantilla con veredicto vigente**. Esta tabla no copia el estado del veredicto para no
+quedarse vieja; se lee siempre con `php skills/html-mockup/assets/herramientas/veredicto.php --comprobar <slug>`.
 
 ## Procedimiento
 
@@ -109,8 +109,8 @@ del veredicto para no quedarse vieja; se lee siempre del índice.
 
 3. **Plantilla.** Se toma la plantilla de la tabla para ese objetivo y se lee su `ficha.md`: «Para qué
    sirve» y «Para qué NO sirve». Si el brief cae en «Para qué NO sirve», la plantilla se descarta con esa
-   razón. Si el objetivo no tiene plantilla, se va al paso 6. Si la plantilla no tiene veredicto vigente
-   en `_indice.md`, se le dice al usuario y se le pregunta si espera a que lo
+   razón. Si el objetivo no tiene plantilla, se va al paso 6. Si `veredicto.php --comprobar <slug>` no
+   dice `vigente`, se le dice al usuario y se le pregunta si espera a que lo
    tenga o sigue por la ruta a medida.
 
 4. **Referencias contra el enfoque.** Se piden al cliente **de dos a cuatro referencias** (sitios que le
@@ -154,10 +154,8 @@ del veredicto para no quedarse vieja; se lee siempre del índice.
    2. Antes de diseñar se declaran tres cosas: el **Objetivo** (un id del catálogo o uno nuevo con su
       frase), el **Enfoque** (uno de los ocho, o descrito eje a eje si ninguno sirve) y la **lista de
       secciones y páginas**, con las obligatorias de `paginas-obligatorias.md`. La estructura de una
-      plantilla descartada puede servir de lista de secciones; su aspecto no. Hoy la regla que vigila
-      esta declaración, `RT_BESPOKE_UNDECLARED`, todavía lee el formato anterior (`BSP-*.md` con ejes y
-      wireframe); el formato nuevo está especificado y su ubicación no está decidida, así que la
-      declaración va, por ahora, en el registro de la decisión.
+      plantilla descartada puede servir de lista de secciones; su aspecto no. La declaración va en el
+      registro de la decisión; ninguna regla de auditoría la lee.
    3. Diseño desde cero en Claude Design (skill `design`): de dos a cuatro direcciones de baja fidelidad,
       el usuario elige una, y después el lienzo final con su artboard móvil por página.
    4. Las mismas puertas que una plantilla, sin excepción: maqueta derivada del lienzo (`html-mockup`),

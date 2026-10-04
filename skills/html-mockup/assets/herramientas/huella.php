@@ -1,7 +1,7 @@
 <?php
 /**
  * huella.php — the ONE definition of a Plantilla's fingerprint, modelled on
- * `skills/html-mockup/assets/gallery/_gallery-fingerprint.php` and COMMITTED rather than transient.
+ * the retired gallery fingerprint and COMMITTED rather than transient.
  *
  * SAME SHAPE, ONE DIFFERENCE THAT MATTERS. Like the gallery fingerprint: `path => sha256`, paths
  * relative to `skills/`, a missing input recorded as the literal string `absent` (never skipped —
@@ -9,7 +9,7 @@
  * never matters, digest = sha256 over `"<path> <hash>\n"` lines. UNLIKE the gallery fingerprint,
  * THIS digest is committed to the repository as `veredicto.md`'s `hash:` field
  * (`openspec/changes/plantillas-reales/specs/veredicto-gate/spec.md`), so it has to survive a
- * checkout. `_gallery-fingerprint.php` hashes raw and says why (`:35-38`): its output is untracked,
+ * checkout. the retired gallery fingerprint hashes raw and says why: its output is untracked,
  * so its digest never crosses a checkout boundary. This one does, which is the entire reason the LF
  * normalisation below exists — see `.gitattributes` for the other half of the same guarantee.
  *
@@ -20,7 +20,7 @@
  * LF NORMALISATION, BY EXTENSION ALLOWLIST. `.md .html .json .css .js .svg .txt` are read,
  * `\r\n` → `\n`, then hashed; every other extension (`.webp .woff2 .png .jpg .avif` — the set
  * `.gitattributes` pins `binary`) is hashed RAW. Sniffing text-vs-binary and getting it wrong on a
- * `.woff2` is silent corruption of the check itself (`_gallery-fingerprint.php:35-38` makes the
+ * `.woff2` is silent corruption of the check itself (the retired gallery fingerprint makes the
  * identical argument for why THAT file never normalises anything) — an explicit allowlist cannot
  * misclassify a file it was never asked to look at.
  *
@@ -210,7 +210,7 @@ if ( 'cli' === PHP_SAPI && isset( $argv[0] ) && realpath( $argv[0] ) === __FILE_
 	$args = array_slice( $argv, 1 );
 
 	/* Default root: the `skills/` this file's own checkout lives under — three levels up from
-	   `assets/herramientas/`, exactly like `_gallery-fingerprint.php`'s own `$skills` derivation. */
+	   `assets/herramientas/`, exactly like the retired gallery fingerprint's own `$skills` derivation. */
 	$root = dirname( __DIR__, 3 );
 	foreach ( $args as $a ) {
 		if ( 0 === strpos( $a, '--root=' ) ) {

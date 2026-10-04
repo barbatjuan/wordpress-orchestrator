@@ -52,7 +52,7 @@ yes yourself and stop until you get it.
 1. `es_manifest_read()`, then `es_manifest_verify()`. Any drift stops here: a recorded id the site
    disagrees with is how this session overwrites what the last one agreed to leave alone.
 2. Copy `assets/es-builder.php` into `wp-content/novamira-sandbox/`; override `es_tokens()` — the
-   one edit point — with the axis positions and brand `ux-design-system` resolved. Left at its
+   one edit point — with the approved maqueta's `:root` values. Left at its
    defaults, every site ships the same green. Upload dependencies FIRST: a missing one stops the
    run.
 3. `es_overwrite_preflight()` with EVERY slug this run writes; show the block, get the yes.
