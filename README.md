@@ -25,6 +25,7 @@ skills/
   wordpress-forms/                    # contact/lead forms + a PROVEN delivery, not a rendered form
   wordpress-legal/                    # legal pages from the client's real data + a banner that blocks
   wordpress-performance/  wordpress-seo/  qa-review/
+  wordpress-security/                 # one mu-plugin (xmlrpc, user enumeration, headers) + what is reported
 ```
 
 Alongside the orchestrator, `agents/wordpress-copywriter.md` is a subagent that writes the real
@@ -61,7 +62,7 @@ nothing), **read-only** (`project-context`, `qa-review` — inspect and report, 
 and **operative** (`html-mockup` produces an Artifact; the rest write to the live site behind
 the gate). Only `elementor-core` and `woocommerce` currently have both a
 `references/knowledge.md` and a `references/gotchas.md`; `divi-core` has gotchas only, and
-`project-context` / `qa-review` / `wordpress-performance` / `wordpress-seo` / `wordpress-forms` /
+`project-context` / `qa-review` / `wordpress-performance` / `wordpress-seo` / `wordpress-security` / `wordpress-forms` /
 `wordpress-legal` have no
 `references/` yet. See `skills/_wordpress-orchestrator-framework.md` for the full map.
 

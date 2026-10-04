@@ -29,7 +29,7 @@ their `assets/`.
   actor that was never told what was aimed at.
 - **Operative** (produce output): `html-mockup` emits static HTML/CSS published as an
   Artifact and **never touches WordPress**. `elementor-core`, `divi-core`, `woocommerce`,
-  `wordpress-performance`, `wordpress-seo`, `wordpress-forms`, `wordpress-legal` and
+  `wordpress-performance`, `wordpress-seo`, `wordpress-security`, `wordpress-forms`, `wordpress-legal` and
   `elementor-theme-parts` write to the live site — each one carries its own blocking build gate. `wordpress-forms` additionally SENDS a real message
   during its delivery test, which is an outward action and is confirmed separately.
 
@@ -47,13 +47,13 @@ inspected at all; do not run `project-context` reflexively.
 `project-context` (now, to confirm connector / builder / theme on the real target) →
 `elementor-theme-parts` (header/footer FIRST, so pages inherit one that already exists) →
 `elementor-core` | `divi-core` → `woocommerce` (if commerce) → `wordpress-performance` /
-`wordpress-seo` → `wordpress-legal` → `wordpress-forms` → `qa-review` + `visual-verification` → hand off.
+`wordpress-seo` → `wordpress-legal` → `wordpress-forms` → `wordpress-security` → `qa-review` + `visual-verification` → hand off.
 
 **Existing site** — inspect first, so routing is based on facts, never assumption:
 `project-context` → `web-templates` → `ux-design-system` → `html-mockup` → `blind-judges` (approve) →
 **BUILD GATE** → `elementor-theme-parts` (header/footer FIRST) → `elementor-core` |
 `divi-core` → `woocommerce` (if commerce) → `wordpress-performance` / `wordpress-seo` →
-`wordpress-legal` → `wordpress-forms` → `qa-review` + `visual-verification` → hand off.
+`wordpress-legal` → `wordpress-forms` → `wordpress-security` → `qa-review` + `visual-verification` → hand off.
 
 Either way the design phase (`web-templates` → `ux-design-system` → `html-mockup`) is
 builder-agnostic and needs no WordPress and no connector.
@@ -105,7 +105,7 @@ have reached it:
 | `html-mockup` | `mockup-guide.md` |
 | `qa-review` | `house-rules.md` — the most cross-referenced file in the framework |
 | `visual-verification` | `render-defects.md` — every defect found by looking, and the rule it produced |
-| `project-context`, `wordpress-performance`, `wordpress-seo`, `wordpress-forms`, `wordpress-legal` | none |
+| `project-context`, `wordpress-performance`, `wordpress-seo`, `wordpress-security`, `wordpress-forms`, `wordpress-legal` | none |
 
 Gotchas are the gold — grow them every time something surprises you. Shape and rules:
 `CONTRIBUTING.md`.
@@ -125,6 +125,7 @@ paste code inline. What exists:
   Never start a corporate site from the ecommerce one. Running the generator is half the step:
   each ships pointed at one anchor so it renders, and the `AXIS POSITIONS` block must then be
   re-pointed at the anchor the dialogue resolved (`RT_MOCKUP_AXES_MISMATCH` gates it).
+- `wordpress-security/assets/es-security.php` — one mu-plugin deployed to `wp-content/mu-plugins/`.
 - `qa-review/assets/lighthouse-audit.mjs` — the server-side evidence script other skills' gates
   point at.
 - `framework-audit/assets/framework-audit.php` — verifies this repo itself, not a built site.

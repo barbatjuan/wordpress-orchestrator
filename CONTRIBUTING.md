@@ -43,8 +43,8 @@ The "fewest containers" rule survived a whole build cycle being violated even th
 audit was already running. Two causes, both cheap to prevent, both easy to repeat in the next
 skill. Treat these as review questions on any PR that adds a rule.
 
-**Scope**: this section is enforced for the eight write-capable skills (`elementor-core`,
-`divi-core`, `woocommerce`, `wordpress-seo`, `wordpress-performance`, `wordpress-forms`,
+**Scope**: this section is enforced for the nine write-capable skills (`elementor-core`,
+`divi-core`, `woocommerce`, `wordpress-seo`, `wordpress-performance`, `wordpress-security`, `wordpress-forms`,
 `wordpress-legal`, `elementor-theme-parts`) **and for the orchestrator's
 `## House rules`**, which are not softer than a skill's — they are the defaults every build
 inherits, so a violation there ships on every site rather than one. An agent stating no House
@@ -240,7 +240,7 @@ php skills/html-mockup/assets/gallery/_build-gallery.php
 First, offline — no WordPress, no connector, both run in a second:
 
 ```bash
-php skills/framework-audit/assets/framework-audit.php && php tests/test-container-hygiene.php && php tests/test-framework-audit.php && php tests/test-audit-signals.php && php tests/test-write-path.php && php tests/test-replay.php && php tests/test-herramientas.php
+php skills/framework-audit/assets/framework-audit.php && php tests/test-container-hygiene.php && php tests/test-framework-audit.php && php tests/test-audit-signals.php && php tests/test-write-path.php && php tests/test-replay.php && php tests/test-herramientas.php && php tests/test-security.php
 ```
 
 The audit enforces everything on this page that a machine can decide: frontmatter, the word

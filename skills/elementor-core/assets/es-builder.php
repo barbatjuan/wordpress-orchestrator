@@ -2878,7 +2878,7 @@ function es_sandbox_purge() {
  *
  * So a file that hooks joins the list the purge already refuses to touch, next to subdirectories
  * and unknown extensions: it still BLOCKS delivery, it just needs a human. The right fix is always
- * to move it into the child theme — this framework may not write PHP outside the sandbox — and
+ * to move it into the child theme — this framework writes PHP outside the sandbox only with explicit human authorization obtained beforehand, naming the exact file and destination, and otherwise hands the move to a person — and
  * delete it here afterwards, never before.
  *
  * Detected by reading the source, not by loading it: loading is what the sandbox already does on
