@@ -1,17 +1,16 @@
 <?php
 /**
  * Behavioural assertions for the shared toolbox: `color.php`, `scrim.php`, `huella.php`
- * (`skills/html-mockup/assets/herramientas/`), lifted from `_build-gallery.php`
+ * (`skills/html-mockup/assets/herramientas/`), lifted from the retired gallery generator
  * (`openspec/changes/plantillas-reales`, PR 1a), and `veredicto.php`, which seals a Plantilla's
  * veredicto against huella.php's fingerprint (PR 1e).
  *
  * Run:  php tests/test-herramientas.php     (exit 0 = green)
  *
- * WHY THIS EXISTS. These three files are dual-mode: a library `_build-gallery.php` (and, from a
- * later PR, `framework-audit.php`) `require`s, and a standalone CLI with its own `0`/`1`/`2` exit
- * contract. Neither half is exercised by the gallery build alone — a CLI usage error never runs
- * during a normal build, and `--comprobar`/`--maqueta`/`--peor-pixel` have no gallery call site at
- * all. This suite is the only thing that proves the CLI contract `design.md` states.
+ * WHY THIS EXISTS. These three files are dual-mode: a library `framework-audit.php` can `require`,
+ * and a standalone CLI with its own `0`/`1`/`2` exit contract. A CLI usage error never runs during
+ * normal use of the library. This suite is the only thing that proves the CLI contract `design.md`
+ * states.
  *
  * TWO KINDS OF ASSERTION. Direct `require_once` + in-process calls for the LIBRARY half (fast,
  * and exceptions can be caught here without a subprocess — these tools throw, they no longer
@@ -92,7 +91,7 @@ function nm_write_webp( $path, $hex ) {
 // ═══════════════════════════════════════════ color.php ═══════════════════════════════════════════
 
 echo "=== color.php: srgb_lum() / srgb_lum_rgb() agree — one contrast engine, not two ===\n";
-/* This exact self-check used to run on every gallery build (`_build-gallery.php`'s own docblock:
+/* This exact self-check used to run on every gallery build (the retired generator's own docblock:
    "srgb_lum_rgb() is a second implementation of a formula this file already has"). It moved here
    because it is an invariant of the SHARED LIBRARY now, not of any one caller. */
 foreach ( array( '#FFFFFF', '#15181A', '#0E1113', '#8C3A1F', '#000000' ) as $probe ) {
@@ -1116,6 +1115,165 @@ foreach ( $emp_usos as $caso => $r ) {
 	ok( 2 === $r['code'], "empaquetar: $caso exits 2: {$r['out']}" );
 }
 ok( $e_html === file_get_contents( "$u_base/maqueta/index.html" ), 'empaquetar: --out naming the source maqueta leaves it byte-for-byte untouched' );
+
+// ═══════════════════════════════════════════ install.sh / install.ps1 --clean ════════════════════
+//
+// The installers overwrite in place and never delete, so a file retired INSIDE a framework skill
+// keeps being offered from `~/.claude` forever. `--clean` fixes exactly that and nothing more: for
+// every top-level entry the repo ships under skills/ and every file under agents/, it removes the
+// same-named entry in the destination and copies the repo's version fresh. Everything the repo does
+// not name is somebody else's (the real `~/.claude/skills` holds dozens of skills from other
+// sources) and must survive. A whole skill the repo retired by name is NOT removed: that is the
+// documented price of keeping no manifest. EVERY run points HOME / USERPROFILE at a temp directory
+// and sets INSTALL_DEST explicitly: the real `~/.claude` is never a destination of this suite.
+
+echo "--- install.sh / install.ps1: --clean replaces what the repo owns and leaves everything else alone ---\n";
+
+/** A temp "checkout": the installer under test copied beside a tiny agents/ and skills/, so its
+ *  SRC (derived from its own location) is the fixture and not this repository. */
+function nm_inst_repo( $installer ) {
+	$repo = nm_tmpdir( 'inst-repo' );
+	copy( dirname( __DIR__ ) . '/' . $installer, "$repo/$installer" );
+	nm_write( "$repo/agents/orquestador.md", "# nuevo agente\n" );
+	nm_write( "$repo/skills/alpha/SKILL.md", "# alpha\n" );
+	nm_write( "$repo/skills/_resumen.md", "# resumen nuevo\n" );
+	return $repo;
+}
+
+/** A destination that already holds an install of this repo AND things the repo has never heard of. */
+function nm_inst_dest_poblado( $dest ) {
+	nm_write( "$dest/skills/alpha/SKILL.md", "# alpha viejo\n" );
+	nm_write( "$dest/skills/alpha/retirado.md", "# retirado dentro de una skill del repo\n" );
+	nm_write( "$dest/skills/_resumen.md", "# resumen viejo\n" );
+	nm_write( "$dest/skills/ajena/SKILL.md", "# skill de otra fuente\n" );
+	nm_write( "$dest/skills/_ajeno.md", "# fichero suelto de otra fuente\n" );
+	nm_write( "$dest/agents/orquestador.md", "# agente viejo\n" );
+	nm_write( "$dest/agents/ajeno.md", "# agente de otra fuente\n" );
+	nm_write( "$dest/settings.json", "{}\n" );
+}
+
+/**
+ * Runs one installer against a fixture and returns array( code, out ).
+ *   $kind  'sh' | 'ps1'
+ *   $env   array of NAME => value; a null value UNSETS the variable. A shell driver is used for
+ *          'sh' so an EMPTY INSTALL_DEST really is empty: PHP's putenv() cannot express that on
+ *          Windows, where an empty variable is a deleted one.
+ */
+function nm_inst_run( $kind, $repo, $fakehome, array $env, $args ) {
+	$out  = array();
+	$code = -1;
+	if ( 'sh' === $kind ) {
+		$driver = "$fakehome/driver.sh";
+		$lines  = "#!/usr/bin/env bash\nexport HOME='$fakehome'\n";
+		foreach ( $env as $name => $val ) {
+			$lines .= ( null === $val ) ? "unset $name\n" : "export $name='$val'\n";
+		}
+		$lines .= "cd '$repo'\nbash install.sh $args\n";
+		file_put_contents( $driver, str_replace( "\r\n", "\n", $lines ) );
+		exec( 'bash ' . escapeshellarg( $driver ) . ' 2>&1', $out, $code );
+	} else {
+		$env['USERPROFILE'] = $fakehome;
+		$env['HOME']        = $fakehome;
+		$saved              = array();
+		foreach ( $env as $name => $val ) {
+			$saved[ $name ] = getenv( $name );
+			putenv( null === $val ? $name : "$name=$val" );
+		}
+		$ps = $GLOBALS['nm_inst_ps'];
+		exec( $ps . ' -NoProfile -ExecutionPolicy Bypass -File ' . escapeshellarg( "$repo/install.ps1" ) . ' ' . $args . ' 2>&1', $out, $code );
+		foreach ( $saved as $name => $val ) {
+			putenv( false === $val ? $name : "$name=$val" );
+		}
+	}
+	return array( 'code' => $code, 'out' => implode( "\n", $out ) );
+}
+
+/** Which installers this machine can actually run. A missing interpreter is reported, never silently skipped. */
+function nm_inst_disponibles() {
+	$hay = array();
+	exec( 'bash -c "echo listo" 2>&1', $o1, $c1 );
+	if ( 0 === $c1 && false !== strpos( implode( '', $o1 ), 'listo' ) ) {
+		$hay[] = array( 'sh', 'install.sh' );
+	}
+	foreach ( array( 'pwsh', 'powershell' ) as $ps ) {
+		exec( $ps . ' -NoProfile -Command "exit 0" 2>&1', $o2, $c2 );
+		if ( 0 === $c2 ) {
+			$GLOBALS['nm_inst_ps'] = $ps;
+			$hay[]                 = array( 'ps1', 'install.ps1' );
+			break;
+		}
+	}
+	return $hay;
+}
+
+function nm_inst_leer( $path ) {
+	return str_replace( "\r\n", "\n", (string) @file_get_contents( $path ) );
+}
+
+if ( ! function_exists( 'exec' ) ) {
+	ok( false, 'ENTORNO, no el cambio: exec() esta deshabilitado, los casos de install --clean no se pudieron correr aqui' );
+} else {
+	$instaladores = nm_inst_disponibles();
+	ok( array() !== $instaladores, 'ENTORNO: hay al menos un interprete (bash o PowerShell) para ejecutar un instalador' );
+	foreach ( $instaladores as $par ) {
+		list( $kind, $installer ) = $par;
+		$home = nm_tmpdir( "inst-home-$kind" );
+
+		// 1. A plain install still installs, and still deletes nothing.
+		$repo = nm_inst_repo( $installer );
+		$dest = nm_tmpdir( "inst-dest-$kind" );
+		nm_inst_dest_poblado( $dest );
+		$r = nm_inst_run( $kind, $repo, $home, array( 'INSTALL_DEST' => $dest ), '' );
+		ok( 0 === $r['code'], "$installer: a plain install exits 0: {$r['out']}" );
+		ok( false !== strpos( nm_inst_leer( "$dest/agents/orquestador.md" ), 'nuevo agente' ), "$installer: a plain install copies the repo's agents" );
+		ok( file_exists( "$dest/skills/alpha/retirado.md" ), "$installer: a plain install keeps a stale file inside a repo skill (overwrite in place, as documented)" );
+
+		// 2. --clean: stale files inside repo-owned entries go, every foreign entry survives.
+		$repo = nm_inst_repo( $installer );
+		$dest = nm_tmpdir( "inst-dest-$kind" );
+		nm_inst_dest_poblado( $dest );
+		$r = nm_inst_run( $kind, $repo, $home, array( 'INSTALL_DEST' => $dest ), '--clean' );
+		ok( 0 === $r['code'], "$installer: --clean on a populated destination exits 0: {$r['out']}" );
+		ok( ! file_exists( "$dest/skills/alpha/retirado.md" ), "$installer: --clean removes a stale file inside a skill the repo owns" );
+		ok( "# alpha\n" === nm_inst_leer( "$dest/skills/alpha/SKILL.md" ), "$installer: --clean then copies the repo's version of that skill" );
+		ok( "# resumen nuevo\n" === nm_inst_leer( "$dest/skills/_resumen.md" ), "$installer: --clean replaces a top-level file the repo owns under skills/" );
+		ok( false !== strpos( nm_inst_leer( "$dest/agents/orquestador.md" ), 'nuevo agente' ), "$installer: --clean replaces an agent the repo owns" );
+		ok( file_exists( "$dest/skills/ajena/SKILL.md" ), "$installer: --clean leaves a foreign SKILL FOLDER alone" );
+		ok( file_exists( "$dest/skills/_ajeno.md" ), "$installer: --clean leaves a foreign top-level FILE under skills/ alone" );
+		ok( file_exists( "$dest/agents/ajeno.md" ), "$installer: --clean leaves a foreign AGENT alone" );
+		ok( file_exists( "$dest/settings.json" ), "$installer: --clean never touches a file beside skills/ and agents/" );
+		ok( false !== strpos( $r['out'], 'alpha' ), "$installer: --clean prints which repo-owned entries it replaces" );
+
+		// 3. First install with --clean: nothing to replace, it just installs.
+		$repo = nm_inst_repo( $installer );
+		$dest = nm_tmpdir( "inst-dest-$kind" );
+		$r    = nm_inst_run( $kind, $repo, $home, array( 'INSTALL_DEST' => $dest ), '--clean' );
+		ok( 0 === $r['code'] && file_exists( "$dest/skills/alpha/SKILL.md" ) && file_exists( "$dest/agents/orquestador.md" ), "$installer: --clean on an empty destination simply installs: {$r['out']}" );
+
+		// 4. An argument the installer does not know is a usage error, not a silent plain install.
+		$repo = nm_inst_repo( $installer );
+		$dest = nm_tmpdir( "inst-dest-$kind" );
+		nm_inst_dest_poblado( $dest );
+		$r = nm_inst_run( $kind, $repo, $home, array( 'INSTALL_DEST' => $dest ), '--limpiar' );
+		ok( 2 === $r['code'] && file_exists( "$dest/skills/alpha/retirado.md" ) && false !== strpos( nm_inst_leer( "$dest/agents/orquestador.md" ), 'viejo' ), "$installer: an unknown argument exits 2 and changes nothing: {$r['out']}" );
+	}
+
+	// 5. install.sh only: an EMPTY INSTALL_DEST is refused, never read as "use the default".
+	foreach ( $instaladores as $par ) {
+		if ( 'sh' !== $par[0] ) {
+			continue;
+		}
+		$repo  = nm_inst_repo( 'install.sh' );
+		$home3 = nm_tmpdir( 'inst-home3' );
+		nm_inst_dest_poblado( "$home3/.claude" );
+		$r = nm_inst_run( 'sh', $repo, $home3, array( 'INSTALL_DEST' => '' ), '--clean' );
+		ok( 2 === $r['code'], "install.sh: --clean with INSTALL_DEST set to the empty string exits 2: {$r['out']}" );
+		ok( file_exists( "$home3/.claude/skills/alpha/retirado.md" ), 'install.sh: an empty INSTALL_DEST changes nothing, and the default destination is not guessed' );
+		// And UNSET is the documented default: HOME/.claude (here a temp HOME).
+		$r = nm_inst_run( 'sh', $repo, $home3, array( 'INSTALL_DEST' => null ), '--clean' );
+		ok( 0 === $r['code'] && ! file_exists( "$home3/.claude/skills/alpha/retirado.md" ) && file_exists( "$home3/.claude/skills/ajena/SKILL.md" ), "install.sh: with INSTALL_DEST unset the destination is HOME/.claude: {$r['out']}" );
+	}
+}
 
 echo "\n$pass OK / $fail FAIL\n";
 exit( $fail ? 1 : 0 );

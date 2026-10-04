@@ -2617,7 +2617,7 @@ function es_manifest_record( $section, array $data ) {
 
 /**
  * THE call site `es_manifest_record('design', …)` never had (`art-direction-ledger`,
- * style-catalog Slice 5a) — intake (`web-templates/references/recommender.md`) resolves a
+ * style-catalog Slice 5a) — the retired style-catalog intake resolved a
  * `STY-*` id, a negative brief (what was explicitly rejected) and a rejected colour temperature;
  * this is where those three answers land in the manifest, once `es-builder.php` is live in the
  * sandbox to write them.
@@ -2627,8 +2627,7 @@ function es_manifest_record( $section, array $data ) {
  * is written and `false` comes back, same contract as `es_manifest_record()` itself.
  *
  * Re-resolving mid-session (a design change mid-build) OVERWRITES this section, never appends:
- * `es_manifest_record()` replaces `sections['design']` wholesale, and history is
- * `shipped-log.md`'s job (Slice 5b), not this one's.
+ * `es_manifest_record()` replaces `sections['design']` wholesale, and no history is kept here.
  */
 function es_record_style_resolution( $sty_id, $negative_brief, $rejected_tone ) {
 	$sty_id         = trim( (string) $sty_id );

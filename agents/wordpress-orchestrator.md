@@ -336,8 +336,7 @@ nothing to notice.
   `web-templates/references/paginas-obligatorias.md` for the type — legal pages, 404 and the
   conversion page included, never asked. The starting Plantilla is one of that type: never start a
   corporate site from an ecommerce Plantilla, which carries cart, prices and shop pages a corporate
-  site must not inherit. The legacy generator and its two chassis are not a starting point for any
-  client.
+  site must not inherit.
   (no verifier: nothing records which Plantilla a client maqueta started from; a corporate site built on a shop only shows up when a human opens it.)
 - **The Plantilla's Enfoque is the look, and a different look is a different Plantilla.** The look
   is never inherited from a default: it is the Enfoque of the Plantilla chosen by Objetivo and

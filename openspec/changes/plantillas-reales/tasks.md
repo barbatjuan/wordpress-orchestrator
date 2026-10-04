@@ -293,22 +293,51 @@ design.md scope is fully satisfied; work resumes at PR 0b.
 ## PR 3 — Amputation (size:exception), WARN→FAIL, `--clean`
 
 - [ ] 3.1 Harvest remaining `$BRANDS`/`$CONTENT` (not wave 1) to `docs/plantillas-reales/cosecha/`.
-- [ ] 3.2 Delete plan §5.1 per `design.md`'s File Changes table: `templates/**`, `toggles.md`,
+      *Not done by kiss-cleanup T2: nothing was harvested before the generator went. The data is
+      recoverable from git history (`skills/html-mockup/assets/gallery/_build-gallery.php` at 854bb76).*
+- [x] 3.2 Delete plan §5.1 per `design.md`'s File Changes table: `templates/**`, `toggles.md`,
       `recommender.md`, `design-system.md`, `html-mockup/assets/{gallery/**,chassis/*,proof-*.html,
       _axis-proof-content.md}`, `style-catalog/**` (BSP-tuscapas.md already relocated in PR 0b/1b).
-- [ ] 3.3 Delete the 23 outright-retiring rule ids + `nm_axes()`, `axis_matches()`, `pers_axes()`,
+      *Done by kiss-cleanup T2 with two differences: `design-system.md` was slimmed, not deleted (its
+      ground table is read by `tests/test-write-path.php`; the composition, chassis, accent and
+      ornament sections are gone), and `fonts/_embed-fonts.php` went too, because its only targets
+      were the two proof files.*
+- [x] 3.3 Delete the 23 outright-retiring rule ids + `nm_axes()`, `axis_matches()`, `pers_axes()`,
       `axis_declarations()`, `axis_rows_for()`, `axis_signature_of_block()`, `proof_axis_signature()`,
       `tpl_wireframe_comps()`, `$mockup_axis_alt` — with their ~183 `ok()` call sites and fixtures
       (≈270 assertions), per `design.md`'s Rule Disposition.
+      *Done by kiss-cleanup T2: 27 ids left `ROW_TYPES` (80 to 53), not 23. The renames the plan expected
+      (`RT_INDICE_*`, `RT_ENFOQUE_REPETIDO_RECIENTE`, `RT_QA_SIN_RECUENTO_NATIVO`) never landed in the
+      audit, so the old ids simply retired; `RT_BESPOKE_UNDECLARED` retired because its subject
+      (`BSP-*.md`) is gone and its replacement check never landed; `RT_GALLERY_ONE_SHOOT` retired
+      because a Plantilla manifest has no Registers table to divide by. Surviving, re-pointed at
+      `plantillas/*/maqueta/index.html`: `RT_MOCKUP_GRID_AUTOFILL`, `_DISCLOSURE_STATE`,
+      `_FONT_NOT_EMBEDDED`, `_BLEED_FIXED_BAND`, `_BLEED_NOT_MEDIA`, and `RT_GALLERY_NO_MANIFEST`
+      (now the Plantilla's `manifiesto-imagenes.md`).*
 - [ ] 3.4 Flip the 23 WARN-level ids from PR 1d/1c/2c to FAIL (`fx_row_level()` transition assertion),
       excluding `RT_ENFOQUE_SIN_PLANTILLA`/`RT_ENFOQUE_REPETIDO_RECIENTE`, which stay WARN.
-- [ ] 3.5 `--clean` in `install.sh`/`install.ps1`: refuse unless `$DEST/skills` **and** `$DEST/agents`
+      *Not applicable, not done: none of the 25 WARN-level ids PR 1d/1c/2c were to add exists in
+      `framework-audit.php` (the Plantilla gates live in `herramientas/veredicto.php`), so there is
+      nothing to flip.*
+- [x] 3.5 `--clean` in `install.sh`/`install.ps1`: refuse unless `$DEST/skills` **and** `$DEST/agents`
       both exist, `$DEST` resolves outside `$HOME` itself, `$DEST` is not a symlink; delete only those
       two directories, print what will be removed, require the flag explicitly.
-- [ ] 3.6 RED (threat matrix, one case each in `tests/test-herramientas.php` against a temp `$DEST`):
+      *Done by kiss-cleanup T2, in a NARROWER form than this task states: wholesale deletion would
+      wipe every skill in `~/.claude/skills` that is not this repo's (44 entries on the owner's machine,
+      most from other sources). `--clean` instead removes only the same-named entry for each top-level
+      skill folder/file and agent file the repo ships, then copies fresh; foreign entries survive, and a
+      whole skill retired by name must be deleted by hand. The `skills/`+`agents/`-must-exist, `$HOME` and
+      symlink refusals no longer apply (nothing foreign is deleted). The destination override is `INSTALL_DEST` (not the generic `DEST`, which
+      a shell may already export). Unset means the default `~/.claude`; set but empty is refused. An
+      unknown argument is refused too. Every refusal exits 2.*
+- [x] 3.6 RED (threat matrix, one case each in `tests/test-herramientas.php` against a temp `$DEST`):
       `$DEST` unset/empty → exit 2, delete nothing; `$DEST = $HOME` → refuse; first install, no
       `skills/` yet → refuse `--clean`, allow plain install; symlinked `$DEST` → refuse.
-- [ ] 3.7 GREEN: all four cases pass; a normal populated `$DEST` cleans and reinstalls.
+      *Done for both `install.sh` and `install.ps1`, replaced by the cases that matter for the narrower
+      behaviour: a foreign skill folder, foreign agent and foreign top-level file survive; a stale file
+      inside a repo-owned skill is removed; a first install with `--clean` just installs; empty
+      `INSTALL_DEST` and unknown arguments exit 2.*
+- [x] 3.7 GREEN: all four cases pass; a normal populated `$DEST` cleans and reinstalls.
 - [ ] 3.8 Merge to `main`.
 - [ ] 3.9 **Redeploy (human-gated, separate step)**: pause other Claude sessions → `install.ps1
       --clean` → `diff -rq ~/.claude/{skills,agents} <repo>/{skills,agents}` empty → resume.

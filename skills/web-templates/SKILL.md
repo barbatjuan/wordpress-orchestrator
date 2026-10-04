@@ -32,7 +32,7 @@ nothing on the site.
   (no verifier: reading a reference against an ADN is judgement; the reviewer reads the record's contradicted-ADN line)
 - **Ruta a medida is the expensive path, not a shortcut.** Declare Objetivo, Enfoque and section
   and page list before designing; then the same lienzo, maqueta, veredicto and techo nativo.
-  (no verifier: the old bespoke-declaration row still reads the retired format, so today the reviewer reads the declaration in the decision record)
+  (no verifier: the declaration lives in the decision record, so the reviewer of the routing step reads it there)
 - **The page set is not asked**: the full set for the type in `references/paginas-obligatorias.md`.
   (no verifier: no rule reads a client page set; the veredicto sweep covers every page the ficha lists)
 - **The Plantilla's copy and photographs are never the client's.** Only structure, roles and
@@ -61,6 +61,4 @@ No visual or builder code.
 - `references/estado-formato.md` — the client's `diseno/estado.md`, handed from phase to phase.
 - `references/plantillas/_indice.md` — the library, one row per Plantilla (read the veredicto with the tool).
 - `references/veredicto-formato.md` — what a `veredicto.md` holds and how it is sealed.
-- Legacy, not offered to new clients, removal pending: `references/recommender.md`,
-  `references/toggles.md`, `references/design-system.md`, `references/templates/ecommerce/`,
-  `references/templates/corporate/`, `references/templates/pages/`.
+- `references/design-system.md` — the numeric token tables (scale, density, ground, elevation) the build and its tests pin.

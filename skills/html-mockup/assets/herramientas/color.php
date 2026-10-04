@@ -1,25 +1,25 @@
 <?php
 /**
- * color.php — the ONE colour/contrast engine, lifted from `_build-gallery.php`, never re-derived.
+ * color.php — the ONE colour/contrast engine, lifted from the retired gallery generator, never re-derived.
  *
  * WHY THIS FILE EXISTS. The gallery generator carried the only WCAG 2.1 contrast maths and the
  * only house-ink derivation in the repo. Once the generator is no longer the sole author of a
  * Plantilla's colour (`openspec/changes/plantillas-reales/design.md`), something else needs the
  * SAME arithmetic — the Maqueta contrast gate a later PR wires into `framework-audit.php`,
  * `veredicto.php`, and a human checking two hexes before committing to them. Copying the formulas
- * a second time is exactly the defect `_gallery-fingerprint.php:9-14` already named: "two
+ * a second time is exactly the defect the retired gallery fingerprint already named: "two
  * implementations of one rule drift,
- * and the hand-rolled one loses." So this file is REQUIRED by `_build-gallery.php` rather than
+ * and the hand-rolled one loses." So this file is REQUIRED by the retired gallery generator rather than
  * duplicated into it — the generator keeps running, it just stops owning the maths.
  *
  * WHAT MOVED HERE, VERBATIM. `srgb_lum`/`srgb_lum_rgb`/`contrast`/`ratio_str`/`css_mix` (originally
- * `_build-gallery.php:220-244` and `:1565-1733`) and the house-ink derivation `ink_tint`/
+ * the retired gallery generator) and the house-ink derivation `ink_tint`/
  * `ink_ends`/`ink_curve` plus the accent gate — the contrast/spread/endpoint invariants `ink_ends`
  * asserts on its own output (originally `:941-1116`). Not one coefficient, threshold or order of
  * operations changed; only the FAILURE SIGNAL did (see below), because this file now has two
  * callers with different needs.
  *
- * WHY THE FAILURE SIGNAL CHANGED. `_build-gallery.php`'s `fail()` writes to STDERR and calls
+ * WHY THE FAILURE SIGNAL CHANGED. The retired gallery generator's `fail()` writes to STDERR and calls
  * `exit(1)` unconditionally — correct for a single-purpose generator that has nothing left to do
  * once one measurement is wrong. This file is also a dual-mode CLI with a THREE-WAY exit contract
  * (`0` pass, `1` a measured failure, `2` usage/environment — never `0` for "could not measure",
@@ -28,7 +28,7 @@
  * not die because one Plantilla's `ficha.md` has a malformed hex. So every place that used to call
  * the generator's `fail()` now throws one of two typed exceptions instead, and each CALLER decides
  * what that means: the CLI guard at the bottom of this file maps them to exit codes, and
- * `_build-gallery.php` maps them straight back to its own `fail()` so its behaviour is unchanged.
+ * the retired gallery generator maps them straight back to its own `fail()` so its behaviour is unchanged.
  */
 
 /** A precondition this file's maths cannot proceed without: a malformed hex, a missing file, GD
@@ -42,7 +42,7 @@ class NmHerramientaMedida extends RuntimeException {}
 // ─────────────────────────────────────────── WCAG 2.1 luminance / contrast ───────────────────────
 //
 // L = 0.2126R + 0.7152G + 0.0722B over linearised sRGB, ratio = (Lhi+.05)/(Llo+.05). The same
-// formula `design-system.md` states, lifted from `_build-gallery.php:220-244`.
+// formula `design-system.md` states, lifted from the retired gallery generator.
 
 function srgb_lum( $hex ) {
 	$hex = ltrim( $hex, '#' );
@@ -69,7 +69,7 @@ function srgb_lum( $hex ) {
  *
  * THE COEFFICIENTS ARE THE VALUES AND THE CHANNELS THE KEYS, not the other way round: PHP casts a
  * float array key to int, so `array( 0.2126 => $r, ... )` would collapse to one entry at key 0 —
- * lifted from `_build-gallery.php:1565-1573` together with the docblock's own warning.
+ * lifted from the retired gallery generator together with the docblock's own warning.
  */
 function srgb_lum_rgb( $r, $g, $b ) {
 	$l = 0.0;
@@ -94,7 +94,7 @@ function ratio_str( $a, $b ) {
 }
 
 /** `color-mix(in srgb, $a $p%, $b)`, in PHP, so a token derived in CSS can be measured here.
- *  Lifted from `_build-gallery.php:1722-1733`. */
+ *  Lifted from the retired gallery generator. */
 function css_mix( $a, $p, $b ) {
 	$a   = ltrim( $a, '#' );
 	$b   = ltrim( $b, '#' );
@@ -110,14 +110,14 @@ function css_mix( $a, $p, $b ) {
 
 // ─────────────────────────────────────────── house-ink derivation + the accent gate ──────────────
 //
-// Lifted from `_build-gallery.php:941-1116`. The shadow ink IS the anchor's accent laid onto the
+// Lifted from the retired gallery generator. The shadow ink IS the anchor's accent laid onto the
 // ground's dark extreme (`:864`), so the invariants `ink_ends()` asserts on its own output — the
 // tint search converged, the shadow did not get lighter, the shadow carries real hue, neither
 // endpoint welds onto the page's own extreme — are collectively "the accent gate": the thing that
 // stops a bright accent from silently lifting a black or bleaching into the page it sits on.
 
 /** Five interior stops: two cannot bend (a straight line tints midtones as hard as the ends), and
- *  five is enough for the split tone to fall off before the midtones. `_build-gallery.php:945`. */
+ *  five is enough for the split tone to fall off before the midtones. the retired gallery generator. */
 if ( ! defined( 'INK_STOPS' ) ) {
 	define( 'INK_STOPS', 5 );
 }
@@ -126,7 +126,7 @@ if ( ! defined( 'INK_STOPS' ) ) {
  * The most an 8-bit rounding of `$hex` can have moved its luminance: half a step on every channel.
  * Derived rather than typed — the sRGB transfer curve is flat near black and steep near white, so
  * one tolerance covering both ends would be loose enough at the dark end to hide a real lift.
- * Lifted from `_build-gallery.php:993-998`.
+ * Lifted from the retired gallery generator.
  */
 function ink_quant_bound( $hex ) {
 	$c  = array( hexdec( substr( $hex, 1, 2 ) ), hexdec( substr( $hex, 3, 2 ) ), hexdec( substr( $hex, 5, 2 ) ) );
@@ -140,7 +140,7 @@ function ink_quant_bound( $hex ) {
  * a single scalar multiplier, so the mix keeps its hue and loses only its weight. Returns the
  * unrounded triple as well as the 8-bit hex, because the caller checks both against different
  * tolerances (float precision for the search, quantisation bound for the hex). Lifted from
- * `_build-gallery.php:962-983`.
+ * the retired gallery generator.
  */
 function ink_tint( $base, $accent, $w ) {
 	$mixed  = css_mix( $base, 1 - $w, $accent );
@@ -169,7 +169,7 @@ function ink_tint( $base, $accent, $w ) {
  * The two inks for one ground: the accent in the shadows, the ground's own light in the highlights.
  * The 94/96 pull onto `$dark_src`/`$light_src` keeps either endpoint off the page's own extreme, so
  * a photograph's shadow never welds to `--c-bg`/`--c-text` and loses its edge. Lifted from
- * `_build-gallery.php:1010-1081`, including every invariant it asserts on its own output — THE
+ * the retired gallery generator, including every invariant it asserts on its own output — THE
  * ACCENT GATE proper: convergence, weight preservation, hue spread, endpoint distinctness. Each
  * violation throws `NmHerramientaMedida` where the generator used to call `fail()`.
  */
@@ -238,7 +238,7 @@ function ink_ends( $gr, $accent, $tint ) {
 /**
  * The per-channel curve, as the exact strings `feFuncR/G/B` will parse: `$gamma` bends the input
  * before the tone is applied, and the split tone falls off as (1−s)² toward the shadow ink and s²
- * toward the highlight ink. Lifted from `_build-gallery.php:1098-1114`.
+ * toward the highlight ink. Lifted from the retired gallery generator.
  */
 function ink_curve( $ends, $gamma ) {
 	$rows = array();
@@ -305,8 +305,8 @@ function color_token_role( $name ) {
 /**
  * Every (background, foreground) pair a Maqueta's `:root` declares, measured against the role's
  * bar: 4.5:1 for anything painted as TEXT (including the accent, which the eyebrow paints as text —
- * `_build-gallery.php:790-793`), 3.0:1 for a UI boundary such as `--c-border`
- * (`_build-gallery.php:1882-1905`). Returns one row per pair; `ok` is false when the pair is below
+ * the retired gallery generator), 3.0:1 for a UI boundary such as `--c-border`
+ * (the retired gallery generator). Returns one row per pair; `ok` is false when the pair is below
  * its bar.
  */
 function color_root_pairs( $html ) {
@@ -374,7 +374,7 @@ function color_root_pairs( $html ) {
 // ─────────────────────────────────────────── dual-mode CLI ───────────────────────────────────────
 //
 // Guarded exactly like design.md specifies: `framework-audit.php` can `require_once` this file out
-// of the tree it was given with `--root`, the same arrangement `_gallery-fingerprint.php` already
+// of the tree it was given with `--root`, the same arrangement the retired gallery fingerprint already
 // uses, without ever hitting this block.
 
 if ( 'cli' === PHP_SAPI && isset( $argv[0] ) && realpath( $argv[0] ) === __FILE__ ) {

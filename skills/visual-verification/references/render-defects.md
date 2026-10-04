@@ -114,8 +114,8 @@ call a partial sweep PARTIAL.
 **Seen.** Internal pages converged on one architecture per role while a similarity rule was
 supposedly preventing exactly that.
 
-**Measured.** The rule pointed only at `templates/ecommerce/` and `templates/corporate/`.
-Everything under `templates/pages/` grew outside its reach for a long time.
+**Measured.** The rule pointed only at the two home-page families. Everything in the inner-pages
+folder beside them grew outside its reach for a long time.
 
 **Rule.** When a gate reports green, confirm its scope covers the directory the work is actually
 in. A gate that cannot see the files is not passing them.

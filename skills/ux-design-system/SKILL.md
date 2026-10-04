@@ -21,7 +21,6 @@ to builder-core.
 - **Enfoque** (`web-templates/references/enfoques.md`): eight axes, a type pair and an image
   direction. Words to reason with, never a token engine.
 - **The client's brand**: logo, colours, type pair, photography, placed in the Enfoque's roles.
-- Legacy, not offered to new clients, removal pending: `references/style-catalog/`.
 
 ## Hard Rules
 - **The Enfoque comes from the Plantilla**, never re-picked from a catalogue. References that pull
@@ -49,18 +48,14 @@ to builder-core.
 3. **Brand into roles**: palette from the logo (`references/design-tokens.md`), type pair, and a
    photo brief from the Plantilla's manifiesto (rol and framing per image).
 4. **Measure** every pair (`color.php --contraste`).
-5. **Recent deliveries**: a repeat of the Enfoque in the last five rows of
-   `references/shipped-log.md` goes to the user.
-6. **Map to Site Settings**; list what has no slot.
-7. **Hand over** to Claude Design for the client's lienzo, then `html-mockup`.
+5. **Map to Site Settings**; list what has no slot.
+6. **Hand over** to Claude Design for the client's lienzo, then `html-mockup`.
 
 ## Output Contract
 Enfoque with its axes, what the brand changed, palette with roles and measured ratios, type pair,
-the Site Settings mapping, tokens without a slot, what to avoid, the recent-delivery check. No
-builder code.
+the Site Settings mapping, tokens without a slot, what to avoid. No builder code.
 
 ## References
 - `references/design-tokens.md` — palette and type roles, Site Settings.
 - `references/motion.md` — hover timings, card recipe, button system.
 - `references/layout-patterns.md` — grid tracks, disclosure lists, responsive rules.
-- `references/shipped-log.md` — the delivery ledger.

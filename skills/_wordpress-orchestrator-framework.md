@@ -100,8 +100,8 @@ have reached it:
 | `woocommerce` | `knowledge.md` + `gotchas.md` |
 | `divi-core` | `gotchas.md` only — no knowledge file yet |
 | `elementor-theme-parts` | `gotchas.md` only — no knowledge file yet |
-| `ux-design-system` | `style-catalog/` (8 `STY-*`), `shipped-log.md`, `design-tokens.md`, `layout-patterns.md`, `motion.md` |
-| `web-templates` | `design-system.md`, `recommender.md`, `toggles.md`, `templates/` |
+| `ux-design-system` | `design-tokens.md`, `layout-patterns.md`, `motion.md` |
+| `web-templates` | `recomendador.md`, `enfoques.md`, `glosario.md`, `paginas-obligatorias.md`, `design-system.md`, `plantillas/` (the library) |
 | `html-mockup` | `mockup-guide.md` |
 | `qa-review` | `house-rules.md` — the most cross-referenced file in the framework |
 | `visual-verification` | `render-defects.md` — every defect found by looking, and the rule it produced |
@@ -120,8 +120,7 @@ paste code inline. What exists:
 - `woocommerce/assets/es-shop-template.example.php`,
   `woocommerce/assets/es-product-single.example.php`.
 - `html-mockup/assets/herramientas/` — the measuring and sealing tools (`veredicto.php`,
-  `huella.php`, `barrido.mjs`, ...). The maqueta is derived by hand from the client's lienzo; the
-  legacy generator and its two chassis are not a starting point for any client.
+  `huella.php`, `barrido.mjs`, ...). The maqueta is derived by hand from the client's lienzo.
 - `wordpress-security/assets/es-security.php` — one mu-plugin deployed to `wp-content/mu-plugins/`.
 - `qa-review/assets/lighthouse-audit.mjs` — the server-side evidence script other skills' gates
   point at.

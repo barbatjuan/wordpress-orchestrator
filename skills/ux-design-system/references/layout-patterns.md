@@ -27,9 +27,9 @@ Alternate light / grey / dark backgrounds so adjacent sections never blur togeth
 
 ## Composition blueprints
 
-The composition axis resolves to exactly ONE of these four, and
-`web-templates/references/design-system.md` maps each axis position to the blueprint id below.
-They are the reason two anchors over identical content do not render the same page, so each one
+The composition axis resolves to exactly ONE of these four, named by id below (`centered` is
+`LP-CENTERED`, `asymmetric` `LP-ASYMMETRIC`, `strict-grid` `LP-STRICT-GRID`, `broken-grid`
+`LP-BROKEN-GRID`). They are the reason two designs over identical content do not render the same page, so each one
 fixes three things a sentence never could: how many columns, where the content sits inside them,
 and what an image is allowed to do. Apply the chosen blueprint to EVERY section — mixing two is
 how a page goes back to reading as a template. Everything else on this page (the section recipes
@@ -105,8 +105,7 @@ above, the header, motion) is shared and does not change with the position.
 A different axis from composition: composition fixes the GRID, chassis fixes how each content
 BLOCK is physically bounded inside it — card, border, shadow, or nothing. Two anchors can share a
 grid and still read as different sites if one bounds its cards and the other lets content sit bare
-on the ground. `web-templates/references/design-system.md` maps each axis position to the
-blueprint id below, the same discipline the composition table already keeps.
+on the ground. Each chassis position is named by the blueprint id below.
 
 ### `CHS-BARE`
 - No border, no fill distinct from the section ground, no shadow. Content sits directly on
@@ -133,7 +132,7 @@ blueprint id below, the same discipline the composition table already keeps.
 
 ### `CHS-RULE-DIVIDED`
 - No block boundary at all — content runs edge to edge on the section ground — and adjacent
-  blocks are separated by `ORN-RULE`'s own hairline instead of a card.
+  blocks are separated by a hairline rule instead of a card.
 - The rule is the only chrome a block gets. A card, a border or a shadow anywhere in this
   chassis is a second position bleeding into this one.
 

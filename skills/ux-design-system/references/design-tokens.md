@@ -8,8 +8,8 @@ from `project-context` (logo, palette) or asks the user.
 Swap the values per brand; keep the roles. **A token lives in Elementor's global Site Settings, never
 in custom CSS** — § "Site Settings" below says which slot each role takes.
 
-`web-templates/references/design-system.md` still holds the numeric axis tables the legacy assets
-were built from. Legacy, not used for client work, removal pending.
+`web-templates/references/design-system.md` holds the numeric tables the build and its tests pin:
+scale, density, ground and elevation.
 
 ## Palette roles
 

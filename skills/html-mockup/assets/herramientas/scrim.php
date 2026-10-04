@@ -1,18 +1,17 @@
 <?php
 /**
- * scrim.php — the GD worst-case text-over-photo maths, lifted from `_build-gallery.php:1545-1700`.
+ * scrim.php — the GD worst-case text-over-photo maths, lifted from the retired gallery generator.
  *
  * WHAT THIS MEASURES. The worst contrast any pixel of a photograph can reach once a text colour
  * sits over it through an alpha veil (a "scrim") and, optionally, the house ink filter — the same
- * sweep that caught the slider's 1.95:1 defect in the gallery generator (`_build-gallery.php:
- * 1644-1685`'s own docblock).
+ * sweep that caught the slider's 1.95:1 defect in the retired gallery generator (its own docblock).
  *
  * ONE CONTRAST ENGINE. This file `require`s `color.php` for `srgb_lum`/`srgb_lum_rgb` rather than
  * re-deriving them — see `color.php`'s header for why a second copy of that maths is the exact
  * defect this whole change removes.
  *
  * TWO ENTRY POINTS, ONE SWEEP. `worst_pixel()` keeps its ORIGINAL signature and behaviour
- * (`$slug` resolved through a global `$IMG_DIR`, the whole image swept) so `_build-gallery.php`
+ * (`$slug` resolved through a global `$IMG_DIR`, the whole image swept) so the retired gallery generator
  * keeps working unmodified at the call site once it `require`s this file instead of defining these
  * functions itself. `worst_pixel_path()` is the general-purpose form the CLI exposes: an explicit
  * file path and an explicit rectangle, because a standalone tool has no gallery manifest to resolve
@@ -30,7 +29,7 @@ require_once __DIR__ . '/color.php';
 
 /**
  * `feFunc* type="table"`, per the SVG spec: piecewise-linear over n entries. Lifted from
- * `_build-gallery.php:1596-1607` — the exact primitive the browser applies to `ink_curve()`'s
+ * the retired gallery generator — the exact primitive the browser applies to `ink_curve()`'s
  * output, so a sweep that skipped this would be measuring a picture the browser never paints.
  */
 function fe_table( $c, $values ) {
@@ -49,7 +48,7 @@ function fe_table( $c, $values ) {
 /**
  * The SVG filter, in PHP, so the sweep measures the pixels the browser will actually paint —
  * `feColorMatrix type="saturate"` then a five-entry `type="table"` per channel. Lifted from
- * `_build-gallery.php:1629-1642`.
+ * the retired gallery generator.
  */
 function ink_pixel( $r, $g, $b, $ink ) {
 	$s = (float) $ink['sat'];
@@ -103,9 +102,9 @@ function scrim_sweep_worst( $im, $x0, $y0, $x1, $y1, $scrim, $alpha, $text, $ink
 }
 
 /**
- * ORIGINAL signature and behaviour, lifted from `_build-gallery.php:1644-1685` unchanged: `$slug`
+ * ORIGINAL signature and behaviour, lifted from the retired gallery generator unchanged: `$slug`
  * resolved through the global `$IMG_DIR` the gallery generator already defines, full-image sweep.
- * Kept exactly as-is so `_build-gallery.php` needs no call-site changes once it `require`s this
+ * Kept exactly as-is so the retired gallery generator needs no call-site changes once it `require`s this
  * file — only the failure signal changed, from `fail()` to `NmHerramientaEntorno`.
  */
 function worst_pixel( $slug, $scrim, $alpha, $text, $ink = null ) {
@@ -178,8 +177,8 @@ function scrim_sweep_mean( $im, $ink ) {
 }
 
 /**
- * ORIGINAL signature and behaviour, lifted from `_build-gallery.php:1694-1719` unchanged: `$slug`
- * resolved through the global `$IMG_DIR`. Kept exactly as-is so `_build-gallery.php` needs no
+ * ORIGINAL signature and behaviour, lifted from the retired gallery generator unchanged: `$slug`
+ * resolved through the global `$IMG_DIR`. Kept exactly as-is so the retired gallery generator needs no
  * call-site changes once it `require`s this file — only the failure signal changed.
  */
 function ink_mean( $slug, $ink ) {
@@ -249,9 +248,9 @@ if ( 'cli' === PHP_SAPI && isset( $argv[0] ) && realpath( $argv[0] ) === __FILE_
 	$h   = $args[5];
 
 	$scrim_hex = '#000000';
-	$alpha     = 0.55; // same floor `_build-gallery.php`'s own $SCRIM_FLOOR uses
+	$alpha     = 0.55; // same floor the retired gallery generator's own $SCRIM_FLOOR uses
 	$text_hex  = '#FFFFFF';
-	$bar       = 4.5;  // same bar `_build-gallery.php`'s own $SCRIM_BAR uses
+	$bar       = 4.5;  // same bar the retired gallery generator's own $SCRIM_BAR uses
 
 	for ( $i = 6; $i < count( $args ); $i++ ) {
 		if ( '--scrim' === $args[ $i ] && isset( $args[ $i + 1 ] ) ) {

@@ -10,9 +10,6 @@ The library maquetas under `web-templates/references/plantillas/<slug>/maqueta/`
 this contract describes. When this file and a library maqueta disagree, read the maqueta, then fix
 whichever is wrong — never silently follow the older one.
 
-The sections at the end marked **Legacy** describe the old generator, chassis and anchors. They are
-not used for client work and stay only until the removal step.
-
 ## Contrato de derivación (binding)
 
 ### Inputs
@@ -168,10 +165,8 @@ licence requires beside it. `_fonts.md` is the manifest: family, file, axes, lic
 sha256 and source URL per row, and the reasoning behind each. Read it before adding a family.
 
 - `_fonts.php` holds the registry and emits the `@font-face` block (`nm_font_faces()`).
-- `_embed-fonts.php` writes that block between the `NM-FONTS` markers of the two legacy proof files;
-  `--check` reports staleness without writing.
 
-Rules that are checked rather than trusted (`RT_MOCKUP_FONT_NOT_EMBEDDED`, on the assets it walks):
+Rules that are checked rather than trusted (`RT_MOCKUP_FONT_NOT_EMBEDDED`, on every `plantillas/*/maqueta/index.html`):
 
 - **Embed as a `data:` URI, never a URL.** A `data:` URI makes no request, so there is nothing for
   the Artifact CSP to block.
@@ -241,7 +236,7 @@ directly. Shared exit contract: `0` pass, `1` a measured failure, `2` usage or e
 Every line here was paid for by a defect that shipped and had to be found by looking at a render.
 The measurement is kept beside the rule, because a rule without one is an opinion that the next
 reader is free to weigh against their own taste — and losing that argument is how most of these
-came back a second time. The gates named here police the legacy assets; on a client maqueta each
+came back a second time. The audit gates named here police the library maquetas; on a client maqueta each
 rule survives only as long as somebody reads it.
 
 ### An invalid `var()` does not degrade — it deletes the whole declaration
@@ -308,23 +303,11 @@ in one attempt. Copy the page to `probe.html`, append a `<script>` that writes
 `chrome --headless=new --dump-dom`. Chrome clamps `--window-size` at about 500px, so narrow
 viewports go through `medir-geometria.mjs` instead.
 
-## Legacy — generator, chassis and anchor (not used for client work; removal pending)
+## What outlived the generator
 
-Kept only so the legacy assets under `assets/gallery/`, `assets/chassis/` and the two `proof-*`
-files stay explained until they are deleted. Nothing below is a step for a client project.
-
-- **The generator.** `../assets/gallery/_build-gallery.php` writes the gallery `index.html` and the
-  two chassis (`chassis/corporate.html`, `chassis/ecommerce.html`) from its own CSS tables, with
-  `--chassis-out=<dir>` for a separate destination. Its outputs are untracked and its audit rows
-  (`RT_GALLERY_NOT_BUILT`, `RT_CHASSIS_NOT_BUILT`, `RT_GALLERY_STALE`) demand a build until the
-  removal step retires them.
-- **The anchor block.** Each legacy asset declares an `AXIS POSITIONS` block in `:root` — five token
-  lines copied from `web-templates/references/design-system.md` plus `Anchor:` and a
-  `composition: LP-*` marker — and `RT_MOCKUP_AXES_MISMATCH` compares them with the style catalogue.
-  A client maqueta takes its look from the Plantilla, not from re-pointing this block.
-- **The two proof files** render one copy set (`../assets/_axis-proof-content.md`) at two anchors so
-  the axis difference can be seen with the copy held constant; `RT_PROOF_NOT_DISTINCT` and
-  `RT_PROOF_COPY_DIFFERS` gate them.
+The generator, its chassis and its proof files are gone; a client maqueta takes its look from the
+Plantilla, never from a generated starting file. Two lessons from the section blueprints and the
+chassis hold for every derived file.
 
 ### Section blueprints
 
@@ -333,7 +316,7 @@ boxes (`.ph`) instead of photographs. A client maqueta derives its sections from
 Two of their rules outlived them and apply to every maqueta: **never a capture form in the hero** —
 the lead form belongs to the closing conversion band — and **a disclosure list is native
 `<details>/<summary>` with exactly the first row open**, the rule `RT_MOCKUP_DISCLOSURE_STATE` gates
-on the assets it walks.
+on every library maqueta.
 
 ### The section chassis
 

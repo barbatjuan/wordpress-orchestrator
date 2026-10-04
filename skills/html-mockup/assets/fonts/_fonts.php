@@ -45,8 +45,8 @@
  * restricts the RFN in MODIFIED versions, and an unmodified redistribution under the original
  * name is what OFL §2 permits outright.
  *
- * Consumers: `../gallery/_build-gallery.php` (the gallery) and `_embed-fonts.php` (the four
- * static mockups). `framework-audit.php`'s RT_MOCKUP_FONT_NOT_EMBEDDED checks the result.
+ * Consumer: whoever derives a maqueta (`nm_font_faces()`).
+ * `framework-audit.php`'s RT_MOCKUP_FONT_NOT_EMBEDDED checks the result.
  */
 
 /**

@@ -34,7 +34,7 @@ three steps below.
   - `_wordpress-orchestrator-framework.md` mandates the generator the orchestrator forbids
   - `elementor-core` SKILL/knowledge still ask for axes, `STY-*`, `es_record_style_resolution`
   - `blind-judges/SKILL.md` vs `veredicto.php --sellar-ruta`; `design-tokens.md` "Eight axes"; row-number drift in `house-rules.md`
-- [ ] T2 Amputation (delegated writer), following the openspec PR 3 section and `design.md` File Changes:
+- [x] T2 Amputation (delegated writer), following the openspec PR 3 section and `design.md` File Changes:
   delete gallery, chassis, proofs, style-catalog, `templates/**`, `recommender.md`, `toggles.md`,
   `shipped-log.md`; slim `design-system.md` to the numbers `test-write-path.php` and `es-builder.php` pin;
   retire the legacy `RT_*` rows with their code, fixtures and `CONTRIBUTING.md` rows; remove generator
@@ -84,3 +84,27 @@ Open owner decisions (not fixed, evidence in the T1 report):
   `css_custom_max: 0`, and the row counts helper CSS — every built site would FAIL
 - row 31(a) cannot compare axis variables for maquetas whose `:root` lacks them
 - 8 fichas and 3 canvas manifests still say the index marks them "sin veredicto" (editing a ficha breaks its seal)
+
+Owner decision (2026-10-04, delegated to the orchestrator's recommendation): qa-review row 37 counts
+only hand-written `custom_css`. Helper-emitted CSS is part of the tested builder and does not count
+against `css_custom_max`.
+- [ ] T2b Row 37 (delegated writer, after T2, strict TDD): helpers mark the CSS they emit with one
+  shared marker comment; one small counting function in `es-builder.php` reports hand-written
+  `custom_css` only (replacing the hand-written walk the row admits no helper does); row 37 rewritten
+  to name that function as its verifier. No ficha edited (seals stay intact).
+
+T2 (2026-10-04, delegated writer): 201 files, +1,079 / −31,884. `RT_*` ids 80 → 53 (27 retired with
+code, CONTRIBUTING rows and fixtures; five `RT_MOCKUP_*` and `RT_GALLERY_NO_MANIFEST` re-pointed at
+`plantillas/*/maqueta/`, RED first). Audit `0 FAIL / 3 WARN`; fresh-clone export passes with no build
+step. Tests: audit-signals 22, container-hygiene 81, framework-audit 455 (~34 s, was ~75 s),
+herramientas 311 (~31 s), replay 11, security 43, write-path 578. Library still 16 of 17 vigentes.
+`design-system.md` slimmed 726 → 595, kept because the write path reads it.
+Correction (parent): the plan's wholesale `--clean` would have emptied the owner's `~/.claude/skills`
+(44 entries, most not from this repo). Now it replaces only entries the repo ships; RED observed on
+9 assertions before the fix. Never run against the real `~/.claude`.
+Plan vs tree: openspec PR 1d never landed, so the WARN→FAIL flip (3.4) had nothing to flip; 3.1
+(harvest) not done, data recoverable from git at 854bb76.
+New owner decision: `corte` maqueta FAQ has no `<details>` (real defect found by the re-pointed
+rule); reported at WARN as known debt in the audit until it is fixed and re-judged.
+Dead code for T4: `es_record_style_resolution` + tests, `color.php` ink functions, legacy labels in
+font-budget scenarios, `TPL-C-01` examples in `file_handles()`.

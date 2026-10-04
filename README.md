@@ -15,7 +15,7 @@ agents/wordpress-orchestrator.md      # tiny router (thinks, asks, routes)
 skills/
   _wordpress-orchestrator-framework.md # architecture overview
   project-context/                    # detect builder (elementor|divi), plugins, brand
-  web-templates/                      # page ARCHITECTURE: home archetypes (ecommerce|corporate) + inner pages (PDP, shop, about, contact) + recommender + toggles
+  web-templates/                      # the library of real Plantillas (lienzo, maqueta, photographs, ficha, veredicto), picked by Objetivo
   ux-design-system/                   # builder-agnostic visual language (tokens, motion, layout)
   html-mockup/                        # static HTML preview for client approval before the native build
   elementor-core/                     # Elementor execution — battle-tested (+ es-builder.php)
@@ -46,9 +46,9 @@ web-templates → ux-design-system → html-mockup → [BUILD GATE] → project-
 project-context → web-templates → ux-design-system → html-mockup → [BUILD GATE]
 → elementor-core | divi-core → woocommerce → performance / seo → qa-review
 ```
-`web-templates` picks a `TPL-*` archetype by site type, asks you for references and resolves
-toggles; `ux-design-system` fixes tokens and motion; `html-mockup` renders a static preview
-you approve; builder-core reproduces it natively; `qa-review` diffs the native build against
+`web-templates` picks a real Plantilla by Objetivo and asks you for references; `ux-design-system`
+places your brand inside its Enfoque and fixes tokens and motion; `html-mockup` derives a static
+maqueta you approve; builder-core reproduces it natively; `qa-review` diffs the native build against
 the approved mockup. The design phase is builder-agnostic and needs no WordPress.
 
 **The build gate is a hard stop.** After the mockup is approved and before ANY write to
@@ -71,8 +71,8 @@ the gate). Only `elementor-core` and `woocommerce` currently have both a
 ### Prerequisites
 
 - **Claude Code** — skills and agents load from `~/.claude/` (user scope).
-- **PHP on your PATH** — the gallery generator and this framework's own audit are PHP CLI
-  scripts. Developed and tested on 8.2; check yours with `php -v`.
+- **PHP on your PATH** — this framework's own audit and the Plantilla tools
+  (`skills/html-mockup/assets/herramientas/`) are PHP CLI scripts. Developed and tested on 8.2; check yours with `php -v`.
 - **git** — to clone, and to pull updates later.
 
 ### 1. Clone
@@ -104,41 +104,32 @@ version of the framework.
 > `Copy-Item`, which has no `-rf`. Use the installer above, or
 > `Copy-Item -Path skills\* -Destination "$HOME\.claude\skills" -Recurse -Force`.
 
-The copy overwrites in place — it does **not** delete files that were removed upstream, so a
-skill or reference deleted from this repo keeps living in your `~/.claude/` until you remove it
-by hand. That is not cosmetic: a retired template left behind can still be offered as a current
-one. To list the leftovers:
+The copy overwrites in place and, by default, does **not** delete files that were removed upstream,
+so a skill or reference deleted from this repo keeps living in your `~/.claude/` until you remove
+it. That is not cosmetic: a retired template left behind can still be offered as a current one.
+To list the leftovers:
 
 ```bash
 diff -rq skills ~/.claude/skills | grep "^Only in"
 ```
 
+To refresh what this repo ships, run the installer with `--clean` (`./install.sh --clean`,
+`./install.ps1 --clean`): for every skill folder, top-level file under `skills/` and agent file the
+repo carries, it removes that same-named entry from `~/.claude` and copies the repo's version fresh,
+so a file retired *inside* a framework skill stops lingering. Everything the repo does not name — your
+other skills and agents — is left untouched. The price: a whole skill or agent the repo retires by name
+is **not** removed (the installer keeps no manifest), so delete it by hand.
+
 (Or symlink the folders into `~/.claude/` if you prefer live edits and exact mirroring.)
 
-### 3. Build the template gallery
-
-The gallery is **generated output and is not tracked**, so a fresh clone does not have one.
-Build it:
-
-```bash
-php skills/html-mockup/assets/gallery/_build-gallery.php
-```
-
-Rebuild it after any `git pull` that changes one of its inputs — the image manifest,
-`assets/gallery/img/`, the `TPL-*.md` archetypes, the fonts, or `design-tokens.md`. You do not
-have to track that yourself: the built gallery records a fingerprint of its inputs, and the
-audit in step 4 fails with `RT_GALLERY_STALE` and names the command to run when the two no
-longer agree.
-
-### 4. Verify the install
+### 3. Verify the install
 
 ```bash
 php skills/framework-audit/assets/framework-audit.php
 ```
 
-Expect **`0 FAIL`**. Run before step 3 it reports two, and both are expected on an unbuilt
-clone: `RT_GALLERY_NOT_BUILT`, and an `RT_BROKEN_REFERENCE` from a skill that points at the
-gallery. Building it clears both.
+Expect **`0 FAIL`** on a fresh clone: there is no build step, every file the audit reads is
+committed.
 
 WARN rows are informational and do not block. The full offline test chain lives in
 `CONTRIBUTING.md` under "Testing a change".
