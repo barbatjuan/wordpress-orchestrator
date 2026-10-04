@@ -40,7 +40,7 @@ three steps below.
   retire the legacy `RT_*` rows with their code, fixtures and `CONTRIBUTING.md` rows; remove generator
   instructions from README/CONTRIBUTING/overview/.gitignore; `install.sh`/`install.ps1 --clean`;
   tick the PR 3 boxes in the openspec tasks file truthfully.
-- [ ] T3 Trim to instructions (delegated writer): `CONTRIBUTING.md` rule table to one line per id;
+- [x] T3 Trim to instructions (delegated writer): `CONTRIBUTING.md` rule table to one line per id;
   orchestrator to routing, gates and delivery, pointing at `qa-review` for rules; `house-rules.md`
   narration cut, overlapping rows merged only where the check is identical; `es-builder.php`
   incident narration in comments cut (comments only, golden fixture unchanged).
@@ -119,3 +119,11 @@ CSS in the shipped theme-part/shop examples is helper CSS. Golden fixture regene
 Also: installers refuse a destination that is the checkout itself; bash clean loop includes
 dotfiles; dead `TGL-LEAD-FORM` clause dropped. Tests: container-hygiene 124, herramientas 323,
 write-path 578, replay 11, others unchanged; audit `0 FAIL / 3 WARN`.
+
+T3 (2026-10-04, delegated writer, no behaviour change): narration cut, no rule/threshold/command
+dropped (writer's token-by-token self-check; parent re-ran the `php -w` identity on es-builder.php:
+identical). Sizes in bytes: CONTRIBUTING 24,388 → 16,913; orchestrator 34,765 → 30,556;
+house-rules 62,188 → 50,771 (42 rows, none renumbered or merged); es-builder.php 193,555 → 162,456
+(comments only); mockup-guide and knowledge trimmed. One stale pointer fixed (3-zone header recipe
+lives in elementor-theme-parts gotchas). Audit `0 FAIL / 3 WARN`, all tests unchanged and green.
+Candidate for owner: row 31(a) can compare axis variables on only 1 of 17 maquetas.

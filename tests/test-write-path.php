@@ -1583,7 +1583,7 @@ $literal  = array();
 
 /* Un valor de token puede coincidir, byte a byte, con gramatica CSS que no
    tiene nada que ver con el. En cuanto la Tarea 2 anada 'elev_rest' => 'none',
-   `display:none!important` de es_products_css() (es-builder.php:337) ya esta en
+   `display:none!important` de es_products_css() (es-builder.php) ya esta en
    la salida, y la comprobacion de literales se pone ROJA sobre codigo CORRECTO.
    La salida barata para el siguiente implementador seria aflojar la afirmacion,
    que es justo lo que prohibe la Restriccion Global 1.

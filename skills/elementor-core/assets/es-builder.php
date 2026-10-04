@@ -51,23 +51,13 @@ function es_w( $type, array $settings ) {
 }
 
 /**
- * A four-sided box value, with the density axis applied ONCE, here.
+ * A four-sided box value, with the density axis applied ONCE, here (a call site could forget).
  *
- * The multiplier lives inside this function and not at the 29 call sites for
- * one reason: a call site can forget, and the one that forgets is the one that
- * stops moving when the axis moves. Two guards keep it from scaling things that
- * are not rhythm:
- *
- *  - $unit. Density scales LENGTHS. A percentage or a viewport unit is already
- *    relative to something else, and multiplying it is not a smaller gap -- it
- *    is a different layout. Every call in all four assets is px today (checked,
- *    not assumed); the guard is here so the first non-px call does not silently
- *    become a bug.
- *  - $scale. A border WIDTH and a border RADIUS ride in this same shape and are
- *    NOT rhythm. At sp_scale 1.7 a 1px hairline rounds to 2px -- that is a
- *    heavier border, not more air, and it makes the `hairline` elevation
- *    position unexpressible -- and a 16px radius becomes 27px, which is a
- *    different shape language. Those call sites say so with es_box_unscaled().
+ *  - $unit: density scales LENGTHS only. A percentage or viewport unit is already relative, so
+ *    multiplying it changes the layout. Every call is px today; the guard keeps a future non-px call
+ *    from silently misbehaving.
+ *  - $scale: a border WIDTH or RADIUS is not rhythm (at sp_scale 1.7 a 1px hairline rounds to 2px and
+ *    a 16px radius becomes 27px). Those call sites say so with es_box_unscaled().
  */
 function es_box( $t, $r, $b, $l, $unit = 'px', $scale = true ) {
 	if ( $scale && 'px' === $unit ) {
@@ -130,18 +120,9 @@ function es_img( $slug ) {
 /**
  * One token's colour, at an alpha, as an rgba() string.
  *
- * A token whose value hides another token's colour is not a token. Overriding
- * the accent used to leave the old green inside every glow -- `accent` went
- * navy and `elev_accent` still carried `rgba(15,169,104,0.55)`, so the client
- * got a navy button with a green halo, and the ONE edit point was not one.
- * The seven accent/ink glows and the two white veils are derived through here
- * so that overriding the source colour really does move all of them.
- *
- * $alpha is TEXT on purpose. `0.10` and `0.1` are the same float and different
- * bytes, and this file carries both shapes on purpose-by-accident: the outline
- * wash is `0.10`, the cart glow is `0.5`. Formatting a number would silently
- * rewrite one of them, and rewriting emitted bytes is the one thing the
- * extraction task may not do.
+ * Glows and veils are derived through here so overriding the source colour moves all of them (a typed
+ * rgba() keeps the old colour). $alpha is TEXT on purpose: `0.10` and `0.1` are the same float and
+ * different bytes, and reformatting a number would rewrite emitted bytes.
  */
 function es_rgba( $hex, $alpha ) {
 	$h = ltrim( (string) $hex, '#' );
@@ -193,26 +174,11 @@ function es_shade( $hex, $factor ) {
 /**
  * One token's colour blended toward another's, as a hex string.
  *
- * This is the GROUND axis, and it is the axis the token layer was still faking. `bg`, `bg_alt` and
- * `text` moved with the ground; `muted`, `text_soft`, `border`, `surface_inverse` and `on_inverse`
- * did not, because they were five hand-picked values sampled off a white page. Measured under the
- * `ink` position design-system.md documents (`bg #0E1113`, `text #F4F6F7`), against their own ground
- * rather than against white:
- *
- *   muted           #6A6F6C   3.70:1   below AA —— and es_p() paints every paragraph with it
- *   text_soft       #4A4F4C   2.27:1   below AA
- *   surface_inverse #15181A   1.06:1   the `dark` button was invisible on its own page
- *   border          #E5E7E5  15.24:1   a near-WHITE hairline on a near-black page
- *
- * design-system.md:263 states the rule those break in its own words —— "each pair was
- * contrast-checked against its OWN --c-bg, not against white" —— and it was enforced for `--c-text`
- * and for nothing else.
- *
- * Blending is the fix rather than a documented value per position, and the reason is coverage: the
- * ground table has four positions and a client's ground is whatever their brand is. A derived
- * neutral is right on grounds nobody has thought of yet; a documented one is right on four.
- * design-tokens.md step 4 already specifies exactly this ("Derive the neutrals from the contrast,
- * not from grey"), so this implements a written rule rather than inventing one.
+ * This is the GROUND axis: `muted`, `text_soft`, `border`, `surface_inverse` and `on_inverse` are
+ * blended between `bg` and `text` so they stay contrast-correct on any ground (values hand-picked off
+ * a white page failed AA or vanished on dark grounds). Blending covers grounds nobody has documented;
+ * a table of values covers only the four positions. Implements design-tokens.md step 4 ("Derive the
+ * neutrals from the contrast, not from grey").
  */
 function es_mix( $a, $b, $f ) {
 	$out = '#';
@@ -239,19 +205,10 @@ function es_mix( $a, $b, $f ) {
 /**
  * WCAG 2.x relative luminance of a hex colour, or null when it cannot be read.
  *
- * The coefficients and the 0.03928 / 12.92 / 1.055 / 2.4 constants are the
- * formula's, verbatim from WCAG 2.x -- not tuning, not this file's opinion.
- *
- * It returns null rather than warning, and that is on purpose: es_contrast()
- * below is the one that knows WHICH of two colours it could not read and can
- * therefore say so. A warning here would fire twice and name neither.
- *
- * The three lines that normalise `#RGB` to `#RRGGBB` are the FOURTH copy of that
- * parse in this file (es_rgba, es_shade, es_mix, and now this). Four copies of
- * one parse is the same drift this file collapses everywhere else, and it is
- * named here rather than quietly extracted, because folding the other three into
- * a shared helper changes three working functions and belongs to whoever owns
- * that refactor -- not to the token that needed a fourth reader.
+ * The coefficients and the 0.03928 / 12.92 / 1.055 / 2.4 constants are the WCAG formula verbatim.
+ * Returns null instead of warning: es_contrast() knows WHICH of two colours was unreadable and says
+ * so. The `#RGB` to `#RRGGBB` normalisation is the fourth copy of that parse (es_rgba, es_shade,
+ * es_mix); folding them into one helper is a separate refactor.
  */
 function es_lum( $hex ) {
 	$h = ltrim( (string) $hex, '#' );
@@ -298,33 +255,15 @@ function es_contrast( $a, $b ) {
 /**
  * The ink that goes ON a surface: whichever candidate reads best against it.
  *
- * `on_accent` was a literal #FFFFFF, and measured against this framework's own
- * accent that is 3.05:1 -- a WCAG AA failure on the label of every primary
- * button the framework ships. Pinning the other extreme instead (#15181A, 5.86:1)
- * fixes the house brand and breaks the next one: a navy or deep-burgundy accent
- * needs the WHITE label, and would fail exactly the way white fails the green.
- * So the CHOICE is what gets derived, not the colour.
+ * The CHOICE is derived, not the colour: a pinned white fails a light accent and a pinned near-black
+ * fails a navy one. Candidates are the two ground extremes (`text` and `bg`), so the label is always a
+ * colour already in the palette.
  *
- * The candidates are the two ground extremes -- `text` and `bg` -- and not a
- * freshly invented near-black/near-white, because a label that is not already in
- * the palette is a colour nobody chose. On a cream page the ink on an accent
- * button is that page's own cream, not a white that appears nowhere else.
- *
- * TIES go to the first candidate listed. A tie at two decimals means the two
- * inks are within 0.005 of each other, so there is no readable difference to
- * decide on -- but "no difference" still has to resolve the SAME way on every
- * machine and every run, or the emitted bytes stop being reproducible.
- *
- * WHEN NEITHER CANDIDATE REACHES 4.5:1 it paints the better of the two and warns
- * naming both measurements. That branch is not defensive padding, it is
- * reachable by construction: at the accent where the two candidates cross, both
- * measure exactly sqrt(the ground's own contrast), so a `paper` ground (17.84:1)
- * tops out at 4.22:1 there and NO accent in that band can reach AA against
- * either extreme. Measured across the whole RGB cube on `paper`, the worst
- * accent is #9966BB at 4.22:1, and ordinary brand colours live in that band --
- * #008899 gives 4.23 / 4.22, #1177EE gives 4.16 / 4.29. Refusing to paint would
- * leave the label the widget's own default; painting silently would hide a real
- * AA failure. It paints and says so.
+ * TIES (equal at two decimals) go to the first candidate listed, so output is reproducible.
+ * WHEN NEITHER CANDIDATE REACHES 4.5:1 it paints the better one and warns naming both measurements.
+ * The branch is reachable by construction (on a `paper` ground the worst accents, e.g. #9966BB, top
+ * out near 4.22:1 against either extreme); refusing to paint would leave the widget default, and
+ * painting silently would hide a real AA failure.
  */
 function es_ink_on( $clave, array $t, array $receta ) {
 	$fondo_clave = $receta[0];
@@ -358,49 +297,16 @@ function es_ink_on( $clave, array $t, array $receta ) {
 /**
  * The hover of a colour: the same colour moved AWAY from the page it sits on.
  *
- * es_shade() darkens unconditionally, and that was right on exactly half the
- * ground table. Darkening raises a colour's contrast against a light page and
- * LOWERS it against a dark one, so on the three dark positions the hover
- * receded instead of advancing -- measured on the build, accent against each
- * ground's own `bg`:
+ * es_shade() always darkens, which lowers contrast on a dark ground (the hover recedes and reads as
+ * disabled). So the DIRECTION is derived and the magnitude stays the fitted factor: both candidates
+ * are built (shade toward black, tint toward white, the sRGB cube's own ends; not `bg`, since mixing
+ * toward the page moves a colour toward the page) and the one further from the page wins. It is
+ * measured, not branched on a luminance threshold, since a client's ground is whatever their brand is.
+ * A plain mix toward `text` cannot replace the shade: the 0.815 factor reproduces `#0C8A55` exactly
+ * because multiplying channels is interpolation toward pure black.
  *
- *   paper    #FFFFFF  3.05 -> 4.39   +1.34   advances
- *   ink      #0E1113  5.67 -> 3.95   -1.72   RECEDES
- *   ink-warm #171008  5.64 -> 3.92   -1.72   RECEDES
- *   ink-cool #0B0F1C  5.72 -> 3.98   -1.74   RECEDES
- *
- * A hover that recedes reads as DISABLED. It is an affordance defect and not an
- * accessibility one -- 3.95:1 still clears AA-large's 3.0, so no qa-review row
- * caught it, which is why it survived. The real BSP-VITRINA build overrode the
- * token to #FF4D93 by hand (5.67 -> 6.08, LIGHTENING), so a human had already
- * hit this and worked around it silently.
- *
- * These two were the last survivors of the class es_token_mixes() fixed for
- * `muted`, `text_soft`, `border` and `surface_inverse`: a value sampled off a
- * white page and then applied to every ground. Those were fixed by blending
- * toward the ground, and this one CANNOT be -- the 0.815 factor reproduces the
- * hand-picked #0C8A55 exactly because multiplying every channel is
- * interpolation toward pure BLACK, and #0FA968 mixed toward `paper`'s own
- * `text` (#15181A) moves red 15 -> 21 when the target needs 12. So what gets
- * derived here is the DIRECTION, not the distance: the magnitude stays the
- * fitted factor, and the ground picks the sign.
- *
- * The direction is MEASURED rather than branched on a luminance threshold, for
- * the same reason es_ink_on() measures: a threshold is a number somebody picked
- * and a client's ground is whatever their brand is. Both candidates are built
- * and the one further from the page wins, so the rule states itself -- "the
- * hover is the one that advances" -- instead of encoding a proxy for it.
- *
- * The two poles are pure black (es_shade's multiplication) and pure white (the
- * mix below), and they are the sRGB cube's own ends rather than colours anybody
- * chose: shade and tint, the ordinary pair. That is also why the light pole is
- * not `bg` -- mixing a colour toward the page moves it TOWARD the page, which
- * is the defect, not the fix.
- *
- * TIES go to the darkened candidate, which is what keeps the framework's own
- * `#0C8A55` byte-identical and, more generally, keeps a ground with no headroom
- * left resolving the same way on every machine -- the same reason es_ink_on()
- * resolves ties to the first candidate listed.
+ * TIES go to the darkened candidate, which keeps the framework's own `#0C8A55` byte-identical and
+ * resolves a ground with no headroom the same way on every machine.
  */
 function es_hover_of( $hex, $factor, $fondo ) {
 	/* Read ONCE, here, with the reader that stays quiet on purpose. Building
@@ -430,19 +336,10 @@ function es_hover_of( $hex, $factor, $fondo ) {
 /**
  * Tokens that are the readable ink ON another token: array( surface, candidate... ).
  *
- * Same table shape, and for the same reason, as es_token_mixes() / es_token_hovers()
- * / es_token_recipes(): the key list, the derivation and the unknown-key guard
- * read ONE table and cannot drift apart.
- *
- * `text` is listed before `bg` so a tie resolves to the ink rather than to the
- * page. There is exactly one entry today, and the sibling that looks like it
- * should be here is `on_inverse` -- it is NOT, and the reason is that it is
- * already this rule's answer by construction: `on_inverse` is `bg` sitting on
- * `surface_inverse`, which is `text`, so its contrast IS the ground's own
- * contrast (17.84:1 on `paper`, 15.33 warm, 15.71 cool, 17.48 ink) and the
- * ground table cannot document a position where the better candidate is the
- * other one. Routing it through here would add a measurement whose answer is
- * fixed -- a branch nothing can distinguish.
+ * Same table shape as es_token_mixes() / es_token_hovers() / es_token_recipes(): the key list, the
+ * derivation and the unknown-key guard read ONE table. `text` is listed before `bg` so a tie goes to
+ * the ink. `on_inverse` is deliberately not here: it is `bg` on `surface_inverse` (= `text`), so it
+ * already is this rule's answer and routing it through would add a measurement with a fixed result.
  */
 function es_token_contrasts() {
 	return array(
@@ -453,33 +350,17 @@ function es_token_contrasts() {
 /**
  * Tokens that are one ground token blended toward another: array( from, to, fraction ).
  *
- * The fractions are MEASURED off the values this file already shipped, not chosen: each is where
- * the old hand-picked colour actually sat between `text` and `bg` on the `paper` ground, so the
- * framework's own look survives the change to within one or two units per channel while every other
- * ground finally gets neutrals of its own. What the old values also carried was a faint green cast
- * (`#6A6F6C` has more green than red or blue) —— sampled off a green-tinted neutral rather than off
- * the ink, which is drift, not a decision, and it goes.
+ * The fractions are MEASURED off the values this file originally shipped (where each hand-picked
+ * colour sat between `text` and `bg` on the `paper` ground), so the default look survives within a
+ * unit or two per channel while every other ground gets neutrals of its own.
  *
- * The two at 0.00 are not a rounding curiosity, they are the point:
- *   surface_inverse = `text`. design-tokens.md files "near-black type" and "inverted dark surfaces
- *     (footer, announcement bar, solid CTA)" under ONE role, so the surface that flips the page over
- *     is the contrast colour. On `paper` that is #15181A —— byte for byte what was typed there —— and
- *     on `ink` it correctly becomes near-white instead of staying invisible at 1.06:1.
- *   on_inverse = `bg`. Ink sitting on the inverse surface is the page's own ground. #FFFFFF on
- *     `paper`, byte-identical again, and near-black on `ink`.
- * Written as mixes rather than as aliases so there is one mechanism to read instead of two, and so
- * a brand that wants its footer a shade off its ink can say so by moving one number.
+ * The two at 0.00 are the point: `surface_inverse` = `text` (one role: near-black type and inverted
+ * dark surfaces) and `on_inverse` = `bg`. They are mixes, not aliases, so there is one mechanism and
+ * a brand can move one number to put its footer a shade off its ink.
  *
- * design-tokens.md's own step 4 gives "muted ≈ 55–60%" and "border ≈ 85%". The border number is
- * close (89%); the muted one is not, and it is not close in the direction that matters: at 57% on
- * `paper` muted lands on #9A9C9D, which is 2.76:1 —— a WCAG AA failure for the body copy es_p()
- * paints with it. The measured 36.6% is what ships and what passes, so that file's number is the
- * one that moved.
- *
- * `bg_alt` is deliberately not DERIVED here. It is one of the three the ground table DOCUMENTS per
- * position, so it is an axis INPUT the operator sets, not an output. It does appear as a mix
- * TARGET for `muted`, which is a different role: an input can be mixed toward without becoming
- * an output, and `muted` needs it because the alternating band is the surface that band paints.
+ * `muted` is 36.6%, not design-tokens.md's "55-60%": at 57% on `paper` it lands on #9A9C9D, 2.76:1, an
+ * AA failure for the body copy es_p() paints with it. `bg_alt` is an axis INPUT the operator sets and
+ * is never derived here, though it is a mix TARGET for `muted` (the alternating band paints it).
  */
 function es_token_mixes() {
 	return array(
@@ -504,21 +385,9 @@ function es_token_mixes() {
 /**
  * Tokens that are another token's colour moved away from the page: the HOVER states.
  *
- * array( source token, factor ). Same table shape as es_token_recipes() and for
- * the same reason: the key list, the derivation and the unknown-key guard read
- * ONE table and cannot drift apart.
- *
- * Named for the ROLE and not for the mechanism, which is the rule the token
- * block below states in its own words. It was `es_token_shades()` while the
- * mechanism was "darken", and the name stopped being true the moment
- * es_hover_of() started lightening on dark grounds -- a table called `shades`
- * that returns a tint is the same drift as a token called `green` on a navy
- * brand. Both keys were always hovers; now the function says so.
- *
- * The two factors are different on purpose, because the two jobs are. Pressing
- * a button has to be FELT, so the accent moves ~18%; a hairline nudging on
- * hover is a hint, so the border moves ~6.5%. One factor for both would either
- * make the border look broken or make the button look asleep.
+ * array( source token, factor ), same table shape as es_token_recipes(). Named for the ROLE, not the
+ * mechanism (a hover may lighten or darken). The factors differ on purpose: pressing a button must be
+ * FELT (~18%), a hairline nudging on hover is a hint (~6.5%).
  */
 function es_token_hovers() {
 	return array(
@@ -565,41 +434,20 @@ function es_token_recipes() {
 }
 
 /* ---------------------------------------------------------- design tokens
-   This block IS the "override es_tokens() -- the one edit point" that
-   elementor-core/SKILL.md step 2 names: ONE edit point per project, filled from
-   the axis positions the ux-design-system dialogue resolved. The values below
-   are the framework default, not a recommendation for any client -- a site that
-   ships with them unchanged is a site nobody made a decision about.
+   This block IS the "override es_tokens() -- the one edit point" that elementor-core/SKILL.md step 2
+   names: ONE edit point per project, filled from the axis positions the ux-design-system dialogue
+   resolved. The values below are the framework default, not a recommendation for any client.
 
-   No colour, family, shadow, easing curve, font size or spacing value between
-   here and the END marker below is typed by hand. The bare CSS keyword `ease`
-   used to be the exception -- typed 9 times on 5 lines INSIDE the same rules as
-   the tokenised curve, so `transform` eased on cubic-bezier(.22,1,.36,1) while
-   `border-color` fell back to the browser default, two motion languages in one
-   rule -- and it is gone: every duration in this file now names es_t('ease').
+   No colour, family, shadow, easing curve, font size or spacing value between here and the END marker
+   below is typed by hand; every duration names es_t('ease'). RT_BUILDER_HARDCODED_TOKEN enforces that
+   region mechanically (the lines between es_tokens()'s closing brace and the END marker, PHP comments
+   stripped), naming each literal as file:line -> value. A literal that merely EQUALS the token it
+   replaced is the golden dump's job: the golden catches a value that moves, the row catches a value
+   that stopped being addressable.
 
-   RT_BUILDER_HARDCODED_TOKEN enforces that region mechanically -- it landed in
-   this same branch (c101cd2) and reaches all four builder assets since accd2f6.
-   It reads the lines between es_tokens()'s closing brace and the END marker,
-   with PHP comments stripped, and FAILS naming every literal as file:line ->
-   value. What it cannot see is a literal that happens to EQUAL the token it
-   replaced: that one is the golden dump's job, and the two are complementary
-   rather than redundant -- the golden catches a value that moves, the row
-   catches a value that stopped being addressable.
-
-   Keys are named for the ROLE the value plays, never for what it looks like:
-   `muted`, not `grey`; `surface_inverse`, not `surface_dark`. A token called
-   `green` cannot survive a client whose brand is navy, and a token called
-   `dark` cannot survive one whose inverse surface is cream -- and renaming it
-   afterwards means touching every call site again.
-
-   Nothing below is a duplicate of anything else below. The six that were --
-   five neutral borders doing one job, two accent glows differing in geometry
-   AND alpha, two neutral lifts, and one white written `#fff` in a CSS blob and
-   `#FFFFFF` everywhere else -- were collapsed here, and the values that moved
-   are recorded in the golden dump's diff. Drift is not a naming problem: two
-   keys for one job are two things to remember to change together, and the
-   whole point of this block is that there is only one. */
+   Keys are named for the ROLE the value plays, never for what it looks like (`muted`, not `grey`;
+   `surface_inverse`, not `surface_dark`), so a navy brand or a cream inverse surface needs no rename.
+   One key per job: two keys for one job are two things to change together. */
 function es_tokens( array $override = array(), $reset = false ) {
 	static $t = null;
 	if ( $reset ) {
@@ -639,30 +487,11 @@ function es_tokens( array $override = array(), $reset = false ) {
 			'on_inverse'         => null, /* derived: the ground's own bg -- ink ON surface_inverse or on the CTA scrim */
 			'muted_on_inverse'   => null, /* derived: on_inverse at 0.75 */
 			/* borders ----------------------------------------------- */
-			/* ONE hairline and its hover. This was five keys -- a rest/hover
-			   pair for the image-box card, a second pair two shades off for
-			   the feature card, and a darker edge for the outline button --
-			   five values for one job, none of them a decision anybody
-			   recorded. The outline button's edge is the one that lightens
-			   most (#CBD0CB -> #E5E7E5); a control edge wanting more contrast
-			   than a divider is a real argument, but it is an accessibility
-			   argument, and #CBD0CB was 1.5:1 on white, nowhere near the 3:1
-			   WCAG 1.4.11 asks of a control. It was not buying the contrast
-			   its darkness implied, so nothing is lost by collapsing it.
-			   It is DERIVED now rather than typed, and the reason is the ground
-			   axis: at #E5E7E5 this hairline was 1.24:1 on the `paper` it was
-			   picked for and 15.24:1 on `ink` -- a near-WHITE slash across a
-			   near-black page. Blended off the ink it stays a hairline on every
-			   ground (1.15-1.31:1 across all four documented positions).
-			   It is asserted as a RANGE, not against 3:1: WCAG 1.4.11's 3:1 is
-			   for controls, this is a divider, and it has never met 3:1 on any
-			   ground including the white one it was drawn for. Asserting a
-			   threshold the framework has never met would have meant either
-			   darkening every divider on every site or writing a check that
-			   passes by being pointed somewhere else. The outline BUTTON's edge
-			   reading this same token IS a control at 1.25:1, and that is a real
-			   WCAG 1.4.11 gap -- reported, still open, and not silently papered
-			   over by a range assertion that says nothing about it. */
+			/* ONE hairline and its hover, DERIVED from the ground (blended off the ink) so it stays a hairline
+			   (1.15-1.31:1) on every ground instead of a near-white slash across a dark page. It is asserted as a
+			   RANGE, not against WCAG 1.4.11's 3:1, which is for controls and which this divider has never met.
+			   The outline BUTTON's edge reads this same token and IS a control at ~1.25:1: a real 1.4.11 gap,
+			   reported and still open. */
 			'border'             => null, /* derived: text 89% toward bg */
 			'border_hover'       => null, /* derived: border moved 6.5% away from the page */
 			/* Two MORE hairlines, arriving from the sibling assets, and named
@@ -834,23 +663,13 @@ function es_fs( $step ) {
 /**
  * One step of the type scale, in px, RESOLVED AT A VIEWPORT WIDTH.
  *
- * es_fs() above answers "how big is this step" with one number, which is the right shape for a
- * body size and the WRONG shape for a heading. design-system.md does not give a heading one size:
- * it gives it a clamp() whose floor is `fs_base x ratio^n`, whose cap is `fs_h1_max / ratio^(3-n)`,
- * and whose preferred term interpolates that step's OWN floor into that step's OWN cap between
- * 430px and 1280px. Elementor cannot emit a clamp(); it emits a fixed px per breakpoint. So the
- * honest translation is to RESOLVE the same formula at each breakpoint, which is what this does.
- *
- * Why it matters, measured rather than argued: es_fs(3) is the FLOOR, so an h1 built from it ships
- * at 37.9px on a desktop at `classic` and 54px at `editorial`, while design-system.md's own browser
- * table (its "MEASURED in a browser at a 16px root" rows) pins editorial h1 at 88px and monumental
- * at 120px from 1280px up. A build sized off the floor misses the approved mockup by 40% on the
- * single largest element of the page, and misses it with a number that LOOKS derived. That is worse
- * than the sizeless heading it replaces, so the cap has to be reachable and this is what reaches it.
- *
- * 430 / 850 are design-system.md's `--fluid` endpoints verbatim (`clamp(0px, calc((100vw - 430px)
- * / 850), 1px)`), not numbers chosen here. The clamp order is CSS's: `max(floor, min(px, cap))`, so
- * a position whose cap falls below its floor keeps the floor, exactly as clamp() would.
+ * es_fs() returns the step's FLOOR, right for body and wrong for a heading: design-system.md gives a
+ * heading a clamp() whose floor is `fs_base x ratio^n`, whose cap is `fs_h1_max / ratio^(3-n)`, and
+ * whose preferred term interpolates that step's floor into its cap between 430px and 1280px.
+ * Elementor cannot emit clamp(), so the same formula is RESOLVED at each breakpoint here (a build
+ * sized off the floor misses the approved h1 by ~40%). 430 / 850 are design-system.md's `--fluid`
+ * endpoints verbatim. Clamp order is CSS's, `max(floor, min(px, cap))`: a cap below the floor keeps
+ * the floor.
  *
  * tests/test-write-path.php checks this against design-system.md's measured table, not against
  * itself: 54.00 / 67.52 / 88.00 for editorial h1 and 67.77 / 88.54 / 120.00 for monumental.
@@ -934,16 +753,12 @@ function es_section( array $children, array $opts = array() ) {
 /**
  * Two-column section — THE SECTION IS THE ROW.
  *
- * The reflex for a split layout is `es_section( es_row( array( $left, $right ) ) )`, which
- * costs a whole container level whose only job is "be a flex row". The section can be that
- * row itself: `flex_direction:row` on the section, `column` at tablet/mobile, and the two
- * halves as DIRECT children. Same result, one level less, one less click in the editor.
+ * Instead of `es_section( es_row( array( $left, $right ) ) )` (a whole container level whose only job
+ * is "be a flex row"), the section is the row: `flex_direction:row` on the section, `column` at
+ * tablet/mobile, the two halves as DIRECT children.
  *
- * Confirmed on a live build (de la O Abogados, contacto: 8 containers/depth 4 -> 4/depth 2).
- *
- * A boxed container puts its flex on the generated `.e-con-inner`; the NATIVE flex controls
- * know that and target it correctly. Only hand-written `custom_css` has to say
- * `selector>.e-con-inner` (see references/gotchas.md).
+ * A boxed container puts its flex on the generated `.e-con-inner`; the NATIVE flex controls target it
+ * correctly. Only hand-written `custom_css` has to say `selector>.e-con-inner` (references/gotchas.md).
  *
  * $opts: bg, gap, align (flex_align_items), reverse (stack mobile in reverse), settings.
  */
@@ -1156,18 +971,12 @@ function es_eyebrow( $text, $color = null ) {
 /**
  * Section heading, ON the scale axis.
  *
- * This used to emit `title`, `header_size` and `_margin` and NOTHING else, which meant every
- * heading on every WordPress Orchestrator site inherited whatever size the active theme happened to have.
- * Measured before the fix: `es_h('T','h1')` differed between PERS-EDITORIAL and PERS-DIRECT only in
- * `_margin.bottom`, the largest heading the whole build could emit was a CTA banner h2, and
- * `display_lh` —— a token that exists to carry the scale axis —— had exactly one reader in the tree.
- * The chain promised the build would match an approved mockup rendering an h1 at 88px, and the
- * build emitted no h1 typography at all. This is that promise made keepable.
+ * Emits typography per breakpoint from the scale tokens (including `display_lh`), so a heading matches
+ * the approved mockup instead of inheriting whatever size the active theme has.
  *
- * $extra STILL WINS, and it wins WHOLE. A caller passing an explicit `typography_font_size` gets
- * that size at every breakpoint, not that size on desktop and this function's derived one on tablet
- * —— which would render a card title LARGER on a tablet than on a desktop. es_feature_card() is
- * exactly that caller: a card title is not a section h3 and says so with its own size.
+ * $extra STILL WINS, and WHOLE: a caller passing `typography_font_size` gets that size at every
+ * breakpoint, not that size on desktop and a derived one on tablet (a card title would render larger
+ * on tablet). es_feature_card() is such a caller.
  */
 function es_h( $text, $tag = 'h2', array $extra = array() ) {
 	$settings = array(
@@ -1493,93 +1302,47 @@ function es_feature_card( $icon, $title, $text, array $extra = array() ) {
 }
 
 /* -------------------------------------------------- end of the visual layer
-   Everything below is the save pipeline, the container audit, the sandbox and
-   the slug machinery. No styling value belongs here, and RT_BUILDER_HARDCODED_TOKEN
-   does not scan past this line.
+   Everything below is the save pipeline, the container audit, the sandbox and the slug machinery. No
+   styling value belongs here, and RT_BUILDER_HARDCODED_TOKEN does not scan past this line. The
+   boundary is a reservation: post ids below are concatenated (`'#' . $id`), never typed, because a
+   colour regex cannot tell a typed "#732" in a warning from a colour. The START boundary is the one
+   carrying weight today (without it the token declarations read as hardcoded literals).
 
-   That boundary is a RESERVATION, not a response to this file as it stands: every
-   post id below is concatenated (`'#' . $id`), never typed, so a hex scan of the
-   current machinery finds nothing. It is drawn because the day someone does type
-   a "#732" into a warning, a colour regex cannot tell it from a colour -- and the
-   cheap time to draw a boundary is before it is load-bearing. The START boundary
-   is the one carrying weight today: without it the token declarations themselves
-   read as 21 hardcoded literals.
-
-   What the region above now holds, and what it deliberately still does not:
-     - Every colour, family, shadow, easing curve, font size and spacing length
-       reads a token. The bare `ease` keyword is gone.
-     - Lengths written INSIDE the CSS blobs are not on the density axis:
-       `border-radius:12px`, `padding:10px`, `font-size:13.5px` and the motion
-       distances (`translateY(-4px)`, `scale(1.045)`) are still literals. They
-       are a real gap, not an oversight -- reported, not silently left.
-     - Body leading drifted the way the borders did: 1.65 / 1.60 / 1.58 / 1.55
-       across four helpers for one job, and es_h_scale() adds h3's flat 1.25 to
-       the pile. design-system.md pins body at 1.6 and h3 at 1.25, and says
-       neither is an axis, so collapsing the four body values belongs to whoever
-       owns that number, not to the axis task. `display_lh`, which IS an axis,
-       is tokenised and now has a reader on every h1 and h2 in the build instead
-       of the single one it had.
-     - `on_accent` is DERIVED now -- whichever of `text`/`bg` reads better on the
-       accent -- so the default primary button label went from white at 3.05:1,
-       a WCAG AA failure, to near-black at 5.86:1. What that fixes is the REST
-       state, and the state it does not fix is the one right next to it: the
-       primary button hovers to `accent_hover`, which was the accent darkened
-       18.5% on every ground, and darkening a fill LOWERS its contrast against a
-       dark label. Measured with the derived label -- paper 4.06:1, warm 3.82,
-       cool 3.92, ink 4.32 -- all four below AA. It was below AA before that
-       change too (white on #0C8A55 is 4.39:1), so it was a pre-existing gap
-       that moved rather than one that opened, and the honest fix named here was
-       that `accent_hover` darkens unconditionally when a button whose label is
-       dark needs its hover to go LIGHTER -- the shade table's decision, not
-       this one's.
-       PARTLY CLOSED. es_hover_of() now picks the direction by measuring against
-       the page, so the DARK grounds are fixed as a side effect: ink went 4.32 ->
-       7.63, ink-warm 4.29 -> 7.59, ink-cool 4.35 -> 7.69, because a lighter fill
-       under a near-black label is exactly what that label needed. The three
-       LIGHT grounds are unchanged and still below AA (paper 4.06, warm 3.82,
-       cool 3.92), and now the reason is stated rather than guessed: on a light
-       ground the derived label is dark AND the hover correctly darkens, so the
-       affordance and the label pull opposite ways. Closing that one really does
-       need a second on-colour for the hover state, or an accent with more room.
-       STILL REPORTED, and narrower than it was. */
+   Known gaps in the region above, reported and not hidden:
+     - Lengths INSIDE the CSS blobs (`border-radius:12px`, `padding:10px`, `font-size:13.5px`, motion
+       distances such as `translateY(-4px)`) are literals, not on the density axis.
+     - Body leading is 1.65 / 1.60 / 1.58 / 1.55 across four helpers and h3 is a flat 1.25.
+       design-system.md pins body at 1.6 and h3 at 1.25 and says neither is an axis, so collapsing them
+       belongs to whoever owns that number. `display_lh` (an axis) is tokenised and read by every h1
+       and h2.
+     - `on_accent` is DERIVED (whichever of `text`/`bg` reads better), but the primary button hovers to
+       `accent_hover`, and on the three LIGHT grounds (paper 4.06:1, warm 3.82, cool 3.92) the dark
+       label and the correctly darkening hover pull opposite ways: still below AA. The DARK grounds
+       pass (ink 7.63, ink-warm 7.59, ink-cool 7.69) because es_hover_of() lightens there. Closing the
+       light case needs a second on-colour for the hover state, or a roomier accent. */
 
 /**
  * Audit the container tree before it is written.
  *
- * Every extra container level is paid three times: one more wrapper <div> in the DOM, one
- * more block of generated CSS, and one more thing a human has to click through in the
- * Elementor editor to reach the widget they actually want. Nesting that buys nothing is the
- * fastest way a generated layout becomes one nobody wants to maintain.
+ * Every extra container level costs a wrapper <div>, a block of generated CSS and one more click in
+ * the editor. Reports, never blocks, in three severities:
  *
- * Reports, never blocks, and separates three severities on purpose:
+ *   offenders   — wrong with no argument: an empty container; a container wrapping a single WIDGET
+ *                 with no background/border/shadow/boxed width of its own; anything past depth 3.
+ *   optimizable — exactly one shape: a container whose only child is a GRID. A flex ROW child or a
+ *                 COLUMN child are offenders (both collapse). Kept OUT of `offenders` because
+ *                 `es_section( es_grid(...) )` is this repo's dominant idiom and merging the pair is
+ *                 not yet confirmed on a live site.
+ *   unaudited   — an elType this audit has no opinion about (pre-3.6 `section`/`column`, a kit
+ *                 import, a future element). Silence about a tree is not a verdict on it.
  *
- *   offenders   — wrong with no argument. An empty container; a container wrapping a single
- *                 WIDGET while carrying no background/border/shadow/boxed width of its own;
- *                 anything nested past depth 3.
- *   optimizable — exactly one shape: a container whose only child is a GRID. A container child
- *                 is not automatically this — a flex ROW child and a COLUMN child are both
- *                 offenders, because both collapse. The grid pair is kept OUT of `offenders`
- *                 deliberately: `es_section( es_grid(...) )` is this repo's own dominant idiom,
- *                 and an audit that screams on every normal build is one people learn to
- *                 ignore. Merging that pair into a single boxed grid container is plausible
- *                 but NOT yet confirmed on a live site — verify before doing it wholesale.
- *   unaudited   — an elType this audit has no opinion about: pre-3.6 `section`/`column`, a kit
- *                 import, a future element. It used to fall off the walk entirely, so a whole
- *                 legacy page measured 0 containers / 0 widgets / depth 0 and read as a clean
- *                 build. Silence about a tree is not a verdict on it.
- *
- * `unaudited` is deliberately a map `elType => {count, first}` rather than the `string[]` the
- * other two use: an imported kit page carries hundreds of legacy elements and would otherwise
- * bury the rows a human can act on. It is NOT an offender — the caller cannot fix an import by
- * rewriting an `es_*()` call — and never blocks, because `es_save_page()` reports mid-write.
- *
- * That last sentence is a rule with teeth, and it runs one level further than it looks. BELOW an
- * element this audit cannot judge, it makes no contextual claim either: depth accumulated above a
- * legacy wrapper is measured but never charged as an offender, an inherited boxed width is not
- * assumed, and a container whose ONLY child is an unjudgeable element is not judged at all. What a
- * container does wrong on its own — empty, or wrapping a lone widget for nothing — is still its
- * caller's to fix wherever it sits. The line is between a container's own defect, which the caller
- * wrote, and its context, which an import handed it.
+ * `unaudited` is a map `elType => {count, first}` (not `string[]`) so an imported kit page with
+ * hundreds of legacy elements does not bury the actionable rows. It is NOT an offender (the caller
+ * cannot fix an import by rewriting an `es_*()` call) and never blocks, because `es_save_page()`
+ * reports mid-write. BELOW an element the audit cannot judge it makes no contextual claim either:
+ * depth above a legacy wrapper is measured but not charged, an inherited boxed width is not assumed,
+ * and a container whose ONLY child is unjudgeable is not judged. A container's own defect (empty, or
+ * wrapping a lone widget for nothing) is still its caller's to fix wherever it sits.
  *
  * @return array{containers:int,widgets:int,max_depth:int,offenders:string[],optimizable:string[],unaudited:array<string,array{count:int,first:string}>}
  */
@@ -1788,18 +1551,11 @@ function es_container_earns_its_place( array $s, array $ctx = array() ) {
 /**
  * Say something out loud, once, through BOTH channels.
  *
- * The sandbox returns STDOUT from `execute-php`; `error_log()` goes to the server's PHP log,
- * which in practice nobody ever fetches. Every warning in this framework used to take only the
- * second road — including "this template will NOT appear on the front end", which is about the
- * loudest thing the system can have to say. Route every warning through here so a silent
- * failure becomes impossible by construction.
+ * The sandbox returns STDOUT from `execute-php`; `error_log()` goes to the server's PHP log, which
+ * nobody fetches. Route every warning through here so a silent failure is impossible by construction.
  *
- * ES_AUDIT_SILENT does NOT reach here, and the gate that used to is gone. That constant mutes the
- * audit REPORT — the routine per-page lines someone silences to keep stdout parseable for another
- * consumer. A warning is the opposite kind of message: it only exists because something went wrong
- * and nobody asked. Muting both with one switch meant "this template will NOT appear on the front
- * end" could be silenced as a side effect of wanting tidy output, leaving it only on the road the
- * docblock above already explains nobody travels.
+ * ES_AUDIT_SILENT does NOT reach here: it mutes the routine audit REPORT, while a warning exists only
+ * because something went wrong and must not be silenced as a side effect of wanting tidy output.
  */
 function es_warn( $msg ) {
 	error_log( 'WordPress Orchestrator: ' . str_replace( "\n", ' | ', $msg ) );
@@ -1859,28 +1615,20 @@ function es_container_report( array $elements, $label = '' ) {
 /**
  * One verdict line for the whole build.
  *
- * Call it at the END of the build function. Per-page lines scroll past; this is the line the
- * deploy step reads to decide whether the layout is shippable.
- *
- * THE LINE IS THE PRIMARY ARTIFACT; the integer is a convenience for a caller that wants to
- * branch. It used to be one integer covering two different worlds:
+ * Call it at the END of the build function; it is the line the deploy step reads. THE LINE IS THE
+ * PRIMARY ARTIFACT; the integer is a convenience for a caller that wants to branch:
  *
  *    0  — audited, clean.
  *   >0  — audited, N offenders to fix.
- *   -1  — NOTHING was audited: es_container_report() never ran. It used to return 0, so a build
- *         that forgot to call the audit reported what a passing build reports. It speaks through
- *         es_warn(), not the verdict writer: it warns about the audit, it does not judge a tree.
+ *   -1  — NOTHING was audited: es_container_report() never ran. Speaks through es_warn(), not the
+ *         verdict writer: it warns about the audit, it does not judge a tree.
  *   -2  — audited, but part of the tree is elTypes this audit cannot judge. Zero offenders over a
  *         tree nobody judged is not a pass either.
  *
- * `0 === clean` is preserved deliberately: callers already branch on it. The two failures get
- * NEGATIVE sentinels so no existing `if ( es_audit_summary() )` silently starts treating them as
- * success, and -2 wins over an offender count, because you cannot ask someone to fix what was
- * never judged.
- *
- * The line NAMES its verdict; the INTEGER carries it. Branch on the integer, never on a word found
- * in the line: the caller's page label is interpolated into the deep-nesting suffix, so a page can
- * put any text of its own in there — including the word a deploy gate might be looking for.
+ * `0 === clean` is preserved because callers branch on it; the failures are NEGATIVE so no existing
+ * `if ( es_audit_summary() )` treats them as success, and -2 wins over an offender count. Branch on
+ * the integer, never on a word found in the line: the caller's page label is interpolated into the
+ * deep-nesting suffix and can contain any text.
  */
 function es_audit_summary() {
 	global $es_audit_runs;
@@ -1953,30 +1701,21 @@ function es_audit_verdict( $rest, $code ) {
 /**
  * Save an Elementor layout onto a page, creating the page when missing.
  *
- * This docblock used to sit 375 lines up the file, immediately followed by ANOTHER docblock, so it
- * documented nothing at all while the comment inside this function pointed at it by name.
+ * `$tpl` defaults to `elementor_header_footer` (Elementor Full Width): full-bleed content that KEEPS
+ * the theme / Theme Builder header and footer. Do not switch the default to `elementor_canvas`: Canvas
+ * renders neither, so every page loses the global header (the "header on every page" house rule).
+ * Pass `elementor_canvas` explicitly only for a page that must have no chrome (standalone landing,
+ * coming-soon splash).
  *
- * `$tpl` defaults to `elementor_header_footer` (Elementor Full Width): full-bleed
- * content that KEEPS the theme / Theme Builder header and footer. Do not switch the
- * default to `elementor_canvas` — Canvas renders neither, so every page built with it
- * silently loses the global header, breaking the "header on every page" house rule.
- * Pass `elementor_canvas` explicitly for the rare page that must have no chrome
- * (a standalone landing, a coming-soon splash).
+ * Overwriting an existing page is destructive: writing `_elementor_data` through the meta API replaces
+ * the whole layout and leaves no revision. Every overwrite therefore parks the displaced state in a
+ * timestamped backup key first (see es_backup_page_state): the layout AND the page template, edit
+ * mode, template type, version and post fields. Overwriting a page not built with Elementor also
+ * warns: its `post_content` survives in the database and the backup but stops being what the visitor
+ * sees. The existing `post_status` is preserved (only pages this function creates are published).
  *
- * Overwriting an existing page is destructive and irreversible on its own: writing
- * `_elementor_data` through the meta API replaces the whole layout and leaves no
- * revision behind. Every overwrite therefore parks the displaced state in a timestamped
- * backup key first (see es_backup_page_state) — the layout AND the page template, the
- * edit mode, the template type, the version, and the post fields. Overwriting a page
- * that was not built with Elementor also warns: its `post_content` survives in the
- * database and in the backup, but stops being what the visitor sees.
- *
- * The existing `post_status` is preserved too. Forcing `publish` here used to push a
- * client's draft live as a side effect of rebuilding its layout; only pages this
- * function creates are published.
- *
- * `$action` is an out-parameter, passed by reference rather than returned because callers rely on
- * the return value being the page id. It reports FOUR outcomes, not two:
+ * `$action` is an out-parameter (by reference, because callers rely on the return value being the
+ * page id). It reports FOUR outcomes:
  *
  *   'created'         — the page did not exist and now does, at the slug that was asked for.
  *   'updated'         — an existing page was rewritten in place.
@@ -2087,20 +1826,12 @@ function es_save_page( $slug, $title, array $elements, $tpl = 'elementor_header_
 /**
  * Find a PAGE by slug — and only a page.
  *
- * `get_page_by_path( $slug, OBJECT, 'page' )` does not do what its third argument says. WordPress
- * folds attachments into that lookup, so a slug held by a media item comes back as a normal
- * result, with `post_type` = `attachment`. MEASURED on a live install, not reasoned: an attachment
- * at `nvm-solo-adjunto` was returned for a `'page'` lookup, and a page created for that same slug
- * was silently renamed `nvm-solo-adjunto-2`.
- *
- * Left unfiltered, every caller here treated that attachment as an existing page: es_save_page()
- * would take the UPDATE branch, rename the media item, write `_elementor_data` onto it and report
- * `updated` — no page created, a broken attachment, and every check green. The preflight would
- * list it as a page about to be overwritten, and the manifest would verify against it.
- *
- * So: one lookup, one type check, one place to be wrong. Callers that need "is ANYTHING holding
- * this slug" — which is a different question, because WordPress suffixes against the whole slug
- * space — must ask get_page_by_path() directly and say what they found.
+ * `get_page_by_path( $slug, OBJECT, 'page' )` folds attachments into the lookup: a slug held by a
+ * media item comes back as a normal result with `post_type` = `attachment` (measured on a live
+ * install). Unfiltered, es_save_page() would take the UPDATE branch on the attachment, rename it and
+ * write `_elementor_data` onto it, reporting `updated`. One lookup, one type check, one place to be
+ * wrong. Callers that need "is ANYTHING holding this slug" (WordPress suffixes against the whole slug
+ * space) must ask get_page_by_path() directly and say what they found.
  */
 function es_page_by_slug( $slug ) {
 	$found = get_page_by_path( $slug, OBJECT, 'page' );
@@ -2142,18 +1873,12 @@ function es_front_page() {
 /**
  * Point the site's front page at a page this build made, and PROVE it landed.
  *
- * Nothing in this framework used to touch `show_on_front` or `page_on_front` — zero occurrences
- * across the whole repository. So a home page could be built, saved, audited clean and handed over
- * while WordPress went on serving the blog at `/`: every automated check green, and the person who
- * found out was the client. That is this branch's thesis with a URL attached.
+ * Without this a home page can be built, audited clean and handed over while WordPress keeps serving
+ * the blog at `/`. The options are READ BACK rather than trusted: `update_option()` returns false both
+ * when the write fails and when the value did not change.
  *
- * The options are READ BACK rather than trusted. `update_option()` returns false both when the
- * write fails and when the value simply did not change, so its boolean cannot distinguish success
- * from failure in either direction; the only honest proof is asking the site what it now believes.
- *
- * Repointing an existing front page warns on purpose, naming the page that stops being shown. It
- * is not an error — it is the destructive part of the operation, and it is invisible otherwise:
- * the old home stays published, it just stops being the one anybody lands on.
+ * Repointing an existing front page warns on purpose, naming the page that stops being shown: the old
+ * home stays published, it just stops being the landing page.
  *
  * Returns the page id, or 0 when the front page is not what was asked for.
  */
@@ -2193,51 +1918,36 @@ function es_set_front_page( $slug ) {
 /**
  * Park EVERYTHING an overwrite is about to displace, in one timestamped backup meta key.
  *
- * Elementor stores a layout as one blob of post meta, so rewriting it through the API destroys
- * the previous design outright: no revision, no diff, nothing to roll back to. Copying the old
- * state aside first is the cheapest thing that makes an accidental overwrite recoverable.
+ * Elementor stores a layout as one blob of post meta, so rewriting it destroys the previous design
+ * (no revision, no diff). It takes the exact key list the caller is about to write (layout, page
+ * template, edit mode, template type, version), the post fields `wp_update_post()` touches, and
+ * `post_content`, which is not displaced but STOPS BEING RENDERED when a classic page becomes an
+ * Elementor one.
  *
- * This used to copy `_elementor_data` and nothing else, while the caller also rewrote the page
- * template, the edit mode, the template type and the version -- so restoring the layout onto a
- * template that had silently changed did NOT put the page back the way it was. The docblock said
- * "the previous layout", which was true and far narrower than the damage. It now takes the exact
- * key list the caller is about to write, plus the post fields `wp_update_post()` touches, and
- * `post_content`, which is not displaced but STOPS BEING RENDERED the moment a classic page
- * becomes an Elementor one.
+ * Must be called BEFORE the first write: it cannot tell an old value from a new one.
  *
- * Must be called BEFORE the first write. It cannot tell an old value from a new one.
- *
- * Backup key: `_es_page_backup_<Ymd-His>` (UTC), holding an array keyed by what it saved. Restore
- * by hand, key by key: meta keys go back through `update_post_meta()` (`_elementor_data` needs
- * `wp_slash()`), post fields through `wp_update_post()`. The leading underscore keeps backups out
- * of the custom-fields UI; they are never pruned, so a long-lived page accumulates one per
- * rebuild on purpose.
+ * Backup key: `_es_page_backup_<Ymd-His>` (UTC), an array keyed by what it saved; restore with
+ * es_restore_page_state(). The leading underscore keeps backups out of the custom-fields UI. They are
+ * never pruned by default (es_prune_backups()), so a long-lived page accumulates one per rebuild.
  *
  * Returns the key written, or '' when there was genuinely nothing to preserve.
  */
 /**
  * Put a page back the way a backup found it — and prove each piece landed.
  *
- * The backups were handed over as a list of keys and a sentence telling a human to restore them by
- * hand, key by key, remembering that `_elementor_data` needs `wp_slash()` and that the CSS has to
- * be regenerated afterwards. That is a recovery procedure nobody executes correctly at the moment
- * they need it, which is the moment something already went wrong. A backup nobody can restore is
- * not a backup.
+ * A by-hand restore (key by key, `_elementor_data` through `wp_slash()`, CSS regenerated afterwards)
+ * is a procedure nobody executes correctly at the moment something has gone wrong; hence this.
  *
- * Restoring is itself destructive, so it BACKS UP FIRST: the state it is about to overwrite gets
- * its own timestamped key, and a restore aimed at the wrong page or the wrong moment is recoverable
- * exactly like the write that caused it. Yes, that means restoring twice returns you to where you
- * started rather than stranding you.
+ * Restoring is destructive, so it BACKS UP FIRST (its own timestamped key): a restore aimed at the
+ * wrong page or moment is recoverable, and restoring twice returns you to where you started. Every
+ * piece is READ BACK, because `update_post_meta()` and `update_option()` return false on failure AND on
+ * an unchanged value and `wp_update_post()` can be filtered. It reports what it VERIFIED, never what it
+ * attempted, and a partial restore says which parts are missing.
  *
- * Every piece is READ BACK. `update_post_meta()` and `update_option()` share the same useless
- * boolean — false on failure and false on an unchanged value — and `wp_update_post()` can be
- * filtered out from under you. So this reports what it VERIFIED, never what it attempted, and a
- * partial restore says which parts are missing instead of returning a cheerful true.
+ * `$key` empty picks the NEWEST backup ("undo that").
  *
- * `$key` empty picks the NEWEST backup, which is the one a human means when they say "undo that".
- *
- * Returns `array( 'key' => string, 'restored' => array, 'failed' => array, 'safety' => string )`,
- * or an empty `restored` with a warning when there is nothing to restore.
+ * Returns `array( 'key' => string, 'restored' => array, 'failed' => array, 'safety' => string )`, or
+ * an empty `restored` with a warning when there is nothing to restore.
  */
 function es_restore_page_state( $post_id, $key = '' ) {
 	$post_id = (int) $post_id;
@@ -2414,38 +2124,21 @@ function es_backup_page_state( $post_id, array $meta_keys ) {
 /**
  * Settings written on the wrong element type, which Elementor accepts and then ignores.
  *
- * Elementor names the same visual control differently depending on where it lives: a CONTAINER
- * takes `padding`, a WIDGET takes `_padding`, because on a widget those are wrapper ("advanced")
- * controls and carry an underscore. Write the container form on a widget and the JSON saves, the
- * editor opens, the page renders — and the padding is simply not there. Nothing errors. It is the
- * quietest failure in the whole library: the setting is visible in the source and absent on screen,
- * so it gets re-added, re-saved and re-wondered-at.
+ * Elementor names the same control differently by location: a CONTAINER takes `padding`, a WIDGET
+ * takes `_padding` (wrapper "advanced" controls carry the underscore). The wrong form saves, opens and
+ * renders, and is simply not there. MEASURED on Elementor 4.2.2: a widget with `padding` or
+ * `flex_direction`, and a container with `_padding`, emit NO rule and the value appears nowhere in the
+ * generated stylesheet; the JSON keeps the setting forever and nothing warns.
  *
- * MEASURED on Elementor 4.2.2, not reasoned. A page was built with paired elements and its CSS
- * regenerated through `\Elementor\Core\Files\CSS\Post`, then read back:
+ * The key list is deliberately SHORT: `width` is both a container layout key AND a genuine widget
+ * control, so flagging it would invent offenders on correct code. When in doubt a key stays off.
  *
- *   widget with `_padding: 33px`     -> `.elementor-element-wbajo001{padding:33px 33px 33px 33px;}`
- *   widget with `padding: 44px`      -> NO rule at all; "44px" appears nowhere in the file
- *   container with `padding: 55px`   -> `--padding-top:55px; …`
- *   container with `_padding: 66px`  -> NO rule; "66px" appears nowhere
- *   widget with `flex_direction:row` -> NO rule at all
+ * Reports, never blocks, through the same offender channel as the rest of the walk.
  *
- * So the wrong form is not merely ignored at render time: it never reaches the stylesheet. Nothing
- * warns, nothing errors, and the JSON keeps the setting forever.
- *
- * The key list is deliberately SHORT. `width` is the reason for that caution: it is a container
- * layout key AND a genuine control on several widgets, so flagging it would invent offenders on
- * correct code — mutation proves it, by breaking three existing assertions. A check that cries wolf
- * is one people learn to skip, which is the failure this repo exists to remove, so when in doubt a
- * key stays off the list and the gap is real rather than papered over.
- *
- * Reports, never blocks, through the same offender channel as everything else in the walk.
- *
- * `$widget_type` is the widget's own name, and it exists because the first version of this check
- * invented offenders on TEN widget types. Introspecting all 128 that expose controls showed
- * `padding` is a real dimensions control on three of them and `background_background` a real choose
- * control on seven — so the rule "on a widget it must carry the underscore" was telling their
- * authors to break working code. See es_owns_control().
+ * `$widget_type` is the widget's own name: `padding` is a real dimensions control on three widget
+ * types and `background_background` a real choose control on seven (measured over the 128 widgets that
+ * expose controls), so "on a widget it must carry the underscore" would tell their authors to break
+ * working code. See es_owns_control().
  */
 function es_key_offenders( $type, array $settings, $widget_type = '' ) {
 	/* Container-only layout keys: a widget has no flex box of its own to configure. Re-measured
@@ -2481,26 +2174,19 @@ function es_key_offenders( $type, array $settings, $widget_type = '' ) {
 /**
  * Does this widget type own `$key` as a control of its own?
  *
- * The wrapper rule — "a container takes `padding`, a widget takes `_padding`" — is true of the
- * wrapper controls every widget inherits, and FALSE wherever a widget defines a control of its own
- * under the bare name. Measured by walking all 128 widget types that expose controls on Elementor
- * 4.2.2 + Pro 4.2.1 and asking each one, not by reading documentation: `padding` is a real
- * dimensions control on three, `background_background` a real choose control on seven. Without this
- * the checker invented an offender on ten widget types and told the author to "fix" code that was
- * already right, and an invented offender costs more than a missed one — the same reasoning that
- * keeps `width` off the list entirely, since ten widgets own that one for real.
+ * The wrapper rule ("a container takes `padding`, a widget takes `_padding`") holds for the wrapper
+ * controls every widget inherits and is FALSE where a widget defines a control under the bare name
+ * (measured over all 128 widget types on Elementor 4.2.2 + Pro 4.2.1: `padding` is a real control on
+ * three, `background_background` on seven, `width` on ten). An invented offender costs more than a
+ * missed one.
  *
- * Asks ELEMENTOR when Elementor is there, because a hardcoded roster goes stale on the next release
- * and goes stale silently. The measured list below is the fallback for the offline suite, where
- * there is no Elementor to ask; it is short, dated and derived, never guessed.
+ * Asks ELEMENTOR when it is there (a hardcoded roster goes stale silently); the measured list below is
+ * the fallback for the offline suite: short, dated, derived, never guessed.
  *
- * A type Elementor does not recognise returns no controls, and that is treated as "does not own it"
- * — failing towards reporting. An unregistered widget renders empty anyway, and the walk already
- * has its own row for that. An element with no `widgetType` reaches here as `''` and takes the same
- * path: MEASURED on 4.2.2, `get_widget_types('')` returns NULL and `get_widget_types(null)` returns
- * all 130, so the empty string is safe and only a null argument would be dangerous — the call site
- * passes `''`, never null. An early return for `''` was written first and removed: it changed no
- * outcome, so it was a branch nothing could test, which is how a check quietly stops checking.
+ * A type Elementor does not recognise returns no controls, treated as "does not own it" (fails towards
+ * reporting; an unregistered widget renders empty and the walk has its own row for it). An element with
+ * no `widgetType` arrives as `''`, never null: measured on 4.2.2, `get_widget_types('')` returns NULL
+ * and `get_widget_types(null)` returns all 130.
  */
 function es_owns_control( $widget_type, $key ) {
 	static $live = array();
@@ -2532,20 +2218,13 @@ function es_owns_control( $widget_type, $key ) {
 /**
  * The project manifest: what this framework knows about THIS site, between sessions.
  *
- * Nothing persisted anything. Every session re-derived the builder, the page ids, the slugs and
- * what had already been approved by asking again or by guessing, which is how the same page gets
- * rebuilt twice and how a second session overwrites what a first one agreed not to touch.
- *
- * It lives in a WordPress option and NOT in a file next to this library, for one reason: the
- * library is uploaded to a sandbox that the delivery phase deletes. State that dies with the
- * sandbox is not state. The option travels with the site, which is the only thing both sessions
- * are looking at.
+ * Without it every session re-derives the builder, page ids, slugs and approvals, which is how a page
+ * gets built twice. It lives in a WordPress option, not a file next to this library, because the
+ * library is uploaded to a sandbox the delivery phase deletes; the option travels with the site.
  *
  * Shape: `array( 'schema' => 1, 'updated' => 'Ymd-His', 'sections' => array( name => array(
- * 'at' => 'Ymd-His', 'data' => array( … ) ) ) )`. Sections are namespaced per concern so two
- * skills writing different things never overwrite each other's, which a flat map guarantees
- * they eventually will. The names are `es_manifest_sections()`, below — spelled out here for a
- * while, in a docblock nothing reads, next to two other copies that had already drifted from it.
+ * 'at' => 'Ymd-His', 'data' => array( … ) ) ) )`. Sections are namespaced per concern so two skills
+ * never overwrite each other's. The names are `es_manifest_sections()`, below.
  */
 function es_manifest_read() {
 	$raw = get_option( 'es_novamira_manifest' );
@@ -2561,22 +2240,16 @@ function es_manifest_read() {
 }
 
 /**
- * The five sections the manifest knows how to hold, in order. A flat list, not a writer map:
- * who writes a section is a fact about the tree, established by grepping for
- * `es_manifest_record( '<name>'` call sites, not by this function asserting it. A map baked
- * into the return value would be the code making a claim about itself that nothing re-reads —
- * the exact failure class this function exists to repair. Never claim what you did not read.
+ * The five sections the manifest knows how to hold, in order. A flat list, not a writer map: who
+ * writes a section is a fact about the tree (grep `es_manifest_record( '<name>'` call sites), not
+ * something this function should assert.
  *
- * Observed today: `pages` is written by `elementor-core` step 8 (slug => id); `site` is written
- * by that same step (`front_page_id`) and read back by `es_manifest_verify()`, below. `design`
- * is written by `es_record_style_resolution()`, below, once intake resolves a style; `delivery`
- * is written by nothing and read by nothing — named here so the remaining gap is countable, not
- * backfilled with a promise nothing keeps. `build` holds what the site was built WITH —
- * `es_build_fingerprint()`, below — and it is written by `elementor-core` SKILL.md step 8,
- * alongside `pages`. It answers one question a finished site cannot answer about itself: whether
- * the production it was moved to is running the same PHP, WordPress, Elementor and Elementor Pro
- * the QA pass ran against. An older Elementor on the destination refuses controls the build wrote,
- * and the page renders wrong while every other check stays green.
+ * Observed today: `pages` is written by `elementor-core` step 8 (slug => id); `site` by that same step
+ * (`front_page_id`) and read back by `es_manifest_verify()`; `design` by `es_record_style_resolution()`
+ * once intake resolves a style; `delivery` by nothing and read by nothing (named so the gap is
+ * countable). `build` holds what the site was built WITH (`es_build_fingerprint()`), written by
+ * `elementor-core` SKILL.md step 8 alongside `pages`; it lets a later check tell whether production
+ * runs the same PHP, WordPress, Elementor and Elementor Pro as the QA pass.
  */
 function es_manifest_sections() {
 	return array( 'site', 'design', 'pages', 'delivery', 'build' );
@@ -2585,20 +2258,12 @@ function es_manifest_sections() {
 /**
  * Drop the token cache so the NEXT build starts from the documented defaults.
  *
- * MEASURED, not assumed: `es_tokens()` caches in `static $t` and only recomputes when `$override`
- * is truthy — and `array()` is falsy. So a second build in the same process asking for
- * `es_tokens( array() )` does not get the defaults back. It gets the PREVIOUS build's palette,
- * silently, with every check reporting green. A run reporting success over work it never did:
- * the same disease as a page WordPress refused to create leaving no trace.
- *
- * It does not bite the path this library grew up on, where one build is one process and the cache
- * outlives nothing. It bites the moment builds are chained — and it contradicts the premise replay
- * rests on, because a build whose output depends on what ran BEFORE it in the same process is not
- * reproducible by definition.
- *
- * `es_tokens( $defaults )` was the existing workaround (tests/test-write-path.php restores that
- * way), but it only works for a caller already holding a copy of the defaults. This does not
- * require one: the defaults live in `es_tokens()` and stay there.
+ * `es_tokens()` caches in `static $t` and recomputes only when `$override` is truthy, and `array()` is
+ * falsy: a second build in the same process asking for `es_tokens( array() )` silently gets the
+ * PREVIOUS build's palette. That bites when builds are chained and breaks the premise replay rests on
+ * (output must not depend on what ran before it in the process). `es_tokens( $defaults )` works only
+ * for a caller holding a copy of the defaults (tests/test-write-path.php restores that way); this
+ * needs none.
  */
 function es_tokens_reset() {
 	return es_tokens( array(), true );
@@ -2607,21 +2272,15 @@ function es_tokens_reset() {
 /**
  * What this site was built WITH — the one fact a replay cannot re-derive later.
  *
- * Rebuilding a finished site against a second target reproduces it only when the SAME library
- * emitted both. Element ids are `md5( $seed . '-' . $n )` and therefore stable by construction,
- * which is exactly what makes the failure invisible: change the library between the local build
- * and the production replay and the ids stay plausible while the layout underneath them moved.
- * Nothing downstream would notice — the pages exist, the slugs resolve, every check reports green.
+ * Replaying a finished site against a second target reproduces it only when the SAME library emitted
+ * both. Element ids are `md5( $seed . '-' . $n )` and stable by construction, so a library change
+ * between the local build and the production replay leaves plausible ids over a moved layout.
  *
- * So the identity of the library is read from the library, never declared beside it. `sha1_file()`
- * on `__FILE__` cannot disagree with the code that is running, because it IS the code that is
- * running; a version constant maintained by hand is a claim, and claims drift. Same reason
- * `es_manifest_record()` re-reads what it wrote instead of trusting `update_option()`.
- *
- * A version this cannot read is recorded as `unknown`, never as a plausible default. The
- * distinction is load-bearing at comparison time: two invented `3.0.0`s MATCH, and declare
- * identical a pair nobody checked. `es_save_page()` does carry a `3.0.0` fallback, because
- * Elementor expects that meta to exist — a fingerprint expects nothing, it reads.
+ * The library's identity is read from the library, never declared beside it: `sha1_file()` on
+ * `__FILE__` cannot disagree with the running code, where a hand-kept version constant drifts. A
+ * version this cannot read is recorded as `unknown`, never a plausible default (two invented `3.0.0`s
+ * would MATCH and declare identical a pair nobody checked). `es_save_page()` does carry a `3.0.0`
+ * fallback because Elementor expects that meta; a fingerprint expects nothing, it reads.
  */
 function es_build_fingerprint() {
 	return array(
@@ -2704,22 +2363,15 @@ function es_record_style_resolution( $sty_id, $negative_brief, $rejected_tone ) 
 /**
  * Check the manifest against the site it claims to describe.
  *
- * A manifest nobody checks is a memory that lies. Between two sessions a page can be deleted,
- * renamed by hand, replaced by a plugin import, or repointed as the front page — and a second
- * session trusting the recorded ids would write into whatever now sits there.
+ * Between sessions a page can be deleted, renamed by hand, replaced by a plugin import, or repointed
+ * as the front page. Reads the `pages` section (`slug => post_id`) and the `site` section's
+ * `front_page_id`, and reports DRIFT rather than repairing it: only a human knows which truth was
+ * intended.
  *
- * Reads the `pages` section (`slug => post_id`) and the `site` section's `front_page_id`, and
- * reports DRIFT rather than repairing it: repairing would mean guessing which of the two truths
- * is the intended one, and the whole point is that only a human knows.
- *
- * The lines state what was OBSERVED and never why. An earlier version of the first one said
- * "somebody moved it outside this framework", which is a cause, and a live test proved it wrong the
- * first time it fired: the manifest had a key that was not a slug at all (`front` written into the
- * `pages` map, where the front page does not belong — its home is `site`'s `front_page_id`, read
- * above), and nobody had moved anything. A report whose
- * whole rule is "never claim what you did not read" cannot afford a confident wrong diagnosis in
- * its own rows — the reader who believes it goes hunting for an edit that never happened. So the
- * row gives the two facts side by side and leaves the inference where it belongs.
+ * The lines state what was OBSERVED and never why. A key that is not a slug at all (`front` written
+ * into the `pages` map, where the front page does not belong; its home is `site`'s `front_page_id`)
+ * once made a confident "somebody moved it" diagnosis wrong, so each row gives the two facts side by
+ * side and leaves the inference to the reader.
  *
  * Returns a list of human-readable drift lines, empty when the manifest still matches.
  */
@@ -2778,25 +2430,20 @@ function es_sandbox_dir() {
 /**
  * Is the sandbox actually RUNNING, or has it switched itself off?
  *
- * Read from the Novamira loader's own source, not guessed. It globs `*.php` in the sandbox and
- * `require_once`s every one of them on EVERY request — not "on upload", which is what this repo's
- * gotchas used to say. But before that it does:
+ * Read from the Novamira loader's own source. It globs `*.php` in the sandbox and `require_once`s
+ * every one on EVERY request (not "on upload"), but first does:
  *
  *     $is_safe_mode = file_exists( $crashed_file );
  *     if ( $is_safe_mode ) { return; }
  *
- * So a single `.crashed` file disables the WHOLE sandbox, silently. The only notice is an
- * admin_notices banner, which needs a logged-in manager looking at wp-admin — an agent working
- * through the connector never sees it.
+ * So a single `.crashed` file disables the WHOLE sandbox, silently; the only notice is an
+ * admin_notices banner an agent working through the connector never sees. On a site carrying
+ * `.crashed` NO `es_*` function is defined and every build dies on "undefined function" with nothing
+ * explaining why (measured on two live sites).
  *
- * Measured on two live sites: one carrying `.crashed` since a fatal, where NO `es_*` function was
- * defined at all, and one without it, where the library loaded normally. On the first, every build
- * this framework performs would die on "undefined function" with nothing explaining why.
- *
- * The catch worth stating: when the sandbox IS in safe mode, this function is not loaded either, so
- * it cannot be the thing that warns you. `project-context` reads the same file directly, before any
- * of this library exists. This one covers the case where the library is running and the crash
- * happened afterwards — and the delivery phase, which must not hand over a site whose sandbox is
+ * When the sandbox IS in safe mode this function is not loaded either, so `project-context` reads the
+ * same file directly, before any of this library exists. This one covers a crash that happens after
+ * the library is running, and the delivery phase, which must not hand over a site whose sandbox is
  * quietly off.
  *
  * Returns `array( 'safe_mode' => bool, 'reason' => string|null, 'files' => array )`.
@@ -2855,17 +2502,14 @@ function es_sandbox_report() {
 /**
  * Delete the build scripts from the sandbox, then READ IT BACK and report what survived.
  *
- * The audit's one security finding was that this directory is never cleaned. Everything this
- * framework uploads is executable PHP on a live site: helper libraries, page builders, whatever
- * was pasted in to debug something at 2am. None of it is needed once the pages exist.
+ * Everything this framework uploads is executable PHP on a live site (helpers, page builders,
+ * whatever was pasted in to debug); none is needed once the pages exist. The return value is what is
+ * STILL THERE, never what was deleted: a delete that failed on permissions and one that worked look
+ * identical from the return of unlink(). An empty array is the only proof of an empty sandbox.
  *
- * The return value is what is STILL THERE after the attempt, never what was deleted, because a
- * delete that silently failed on a permissions error and a delete that worked look identical from
- * the return of unlink() alone. An empty array is the only proof of an empty sandbox.
- *
- * Scoped hard on purpose: only regular files DIRECTLY inside the sandbox, only when realpath()
- * still resolves inside it, and only the extensions this framework uploads. It never recurses,
- * never follows a link out, and never removes the directory itself.
+ * Scoped hard: only regular files DIRECTLY inside the sandbox, only when realpath() still resolves
+ * inside it, only the extensions this framework uploads. It never recurses, never follows a link out,
+ * never removes the directory itself.
  */
 function es_sandbox_purge() {
 	$dir  = es_sandbox_dir();
@@ -2916,23 +2560,14 @@ function es_sandbox_purge() {
 /**
  * Does this sandbox file register WordPress hooks — that is, does it RUN on every visit?
  *
- * The purge deletes what this framework uploads, and until now "what this framework uploads" was
- * assumed to be build scaffolding: helper libraries and page builders, all of them useless once
- * the pages exist. Found on a real client site while cleaning one: `es-dlo-a11y.php` registered
- * `template_redirect` and wrapped every page in a `<main>` landmark, because the theme prints
- * none. It is not scaffolding, it is the site's accessibility, living in the one directory whose
- * job is to empty itself — and the delivery phase would have deleted it on hand-off day, silently,
- * with every check green. That is this branch's thesis with a screen reader attached.
+ * A hooking file is not build scaffolding (a real client's `template_redirect` hook wrapped every page
+ * in a `<main>` landmark the theme lacks; deleting it on hand-off would have silently removed the
+ * site's accessibility). So it joins what the purge refuses to touch, beside subdirectories and
+ * unknown extensions: it still BLOCKS delivery, it just needs a human. The fix is to move it into the
+ * child theme (this framework writes PHP outside the sandbox only with explicit human authorization obtained beforehand, naming the exact file and destination, and otherwise hands the move to a person) and delete it here afterwards, never before.
  *
- * So a file that hooks joins the list the purge already refuses to touch, next to subdirectories
- * and unknown extensions: it still BLOCKS delivery, it just needs a human. The right fix is always
- * to move it into the child theme — this framework writes PHP outside the sandbox only with explicit human authorization obtained beforehand, naming the exact file and destination, and otherwise hands the move to a person — and
- * delete it here afterwards, never before.
- *
- * Detected by reading the source, not by loading it: loading is what the sandbox already does on
- * every request and re-running it here would be a side effect inside a report. Comment lines are
- * skipped, the same rule the audit uses, so a docblock explaining a hook that was removed does not
- * keep a dead file alive forever.
+ * Detected by reading the source, not loading it (loading would be a side effect inside a report).
+ * Comment lines are skipped, the same rule the audit uses.
  *
  * Returns the hook names found, so the warning can NAME them; an empty array means safe to delete.
  */
@@ -2985,16 +2620,15 @@ function es_backup_keys( array $post_ids ) {
 /**
  * Does WordPress currently allow this site to be indexed?
  *
- * `blog_public` = 0 is the "discourage search engines" switch. Staging sites are built with it on
- * and nobody remembers to turn it off, so the site is delivered looking perfect and stays invisible
- * for weeks. It is one option and it decides whether any of the SEO work matters.
+ * `blog_public` = 0 is the "discourage search engines" switch; staging sites are built with it on and
+ * the delivered site stays invisible for weeks. It is one option and it decides whether any SEO work
+ * matters.
  *
- * Scope, stated rather than implied: this reads THAT OPTION and nothing else. It reports whether a
- * PHYSICAL robots.txt exists next to WordPress, because that file overrides the virtual one, but it
- * does NOT parse it — deciding what a robots file permits means honouring user-agent groups,
- * wildcards and Allow precedence, and a half-parser here would be a confident wrong answer. A
- * virtual robots.txt (WordPress's own, or a plugin's) is invisible from disk entirely. Fetching
- * `/robots.txt` over HTTP and reading it is `qa-review`'s job, not this function's.
+ * Scope: this reads THAT OPTION only. It reports whether a PHYSICAL robots.txt exists (it overrides the
+ * virtual one) but does NOT parse it (user-agent groups, wildcards and Allow precedence make a
+ * half-parser a confident wrong answer); a virtual robots.txt is invisible from disk. Confirming the
+ * served state (the page's `<meta name="robots">`, not `/robots.txt`, which a plugin can replace) is
+ * `qa-review`'s job, row 23.
  *
  * Returns `array( 'indexable' => bool, 'blog_public' => mixed, 'robots_file' => string|null )`,
  * where `robots_file` is the file's contents when one exists on disk.
@@ -3017,23 +2651,14 @@ function es_indexing_state() {
 /**
  * Move a page from one slug to another, and record where the old URL went.
  *
- * A rebuild that "renames" a page did neither of the two things a rename needs. Building the new
- * page at the new slug leaves the OLD page published and indexed: Google now has both, they
- * compete, and the stale one often wins because it has the history. Changing the slug in place
- * instead makes every existing inbound link — search results, the client's own printed material,
- * another site's link — 404 with nothing to follow.
+ * Building the new page at the new slug leaves the OLD page published and indexed (the two compete);
+ * changing the slug in place makes every inbound link 404. So this moves the page, VERIFIES the slug
+ * actually moved, and stores the old→new pair in the `es_slug_redirects` option.
  *
- * So this moves the page rather than duplicating it, VERIFIES the slug actually moved, and stores
- * the old→new pair in the `es_slug_redirects` option.
- *
- * Read this next part before trusting it: **nothing in this framework serves that option.** There
- * is no mu-plugin, no `template_redirect` hook, no rewrite rule — a grep for every redirect helper
- * across this repo returns nothing, which is exactly why the audit called slug hygiene missing.
- * The map is the record a redirect plugin or a snippet can be pointed at, and `qa-review` row 17
- * checks the old URLs against it. Until something reads it, the old URL still 404s, and this
- * function says so out loud on every successful move rather than letting a stored map read as a
- * working redirect. A half-measure that announces itself is worth having; one that does not is
- * the failure this whole branch exists to remove.
+ * **Nothing in this framework serves that option** (no mu-plugin, no `template_redirect` hook, no
+ * rewrite rule). The map is the record a redirect plugin or snippet can be pointed at, and `qa-review`
+ * row 17 checks the old URLs against it. Until something reads it the old URL still 404s, and this
+ * function says so out loud on every successful move.
  *
  * Returns the page id on a completed move, 0 otherwise.
  */
@@ -3117,13 +2742,9 @@ function es_migrate_slug( $from, $to ) {
 /**
  * Cross the slugs a build is about to write against what is already on the site.
  *
- * Nothing did this. The build discovered an existing page by trying to overwrite it, which means
- * the first time anybody learned that `/inicio` already belonged to somebody was after it had
- * stopped belonging to them. This is the report a human approves BEFORE the connector is handed
- * a single write.
- *
- * It prints as well as returning, and its printing is NOT gated on `ES_AUDIT_SILENT`: that switch
- * mutes the routine container report, and an approval artifact is not routine output.
+ * This is the report a human approves BEFORE the connector is handed a single write. It prints as well
+ * as returning, and its printing is NOT gated on `ES_AUDIT_SILENT` (an approval artifact is not
+ * routine output).
  *
  * Returns `array( 'rows' => [...], 'overwrites' => int, 'creates' => int )`. Each row carries
  * `slug`, `id`, `action` (`create`|`overwrite`), `status`, `is_elementor`, `is_front_page` and
@@ -3203,21 +2824,15 @@ function es_overwrite_preflight( array $slugs ) {
 /**
  * Is this build writing into a site whose sandbox is switched off?
  *
- * `.crashed` disables the WHOLE sandbox: the loader returns before its `require_once` loop, so not
- * one file in that directory runs on its own. A build survives that anyway, because `execute-php`
- * requires the builder explicitly and an explicit require does not go through the loader — so
- * every page can be written, audited and reported as done while the site sits in a degraded state
- * nobody resolved. `project-context` step 8 REPORTED safe mode and nothing acted on it; reporting a
- * blocker that the next step walks straight past is the shape this branch keeps removing.
+ * `.crashed` disables the loader, not an explicit `require_once`, so a build survives it: every page
+ * can be written and reported done on a site left degraded. `project-context` step 8 REPORTS safe
+ * mode; this makes the build itself say so.
  *
- * Once per request here, unlike the per-slug approval check, and the difference is the point: an
- * unapproved write is a fact about ONE page, so silence after the first would hide the rest. Safe
- * mode is one fact about the SITE, and repeating it per page would bury the pages under it.
- *
- * Warns rather than refuses, for the same reason nothing else in this file refuses: the way out of
- * a crashed sandbox is to run something, and a guard that blocks writes blocks the repair too.
- * What it must never do is stay quiet — `.crashed` is invisible from the connector, its only other
- * notice is a wp-admin banner, and an agent working through MCP never sees one.
+ * Once per request, unlike the per-slug approval check: an unapproved write is a fact about ONE page,
+ * while safe mode is one fact about the SITE and repeating it per page would bury the pages. Warns
+ * rather than refuses, because the way out of a crashed sandbox is to run something and a guard that
+ * blocks writes blocks the repair too. It must never stay quiet: an agent on MCP never sees the
+ * wp-admin banner.
  *
  * Returns the reason when safe mode is on, `''` otherwise, so a caller can read the verdict without
  * parsing stdout.
@@ -3249,23 +2864,18 @@ function es_safe_mode_check() {
 /**
  * Was THIS slug in a block somebody was shown?
  *
- * `es_overwrite_preflight()` prints the approval artifact, and until now printing it was the whole
- * mechanism. A build that never called it wrote exactly as before, and a build that preflighted
- * five slugs and then wrote six left the sixth one invisible — the page nobody approved is
- * precisely the page nobody knew about. The house rule existed; the runtime did not. That is the
- * same shape as the front page nothing set, and the reason this branch exists.
+ * `es_overwrite_preflight()` prints the approval artifact; this makes the runtime check it. A build
+ * that preflighted five slugs and wrote six would leave the sixth unapproved and unseen.
  *
- * Per slug, not once per request, deliberately: a per-request flag falls silent after the first
- * warning, and the write it would then hide is the unapproved one. Each unapproved write is its
- * own fact and says its own name.
+ * Per slug, not once per request: a per-request flag falls silent after the first warning and hides
+ * the unapproved write that follows.
  *
- * It WARNS and does not block. A build interrupted mid-flight — which the connector's ~20-minute
- * token makes routine — has to be resumable without re-approving the pages that already landed,
- * and refusing the write here would make the recovery path the one that cannot run. The backup
- * still happens either way; what is missing is the approval, and approval comes before the write
- * or it is not approval.
+ * It WARNS and does not block: a build interrupted mid-flight (the connector's ~20-minute token makes
+ * that routine) must be resumable without re-approving pages that landed, and refusing here would make
+ * the recovery path the one that cannot run. The backup still happens either way; approval comes
+ * before the write or it is not approval.
  *
- * Returns the verdict so a caller — and a test — can read it without parsing stdout.
+ * Returns the verdict so a caller (or a test) can read it without parsing stdout.
  */
 function es_approval_check( $slug ) {
 	global $es_preflight_slugs;
@@ -3285,16 +2895,12 @@ function es_approval_check( $slug ) {
 /**
  * Did a build that made pages leave WordPress serving the blog at `/`?
  *
- * `es_set_front_page()` was written, tested and documented, and nothing called it — so a build
- * could still finish with every check green and the client's front page untouched. A helper
- * nothing invokes is the same failure as a check that inspects nothing, one level up. This is
- * where it becomes visible, because `es_audit_summary()` is the one line the operator is told to
- * read before deploying.
+ * Makes a forgotten `es_set_front_page()` visible: `es_audit_summary()` is the one line the operator
+ * is told to read before deploying.
  *
- * Fires only when this run SAVED pages and `/` still serves the blog. It deliberately does not
- * judge WHICH page is the front page on a site that already has one: the options say which, never
- * whether it is the right one, and an audit that complains about every correct existing site is an
- * audit people learn to scroll past.
+ * Fires only when this run SAVED pages and `/` still serves the blog. It does not judge WHICH page is
+ * the front page on a site that already has one (the options say which, never whether it is right,
+ * and an audit that complains about every correct existing site gets scrolled past).
  *
  * Returns `'nothing-built'`, `'page'` or `'posts'` — the verdict, not the fact that it ran.
  */
@@ -3319,53 +2925,42 @@ function es_front_page_check() {
 /**
  * Does anything on this site actually SERVE the families `es_tokens()` names?
  *
- * `font_head` and `font_body` are written into every heading and every paragraph this framework
- * emits, as `typography_font_family`. NOTHING in the framework makes those families exist on the
- * site: there is no `@font-face`, no stylesheet enqueue, no font registration anywhere outside the
- * mockups — which decline it on purpose, because the Artifact CSP blocks external requests. So the
- * scale axis moves every SIZE correctly while the typeface may never arrive, and every gate stays
- * green either way. This is the same disease as the front page nothing set: a value written, an
- * effect never delivered, no channel saying so.
+ * `font_head` and `font_body` are written into every heading and paragraph as `typography_font_family`,
+ * but nothing in the framework makes those families exist on the site (no `@font-face`, no enqueue;
+ * the mockups decline it because the Artifact CSP blocks external requests). Sizes move correctly while
+ * the typeface may never arrive and every gate stays green.
  *
- * WHAT IT CAN HONESTLY SEE, and this is the whole design:
+ * WHAT IT CAN HONESTLY SEE:
  *
- *   - A self-hosted family. Asked of WordPress rather than guessed: `get_post_types()` is filtered
- *     for names containing "font", and every published post in those types is read for its title.
- *     Elementor Pro's Custom Fonts is one such type; so is every custom-fonts plugin that stores a
- *     family as a post. The type name is DERIVED and never enumerated, because a constant copied
- *     from one plugin's source is wrong for the next one and wrong after any rename — and a probe
- *     that silently matches nothing reports a clean site.
- *   - Google's CDN, and only as an ENQUEUE. Read from `$GLOBALS['wp_styles']` DIRECTLY and never
- *     through `wp_styles()`, which instantiates the registry as a side effect; a report may not
- *     change the thing it reports on. What counts is a handle this request put in `queue` or
- *     already printed into `done` — plus, transitively, their `deps`, which WordPress prints
- *     without ever queueing, so a Google stylesheet dragged in behind a theme's own is a request
- *     the queue alone never mentions — with the src read back out of `registered`. A REGISTRATION is
- *     not proof of anything: core registers `open-sans` against `fonts.googleapis.com` on every
- *     installation and enqueues it nowhere, so the older probe — which scanned `registered` —
- *     accused every site in the world, measured included (`open-sans` and `wp-editor-font`
- *     registered, `enqueued` and `done` both false, `elementor_google_fonts` = "0", zero
- *     `googleapis` in the served HTML, full RGPD warning printed).
+ *   - A self-hosted family. Asked of WordPress: `get_post_types()` is filtered for names containing
+ *     "font" and every published post in those types is read for its title (Elementor Pro's Custom
+ *     Fonts is one; so is any custom-fonts plugin that stores a family as a post). The type name is
+ *     DERIVED, never enumerated: a constant from one plugin is wrong for the next, and a probe that
+ *     silently matches nothing reports a clean site.
+ *   - Google's CDN, only as an ENQUEUE. Read from `$GLOBALS['wp_styles']` DIRECTLY, never through
+ *     `wp_styles()` (it instantiates the registry as a side effect; a report may not change what it
+ *     reports on). What counts is a handle this request put in `queue` or already printed into `done`,
+ *     plus transitively their `deps` (WordPress prints those without queueing them), with the src read
+ *     from `registered`. A REGISTRATION proves nothing: core registers `open-sans` against
+ *     `fonts.googleapis.com` on every installation and enqueues it nowhere, so scanning `registered`
+ *     accused every site.
  *
- * WHAT IT CANNOT SEE, said out loud instead of reported as clean: a build runs in a REST/CLI
- * request, where the front end's `wp_enqueue_scripts` never fires. So NOTHING is enqueued here
- * (measured: `queue_size` 0) and the question "does this site ask Google for the font?" has no
- * answer from inside a build. That is reported as `sin-confirmar` and WARNS — it is not a pass,
- * and it is not a finding either. A check that always passes is worse than no check; a check that
- * goes quiet because it was made stricter is worse still, because nobody notices. So `'alojada'`
- * needs BOTH halves: the families installed AND a front end that was actually looked at.
+ * WHAT IT CANNOT SEE: a build runs in a REST/CLI request where the front end's `wp_enqueue_scripts`
+ * never fires, so nothing is enqueued (measured: `queue_size` 0) and "does this site ask Google for
+ * the font?" has no answer from inside a build. That is reported as `sin-confirmar` and WARNS: not a
+ * pass and not a finding. So `'alojada'` needs BOTH halves: the families installed AND a front end
+ * that was actually looked at.
  *
- * Values that are not families are skipped: a generic stack (`serif`, `system-ui`) or a web-safe
- * face needs no serving path, and warning about `Georgia` would teach the operator to scroll past.
+ * Values that are not families are skipped: a generic stack (`serif`, `system-ui`) or a web-safe face
+ * needs no serving path.
  *
  * Returns `'sin-wordpress'` (no site to ask), `'sin-familias'` (the tokens name only generic or
  * web-safe faces), `'alojada'`, `'google'` or `'sin-confirmar'` — the verdict, not the fact that it
- * ran, so a caller and a test read it without parsing stdout.
+ * ran.
  *
- * The once-per-build latch is a GLOBAL and not a `static` like `es_safe_mode_check()`'s, and that is
- * deliberate rather than a slip: this is per-build state exactly like `$es_saved_pages` and
- * `$es_preflight_slugs`, and a static cannot be reset — so a suite could observe the warning or its
- * silence, never both, and half the behaviour would be untestable by construction.
+ * The once-per-build latch is a GLOBAL, not a `static` like `es_safe_mode_check()`'s, deliberately: it
+ * is per-build state like `$es_saved_pages` and `$es_preflight_slugs`, and a static cannot be reset, so
+ * a suite could observe the warning or its silence, never both.
  */
 function es_font_serving_check() {
 	global $es_font_said;
@@ -3427,26 +3022,16 @@ function es_font_serving_check() {
 		}
 	}
 
-	/* AN ENQUEUE IS THE PROOF; A REGISTRATION IS NOT, and that correction is why this block reads
-	   two lists instead of one. `registered` is what WordPress KNOWS ABOUT. `queue` and `done` are
-	   what THIS request actually asked the browser for. Core registers `open-sans` against
-	   fonts.googleapis.com on EVERY installation and enqueues it nowhere, so a scan of `registered`
-	   matched on every site in the world: measured on a live site, `open-sans` and `wp-editor-font`
-	   registered with `enqueued` and `done` both false, `elementor_google_fonts` = "0", zero
-	   occurrences of `googleapis` or `gstatic` in the served HTML — and the RGPD warning printed
-	   anyway. A warning that fires always dies the same death as a check that passes always, and
-	   this one fired while naming a legal exposure, which is worse: it teaches the operator not to
-	   believe the one line they were told to read. The handles live in `queue`/`done` and the src
-	   lives in `registered`, so the two lists are two halves of one fact. `done` counts as much as
-	   `queue`: once the styles have been printed the queue may be drained and `done` is all that
-	   still remembers what went out.
+	/* AN ENQUEUE IS THE PROOF; A REGISTRATION IS NOT, which is why this block reads two lists.
+	   `registered` is what WordPress KNOWS ABOUT; `queue` and `done` are what THIS request asked the
+	   browser for. The handles live in `queue`/`done` and the src in `registered`: two halves of one
+	   fact. `done` counts as much as `queue`: once styles are printed the queue may be drained and
+	   `done` is all that remembers what went out.
 
-	   `$mirado` is the other half of the same correction, and without it the fix would have moved
-	   the defect instead of removing it. A build runs in a REST/CLI request where the front end's
-	   enqueues never fire, so the queue here is EMPTY (measured: `queue_size` 0) and a probe reading
-	   it alone would never fire again on any site — silent, which is worse than loud and wrong. An
-	   unexercised registry is "I could not look", the same shape as `sin-wordpress`, and it may not
-	   be spent as a pass. Absence still proves nothing; only now the absence is named. */
+	   `$mirado` is the other half: a build runs in a REST/CLI request where the front end's enqueues
+	   never fire, so the queue is EMPTY and a probe reading it alone would never fire on any site. An
+	   unexercised registry is "I could not look" (the same shape as `sin-wordpress`) and may not be
+	   spent as a pass. Absence still proves nothing; now the absence is named. */
 	$google = '';
 	$mirado = false;
 	$reg    = isset( $GLOBALS['wp_styles'] ) ? $GLOBALS['wp_styles'] : null;
@@ -3583,45 +3168,34 @@ function es_font_system_faces() {
 /**
  * What does the front end ACTUALLY send to a visitor? The one question a build cannot answer.
  *
- * `es_font_serving_check()` reads the style registry, and from a build that registry has nothing
- * enqueued in it, so its honest verdict there is `'sin-confirmar'` FOREVER. A warning nobody can
- * ever clear gets scrolled past exactly like a check that always passes, only slower. This is the
- * other end of it: it reads the SERVED HTML, which is where the answer lives, and it is the only
- * thing in this framework that can honestly clear that "no lo he podido confirmar".
+ * `es_font_serving_check()` reads the style registry, which a build never populates, so its honest
+ * verdict there is `'sin-confirmar'` forever. This reads the SERVED HTML, where the answer lives, and
+ * is the only thing here that can clear that warning.
  *
- * A SEPARATE FUNCTION AND NOT A BRANCH OF THAT ONE, on purpose. That one is a report, and a report
- * may not change the thing it reports on; this makes an HTTP request. It belongs to `qa-review`,
- * the phase whose whole job is fetching what the site serves, and it is never called from a build
- * — nothing in this asset calls it, which is what makes it an ENTRY POINT rather than dead weight.
+ * A SEPARATE FUNCTION, not a branch of that one: that one is a report and a report may not change the
+ * thing it reports on; this makes an HTTP request. It belongs to `qa-review` and is never called from a
+ * build: nothing in this asset calls it, which makes it an ENTRY POINT rather than dead weight.
  *
- * THE FALSE CLEAN IS THE WHOLE DIFFICULTY, and it is the same asymmetry the registry check has.
- * A 401, a 500, a redirect to a holding page and an empty body all contain zero occurrences of
- * `googleapis` — so "I did not find it" is worth nothing until the bytes are known to be the
- * page's. It therefore demands a 200 AND a body that closes like a document, and anything short of
- * that is `'sin-confirmar'`, never `'limpio'`. What it still cannot rule out is a 200 that is a
- * real-looking maintenance page, which is why `'limpio'` is a statement about THE URL IT FETCHED
- * and not about the site: `$url` exists so `qa-review` can walk the pages it built instead of
- * absolving all of them from the root.
+ * THE FALSE CLEAN IS THE WHOLE DIFFICULTY. A 401, a 500, a redirect to a holding page and an empty
+ * body all contain zero occurrences of `googleapis`, so "I did not find it" is worth nothing until the
+ * bytes are known to be the page's. It demands a 200 AND a body that closes like a document; anything
+ * short is `'sin-confirmar'`, never `'limpio'`. A 200 that is a real-looking maintenance page can
+ * still fool it, so `'limpio'` is a statement about THE URL IT FETCHED, not the site: `$url` lets
+ * `qa-review` walk the pages it built.
  *
- * Both needles, because they are two requests: `fonts.googleapis.com` is the stylesheet, and
- * `fonts.gstatic.com` is the font file a bad self-hosting job or a stray `preconnect` still pulls
- * from the same third country.
+ * Two needles, two requests: `fonts.googleapis.com` is the stylesheet, `fonts.gstatic.com` the font
+ * file a bad self-hosting job or stray `preconnect` still pulls from the same third country.
  *
- * WHAT IT STILL CANNOT SEE, said here rather than left to be found: a font pulled in by JAVASCRIPT
- * at runtime leaves no Google URL in the served HTML, so this answers `'limpio'` for a page that
- * does ask Google the moment the browser runs the script. A server-side fetch cannot see what the
- * browser requests AFTERWARDS, and no amount of string-matching fixes that. The check that does see
- * it is `qa-review`'s house-rule row 21 — a fresh browser context listing the real outbound
- * requests. This function is the cheap pass that runs everywhere, not the last word.
+ * CANNOT SEE: a font pulled in by JAVASCRIPT at runtime leaves no Google URL in the served HTML, so
+ * this says `'limpio'` for a page that asks Google once the script runs. `qa-review` house-rules row
+ * 21 (a fresh browser context listing real outbound requests) sees it; this is the cheap pass.
  *
- * No once-per-build latch, unlike `es_font_serving_check()`: that one fires by itself from the
- * audit summary on every page, this one is called deliberately, per URL, by somebody who is
- * standing there waiting for the answer.
+ * No once-per-build latch, unlike `es_font_serving_check()`: this is called deliberately, per URL, by
+ * somebody waiting for the answer.
  *
- * Returns `'sin-http'` (no WordPress HTTP API here to call — nothing to ask, the same fact as
- * `'sin-wordpress'`), `'google'` (the served page asks Google: proof, and it WARNS), `'limpio'`
- * (a real page at that URL with zero requests to Google) or `'sin-confirmar'` (the request failed,
- * or answered with something that is not the page).
+ * Returns `'sin-http'` (no WordPress HTTP API to call), `'google'` (the served page asks Google: proof,
+ * and it WARNS), `'limpio'` (a real page at that URL with zero requests to Google) or `'sin-confirmar'`
+ * (the request failed, or answered with something that is not the page).
  */
 function es_front_font_probe( $url = '' ) {
 	if ( ! function_exists( 'wp_remote_get' ) || ! function_exists( 'home_url' ) ) {
@@ -3684,30 +3258,22 @@ function es_front_font_probe( $url = '' ) {
 /**
  * Carry the resolved tokens into the GLOBAL KIT, which is where they become the site.
  *
- * THE DEFECT THIS EXISTS FOR, measured on the first real build (LocalWP `prueba1`, 2026-09-09):
- * five pages reported `VEREDICTO LIMPIO`, the type scale was exact to the pixel — `--fs-h1-max`
- * reaching 120px with a 0.82 leading — and the `h1` rendered `rgb(110,193,228)` on a WHITE body.
- * That blue is Elementor's factory default. Not one resolved colour was on the page.
+ * This library paints only where a helper writes a colour explicitly (`es_btn()` writes
+ * `button_text_color`, `es_p()` writes `text_color`). The page ground, a heading with no `title_color`
+ * and every link inherit from the Elementor KIT, whose `_elementor_page_settings` is EMPTY on a fresh
+ * install: without this an h1 renders in Elementor's factory blue on a white body even though the type
+ * scale is exact (measured on the first real build). `references/knowledge.md` § "Global kit" says to
+ * set global colors there.
  *
- * The cause is not a bug in `es_tokens()`; it is the SCOPE of it. This library paints only where
- * a helper writes a colour explicitly — `es_btn()` writes `button_text_color`, `es_p()` writes
- * `text_color`. The page ground, a heading with no `title_color`, and every link inherit from the
- * Elementor KIT instead, and the kit's `_elementor_page_settings` on a fresh install is EMPTY.
- * `references/knowledge.md` § "Global kit" has said "set global colors there so the whole site
- * inherits" since the axes landed, and nothing did it — the same shape as the `var()` lesson in
- * `mockup-guide.md`: writing the explanation is not installing the gate.
- *
- * MERGES, never replaces. A real kit arrives carrying settings that are not ours — a container
- * width, a global typography, whatever a human set in Site Settings. Overwriting the array would
- * change the site behind the operator's back to deliver a colour.
+ * MERGES, never replaces: a real kit carries settings that are not ours (container width, global
+ * typography); overwriting the array would change the site behind the operator's back.
  *
  * The four ids are ELEMENTOR'S OWN and must not be renamed: every widget default resolves
- * `Global Colors > Primary` by `_id`, not by the title beside it. A prettier title is free; a
- * different id silently detaches every widget that was reading it.
+ * `Global Colors > Primary` by `_id`, not by the title beside it. A different id silently detaches
+ * every widget reading it.
  *
- * Returns the kit id, and it returns it only after READING THE WRITE BACK — `update_post_meta()`
- * returns false both when it failed and when the value was already there, so its return value
- * cannot tell "landed" from "did not". Zero means nothing was written, and it says why.
+ * Returns the kit id, and only after READING THE WRITE BACK (`update_post_meta()` returns false both
+ * on failure and when the value was already there). Zero means nothing was written, and it says why.
  */
 function es_kit_apply() {
 	$kit = (int) get_option( 'elementor_active_kit' );

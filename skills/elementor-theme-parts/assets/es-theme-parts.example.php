@@ -176,7 +176,7 @@ function es_save_theme_part( $slug, $title, $type, array $elements, array $condi
    rather than below it, which is the reverse of es-builder.php's layout. Its
    warnings build post ids by concatenating '#' with a variable, and its
    '(#' . $id . ')' strings are outside the scanned region for exactly the
-   reason es-builder.php:1962's "#732" is: a hex regex cannot tell a post id
+   reason the "#732" example at es-builder.php's `end of the visual layer` marker is: a hex regex cannot tell a post id
    from a colour, and neither one can reach the emitted data.
 
  * =====================================================================

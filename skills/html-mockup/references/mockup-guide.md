@@ -71,7 +71,7 @@ structure from any library maqueta of the same type, and nothing of its look.
 
 ### CSS lessons that travel into every derivation
 
-Paid for by the legacy chassis and still true for a derived file:
+Hold for every derived file:
 
 - `overflow-wrap:anywhere` only under the 1024 breakpoint, never on display type, logos, menu,
   buttons or prices; see § "An overflow check cannot see a chopped word" for the guard.
@@ -109,17 +109,16 @@ Dos advertencias pagadas:
 - **Mide la TINTA, no la caja.** Un `<p>` con relleno horizontal tiene caja de ancho completo y
   texto metido hacia dentro; informar de la caja llama amputación a un párrafo correctamente
   sangrado. La herramienta recorre los nodos de texto y toma un `Range` por nodo.
-- **Una herramienta nueva está equivocada hasta que un caso de control diga lo contrario.** De los
-  cinco defectos que ésta reportó la primera vez, tres eran bugs suyos. Y cuando la medición
-  discrepa del código, la medición es una hipótesis sobre el RENDER: se resuelve MIRANDO la página,
-  nunca ajustando la herramienta hasta que coincida con la fuente.
+- **Una herramienta nueva está equivocada hasta que un caso de control diga lo contrario.** Cuando la
+  medición discrepa del código, la medición es una hipótesis sobre el RENDER: se resuelve MIRANDO la
+  página, nunca ajustando la herramienta hasta que coincida con la fuente.
 
 El contraste se mide con `../assets/herramientas/color.php --maqueta <archivo-html>`, que re-mide
 cada par del `:root` contra 4,5:1 en texto y 3:1 en interfaz. Texto sobre fotografía:
 `../assets/herramientas/scrim.php --peor-pixel`.
 
-Hoy no invoca estas herramientas ninguna regla de auditoría sobre una maqueta de cliente: las
-ejecuta quien deriva la maqueta, antes de gastar un barrido. Dicho así y no disfrazado de puerta.
+Ninguna regla de auditoría invoca estas herramientas sobre una maqueta de cliente: las ejecuta quien
+deriva la maqueta, antes de gastar un barrido.
 
 ## Defectos de derivación
 
@@ -155,14 +154,12 @@ the veredicto re-derives, republishes and re-judges.
 ## Typefaces — name it AND embed it
 
 A maqueta that names a family it does not carry renders the fallback, and everyone who looks at it
-reviews the fallback while believing they reviewed the design. That is not hypothetical: every
-legacy mockup named real families and shipped none of them, so the editorial anchor was judged as
-Georgia and the direct one as Arial Black for as long as they existed. **No craft layer rescues the
-wrong typeface.**
+reviews the fallback while believing they reviewed the design. **No craft layer rescues the wrong
+typeface.**
 
 The bytes live in `assets/fonts/` — one `latin` woff2 per family, each with the `OFL.txt` its
 licence requires beside it. `_fonts.md` is the manifest: family, file, axes, licence, copyright,
-sha256 and source URL per row, and the reasoning behind each. Read it before adding a family.
+sha256 and source URL per row. Read it before adding a family.
 
 - `_fonts.php` holds the registry and emits the `@font-face` block (`nm_font_faces()`).
 
@@ -181,17 +178,14 @@ Rules that are checked rather than trusted (`RT_MOCKUP_FONT_NOT_EMBEDDED`, on ev
 - Never let `body` scroll horizontally. Carousels scroll inside their own `overflow-x:auto`.
 - Relative units and `max-width:100%`. Only the two breakpoints of rule 4.
 - At 767 and below the header carries exactly one burger control with `aria-expanded`, and the
-  desktop link list is hidden — the pre-library catalogue measured zero burger navs, which is what
-  happens when mobile is reflowed instead of drawn.
+  desktop link list is hidden (mobile is drawn, not reflowed).
 
 ## Container hygiene — the mockup's DOM is a blueprint
 
 The native build reproduces this file section by section, so every wrapper `<div>` here becomes an
-Elementor container there. A maqueta nested five levels deep teaches the build to nest five
-containers, and each level is then paid three times on the live site: a wrapper in the DOM, a block
-of generated CSS, and one more click between a human and the widget they opened the editor to
-change. The three rules below are builder-agnostic, and **this is where they start** — fixing them
-downstream in `elementor-core` means fixing them after the client already approved the shape.
+Elementor container there (each costs a DOM wrapper, generated CSS and an editor click). The three
+rules below are builder-agnostic, and **this is where they start**: fixing them downstream in
+`elementor-core` means fixing them after the client already approved the shape.
 
 1. **The section IS the row.** A two-column band is `<section>` with `display:flex` and the two
    halves as direct children — not a section wrapping a row `<div>` wrapping the halves. Stack at
@@ -204,9 +198,8 @@ downstream in `elementor-core` means fixing them after the client already approv
    screen readers and to Google Images, and maps to the exact container `es_photo()` exists to
    avoid.
 
-Target depth `section > grid|row > element`. Past three levels, have a reason.
-Mirror of `elementor-core/references/gotchas.md` → "Container hygiene", which carries the
-measured before/after from the build where these were found.
+Target depth `section > grid|row > element`. Past three levels, have a reason. Mirror of
+`elementor-core/references/gotchas.md` → "Container hygiene".
 
 ## Handoff
 On approval, freeze the maqueta and hand over, per page: the section ids in order — each a row of
@@ -233,11 +226,9 @@ directly. Shared exit contract: `0` pass, `1` a measured failure, `2` usage or e
 
 ## What the gallery cost to learn
 
-Every line here was paid for by a defect that shipped and had to be found by looking at a render.
-The measurement is kept beside the rule, because a rule without one is an opinion that the next
-reader is free to weigh against their own taste — and losing that argument is how most of these
-came back a second time. The audit gates named here police the library maquetas; on a client maqueta each
-rule survives only as long as somebody reads it.
+Each rule here comes from a defect that shipped and was found by looking at a render; the
+measurement stays beside the rule. The audit gates named here police the library maquetas; on a client
+maqueta each rule survives only as long as somebody reads it.
 
 ### An invalid `var()` does not degrade — it deletes the whole declaration
 
@@ -250,9 +241,8 @@ declaration at computed-value time, so the property takes its initial value and 
 
 **A mid-word chop produces exactly ZERO overflow, because the chop is what prevents it.** So a
 sweep that measures `scrollWidth - clientWidth` at every width reports a perfectly clean page whose
-headline reads `PIEZA / S QUE / NO SE / REPIT / EN`. Measured on a bespoke mockup at 320: an `h1`
-was chopped on all SEVEN pages while the overflow sweep returned 0 everywhere, and the reader found
-it in the render before the sweep did. **Two gates, not one** — the second is a `Range` per WORD,
+headline reads `PIEZA / S QUE / NO SE / REPIT / EN` (measured at 320: an `h1` chopped on all seven
+pages, overflow 0 everywhere). **Two gates, not one** — the second is a `Range` per WORD,
 counting `getClientRects()`; more than one rectangle means that word was split. `qa-review`
 house-rules row 32(e) carries it.
 
@@ -297,8 +287,7 @@ generous inside a container reads as a collision beside a photograph.
 
 ### Measure the render; do not reason about it
 
-Three hypotheses about a runaway heading were wrong before a measurement found the class collision
-in one attempt. Copy the page to `probe.html`, append a `<script>` that writes
+Reasoning about a runaway heading fails where one measurement succeeds. Copy the page to `probe.html`, append a `<script>` that writes
 `getBoundingClientRect()` and `getComputedStyle()` into `document.title`, and read it back with
 `chrome --headless=new --dump-dom`. Chrome clamps `--window-size` at about 500px, so narrow
 viewports go through `medir-geometria.mjs` instead.
@@ -311,16 +300,14 @@ chassis hold for every derived file.
 
 ### Section blueprints
 
-The legacy blueprints were per-`COMP-*` recipes (hero, services, FAQ, pricing…) with placeholder
-boxes (`.ph`) instead of photographs. A client maqueta derives its sections from the lienzo instead.
-Two of their rules outlived them and apply to every maqueta: **never a capture form in the hero** —
+A client maqueta derives its sections from the lienzo. Two rules from the retired section blueprints
+apply to every maqueta: **never a capture form in the hero** —
 the lead form belongs to the closing conversion band — and **a disclosure list is native
 `<details>/<summary>` with exactly the first row open**, the rule `RT_MOCKUP_DISCLOSURE_STATE` gates
 on every library maqueta.
 
 ### The section chassis
 
-The chassis offered three wrappers (`contained`, `row`, `bleed`). Two of its lessons hold for any
-derived file: **what bleeds is the colour, not the copy** — a band's text children take the content
+Two lessons from the retired section chassis hold for any derived file: **what bleeds is the colour, not the copy** — a band's text children take the content
 width back — and **a band needs its own vertical rhythm**, one column and a gap, or its heading sits
 on the first row of photographs.

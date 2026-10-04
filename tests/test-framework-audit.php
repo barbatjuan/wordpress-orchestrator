@@ -1086,7 +1086,7 @@ fx_rrmdir( $r_out2 );
 echo "--- prose naming a row type that does not exist is RT_ROWTYPE_PHANTOM ---\n";
 /* The class this closes, found live: es-builder.php's manifest docblock claimed
    `RT_REPLAY_NO_FINGERPRINT` FAILed while nothing recorded the fingerprint. That row did not exist
-   and could not have — the audit cannot read a live WordPress option (CONTRIBUTING.md:209) — so the
+   and could not have — the audit cannot read a live WordPress option (CONTRIBUTING.md, "Testing a change") — so the
    sentence was a verifier promised and never built, in a file whose docblocks no check reads.
    RT_ROWTYPE_UNDOCUMENTED already catches a row declared and undocumented; this is the mirror,
    and between them the pair is closed in both directions. */
