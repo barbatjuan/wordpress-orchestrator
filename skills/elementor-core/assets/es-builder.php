@@ -1830,7 +1830,7 @@ function es_save_page( $slug, $title, array $elements, $tpl = 'elementor_header_
 
 	/* One preflight covers ONE write per slug. Spent only now, after the write landed: an interrupted
 	   page keeps its approval, a page that landed needs a new preflight (it is a different overwrite). */
-	update_option( 'es_preflight_slugs', array_values( array_diff( es_preflight_approved(), array( $slug ) ) ) );
+	es_preflight_spend( $slug );
 
 	return $id;
 }
@@ -2488,6 +2488,12 @@ function es_sandbox_report() {
  * never removes the directory itself.
  */
 function es_sandbox_purge() {
+	/* The preflight approvals are build state, not site state: they must not stay on the client's site
+	   or travel in an export. Read back like every delete here. */
+	delete_option( 'es_preflight_slugs' );
+	if ( false !== get_option( 'es_preflight_slugs' ) ) {
+		es_warn( 'la opcion es_preflight_slugs (aprobaciones del build) no se pudo borrar y se queda en el sitio. Borrala a mano antes de entregar.' );
+	}
 	$dir  = es_sandbox_dir();
 	$real = realpath( $dir );
 	if ( ! $real || ! is_dir( $real ) ) {
@@ -2733,6 +2739,10 @@ function es_overwrite_preflight( array $slugs ) {
 	$make  = 0;
 
 	foreach ( $slugs as $slug ) {
+		if ( ! is_string( $slug ) || '' === $slug ) {
+			es_warn( 'el preflight ignora un slug vacio o que no es texto: no puede aprobarse ni escribirse.' );
+			continue;
+		}
 		$page = es_page_by_slug( $slug );
 		if ( ! $page ) {
 			$rows[] = array(
@@ -2784,15 +2794,62 @@ function es_overwrite_preflight( array $slugs ) {
 	   in this file is read back instead of trusted to its return value. */
 	$seen = array();
 	foreach ( $rows as $row ) {
-		$seen[] = $row['slug'];
+		$seen[ $row['slug'] ] = $row['id'];   /* the id the human saw; 0 = the page did not exist */
 	}
-	update_option( 'es_preflight_slugs', array_values( array_unique( array_merge( es_preflight_approved(), $seen ) ) ) );
-	if ( array_diff( $seen, es_preflight_approved() ) ) {
-		es_warn(
-			'el preflight se imprimio pero la opcion es_preflight_slugs no quedo escrita, asi que es_save_page() va a rechazar estos slugs. '
-			. 'Revisa permisos o un plugin que filtre las opciones.'
-		);
+	es_preflight_record( $seen, false );
+
+	return array(
+		'rows'       => $rows,
+		'overwrites' => $over,
+		'creates'    => $make,
+	);
+}
+
+/**
+ * The preflight for theme parts (header, footer, templates): what `es_overwrite_preflight()` is for
+ * pages. A theme part applies to EVERY page its conditions match, so it is the write with the
+ * widest reach and the same rule: nobody approves what they were not shown.
+ *
+ * `$parts` is `array( slug => array( new display conditions ) )`. Prints, per part, CREA or PISA,
+ * the existing template id, the conditions it has now against the new ones, and the other templates
+ * registered at the same locations (`es_theme_location_rivals()`). Records `tpl:<slug> => id seen`
+ * for `es_save_theme_part()`. Returns `array( 'rows' => [...], 'overwrites' => int, 'creates' => int )`.
+ */
+function es_theme_part_preflight( array $parts ) {
+	$rows = array();
+	$out  = '';
+	$over = 0;
+	$make = 0;
+	$seen = array();
+	foreach ( $parts as $slug => $conditions ) {
+		if ( ! is_string( $slug ) || '' === $slug ) {
+			es_warn( 'el preflight de theme parts ignora un slug vacio o que no es texto.' );
+			continue;
+		}
+		$conditions = array_map( 'strval', (array) $conditions );
+		$id         = es_gate_seen_id( 'tpl:' . $slug );
+		$seen[ 'tpl:' . $slug ] = $id;
+		if ( ! $id ) {
+			$make++;
+			$rows[] = array( 'slug' => $slug, 'id' => 0, 'action' => 'create', 'conditions' => array(), 'new_conditions' => $conditions, 'rivals' => array() );
+			$out   .= "\n  CREA       " . $slug . '  condiciones: ' . implode( ', ', $conditions );
+			continue;
+		}
+		$over++;
+		$now    = get_post_meta( $id, '_elementor_conditions', true );
+		$now    = is_array( $now ) ? array_map( 'strval', $now ) : array();
+		$rivals = es_theme_location_rivals( $id );
+		$rows[] = array( 'slug' => $slug, 'id' => $id, 'action' => 'overwrite', 'conditions' => $now, 'new_conditions' => $conditions, 'rivals' => $rivals );
+		$out   .= "\n  PISA       " . $slug . ' #' . $id . '  condiciones ahora: ' . ( $now ? implode( ', ', $now ) : '(ninguna)' )
+			. ' -> nuevas: ' . implode( ', ', $conditions );
+		foreach ( $rivals as $location => $others ) {
+			$out .= "\n             otras plantillas en " . $location . ': #' . implode( ', #', $others );
+		}
 	}
+	$out = 'WordPress Orchestrator preflight de theme parts: ' . count( $rows ) . ' — ' . $over . ' se pisan, ' . $make . ' se crean' . $out;
+	error_log( str_replace( "\n", ' | ', $out ) );
+	echo $out . "\n";
+	es_preflight_record( $seen, true );
 
 	return array(
 		'rows'       => $rows,
@@ -2850,32 +2907,106 @@ function es_safe_mode_check() {
  * Per slug, not once per request: a per-request flag falls silent after the first warning and hides
  * the unapproved write that follows.
  *
- * It BLOCKS: `es_save_page()` writes nothing for a slug this says no to. The record is the option
- * `es_preflight_slugs`, not a variable, because every connector call is a new PHP request and the
- * human's yes arrives between the preflight and the build. Resuming an interrupted build needs no
- * override: the slugs still unwritten are still approved, and a slug that already landed is
- * preflighted again, which is cheap and shows the human the page as it is now.
+ * It BLOCKS: `es_save_page()` and `es_save_theme_part()` write nothing for a key this says no to.
+ * The record is the option `es_preflight_slugs` (`slug => id the human saw`, 0 = it did not exist;
+ * `tpl:<slug>` for a theme part), not a variable, because every connector call is a new PHP request
+ * and the human's yes arrives between the preflight and the build. What was approved is what was
+ * SHOWN: if the page found at the slug now is not the one the preflight saw, the site changed and
+ * the answer is no. Resuming an interrupted build needs no override: the keys still unwritten are
+ * still approved, and one that already landed is preflighted again, which is cheap and shows the
+ * human the page as it is now. A corrected page after an audit verdict is the same case.
  *
  * Returns the verdict so a caller (or a test) can read it without parsing stdout.
  */
 function es_approval_check( $slug ) {
-	if ( in_array( $slug, es_preflight_approved(), true ) ) {
-		return true;
-	}
-	es_warn(
-		'"' . $slug . '" NO se escribio: no paso por es_overwrite_preflight(), asi que nadie ha visto el bloque que dice si esa '
-		. 'pagina ya existe, si es la portada, o si su contenido actual deja de renderizarse. Corre es_overwrite_preflight() con '
-		. 'los slugs que faltan, ensena el bloque y vuelve a guardar. Si el build se interrumpio, es lo mismo: preflight de los que quedan.'
-	);
+	if ( ! is_string( $slug ) || '' === $slug ) {
+		es_warn( 'se pidio escribir un slug vacio o que no es texto: NO se escribio nada.' );
 
-	return false;
+		return false;
+	}
+	$fn   = 0 === strpos( $slug, 'tpl:' ) ? 'es_theme_part_preflight()' : 'es_overwrite_preflight()';
+	$seen = es_preflight_approved();
+	if ( ! array_key_exists( $slug, $seen ) ) {
+		es_warn(
+			'"' . $slug . '" NO se escribio: no paso por ' . $fn . ', asi que nadie ha visto el bloque que dice si ya existe, '
+			. 'si es la portada, o si su contenido actual deja de renderizarse. Corre ' . $fn . ' con los slugs que faltan, '
+			. 'ensena el bloque y vuelve a guardar. Si el build se interrumpio, o corregiste una pagina ya guardada tras el '
+			. 'veredicto, es lo mismo: cada escritura necesita un preflight nuevo de ese slug.'
+		);
+
+		return false;
+	}
+	if ( es_gate_seen_id( $slug ) !== (int) $seen[ $slug ] ) {
+		es_warn(
+			'"' . $slug . '" NO se escribio: el sitio cambio desde el preflight (lo que hay en ese slug ya no es lo que se enseño). '
+			. 'Corre ' . $fn . ' otra vez, ensena el bloque nuevo y vuelve a guardar.'
+		);
+
+		return false;
+	}
+
+	return true;
 }
 
-/** The slugs a preflight has shown and no write has spent yet. */
+/** What the preflight recorded and no write has spent yet: `key => id seen`. */
 function es_preflight_approved() {
 	$list = get_option( 'es_preflight_slugs' );
 
 	return is_array( $list ) ? $list : array();
+}
+
+/** The id found NOW for a gate key: a page for a plain slug, a template for `tpl:<slug>`. 0 = none. */
+function es_gate_seen_id( $key ) {
+	if ( 0 === strpos( $key, 'tpl:' ) ) {
+		$found = get_posts(
+			array(
+				'post_type'      => 'elementor_library',
+				'name'           => substr( $key, 4 ),
+				'posts_per_page' => 1,
+				'post_status'    => 'any',
+			)
+		);
+
+		return $found ? (int) $found[0]->ID : 0;
+	}
+	$page = es_page_by_slug( $key );
+
+	return $page ? (int) $page->ID : 0;
+}
+
+/**
+ * Store one kind of preflight (pages, or theme parts), REPLACING the earlier entries of that kind:
+ * the run's slugs go in one call, so what an earlier build or session approved cannot linger. The
+ * other kind is kept. Read back: an approval that did not land makes every later save refuse.
+ */
+function es_preflight_record( array $seen, $theme_parts ) {
+	$keep = array();
+	foreach ( es_preflight_approved() as $key => $id ) {
+		if ( ( 0 === strpos( (string) $key, 'tpl:' ) ) !== $theme_parts ) {
+			$keep[ $key ] = $id;
+		}
+	}
+	$map = $keep + $seen;
+	update_option( 'es_preflight_slugs', $map );
+	if ( get_option( 'es_preflight_slugs' ) !== $map ) {
+		es_warn(
+			'el preflight se imprimio pero la opcion es_preflight_slugs no quedo escrita, asi que el guardado va a rechazar estos slugs. '
+			. 'Revisa permisos o un plugin que filtre las opciones.'
+		);
+	}
+}
+
+/** A write landed: its approval is spent (one preflight, one write). Read back, like every write here. */
+function es_preflight_spend( $key ) {
+	$seen = es_preflight_approved();
+	unset( $seen[ $key ] );
+	update_option( 'es_preflight_slugs', $seen );
+	if ( array_key_exists( $key, es_preflight_approved() ) ) {
+		es_warn(
+			'"' . $key . '" se escribio, pero su aprobacion sigue en la opcion es_preflight_slugs y no se pudo gastar: '
+			. 'otra escritura del mismo slug pasaria sin un preflight nuevo. Revisa permisos o una cache de opciones.'
+		);
+	}
 }
 
 /**
@@ -3313,6 +3444,8 @@ function es_kit_apply() {
 		array( '_id' => 'accent',    'title' => 'Acento',    'typography_typography' => 'custom', 'typography_font_family' => $t['font_body'] ),
 	);
 
+	/* Site-wide colours and typography, replaced: park the previous settings first (es_restore_page_state). */
+	es_backup_page_state( $kit, array( '_elementor_page_settings' ) );
 	update_post_meta( $kit, '_elementor_page_settings', $settings );
 
 	$back = get_post_meta( $kit, '_elementor_page_settings', true );

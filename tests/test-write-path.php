@@ -156,6 +156,7 @@ echo "--- el gemelo de theme parts falla del mismo modo, asi que se arregla igua
 wp_fake_reset();
 $GLOBALS['wp']['insert_ret'] = 0;
 $action                      = null;
+approve_parts( 'site-header' );
 $r                           = grab(
 	function () use ( $els, &$action ) {
 		return es_save_theme_part( 'site-header', 'Header', 'header', $els, array( 'include/general' ), $action );
@@ -169,6 +170,7 @@ ok( ! any_layout_written(), 'sin escribir layout' );
 wp_fake_reset();
 $GLOBALS['wp']['rename_to'] = 'site-header-2';
 $action                     = null;
+approve_parts( 'site-header' );
 $r                          = grab(
 	function () use ( $els, &$action ) {
 		return es_save_theme_part( 'site-header', 'Header', 'header', $els, array( 'include/general' ), $action );
@@ -185,6 +187,7 @@ wp_fake_reset();
 wp_fake_page( 'site-header' );
 $GLOBALS['wp']['update_ret'] = new WP_Error( 'db_update_error', 'no se pudo actualizar la fila' );
 $action                      = null;
+approve_parts( 'site-header' );
 $r                           = grab(
 	function () use ( $els, &$action ) {
 		return es_save_theme_part( 'site-header', 'Header', 'header', $els, array( 'include/general' ), $action );
@@ -198,6 +201,7 @@ ok( ! any_layout_written(), 'y NO piso el header que ya estaba puesto' );
 wp_fake_reset();
 wp_fake_page( 'site-header' );
 $action = null;
+approve_parts( 'site-header' );
 $r      = grab(
 	function () use ( $els, &$action ) {
 		return es_save_theme_part( 'site-header', 'Header', 'header', $els, array( 'include/general' ), $action );
@@ -517,6 +521,7 @@ $GLOBALS['es_pro'] = true;   /* a partir de aqui existe Elementor Pro: la rama e
 wp_fake_reset();
 $mio = wp_fake_page( 'site-header' );
 $GLOBALS['wp']['options']['elementor_pro_theme_builder_conditions'] = array( 'header' => array( $mio => array( 'include/general' ) ) );
+approve_parts( 'site-header' );
 $r = grab(
 	function () use ( $els ) {
 		$a = null;
@@ -541,6 +546,7 @@ $GLOBALS['wp']['options']['elementor_pro_theme_builder_conditions'] = array(
 ok( true === es_theme_conditions_registered( $mio ), 'la comprobacion de registro sigue diciendo que si, y tiene razon' );
 $riv = es_theme_location_rivals( $mio );
 ok( isset( $riv['header'] ) && array( 777 ) === $riv['header'], 'pero ahora se puede preguntar quien mas esta en esa ubicacion' );
+approve_parts( 'site-header' );
 $r = grab(
 	function () use ( $els ) {
 		$a = null;
@@ -554,6 +560,7 @@ ok( has( $r['out'], 'header' ), 'y la ubicacion en disputa' );
 /* Un sitio puede tener dos plantillas en una ubicacion a proposito, con condiciones distintas.
    Sin forma de decirlo, este aviso saltaba en cada build de un sitio CORRECTO, que es como un
    aviso se convierte en paisaje — el mismo argumento que el umbral de palabras que nadie cumplia. */
+approve_parts( 'site-header' );
 $r = grab(
 	function () use ( $els, $ajena ) {
 		$a = null;
@@ -564,6 +571,7 @@ ok( ! has( $r['out'], 'NO es la unica' ), 'una rival RECONOCIDA por quien llama 
 
 /* Pero reconocer es por ID, nunca por ubicacion: la que aparece DESPUES es un hecho nuevo. */
 $GLOBALS['wp']['options']['elementor_pro_theme_builder_conditions']['header'][999] = array( 'include/general' );
+approve_parts( 'site-header' );
 $r = grab(
 	function () use ( $els, $ajena ) {
 		$a = null;
@@ -1213,7 +1221,7 @@ ok( $r['ret'] > 0 && isset( $GLOBALS['wp']['by_slug']['a'] ) && '' === $r['out']
 /* La aprobacion sobrevive a la peticion (cada execute-php es una peticion nueva) y se gasta al
    escribir: reanudar un build es volver a pasar por el preflight los slugs que faltan. */
 ok( array() === get_option( 'es_preflight_slugs' ), 'la aprobacion vive en una opcion, no en memoria, y se gasta al escribir la pagina' );
-$GLOBALS['wp']['options']['es_preflight_slugs'] = array( 'pendiente' );
+$GLOBALS['wp']['options']['es_preflight_slugs'] = array( 'pendiente' => 0 );
 $r = grab(
 	function () use ( $els ) {
 		$a = null;
@@ -1239,7 +1247,7 @@ grab(
 		return es_save_page( 'fallida', 'F', $els, 'elementor_header_footer', $a );
 	}
 );
-ok( in_array( 'fallida', get_option( 'es_preflight_slugs' ), true ), 'una escritura que WordPress rechazo deja la aprobacion en pie' );
+ok( array_key_exists( 'fallida', get_option( 'es_preflight_slugs' ) ), 'una escritura que WordPress rechazo deja la aprobacion en pie' );
 
 /* Si la aprobacion no se pudo registrar, el preflight lo dice: nada se podra escribir despues. */
 wp_fake_reset();
@@ -1282,6 +1290,145 @@ $r = grab(
 	}
 );
 ok( has( $r['out'], 'seis' ) && 0 === $r['ret'], 'y la sexta, que nadie aprobo, se rechaza nombrandose' );
+
+/* La aprobacion es de lo que el humano VIO, no del slug. */
+$save = function ( $slug ) use ( $els ) {
+	return grab(
+		function () use ( $els, $slug ) {
+			$a = null;
+			return es_save_page( $slug, 'Nueva', $els, 'elementor_header_footer', $a );
+		}
+	);
+};
+wp_fake_reset();
+approve( 'x' );
+wp_fake_page( 'x', 'publish', 'Ajena', '<p>ajena</p>' );
+$r = $save( 'x' );
+ok( 0 === $r['ret'] && 'Ajena' === $GLOBALS['wp']['by_slug']['x']->post_title, 'el preflight dijo CREA y luego aparecio una pagina en ese slug: no se pisa' );
+ok( has( $r['out'], 'cambio' ) && has( $r['out'], 'es_overwrite_preflight' ), 'y el mensaje dice que el sitio cambio y que hay que repetir el preflight' );
+
+wp_fake_reset();
+wp_fake_page( 'y', 'publish', 'Vieja' );
+approve( 'y' );
+wp_fake_page( 'y', 'publish', 'Otra' );
+$r = $save( 'y' );
+ok( 0 === $r['ret'] && 'Otra' === $GLOBALS['wp']['by_slug']['y']->post_title, 'el id que vio el humano ya no es el que hay en ese slug: se rechaza' );
+
+wp_fake_reset();
+wp_fake_page( 'z', 'publish', 'Z' );
+approve( 'z' );
+unset( $GLOBALS['wp']['by_slug']['z'] );
+$r = $save( 'z' );
+ok( 0 === $r['ret'] && ! isset( $GLOBALS['wp']['by_slug']['z'] ), 'la pagina que el humano vio ya no existe: tampoco se crea otra a ciegas' );
+
+wp_fake_reset();
+approve( 'p', 'q' );
+approve( 'r' );
+ok( array( 'r' ) === array_keys( get_option( 'es_preflight_slugs' ) ), 'un segundo preflight REEMPLAZA al primero: las aprobaciones de antes no se quedan' );
+$r = $save( 'p' );
+ok( 0 === $r['ret'], 'y un slug del preflight anterior ya no escribe' );
+
+/* Gastar la aprobacion se relee, como todo lo demas. */
+wp_fake_reset();
+approve( 's' );
+$GLOBALS['wp']['option_ro'] = array( 'es_preflight_slugs' );
+$r = $save( 's' );
+ok( has( $r['out'], 'es_preflight_slugs' ) && has( $r['out'], 'AVISO' ), 'si la aprobacion gastada sigue en la opcion, se avisa' );
+
+/* Un slug que no es texto, o esta vacio, no es un slug. */
+wp_fake_reset();
+$r = grab(
+	function () {
+		return es_overwrite_preflight( array( '', 5, array( 'a' ), 'ok' ) );
+	}
+);
+ok( array( 'ok' ) === array_column( $r['ret']['rows'], 'slug' ) && has( $r['out'], 'AVISO' ), 'el preflight rechaza avisando los slugs vacios o que no son texto' );
+$r = $save( '' );
+ok( 0 === $r['ret'] && array() === $GLOBALS['wp']['posts'], 'guardar con slug vacio no escribe nada' );
+$r = $save( 5 );
+ok( 0 === $r['ret'] && array() === $GLOBALS['wp']['posts'], 'ni con un slug que no es texto' );
+
+/* La entrega no deja aprobaciones en el sitio del cliente. */
+wp_fake_reset();
+approve( 'k' );
+grab( 'es_sandbox_purge' );
+ok( false === get_option( 'es_preflight_slugs' ), 'es_sandbox_purge() borra las aprobaciones: no viajan en un export' );
+approve( 'k' );
+$GLOBALS['wp']['option_ro'] = array( 'es_preflight_slugs' );
+$r = grab( 'es_sandbox_purge' );
+ok( has( $r['out'], 'es_preflight_slugs' ), 'y si no se pudo borrar lo dice' );
+
+/* El kit tiene respaldo antes de reemplazar colores y tipografia de todo el sitio. */
+wp_fake_reset();
+$GLOBALS['wp']['options']['elementor_active_kit'] = 5;
+$antes = array(
+	'system_colors'   => array( array( '_id' => 'primary', 'title' => 'Viejo', 'color' => '#123456' ) ),
+	'container_width' => array( 'size' => 1140 ),
+);
+update_post_meta( 5, '_elementor_page_settings', $antes );
+es_kit_apply();
+$bk = backup_of( 5 );
+ok( is_array( $bk ) && isset( $bk['_elementor_page_settings'] ) && $antes === $bk['_elementor_page_settings'], 'es_kit_apply() respalda los ajustes anteriores del kit antes de escribir' );
+grab(
+	function () {
+		return es_restore_page_state( 5 );
+	}
+);
+ok( $antes === get_post_meta( 5, '_elementor_page_settings', true ), 'y se pueden recuperar con es_restore_page_state()' );
+
+/* THEME PARTS: el mismo cerrojo, con su propio preflight. */
+$els_tp  = array( es_split( array( es_h( 'a' ) ) ) );
+$save_tp = function () use ( $els_tp ) {
+	return grab(
+		function () use ( $els_tp ) {
+			$a  = null;
+			$id = es_save_theme_part( 'cabecera', 'Cabecera', 'header', $els_tp, array( 'include/general' ), $a );
+			return array( $id, $a );
+		}
+	);
+};
+wp_fake_reset();
+$r = $save_tp();
+ok( 0 === $r['ret'][0] && 'failed' === $r['ret'][1] && array() === $GLOBALS['wp']['posts'], 'un theme part sin preflight no escribe nada y falla como cualquier otro' );
+ok( has( $r['out'], 'es_theme_part_preflight' ) && has( $r['out'], 'cabecera' ), 'y el mensaje nombra el preflight de theme parts y el slug' );
+
+wp_fake_reset();
+$r = grab(
+	function () {
+		return es_theme_part_preflight( array( 'cabecera' => array( 'include/general' ) ) );
+	}
+);
+ok( 1 === $r['ret']['creates'] && has( $r['out'], 'CREA' ) && has( $r['out'], 'include/general' ), 'el preflight de theme parts dice CREA y las condiciones nuevas' );
+$r = $save_tp();
+ok( $r['ret'][0] > 0, 'con el preflight, el theme part se escribe' );
+$r = $save_tp();
+ok( 0 === $r['ret'][0], 'y la aprobacion se gasto: otra vez necesita preflight' );
+
+wp_fake_reset();
+approve_parts( 'cabecera' );
+wp_fake_page( 'cabecera', 'publish', 'Ajena', '', array(), 'elementor_library' );
+$r = $save_tp();
+ok( 0 === $r['ret'][0] && 'Ajena' === $GLOBALS['wp']['by_slug']['cabecera']->post_title, 'un theme part que aparecio despues del preflight no se pisa' );
+
+wp_fake_reset();
+$tid = wp_fake_page( 'cabecera', 'publish', 'Vieja', '', array( '_elementor_conditions' => array( 'include/singular' ) ), 'elementor_library' );
+$GLOBALS['wp']['options']['elementor_pro_theme_builder_conditions'] = array(
+	'header' => array(
+		$tid => array( 'include/singular' ),
+		999  => array( 'include/general' ),
+	),
+);
+$r = grab(
+	function () {
+		return es_theme_part_preflight( array( 'cabecera' => array( 'include/general' ) ) );
+	}
+);
+ok( 1 === $r['ret']['overwrites'] && has( $r['out'], 'PISA' ) && has( $r['out'], '#' . $tid ), 'sobre una plantilla existente dice PISA y su id' );
+ok( has( $r['out'], 'include/singular' ) && has( $r['out'], 'include/general' ), 'con las condiciones de ahora y las nuevas' );
+ok( has( $r['out'], '999' ) && has( $r['out'], 'header' ), 'y los rivales en esa ubicacion' );
+approve( 'solo-pagina' );
+$guardado = get_option( 'es_preflight_slugs' );
+ok( isset( $guardado['tpl:cabecera'] ) && isset( $guardado['solo-pagina'] ), 'los dos preflights conviven: cada uno reemplaza solo lo suyo' );
 
 /* La portada. */
 wp_fake_reset();

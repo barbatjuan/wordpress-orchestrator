@@ -199,6 +199,19 @@ preflight again on what is left; no override exists. Manifest sections now `site
 (old stored keys still read). `skills/project-context/references/connector.md` added; unknowns about
 the bridge marked "not recorded in this repo". Row 31(a) reports undeclared axes as N/A.
 write-path 561 → 576; golden fixture unchanged; audit `0 FAIL / 3 WARN`.
-Open owner decisions: `es_save_theme_part()` and kit / front page / slug move / restore are NOT
+Superseded below — was: `es_save_theme_part()` and kit / front page / slug move / restore are NOT
 gated (the preflight only describes pages); whether a spent approval should last; the stale
 `openspec/specs/manifest-section-contract` spec; `es_preflight_slugs` option is left on the site.
+
+Independent verification of 7a0f1be (2026-10-05, opus, read-only): pass with findings — no side
+effect before the refusal, no slug-normalisation bypass. One correction round applied (RED first):
+approvals store `slug => id seen` and are refused when the site changed since; each preflight
+replaces earlier entries of its kind; spending is read back; empty/non-string slugs refused; the
+approvals option is deleted in `es_sandbox_purge()`; `es_kit_apply()` backs up the kit first;
+theme parts gated through `es_theme_part_preflight()` + `tpl:<slug>`; connector.md contradictions
+fixed; orchestrator states which writers check; openspec manifest spec updated to three sections.
+write-path 576 → 600; golden fixture byte-identical; audit `0 FAIL / 3 WARN`.
+What the gate guarantees: `es_save_page()` and `es_save_theme_part()` write only what a preflight
+printed for the site as it still is. It cannot prove a human read the block; arbitrary PHP through
+the connector bypasses the library.
+Not gated on purpose: `es_set_front_page`, `es_migrate_slug`, `es_prune_backups`, `es_restore_page_state`.

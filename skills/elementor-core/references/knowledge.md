@@ -157,9 +157,13 @@ is for.
   `is_front_page`, `converts`. The last two cost the most and show up the least.
   It also RECORDS the slugs it printed, and `es_save_page()` reads that record through
   `es_approval_check($slug)`: a slug the block never covered is REFUSED — `'failed'`, return 0,
-  nothing written, not even the backup. The record is the option `es_preflight_slugs`, not a
-  variable: every connector call is a new PHP request and the human's yes comes between the
-  preflight and the build. A write that lands spends its slug, so one preflight covers one write.
+  nothing written, not even the backup — and so is one whose page is no longer the one the block
+  showed (it appeared, was replaced or was deleted since). The record is the option
+  `es_preflight_slugs` (`slug => id seen`), not a variable: every connector call is a new PHP
+  request and the human's yes comes between the preflight and the build. Each preflight REPLACES
+  the previous one, `es_sandbox_purge()` deletes it, and a write that lands spends its slug, so one
+  preflight covers one write. `es_theme_part_preflight( slug => conditions )` is the same gate for
+  `es_save_theme_part()` (key `tpl:<slug>`): create or overwrite, current vs new conditions, rivals.
   Resuming an interrupted build is the same call on the slugs still to write: the unwritten ones
   are still approved, a page that landed needs a new preflight, which is cheap and shows the human
   the page as it is now. There is no override. `es_approval_check()` returns the verdict.

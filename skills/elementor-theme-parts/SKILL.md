@@ -50,7 +50,9 @@ yourself and stop until you get it.
 2. Upload `assets/es-theme-parts.example.php` as `es-theme-parts.php` AFTER `es-builder.php` — it
    depends on it, and its own guard reports a missing dependency instead of fatalling.
 3. Build header and footer from the approved tokens. Read `references/gotchas.md` first.
-4. Save with `es_save_theme_part()`, then check `$action` and the rival list before believing it.
+4. Run `es_theme_part_preflight()` for every part and show the block (create or overwrite, current
+   vs new conditions, rivals). Save with `es_save_theme_part()`, which refuses a part it did not
+   list, then check `$action` and the rival list before believing it.
 5. Regenerate the conditions cache and VERIFY the template is in it. Then load a page and look.
 
 ## Output Contract

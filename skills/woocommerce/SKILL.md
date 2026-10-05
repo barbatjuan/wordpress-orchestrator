@@ -24,9 +24,8 @@ Use when `project-context` reports WooCommerce active and the task touches shop,
 cart, checkout, or my-account. Deploy through the builder-core pipeline.
 
 **Build gate — blocking.** This skill writes to a live WordPress site. Do not run until the user
-has given an explicit **yes** for THIS build. Reached directly instead of routed by the
-orchestrator? Ask for that yes yourself before the first write and stop until you get it.
-On an existing site, confirm every page/template you would overwrite by name first.
+has given an explicit **yes** for THIS build. Reached directly, not routed? Ask for that yes yourself before the first write and stop until you get it.
+Show the `es_theme_part_preflight()` block for every template first; unlisted ones are refused.
 
 ## Hard Rules
 - Native commerce widgets only; no custom JS. Style the CTA to the accent color with

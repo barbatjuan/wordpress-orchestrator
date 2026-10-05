@@ -70,9 +70,9 @@ pending from you.
 **The build gate is a hard stop.** After the mockup is approved and before ANY write to
 WordPress, the agent stops and asks for an explicit yes for that build — expect it to block
 there. No mockup approval + no explicit yes → no native build. On an existing site it also
-confirms each page overwrite by name. The library backs this up: `es_save_page()` writes nothing
-for a page that did not first go through `es_overwrite_preflight()` (it can prove the preview ran,
-not that you read it). The mockup itself is the approval gate and the visual
+confirms each page overwrite by name. The library backs this up: `es_save_page()` and
+`es_save_theme_part()` write nothing for a page or header/footer that did not first go through
+its preflight, or that changed since (it can prove the preview ran, not that you read it). The mockup itself is the approval gate and the visual
 contract; it is never imported into the builder.
 
 Three kinds of skill: **knowledge** (`web-templates`, `ux-design-system` — decide, touch

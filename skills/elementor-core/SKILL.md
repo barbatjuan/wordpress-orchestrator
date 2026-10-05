@@ -49,14 +49,14 @@ yes yourself and stop until you get it.
   (no verifier: nothing can tell a guessed control name from a researched one until the build silently renders nothing.)
 
 ## Execution Steps
-1. `es_manifest_read()`, then `es_manifest_verify()`. Any drift stops here: trusting an id the site
-   disagrees with overwrites what the last session left alone.
+1. `es_manifest_read()`, then `es_manifest_verify()`. Any drift stops here: a stale id overwrites
+   the last session's work.
 2. Copy `assets/es-builder.php` into `wp-content/novamira-sandbox/`; override `es_tokens()` — the
-   one edit point — with the approved maqueta's `:root` values. Left at its
-   defaults, every site ships the same green. Upload dependencies FIRST: a missing one stops the
+   one edit point — with the approved maqueta's `:root` values. Defaults
+   ship every site the same green. Upload dependencies FIRST: a missing one stops the
    run.
 3. `es_overwrite_preflight()` with EVERY slug this run writes; show the block, get the yes
-   (any other slug is refused).
+   (any other slug is refused; a corrected page needs a new preflight).
    Moving an existing page is `es_migrate_slug()`, never a second page at the new slug.
 4. Write one `es_build_<page>()` per page → `es_save_page(...)`, which defaults to the
    `elementor_header_footer` template so the global header/footer survive. Header, footer and

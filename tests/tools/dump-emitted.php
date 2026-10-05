@@ -84,6 +84,15 @@ function wp_get_attachment_url( $id ) {
  */
 $GLOBALS['es_emitido'] = array();
 $GLOBALS['es_slugs']   = array();
+/* The build gate reads and writes one option (es_preflight_slugs): an in-memory store is enough. */
+$GLOBALS['es_opts'] = array();
+function get_option( $name, $default = false ) {
+	return array_key_exists( $name, $GLOBALS['es_opts'] ) ? $GLOBALS['es_opts'][ $name ] : $default;
+}
+function update_option( $name, $value ) {
+	$GLOBALS['es_opts'][ $name ] = $value;
+	return true;
+}
 function wp_insert_post( array $args ) {
 	$id                        = 5000 + count( $GLOBALS['es_slugs'] );
 	$GLOBALS['es_slugs'][ $id ] = isset( $args['post_name'] ) ? $args['post_name'] : '';
@@ -305,6 +314,15 @@ function es_dump_hermanos() {
 	   times. That is pipeline noise, not emitted data. Discarded, not pinned —
 	   and the coverage guard below asserts on the DATA, never on the noise. */
 	ob_start();
+	/* The gate, the way a real caller passes it: one preflight naming the four parts the siblings save. */
+	es_theme_part_preflight(
+		array(
+			'es-header'         => array( 'include/general' ),
+			'es-footer'         => array( 'include/general' ),
+			'es-shop-archive'   => array( 'include/product_archive/shop_page' ),
+			'es-single-product' => array( 'include/product' ),
+		)
+	);
 	es_build_theme_parts();
 	es_build_shop_template();
 	es_build_product_single();

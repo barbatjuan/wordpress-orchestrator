@@ -113,6 +113,19 @@ function approve() {
 	);
 }
 
+/** Same, for theme parts: the preflight is `es_theme_part_preflight()`, one condition each. */
+function approve_parts() {
+	$parts = array();
+	foreach ( func_get_args() as $slug ) {
+		$parts[ $slug ] = array( 'include/general' );
+	}
+	grab(
+		function () use ( $parts ) {
+			return es_theme_part_preflight( $parts );
+		}
+	);
+}
+
 function wp_fake_page( $slug, $status = 'publish', $title = 'existente', $content = '', array $meta = array(), $type = 'page' ) {
 	$w   = &$GLOBALS['wp'];
 	$id  = $w['next_id']++;
@@ -285,6 +298,15 @@ function get_option( $name, $default = false ) {
  * the boolean either misses a failure or invents one, which is why the only honest check is to
  * read the option back.
  */
+function delete_option( $name ) {
+	$w = &$GLOBALS['wp'];
+	if ( in_array( $name, $w['option_ro'], true ) ) {
+		return false;
+	}
+	unset( $w['options'][ $name ] );
+
+	return true;
+}
 function update_option( $name, $value ) {
 	$w = &$GLOBALS['wp'];
 	if ( in_array( $name, $w['option_ro'], true ) ) {

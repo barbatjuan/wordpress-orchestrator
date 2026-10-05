@@ -282,7 +282,8 @@ design.md scope is fully satisfied; work resumes at PR 0b.
       CTA wrap at 430).
 - [ ] 2c.4 `qa-review/references/house-rules.md` row 37: count `widgetType:"html"` + `custom_css` in
       `_elementor_data` (Divi: `et_pb_code` + custom CSS) against the Ficha's ceilings resolved via
-      `es_manifest_record('design', slug)`; no slug recorded = UNVERIFIED, never PASS. Table now ends
+      `es_manifest_record('design', slug)` [RETIRED, do not apply: the `design` manifest section no longer exists,
+      `es_manifest_sections()` is `site`, `pages`, `build`]; no slug recorded = UNVERIFIED, never PASS. Table now ends
       at 37 (`RT_HOUSERULES_ROW_PHANTOM` makes the count load-bearing).
 - [ ] 2c.5 `agents/wordpress-orchestrator.md` + `_wordpress-orchestrator-framework.md`: route map with
       the Claude Design step, Ruta a medida, and the Veredicto gate before client approval.

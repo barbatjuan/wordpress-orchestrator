@@ -2,6 +2,9 @@
 /**
  * Example - product archive template (Elementor Pro Theme Builder).
  * Uses the native archive-products widget so WooCommerce owns the loop.
+ *
+ * Flow: es_theme_part_preflight( array( 'es-shop-archive' => array( 'include/product_archive/shop_page' ) ) ),
+ * show the block, get the yes, then build. es_save_theme_part() refuses a part the preflight did not list.
  */
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;

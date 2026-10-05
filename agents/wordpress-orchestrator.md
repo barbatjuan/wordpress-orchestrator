@@ -241,9 +241,10 @@ Do not report the job as done while any of the four is unmet.
   database and backup but stops rendering it), and a **draft** (rebuilding it must not publish it).
   Every overwrite is recoverable (`es_backup_page_state()` parks the whole displaced set) but
   recovery is manual, so approval comes first. The library enforces the ORDER: `es_save_page()`
-  refuses (`'failed'`, returns 0, writes and backs up nothing) any slug the preflight did not list,
-  and one preflight covers one write per slug.
-  (verifier: `tests/test-write-path.php` proves `es_save_page()` writes nothing for a slug that did not pass `es_overwrite_preflight()`; that a human READ the block stays unprovable.)
+  refuses (`'failed'`, returns 0, writes and backs up nothing) any slug the preflight did not list
+  or whose page changed since it, and one preflight covers one write per slug. Header, footer and
+  templates have the same gate through `es_theme_part_preflight()` and `es_save_theme_part()`.
+  (verifier: `tests/test-write-path.php` proves `es_save_page()` and `es_save_theme_part()` write nothing for a slug that did not pass its preflight; that a human READ the block stays unprovable.)
 - **The home page is not the front page until you say so.** Building a page called "Inicio" does
   nothing to what WordPress serves at `/`: a fresh install shows the blog, an existing site shows
   what it showed before. Call `es_set_front_page($slug)` once the home page is saved, read what it
@@ -329,8 +330,11 @@ A native build is NOT atomic, and partial failure is expected — the connector 
 (`elementor-core/references/gotchas.md`). Assume you will be interrupted.
 - **Stop; do not retry blindly.** Re-running a half-finished sequence overwrites pages that already
   landed. Establish what actually got written before touching anything again. To resume, run
-  `es_overwrite_preflight()` on the slugs still to write: the approval of a page that landed is
-  spent, so the library refuses a blind re-run, and the block shows the human the site as it is now.
+  `es_overwrite_preflight()` (pages) or `es_theme_part_preflight()` (header, footer, templates) on
+  what is still to write: an approval is spent by the write that lands and dies if the site changed
+  since the block, so those two writers refuse a blind re-run and the block shows the human the
+  site as it is now. Only they check. The kit (`es_kit_apply()`, backed up first), the front page,
+  a slug move, a prune and a restore (itself backed up first) are not gated.
 - **A crashed sandbox does not stop a build.** `.crashed` disables the loader, not an explicit
   `require_once`, so the next run writes every page and reports success over a site nobody repaired.
   `project-context` step 8 reports it and `es_save_page()` warns on the first write of any run that
