@@ -995,7 +995,7 @@ if ( file_exists( $hr_file ) ) {
 		}
 	}
 	foreach ( explode( "\n", slurp( $hr_file ) ) as $i => $line ) {
-		/* "rows 13-15", "rows 11, 16, 22, 23, 24 and 28", "row 22's reason" all have to parse, so
+		/* "rows 13-15", "rows 11, 16, 22, 23 and 24", "row 22's reason" all have to parse, so
 		   the number list is captured whole and every integer in it is checked. An en dash is a
 		   range in this file's prose, and both its endpoints exist when the range is honest. */
 		if ( ! preg_match_all( '/\brows?\s+((?:\d+)(?:\s*(?:,|and|-|\x{2013}|\x{2014})\s*\d+)*)/u', $line, $cm ) ) {

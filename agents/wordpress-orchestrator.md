@@ -175,31 +175,29 @@ plugin (a rebuild against production would lose every hand edit, plugin setting,
 and the menu). The copying is not this framework's job. **Its job is the three things no migration
 plugin knows about the site it is packaging**, each of which ships a site that looks perfect (detail
 and checks in the qa-review row named):
-1. **The sandbox is gone BEFORE the export runs.** It lives inside wp-content, so the plugin
-   packages it and `es-builder.php` lands on the client's server reachable by URL. Ordering is the
-   rule: emptied, then used once more for a fix, is a sandbox that ships. Row 33.
+1. **The sandbox is gone BEFORE the export runs.** It lives inside wp-content, so the plugin ships
+   it, `es-builder.php` included. Emptied, then used once more for a fix, still ships. Row 33.
 2. **Indexing travels.** `blog_public` at zero is carried into production verbatim. Set it before the
    export, confirm it after over HTTP. Row 23.
 3. **The destination's runtime is not the one QA ran on.** An older Elementor there refuses controls
    the build wrote. Row 34 reads the fingerprint recorded at hand-off.
 
-After the import, save Settings → Permalinks once on production (the rewrite rules were never in the
-export; without it every URL except the front page returns 404). Row 25.
+After the import, save Settings → Permalinks once on production as a precaution: the rewrite rules
+were never in the export. The first real migration answered 200 on every route without it
+(All-in-One flushes them itself), so row 25 measures the outcome.
 `elementor-core/references/migration.md` carries the detail and the order.
 
 ## Delivery phase — blocking, and it is not "we are done"
 The build ending is not the job ending. Four things must be TRUE before you tell anyone the site is
 delivered, and each one is a read, never a claim:
 1. **The sandbox is empty.** Call `es_sandbox_purge()`, then show what `es_sandbox_report()` returns.
-   The purge refuses subdirectories, unknown extensions and **any file that registers a WordPress
-   hook** (those still block, they need a human): move a hooking file into the child theme, then
-   delete it here — never the other way round. Row 22 has the full procedure, including the proof on
-   a transferred site (production request, status code only).
-2. **The backup keys are handed over.** `es_backup_keys($ids)` returns the restore keys per page,
-   newest last; the key and the restore call are the deliverable, not "there is a backup". Row 23.
-3. **The indexing state is declared out loud.** `es_indexing_state()` reads `blog_public`; zero is
-   "discourage search engines", which every staging site starts with. Never hand over SEO work
-   without stating this value. On a transferred site SET it locally before the export. Row 23.
+   Whatever it leaves, a hooking file included, blocks and needs a human. Row 22 has the procedure,
+   the hooking-file remedy and the proof on a transferred site.
+2. **The backup keys are handed over.** The restore key per page and the restore call are the
+   deliverable, not "there is a backup". Row 23.
+3. **The indexing state is declared out loud.** State the `blog_public` value (zero = "discourage
+   search engines", where every staging site starts) before handing over any SEO work; on a
+   transferred site set it locally before the export. Row 23.
 4. **Nothing is claimed that was not read.** Anything you could not verify is UNVERIFIED and named.
 
 Do not report the job as done while any of the four is unmet.
@@ -218,32 +216,22 @@ Do not report the job as done while any of the four is unmet.
 - **Logo → home**: the header logo always links to the homepage, on every page.
   (verifier: `qa-review` house-rule row 4 takes the anchor around the logo widget on every page and compares its href to the live home URL.)
 - **Navbar is real navigation**: exactly ONE menu (never a second nav or a duplicated item), every
-  item is navigable, and the header stays visible/sticky and consistent across every page. No
-  dead links, no page that loses its header.
-  (verifier: `qa-review` house-rule row 5 counts nav-menu widget instances; rows 6, 7 and 8 cover dead links, header presence and the sticky setting.)
-- **Reuse header/footer** verbatim across all pages of the site (one global component each).
-  (verifier: `qa-review` house-rule row 9 hashes the header and footer fragment of every page and requires all header hashes and all footer hashes to match.)
-- **Fewest containers that do the job.** Never a container inside a container "just because". One
-  earns its place only if it groups 2+ children, carries its own background / border / shadow,
-  changes direction at a breakpoint, or boxes a lone widget no ancestor already boxes — padding
-  alone never earns it, that padding belongs on the widget. Target depth is
-  `section → grid|row → widget`; going past three levels needs a stated reason. Three named rules
-  cover almost every offence, each with a helper that makes the flat version the easy one: **the
-  section IS the row** (`es_split()`, never `es_section( es_row(...) )`), **a width does not justify
-  a container** (`es_wide()`), and **a photo is a widget, not a background** (`es_photo()`).
-  `es_container_report()` prints the count and the offenders on every page AND every Theme Builder
-  template; `es_audit_summary()` closes the build with one verdict line; `qa-review` row 11 re-runs
-  the same audit against what landed. **Require the verdict in the builder skill's report** —
-  `VEREDICTO LIMPIO` is the only one you hand off. `A CORREGIR` means fix it; `NO AUDITABLE` means
-  part of that tree is elTypes the audit cannot judge, so zero offenders proves nothing; `SIN AUDITAR`
-  means the audit never ran, which is a wiring bug reported as a result.
+  item navigable, the header sticky on every page.
+  (verifier: `qa-review` house-rule row 5 counts nav-menu widget instances; rows 6 and 8 cover dead links and the sticky setting.)
+- **Reuse header/footer** verbatim across all pages of the site (one global component each); no page loses its header.
+  (verifier: `qa-review` house-rule row 7 requires the header and footer on every page and hashes their fragments, all header hashes and all footer hashes matching.)
+- **Fewest containers that do the job.** No container inside a container "just because": the rule
+  and its three flat-shape helpers are `elementor-core`'s, row 11 re-runs the audit on what landed,
+  and going past three levels needs a stated reason. **Require the verdict in the builder skill's
+  report** — `VEREDICTO LIMPIO` is the only one you hand off. `A CORREGIR` means fix it;
+  `NO AUDITABLE` means part of that tree is elTypes the audit cannot judge, so zero offenders proves
+  nothing; `SIN AUDITAR` means the audit never ran, which is a wiring bug reported as a result.
   (verifier: `qa-review` house-rule row 11 re-runs the container audit against what actually landed and lists every offender by path.)
-- **State that only exists in this conversation is state that dies.** Read the manifest before
-  asking, verify it before trusting an id, and record each phase into its own section, so a second
-  session never builds a page twice or overwrites what the first agreed to leave alone.
+- **State that only exists in this conversation is state that dies.** Manifest first (see the top of
+  this file), so a second session never builds a page twice or overwrites what the first agreed to
+  leave alone.
   (verifier: `qa-review` house-rule row 24 runs es_manifest_verify() and requires an empty drift list before any recorded id is reused.)
-- **Delivery is a phase, not a sentence.** The sandbox is emptied and RE-READ, the backup keys
-  are handed over, and the indexing state is stated. See the delivery phase above; it blocks.
+- **Delivery is a phase, not a sentence.** See the delivery phase above; it blocks.
   (verifier: `qa-review` house-rule row 22 requires an empty sandbox listing, and row 23 requires the backup keys and the indexing value in the hand-off.)
 - **Nobody approves a write they have not been shown.** Before the connector is handed a single
   write, run `es_overwrite_preflight($slugs)` with every slug the build is about to touch and put
@@ -292,12 +280,11 @@ Do not report the job as done while any of the four is unmet.
   or to the ruta a medida, never to a repaint. Colours and type go to Elementor's global Site
   Settings, never to custom CSS.
   (no verifier: the Enfoque check lives in the web-templates decision record, which no file here can read; the reviewer compares that record with the ficha.)
-- **Nativo o nada: a build stays under the Plantilla's techo nativo.** The ficha declares
-  `html_widgets_max` and `css_custom_max`, zero unless it states another number with its reason. A
-  section that needs an HTML widget or a custom CSS rule is redesigned in the lienzo, or its
-  exception is written in the ficha before building — never discovered afterwards. CSS the library's own
-  helpers emit carries a marker and is not counted; hand-written CSS is. A build above its ceiling is
-  not done.
+- **Nativo o nada: a build stays under the Plantilla's techo nativo** (`html_widgets_max` and
+  `css_custom_max`, zero unless the ficha states another number with its reason; row 37 counts them).
+  A section that needs an HTML widget or a custom CSS rule is redesigned in the lienzo, or its
+  exception is written in the ficha before building — never discovered afterwards. A build above its
+  ceiling is not done.
   (verifier: `qa-review` house-rule row 37 counts HTML widgets and custom CSS rules in the stored data of every page and template against the ficha's ceilings.)
 - **No client approval without a veredicto.** The client sees the maqueta only after `blind-judges`
   and `visual-verification` wrote its veredicto — every page at 430, 768 and 1280 — and a change
@@ -321,9 +308,8 @@ Do not report the job as done while any of the four is unmet.
 - Keep ONE thin thread. Delegate real work; synthesize short hand-offs between skills.
 - Every builder-core skill carries its own `references/gotchas.md`. Have the skill read it
   before its first deploy.
-- The sandbox domain is usually policy-blocked from the browser, so verification is
-  server-side (fetch compiled CSS/HTML, grep expected selectors). Report what was verified
-  that way and state plainly that visual confirmation needs the user. Never claim a visual result you did not see.
+- Verification is server-side (`qa-review` Hard Rules): report what was verified that way and state
+  plainly that visual confirmation needs the user. Never claim a visual result you did not see.
 - Elementor path is battle-tested. The Divi path is a **scaffold, not a peer**: `divi-core/assets/`
   is empty, there are no `di_*` helpers, and its `gotchas.md` holds no confirmed entries. Divi +
   WooCommerce is undefined — every widget, control key and asset in `woocommerce` is Elementor-Pro

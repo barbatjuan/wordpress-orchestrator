@@ -153,9 +153,18 @@ Next: owner decides PR vs merge; then `install.ps1 --clean` to update `~/.claude
 ## Second pass (owner, 2026-10-05: "dale")
 Branch `chore/kiss-pass-2` from main 5f740d9. The first pass left the orchestrator at 359 lines and
 `house-rules.md` at 51 KB with no rows merged.
-- [ ] T5 (delegated writer) `house-rules.md`: merge rows that are the same check run once (e.g. the
+- [x] T5 (delegated writer) `house-rules.md`: merge rows that are the same check run once (e.g. the
   header rows, the three Lighthouse rows, 22/33 overlap) only where criterion and procedure can be
   stated together without losing any PASS/FAIL/UNVERIFIED condition. Numbers stay stable: a merged
   row keeps the lowest number, absorbed numbers disappear, every citation of an absorbed number is
   repointed. Orchestrator: every house rule it restates becomes a pointer to its row once the row is
   confirmed to hold the whole rule; what only the orchestrator knows stays.
+
+T5 (2026-10-05, delegated writer): only two groups met the same-check test — rows 7+9 → 7 and
+11+28 → 11 (42 → 40 rows, numbers stable, citations repointed). Deliberately NOT merged: 13/14/15
+(one Lighthouse run but different owners, and performance is non-blocking), 22/33 (different phase),
+header rows 2/4/5/6/8/10 (different criteria or builder scope), 29/30, 38/39/40. Orchestrator
+359 → 345 lines: restated rules became pointers to rows 11, 22, 23, 37 after confirming each row
+holds the whole rule. Permalinks/404 wording corrected to what migration.md measured.
+house-rules 50,902 → 50,080 bytes. The duplication left is small; further size would need cutting
+rules, not narration. Audit `0 FAIL / 3 WARN`; tests unchanged and green.

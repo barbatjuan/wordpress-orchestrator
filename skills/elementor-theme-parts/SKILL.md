@@ -33,7 +33,7 @@ yourself and stop until you get it.
   looked at and chose to keep goes in `$known_rivals` — by ID, so one appearing later still warns.
   (verifier: `es_theme_location_rivals()` names every other template registered at the same location, and `es_save_theme_part()` warns for each one the caller has not acknowledged.)
 - **ONE header and ONE footer, byte-identical on every page.** A per-page copy is how they drift.
-  (verifier: `qa-review` house-rule row 9 hashes the header and footer fragment of every page and requires all hashes to match.)
+  (verifier: `qa-review` house-rule row 7 hashes the header and footer fragment of every page and requires all hashes to match.)
 - **The header is real navigation**: exactly one menu, the logo links home, no dead links, present
   everywhere.
   (verifier: `qa-review` house-rule row 5 counts nav-menu widget instances; rows 4, 6 and 7 cover the logo href, dead links and header presence per page.)
