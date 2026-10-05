@@ -72,8 +72,10 @@ WordPress, the agent stops and asks for an explicit yes for that build — expec
 there. No mockup approval + no explicit yes → no native build. On an existing site it also
 confirms each page overwrite by name. The library backs this up: `es_save_page()` and
 `es_save_theme_part()` write nothing for a page or header/footer that did not first go through
-its preflight, or that changed since (it can prove the preview ran, not that you read it). The mockup itself is the approval gate and the visual
-contract; it is never imported into the builder.
+its preflight, or that changed since (it can prove the preview ran, not that you read it).
+`es_kit_apply()` backs up the site-wide kit before replacing it. Not gated: the front page
+setting, a slug move, backup pruning and a restore. The mockup itself is the approval gate and
+the visual contract; it is never imported into the builder.
 
 Three kinds of skill: **knowledge** (`web-templates`, `ux-design-system` — decide, touch
 nothing), **read-only** (`project-context`, `qa-review`, `visual-verification`, `framework-audit` —
