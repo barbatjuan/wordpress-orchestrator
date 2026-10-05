@@ -168,3 +168,24 @@ header rows 2/4/5/6/8/10 (different criteria or builder scope), 29/30, 38/39/40.
 holds the whole rule. Permalinks/404 wording corrected to what migration.md measured.
 house-rules 50,902 → 50,080 bytes. The duplication left is small; further size would need cutting
 rules, not narration. Audit `0 FAIL / 3 WARN`; tests unchanged and green.
+
+README + Divi status (2026-10-05, b145111): README brought in line with the tree (17 skills, 4
+agents, real build flow, estado.md, connector note); Divi wording now "page builds tested on a real
+Divi 5 site", commerce/theme-parts/helpers still stated as not available.
+
+## Third pass (owner, 2026-10-05: "dale con todo lo nuestro y lo que vale la pena de gpt, luego actualiza el readme")
+From an external review, verified against the code; only what is worth it, KISS:
+- [ ] T6a Build gate enforced at runtime (strict TDD): `es_approval_check()` warns and the write at
+  `es-builder.php:1729` proceeds. A write to a slug that did not pass `es_overwrite_preflight()` must
+  fail and write nothing, with one explicit, named override for resuming a partially executed build.
+  No token/hash scheme: the runtime cannot prove a human said yes, it can prove the preflight ran.
+- [ ] T6b Manifest: drop the `design` and `delivery` sections nothing writes or reads.
+- [ ] T6c Connector contract: one short reference stating what the framework needs from a connector
+  (execute PHP, sandbox directory, optional file upload), which connectors provide it (NovaMira,
+  Agency MCP Bridge) and the bridge's known limit (no file transport); skills point at it instead of
+  assuming NovaMira. Identifiers that are real (option name, sandbox path) are not renamed.
+- [ ] T6d qa-review row 31(a): compare only the axes the maqueta's `:root` declares; an axis it does
+  not declare is reported N/A, not silently skipped.
+- [ ] T6e README updated for the above.
+Kept on purpose: the two bleed audit rows (guard for a documented pattern). Still the owner's, not
+done here: re-judging barro and corte, blind-judges self-judgement, stale worktrees and branches.
