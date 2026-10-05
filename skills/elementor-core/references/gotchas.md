@@ -153,8 +153,9 @@ familias tipograficas" describes.
 
 **And the obvious fix does not work.** Dequeuing by URL in `wp_enqueue_scripts` — even at
 `PHP_INT_MAX` — runs BEFORE Elementor registers its `elementor-gf-*` handles during the frontend
-render. Measured: 3 requests survived the dequeue, and `elementor_google_fonts = 0` did not stop
-them either. `add_filter( 'elementor/frontend/print_google_fonts', '__return_false' )` did: 0
+render. Measured: 3 requests survived the dequeue, and writing `elementor_google_fonts = 0` did not stop
+them either (that option name does not exist: Elementor reads `elementor_google_font`, singular, which
+`es_font_host()` writes and which `es_font_unhost()` restores). `add_filter( 'elementor/frontend/print_google_fonts', '__return_false' )` did: 0
 requests across every page. Keep a URL-matching dequeue on `wp_print_styles` as the net for a
 theme or plugin enqueuing its own.
 

@@ -244,14 +244,19 @@ is for.
   `'limpio'` is a statement about THE URL FETCHED, not about the site, which is why `$url` exists.
   **`'limpio'` also means every declared family ARRIVES.** The families come from the kit's global
   typography (what the site says; the probe runs in another request, whose `es_tokens()` are the
-  defaults), falling back to the tokens when there is no kit. Each one that is not generic or a system
+  defaults and are NOT used) plus the first family of every `font-family:` in the page CSS it already
+  fetched (widgets carry their own; the stylesheets of plugins and core are skipped, because they use their icon
+  fonts whether or not the page loads them); nothing declared anywhere is `'limpio'`, never a FAIL (Divi, a fresh
+  kit). Only declared families' files are downloaded; responses are capped, the probe has a 30 s budget
+  and other hosts go through `wp_safe_remote_get()`. Each one that is not generic or a system
   face needs an `@font-face` reachable from the served HTML (inline `<style>` or a linked stylesheet,
   `url()` resolved against it) whose file is a `data:` URI of font bytes or answers **200 with font
   magic bytes** (a 404 and a theme's soft-404 do not count). Anything else is `'sin-servir'`: a FAIL,
   not a warning. Measured on prueba1 (Elementor 4.2.4): Fraunces and Inter Tight declared in the kit,
   served from nowhere, the page rendered system fonts and the probe said `limpio`.
-- `es_font_host( $family, $woff2_bytes, $weight = '400 700', $style = 'normal' )` → the file's URL, or
-  `false` after saying why. The no-Pro, no-PHP, no-Google way to serve a face: writes the `woff2` to
+- `es_font_host( $family, $woff2_bytes, $weight = '400 700', $style = 'normal', $licence = '' )` → the file's
+  URL, or `false` after saying why (it refuses a family that is not letters/digits/spaces/hyphens, a weight
+  that is not `400` or `400 700`, any style but normal/italic, and bytes that are not `wOF2`: all of it ends up in CSS). The no-Pro, no-PHP, no-Google way to serve a face: writes the `woff2` to
   `uploads/es-fonts/`, adds its `@font-face` (`font-display:swap`) to WordPress's Additional CSS between
   `es-fonts` markers (idempotent per family/style/weight; other CSS untouched), and sets
   `elementor_google_font` to `0`. It reads the CSS back and says so when WordPress did not keep it.
@@ -273,14 +278,21 @@ page opens, with no consent and no legal basis, and EU courts have fined *site o
 Munich ruling of Jan 2022 being the one everybody cites. This framework's clients are Spanish. See
 `wordpress-legal`, which owns the consent side of the same problem.
 
-The procedure. The default needs **no PHP file**, so it needs no authorization beyond the build's own yes:
+The procedure. The default needs **no PHP file**, but `es_font_host()` changes the WHOLE site (Elementor's Google
+Fonts off for every page, including ones this framework never built, and rules in the theme's Additional CSS), so
+run it only AFTER the build's yes (SKILL.md step 3), never before the preflight. The first run records the
+previous state in the option `es_font_host_previous` (previous Additional CSS, previous `elementor_google_font`,
+files written); `es_font_unhost()` restores it and removes the files. `es_sandbox_purge()` does NOT delete that
+record: the fonts stay on the delivered site, so that is where a human finds the undo. Additional CSS is stored
+per theme: switching theme drops the fonts until `es_font_host()` runs again.
 
 1. **Take the bytes.** The families this repo ships are SIL Open Font License, so serving them from the
    client's own domain is licensed. The Plantilla's maqueta names its two families; the OFL `woff2`
    subsets (latin, enough for Spanish) are in `skills/html-mockup/assets/fonts/` (`_fonts.php` maps
    family name to file). Only the weights the build uses.
 2. **`es_font_host()` once per face**, with the file's bytes as the argument and the face's true weight
-   range (`'400 700'` for the variable Fraunces and Inter Tight). Names must equal the token value
+   range (`'400 700'` for the variable Fraunces and Inter Tight). Pass the family's `*-OFL.txt` from that fonts
+   folder as `$licence`: the OFL asks for its text to travel with the font, and it is written beside it. Names must equal the token value
    (`Fraunces`, not `fraunces`). This is the mechanism that works without Elementor Pro.
 3. **Elementor Pro alternative:** *Elementor → Custom Fonts → Add New*, named exactly as the token.
    **Child-theme alternative:** `@font-face` in a stylesheet plus a `wp_enqueue_style`. That is PHP

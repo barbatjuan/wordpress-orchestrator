@@ -65,3 +65,17 @@ Remaining visible differences from the maqueta (home): uppercase tight headings 
 theme CSS), rounded buttons, inset photo strip, missing column divider / highlighted row / dish link,
 cocktail list in 2 columns instead of 4, larger mobile hero sentence. Header/footer are the theme's.
 Open: `/wp-sitemap.xml` answers 404 with a valid body on prueba1 (cause not confirmed).
+
+Independent verification of 976bc8e (2026-10-05, opus, read-only on the site): pass with findings.
+One correction round applied (RED first): `es_font_host()` runs after the build's yes, records the
+previous Additional CSS and `elementor_google_font` once in `es_font_host_previous`, prints a notice
+of the site-wide effect, validates family / weight / style / woff2 magic / uploads dir and writes
+nothing on refusal, places its block after `@charset`/`@import`, and can write the OFL text beside
+the font; `es_font_unhost()` undoes it. The probe also reads `font-family` declarations in the CSS it
+already fetched (plugin and core stylesheets skipped, or icon fonts fail every site), no longer falls
+back to the caller's default tokens, downloads only declared families, caps size and time.
+`es_kit_settings()` writes the generic fallback and widget spacing only for tokens the build set.
+Live: unhost → probe `sin-servir`, host → `limpio`; one marker pair; four files in `uploads/es-fonts/`.
+Gate: audit `0 FAIL / 3 WARN`; tests 22 / 128 / 455 / 320 / 11 / 43 / 669; golden identical; 16 of 17.
+Accepted limits: a plugin styling real text with an unserved family is not caught; a probe that runs
+out of its 30 s budget says `sin-servir`; unhost strips its block rather than restoring a snapshot.
