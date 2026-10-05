@@ -74,7 +74,7 @@ client references and confirms the Plantilla or the ruta a medida — let it run
 | The client's lienzo, drawn from the Plantilla's lienzo (ruta a medida: from 2–4 low-fi directions) | Claude Design — the design skill, outside this repo |
 | The maqueta derived from the lienzo: ONE Artifact, for the veredicto and client approval | `html-mockup` |
 | Build/deploy on Elementor (raw PHP → `_elementor_data`) | `elementor-core` |
-| Build/deploy on Divi (builder data / shortcodes) — **scaffold, not proven; see below** | `divi-core` |
+| Build/deploy on Divi (builder data / shortcodes) — **page builds tested on Divi 5, no helper library; see below** | `divi-core` |
 | Header, footer and Theme Builder parts — built once, shown on every page (Elementor Pro) | `elementor-theme-parts` |
 | Shop, product page, side cart, checkout, my-account | `woocommerce` |
 | Contact/lead forms: plugin detection, recipient, consent, PROVING one message arrives | `wordpress-forms` |
@@ -310,12 +310,12 @@ Do not report the job as done while any of the four is unmet.
   before its first deploy.
 - Verification is server-side (`qa-review` Hard Rules): report what was verified that way and state
   plainly that visual confirmation needs the user. Never claim a visual result you did not see.
-- Elementor path is battle-tested. The Divi path is a **scaffold, not a peer**: `divi-core/assets/`
-  is empty, there are no `di_*` helpers, and its `gotchas.md` holds no confirmed entries. Divi +
-  WooCommerce is undefined — every widget, control key and asset in `woocommerce` is Elementor-Pro
-  specific. Before routing real work to Divi, say plainly that it is unproven and agree with the
-  user that this build is the one that validates it. Flag every unverified step as such and capture
-  what you learn into `divi-core/references/gotchas.md`.
+- Elementor path is battle-tested. The Divi path is **not a peer**: page builds are tested on a real Divi 5
+  site (four confirmed entries in `divi-core/references/gotchas.md`), but `divi-core` has no
+  `assets/` and no `di_*` helpers. Divi + WooCommerce is undefined — every widget, control key and
+  asset in `woocommerce` is Elementor-Pro specific. Before routing real work to Divi, say plainly
+  what is proven (page builds) and what is not (commerce, Theme Builder, automatic checks). Flag
+  every unverified step as such and capture what you learn into `divi-core/references/gotchas.md`.
 - The build gate is also enforced skill-side: every write-capable skill (`elementor-core`,
   `divi-core`, `woocommerce`, `wordpress-seo`, `wordpress-performance`, `wordpress-security`,
   `wordpress-forms`, `wordpress-legal`, `elementor-theme-parts`) re-checks for an explicit

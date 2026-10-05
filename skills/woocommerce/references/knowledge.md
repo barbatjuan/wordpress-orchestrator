@@ -3,7 +3,7 @@
 ## Elementor only in practice
 Every execution step in `SKILL.md` is Elementor Pro Theme Builder, both assets are `es_*` examples,
 and the output contract greps for `elementor-<id>`. There is no Divi equivalent in this repo —
-`divi-core` is a scaffold with no helpers. On a Divi site, say so and stop; do not improvise a Divi
+`divi-core` has no helpers and no commerce build is recorded. On a Divi site, say so and stop; do not improvise a Divi
 path and do not present one as supported.
 
 ## Pages of an ecommerce Plantilla

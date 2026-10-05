@@ -28,8 +28,8 @@ work?" / "verify".
      (hover transforms, `100vw`, accent `!important`, template `elementor-<id>`). Zero counts =
      not applied → investigate cache/conditions, don't report done.
    - *Divi*: emits neither artifact — zero counts prove nothing. Check `post_content` (`et_pb_*`)
-     + front HTML. Divi's compiled-CSS artifact name is unconfirmed here (`divi-core` is a
-     scaffold) → report UNVERIFIED, never PASS or FAIL; record the real name in
+     + front HTML. Divi's compiled-CSS artifact name is unconfirmed here (the checks
+     read Elementor artefacts) → report UNVERIFIED, never PASS or FAIL; record the real name in
      `divi-core/references/gotchas.md`.
 2. **House rules**: run `references/house-rules.md` end to end — one verdict per row, skip none
    silently. The approved maqueta is the visual contract: row 31 compares its `:root` axis positions

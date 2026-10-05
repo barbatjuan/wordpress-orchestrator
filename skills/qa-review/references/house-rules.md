@@ -117,6 +117,6 @@ front HTML instead (`.et_pb_section` > `.et_pb_row` > `.et_pb_column` > module) 
 
 Rows 2, 5, 8, 10 lean on Elementor artifacts (`elementor-menu-cart`, the nav-menu widget attribute,
 the stored `sticky` control, `post-<id>.css`). The Divi equivalents are NOT confirmed in this repo
-(`divi-core` is a scaffold). On a Divi build, report those rows as **UNVERIFIED**: not a PASS, not a
+(the checks read Elementor artefacts). On a Divi build, report those rows as **UNVERIFIED**: not a PASS, not a
 FAIL. Confirm the real Divi artifact names by introspection on the site, then append them to
 `divi-core/references/gotchas.md`.
