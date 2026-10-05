@@ -149,3 +149,13 @@ Not run by anyone: Elementor's rendered-CSS minifier vs the marker (irrelevant w
 stored data); `install.ps1` self-install guard and `--clean` under Windows PowerShell 5.1.
 Still open, pre-existing: orchestrator line on Permalinks/404 overstates what `migration.md` measured.
 Next: owner decides PR vs merge; then `install.ps1 --clean` to update `~/.claude`.
+
+## Second pass (owner, 2026-10-05: "dale")
+Branch `chore/kiss-pass-2` from main 5f740d9. The first pass left the orchestrator at 359 lines and
+`house-rules.md` at 51 KB with no rows merged.
+- [ ] T5 (delegated writer) `house-rules.md`: merge rows that are the same check run once (e.g. the
+  header rows, the three Lighthouse rows, 22/33 overlap) only where criterion and procedure can be
+  stated together without losing any PASS/FAIL/UNVERIFIED condition. Numbers stay stable: a merged
+  row keeps the lowest number, absorbed numbers disappear, every citation of an absorbed number is
+  repointed. Orchestrator: every house rule it restates becomes a pointer to its row once the row is
+  confirmed to hold the whole rule; what only the orchestrator knows stays.
