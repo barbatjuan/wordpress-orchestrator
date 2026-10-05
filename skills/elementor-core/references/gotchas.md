@@ -57,6 +57,23 @@ catches the flat version's absence.
 | 2 | A container wrapping one widget to make it 58% wide | **A width does not justify a container.** `_element_width:'initial'` + `_element_custom_width` on the element itself | `es_wide($el, 58)` |
 | 3 | `background_image` on a container | **A photo is a widget, not a background.** The background needs a (usually empty) container to live in and ships with no `alt` | `es_photo($slug, $h)` |
 
+**An ornament is not a container.** A ficha that asks for "a container with only a bottom border"
+(a dotted leader, a blank to fill in) is describing the maqueta's CSS, not a build: the audit counts
+every empty container as an offender and is right, because a `<div>` that holds nothing is the
+nesting this section exists to remove. Build it natively instead:
+- **Leader between a name and a price** — the native **Divider** widget: `es_w( 'divider', array(
+  'style' => 'dotted', 'weight' => es_size( 2 ), 'color' => …, 'gap' => es_size( 8 ),
+  '_element_width' => 'initial', '_element_custom_width' => es_size( 10, '%' ), '_flex_size' => 'grow' ) )`
+  as a sibling in the row. Confirmed on Elementor 4.2.4 (prueba1, `terrazza` carta).
+- **A blank inside a sentence** ("Mesa para ____ el ____") — ONE Text Editor widget whose HTML holds
+  the whole sentence, each blank an inline `<span style="display:inline-block;min-width:Npx;
+  border-bottom:2px solid …">value</span>`. Do not make each slot a container or a heading widget:
+  every widget/container is a block that takes its own line in a flex row (measured: the sentence
+  stacked one slot per line), and a wrapping text run is what a sentence is.
+`terrazza/ficha.md` rows "Hero de inicio" and "La carta (listado con precio)" prescribe the empty
+containers (sealed; reported for the owner to fix and re-seal), and `delao/ficha.md` row "Rejilla de
+reglas de la portada" asks for a decorative empty grid. No other ficha does.
+
 Measured on that build, not estimated:
 
 | Página | Antes | Después |
@@ -70,8 +87,8 @@ The last 3 home offenders were the portraits as container backgrounds; moving th
 **Three severities, on purpose.** `offenders` are wrong with no argument. `optimizable` is a
 container whose only child is a GRID — `es_section( es_grid(...) )` is this repo's own dominant
 idiom, and an audit that screams on every normal build is one people learn to ignore. Whether
-that pair collapses into a single boxed grid container is plausible and **not confirmed**;
-verify on a live site before flattening it wholesale. A container whose only child is a flex
+that pair collapses into a single boxed grid container is **confirmed** on Elementor 4.2.4
+(`knowledge.md` → Containers, flex, grid; pass `$inner=false` to `es_grid()`). A container whose only child is a flex
 ROW is a different story — that one always collapses, so it IS an offender. A child stacking in
 a COLUMN is not: `es_split()` would change the axis, so the remedy printed there is to merge the
 pair, not to call `es_split()`.
@@ -136,8 +153,9 @@ familias tipograficas" describes.
 
 **And the obvious fix does not work.** Dequeuing by URL in `wp_enqueue_scripts` — even at
 `PHP_INT_MAX` — runs BEFORE Elementor registers its `elementor-gf-*` handles during the frontend
-render. Measured: 3 requests survived the dequeue, and `elementor_google_fonts = 0` did not stop
-them either. `add_filter( 'elementor/frontend/print_google_fonts', '__return_false' )` did: 0
+render. Measured: 3 requests survived the dequeue, and writing `elementor_google_fonts = 0` did not stop
+them either (that option name does not exist: Elementor reads `elementor_google_font`, singular, which
+`es_font_host()` writes and which `es_font_unhost()` restores). `add_filter( 'elementor/frontend/print_google_fonts', '__return_false' )` did: 0
 requests across every page. Keep a URL-matching dequeue on `wp_print_styles` as the net for a
 theme or plugin enqueuing its own.
 
@@ -187,9 +205,18 @@ the active kit CSS (step 4).
 Introspect instead of guessing:
 ```php
 $w=\Elementor\Plugin::instance()->widgets_manager->get_widget_types('<name>');
-array_keys($w->get_controls());          // control keys
-$w->get_controls()['<ctrl>']['options']; // valid select values
+$s=$w->get_stack(); $c=$s['controls']+$s['style_controls'];  // ALL control keys
+$c['<ctrl>']['options'];                                    // valid select values
 ```
+**Never `get_controls()` alone.** On a front-end or CLI request (not admin, not preview, not REST)
+Elementor 4.x sets every STYLE control aside in `$stack['style_controls']` and `get_controls()`
+leaves them out: measured on 4.2.4, `heading` 176 controls and no `title_color` or `typography_*`,
+`divider` no `width`/`gap`. The cause is `Core\Frontend\Performance::should_optimize_controls()`
+(opt in with `set_use_style_controls(true)`); `get_stack()` holds both lists in every context.
+`es_owns_control()` reads the stack, so it answers the same on a front request and in REST.
+Confirmed live for `heading`, `divider`, `button`, `image`; on the container,
+`flex_direction`, `flex_gap`, `padding` and `grid_columns_grid` are style controls and
+`content_width` and `background_background` are not.
 Names that bit us: archive widget is `wc-archive-products` (not `archive-products`);
 `cart_type` value is `side-cart` (not `side`); button hover bg is `button_background_hover_color`
 (not `background_hover_color`).

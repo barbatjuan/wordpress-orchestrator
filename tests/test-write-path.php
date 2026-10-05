@@ -809,6 +809,19 @@ ok( has( $r['ret'][0], 'ya no existe' ), 'nombrada como tal' );
 ok( has( $r['ret'][0], 'contacto' ), 'con su slug' );
 ok( has( $r['out'], 'solo un humano' ), 'y el aviso dice por que NO se corrige solo' );
 
+/* En la papelera: WordPress NO borra, cambia el estado y renombra el slug a `<slug>__trashed`. El
+   framework lo leia como "renombrada fuera de este framework" porque comparaba por slug; se mira el
+   estado del id, que es lo que de verdad cambio. */
+wp_fake_reset();
+$c = wp_fake_page( 'contacto' );
+wp_trash_post( $c );
+es_manifest_record( 'pages', array( 'contacto' => $c ) );
+$r = grab( 'es_manifest_verify' );
+$d = $r['ret'];
+ok( 1 === count( $d ) && has( $d[0], 'papelera' ), 'una pagina anotada que esta en la papelera se dice "en la papelera"' );
+ok( has( $d[0], 'contacto' ) && has( $d[0], '#' . $c ), 'con su slug y su id' );
+ok( ! has( $d[0], 'renombrar' ) && ! has( $d[0], 'contacto__trashed' ), 'y NO la toma por renombrada: __trashed es el sufijo que pone WordPress, no un slug elegido por nadie' );
+
 /* Renombrada fuera del framework: el id sigue vivo, el slug ya no es el que era. */
 wp_fake_reset();
 $c = wp_fake_page( 'contacto-nuevo' );
@@ -1688,7 +1701,7 @@ ok( has( $r['out'], 'verde' ), 'y lo dice en voz alta nombrando el valor que no 
  * ------------------------------------------------------------------------- */
 function es_token_probe() {
 	es_uid_reset( 'probe' );
-	return es_card_hover_css() . es_products_css() . json_encode(
+	return es_card_hover_css() . es_products_css() . json_encode( es_kit_settings( array() ) ) . json_encode(
 		array(
 			es_eyebrow( 'etiqueta' ),
 			es_p( 'texto' ),
@@ -2771,6 +2784,7 @@ if ( ! function_exists( 'home_url' ) ) {
 	   un 401 tampoco contiene "googleapis" y se leeria como limpio. */
 	function wp_remote_get( $url, $args = array() ) {
 		$GLOBALS['wp']['http_pedidas'][] = $url;
+		$GLOBALS['wp']['http_args'][ $url ] = $args;
 		$m = isset( $GLOBALS['wp']['http'] ) ? $GLOBALS['wp']['http'] : array();
 		if ( isset( $m[ $url ] ) ) {
 			return $m[ $url ];
@@ -2796,6 +2810,32 @@ function respuesta( $codigo, $cuerpo ) {
 function pagina( $extra = '' ) {
 	return "<!DOCTYPE html>\n<html lang=\"es\">\n<head>\n<title>x</title>\n" . $extra
 		. "\n</head>\n<body><h1>hola</h1></body>\n</html>\n";
+}
+
+/** Un @font-face por familia, con su fichero: lo que un sitio que SI sirve sus tipografias manda. */
+function caras( array $familias, $base = 'https://sitio.test/f/' ) {
+	$css = '';
+	foreach ( $familias as $f ) {
+		$css .= "@font-face{font-family:'" . $f . "';font-weight:400 700;src:url(" . $base . strtolower( str_replace( ' ', '-', $f ) ) . ".woff2) format('woff2')}";
+	}
+	return '<style id="wp-custom-css">' . $css . '</style>';
+}
+/** El kit del sitio declara estas familias como tipografia global (lo que lee la sonda de otro proceso). */
+function kit_tipos( array $familias ) {
+	$GLOBALS['wp']['options']['elementor_active_kit'] = 5;
+	$slots = array();
+	foreach ( $familias as $i => $f ) {
+		$slots[] = array( '_id' => 'slot' . $i, 'typography_font_family' => $f );
+	}
+	update_post_meta( 5, '_elementor_page_settings', array( 'system_typography' => $slots ) );
+}
+/** Los ficheros de esas caras, contestando 200 con bytes de woff2 (el magic `wOF2`). */
+function ficheros( array $familias, $base = 'https://sitio.test/f/' ) {
+	$m = array();
+	foreach ( $familias as $f ) {
+		$m[ $base . strtolower( str_replace( ' ', '-', $f ) ) . '.woff2' ] = respuesta( 200, 'wOF2' . str_repeat( "\0", 64 ) );
+	}
+	return $m;
 }
 
 /* B. La peticion falla. Un WP_Error no es un sitio limpio: es un sitio que no
@@ -2859,8 +2899,8 @@ ok( 'google' === $r['ret'], 'gstatic tambien: el fichero de la fuente sale del m
       nada a Google. Se calla, porque un sitio correcto no tiene que oir nada. */
 wp_fake_reset();
 $GLOBALS['wp']['http'] = array(
-	'https://sitio.test/' => respuesta( 200, pagina( '<link rel="stylesheet" href="https://sitio.test/wp-content/themes/x/fuentes.css">' ) ),
-);
+	'https://sitio.test/' => respuesta( 200, pagina( '<link rel="stylesheet" href="https://sitio.test/wp-content/themes/x/fuentes.css">' . caras( array( 'Space Grotesk', 'Manrope' ) ) ) ),
+) + ficheros( array( 'Space Grotesk', 'Manrope' ) );
 $r = grab( 'es_front_font_probe' );
 ok( 'limpio' === $r['ret'], 'una pagina de verdad con cero peticiones a Google es lo unico que limpia el sin-confirmar del build' );
 ok( '' === $r['out'], 'y no avisa de nada' );
@@ -2893,10 +2933,384 @@ ok( in_array( 'https://sitio.test/contacto/', $GLOBALS['wp']['http_pedidas'], tr
       enterarse. */
 wp_fake_reset();
 $GLOBALS['wp']['http'] = array(
-	'https://sitio.test/' => respuesta( 200, pagina( '<script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script><script>WebFont.load({google:{families:["Inter:400,700"]}});</script>' ) ),
-);
+	'https://sitio.test/' => respuesta( 200, pagina( '<script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script><script>WebFont.load({google:{families:["Inter:400,700"]}});</script>' . caras( array( 'Space Grotesk', 'Manrope' ) ) ) ),
+) + ficheros( array( 'Space Grotesk', 'Manrope' ) );
 $r = grab( 'es_front_font_probe' );
 ok( 'limpio' === $r['ret'], 'LIMITE: una fuente cargada por JS no esta en el HTML servido y esta sonda la da por limpia — lo mira la fila 21, no esta' );
+
+/* ---------------------------------------------------------------------------
+ * J. LA OTRA MITAD DE "LIMPIO": que la familia declarada LLEGUE.
+ *
+ * Hallazgo del build real de `terrazza` en prueba1 (2026-10-05): el kit declara Fraunces e Inter
+ * Tight, ninguna estaba servida desde ningun sitio, el navegador uso el tipo de letra del sistema y
+ * la fila 36 de qa-review dijo "limpio", porque solo miraba que no se llamase al CDN de Google.
+ * "No le pide nada a Google" y "tiene su tipografia" son dos hechos y la sonda solo contestaba uno.
+ * 'limpio' ahora exige los dos: cada familia declarada (kit, o tokens si no hay kit) que no sea
+ * generica ni de sistema tiene un @font-face alcanzable desde el HTML servido, y su fichero contesta
+ * 200 con bytes de fuente. Si no, 'sin-servir': un FALLO, no un aviso.
+ * ------------------------------------------------------------------------- */
+echo "--- limpio exige que las familias declaradas lleguen ---\n";
+
+/* J1. Sin ningun @font-face: es exactamente el sitio medido. */
+wp_fake_reset();
+kit_tipos( array( 'Space Grotesk', 'Manrope' ) );
+$GLOBALS['wp']['http'] = array( 'https://sitio.test/' => respuesta( 200, pagina() ) );
+$r = grab( 'es_front_font_probe' );
+ok( 'sin-servir' === $r['ret'], 'una familia declarada que nadie sirve NO es limpio: es sin-servir' );
+ok( has( $r['out'], 'Space Grotesk' ) && has( $r['out'], 'Manrope' ), 'y el aviso nombra las dos familias que faltan' );
+
+/* J2. La cara esta declarada y el fichero no existe: una regla sin fichero no sirve nada. */
+wp_fake_reset();
+kit_tipos( array( 'Space Grotesk', 'Manrope' ) );
+$GLOBALS['wp']['http'] = array(
+	'https://sitio.test/'                      => respuesta( 200, pagina( caras( array( 'Space Grotesk', 'Manrope' ) ) ) ),
+	'https://sitio.test/f/space-grotesk.woff2' => respuesta( 404, 'no' ),
+	'https://sitio.test/f/manrope.woff2'       => respuesta( 200, 'wOF2' . str_repeat( "\0", 64 ) ),
+);
+$r = grab( 'es_front_font_probe' );
+ok( 'sin-servir' === $r['ret'], 'un @font-face cuyo fichero da 404 no sirve la familia' );
+ok( has( $r['out'], 'Space Grotesk' ) && ! has( $r['out'], 'Manrope' ), 'y solo nombra la que falla, no la que llega' );
+
+/* J3. Un 200 que es una pagina HTML (el 404 blando de un tema) tampoco es una fuente. */
+wp_fake_reset();
+kit_tipos( array( 'Space Grotesk', 'Manrope' ) );
+$GLOBALS['wp']['http'] = array(
+	'https://sitio.test/'                      => respuesta( 200, pagina( caras( array( 'Space Grotesk', 'Manrope' ) ) ) ),
+	'https://sitio.test/f/space-grotesk.woff2' => respuesta( 200, pagina() ),
+	'https://sitio.test/f/manrope.woff2'       => respuesta( 200, 'wOF2' . str_repeat( "\0", 64 ) ),
+);
+$r = grab( 'es_front_font_probe' );
+ok( 'sin-servir' === $r['ret'], 'un 200 cuyo cuerpo no son bytes de fuente tampoco sirve la familia' );
+
+/* J4. La cara vive en una hoja enlazada con ruta relativa: asi la sirve un tema o un plugin. */
+wp_fake_reset();
+kit_tipos( array( 'Space Grotesk', 'Manrope' ) );
+$GLOBALS['wp']['http'] = array(
+	'https://sitio.test/'                       => respuesta( 200, pagina( '<link rel="stylesheet" id="x" href="https://sitio.test/wp-content/f.css?ver=1">' ) ),
+	'https://sitio.test/wp-content/f.css?ver=1' => respuesta( 200, "@font-face{font-family:\"Space Grotesk\";src:url('g/sg.woff2')}\n@font-face{font-family:Manrope;src:url(g/m.woff2)}" ),
+	'https://sitio.test/wp-content/g/sg.woff2'  => respuesta( 200, 'wOF2' . str_repeat( "\0", 64 ) ),
+	'https://sitio.test/wp-content/g/m.woff2'   => respuesta( 200, 'wOF2' . str_repeat( "\0", 64 ) ),
+);
+$r = grab( 'es_front_font_probe' );
+ok( 'limpio' === $r['ret'], 'una hoja enlazada con url() relativa, resuelta contra la hoja, sirve las familias' );
+ok( '' === $r['out'], 'y no avisa' );
+
+/* J5. La cara embebida como data: (la maqueta lo hace asi) no pide fichero: va en los bytes. */
+wp_fake_reset();
+kit_tipos( array( 'Space Grotesk', 'Manrope' ) );
+$woff = base64_encode( 'wOF2' . str_repeat( "\0", 64 ) );
+$GLOBALS['wp']['http'] = array(
+	'https://sitio.test/' => respuesta( 200, pagina( "<style>@font-face{font-family:'Space Grotesk';src:url(data:font/woff2;base64," . $woff . ")}@font-face{font-family:'Manrope';src:url(data:font/woff2;base64," . $woff . ')}</style>' ) ),
+);
+$r = grab( 'es_front_font_probe' );
+ok( 'limpio' === $r['ret'], 'una cara data: con bytes woff2 cuenta como servida' );
+
+/* J6. Familias genericas o de sistema: no hay nada que servir. */
+wp_fake_reset();
+es_tokens( array( 'font_head' => 'Georgia', 'font_body' => 'Arial' ), true );
+$GLOBALS['wp']['http'] = array( 'https://sitio.test/' => respuesta( 200, pagina() ) );
+$r = grab( 'es_front_font_probe' );
+ok( 'limpio' === $r['ret'], 'Georgia y Arial no necesitan @font-face: sin familias que servir, limpio' );
+es_tokens_reset();
+
+/* J7. La fuente de verdad es el KIT del sitio, no los tokens de este proceso: la sonda de
+       qa-review corre en OTRO proceso, con los tokens por defecto. */
+wp_fake_reset();
+$GLOBALS['wp']['options']['elementor_active_kit'] = 5;
+update_post_meta(
+	5,
+	'_elementor_page_settings',
+	array(
+		'system_typography' => array(
+			array( '_id' => 'primary', 'typography_font_family' => 'Fraunces' ),
+			array( '_id' => 'text', 'typography_font_family' => 'Inter Tight' ),
+		),
+	)
+);
+$GLOBALS['wp']['http'] = array( 'https://sitio.test/' => respuesta( 200, pagina( caras( array( 'Space Grotesk', 'Manrope' ) ) ) ) ) + ficheros( array( 'Space Grotesk', 'Manrope' ) );
+$r = grab( 'es_front_font_probe' );
+ok( 'sin-servir' === $r['ret'], 'sirve las del token por defecto pero el kit declara Fraunces e Inter Tight: sin-servir' );
+ok( has( $r['out'], 'Fraunces' ) && has( $r['out'], 'Inter Tight' ), 'y nombra las del kit' );
+$GLOBALS['wp']['http'] = array( 'https://sitio.test/' => respuesta( 200, pagina( caras( array( 'Fraunces', 'Inter Tight' ) ) ) ) ) + ficheros( array( 'Fraunces', 'Inter Tight' ) );
+$r = grab( 'es_front_font_probe' );
+ok( 'limpio' === $r['ret'], 'con las del kit servidas es limpio' );
+
+/* J10. El kit esta limpio y UN WIDGET trae su propia familia (el CSS de la pagina dice `font-family`
+         en cada widget): la sonda tambien la exige. Las genericas, `var()` y las de sistema no. */
+wp_fake_reset();
+kit_tipos( array( 'Fraunces' ) );
+$css_w = '<style>.a{font-family:"Playfair Display",serif}.b{font-family:var(--x)}.c{font-family:Georgia,serif}.d{font-family:inherit}</style>';
+$GLOBALS['wp']['http'] = array( 'https://sitio.test/' => respuesta( 200, pagina( caras( array( 'Fraunces' ) ) . $css_w ) ) ) + ficheros( array( 'Fraunces' ) );
+$r = grab( 'es_front_font_probe' );
+ok( 'sin-servir' === $r['ret'] && has( $r['out'], 'Playfair Display' ) && ! has( $r['out'], 'Georgia' ) && ! has( $r['out'], 'Fraunces' ), 'una familia de widget sin servir hace fallar la sonda aunque el kit este limpio' );
+$GLOBALS['wp']['http'] = array( 'https://sitio.test/' => respuesta( 200, pagina( caras( array( 'Fraunces', 'Playfair Display' ) ) . $css_w ) ) ) + ficheros( array( 'Fraunces', 'Playfair Display' ) );
+$r = grab( 'es_front_font_probe' );
+ok( 'limpio' === $r['ret'], 'servida, vuelve a ser limpio' );
+
+/* J11. Sin tipografia en el kit (Divi, un kit nuevo) NO se exigen los tokens por defecto de ESTE proceso:
+         si en ninguna parte hay una familia declarada no hay nada que confirmar, y eso nunca es un fallo. */
+wp_fake_reset();
+$GLOBALS['wp']['http'] = array( 'https://sitio.test/' => respuesta( 200, pagina() ) );
+$r = grab( 'es_front_font_probe' );
+ok( 'limpio' === $r['ret'] && '' === $r['out'], 'sin nada declarado, limpio y en silencio (no exige Space Grotesk ni Manrope)' );
+
+/* J12. Ficheros de familias que nadie declara no se descargan, y las peticiones llevan tope de tamano. */
+wp_fake_reset();
+kit_tipos( array( 'Fraunces' ) );
+$GLOBALS['wp']['http'] = array(
+	'https://sitio.test/' => respuesta( 200, pagina( caras( array( 'Fraunces', 'Cardo' ) ) ) ),
+) + ficheros( array( 'Fraunces', 'Cardo' ) );
+$r = grab( 'es_front_font_probe' );
+ok( 'limpio' === $r['ret'], 'caras de sobra en la pagina no estorban' );
+ok( ! in_array( 'https://sitio.test/f/cardo.woff2', $GLOBALS['wp']['http_pedidas'], true ), 'y el fichero de una familia que nadie declara no se descarga' );
+ok( isset( $GLOBALS['wp']['http_args']['https://sitio.test/f/fraunces.woff2']['limit_response_size'] ) && $GLOBALS['wp']['http_args']['https://sitio.test/f/fraunces.woff2']['limit_response_size'] > 0, 'las descargas llevan limit_response_size' );
+
+/* J13. Genericas CSS modernas: no hay fichero que servir. */
+wp_fake_reset();
+kit_tipos( array( 'ui-sans-serif', 'ui-serif', 'ui-monospace', 'ui-rounded', 'math', 'emoji', 'fangsong' ) );
+$GLOBALS['wp']['http'] = array( 'https://sitio.test/' => respuesta( 200, pagina() ) );
+$r = grab( 'es_front_font_probe' );
+ok( 'limpio' === $r['ret'], 'ui-sans-serif, ui-serif, ui-monospace, ui-rounded, math, emoji y fangsong son genericas' );
+
+/* J14. El CSS de un PLUGIN usa su fuente de iconos (eicons, WooCommerce, star) aunque la pagina no la
+         cargue: no es tipografia del sitio y no se exige. El CSS del tema o el que genera Elementor en
+         uploads, y el inline, si cuentan. Medido en prueba1: `eicons` salia en frontend.min.css. */
+wp_fake_reset();
+kit_tipos( array( 'Fraunces' ) );
+$GLOBALS['wp']['http'] = array(
+	'https://sitio.test/'                                          => respuesta( 200, pagina( caras( array( 'Fraunces' ) ) . '<link rel="stylesheet" href="https://sitio.test/wp-content/plugins/elementor/frontend.min.css"><link rel="stylesheet" href="https://sitio.test/wp-content/themes/x/s.css">' ) ),
+	'https://sitio.test/wp-content/plugins/elementor/frontend.min.css' => respuesta( 200, '.eicon{font-family:eicons}' ),
+	'https://sitio.test/wp-content/themes/x/s.css'                 => respuesta( 200, 'h1{font-family:"Playfair Display"}' ),
+) + ficheros( array( 'Fraunces' ) );
+$r = grab( 'es_front_font_probe' );
+ok( 'sin-servir' === $r['ret'] && has( $r['out'], 'Playfair Display' ) && ! has( $r['out'], 'eicons' ), 'la fuente de iconos de un plugin no se exige; la del tema si' );
+
+/* J8. Google sigue mandando: el RGPD es el hallazgo mas grave. */
+wp_fake_reset();
+$GLOBALS['wp']['http'] = array( 'https://sitio.test/' => respuesta( 200, pagina( '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope">' ) ) );
+$r = grab( 'es_front_font_probe' );
+ok( 'google' === $r['ret'], 'Google sigue siendo google aunque ademas falten familias' );
+
+/* J9. El fallback de Elementor: un solo slot por sitio (`default_generic_fonts` del kit). */
+wp_fake_reset();
+$GLOBALS['wp']['options']['elementor_active_kit'] = 5;
+es_tokens( array( 'font_fallback' => 'Georgia, serif' ), true );
+es_kit_apply();
+$ks = get_post_meta( 5, '_elementor_page_settings', true );
+ok( isset( $ks['default_generic_fonts'] ) && 'Georgia, serif' === $ks['default_generic_fonts'], 'el kit lleva el fallback del token: ya no es el Sans-serif de fabrica para una familia serif' );
+es_tokens_reset();
+wp_fake_reset();
+$GLOBALS['wp']['options']['elementor_active_kit'] = 5;
+es_kit_apply();
+$ks = get_post_meta( 5, '_elementor_page_settings', true );
+ok( ! isset( $ks['default_generic_fonts'] ), 'sin token explicito el kit NO recibe fallback: un valor puesto por un humano en un kit existente no se pisa con el defecto de la libreria' );
+
+/* ---------------------------------------------------------------------------
+ * K. COMO LLEGA UNA FAMILIA A UN SITIO SIN ELEMENTOR PRO: es_font_host().
+ *
+ * Custom Fonts es de Pro, y un `@font-face` en el tema es PHP fuera del sandbox. Lo que queda sin
+ * ninguna de las dos cosas: el woff2 en `uploads/` (datos, no codigo) y la regla en el CSS adicional
+ * de WordPress, que la propia API del nucleo escribe y el tema imprime. Y se apaga el Google de
+ * Elementor, o el fichero propio seria peso muerto bajo una peticion que sigue filtrando la IP.
+ * Los dobles de WordPress van aqui dentro por lo mismo que el resto de este bloque: dentro de un
+ * bloque la declaracion no se iza.
+ * ------------------------------------------------------------------------- */
+echo "--- es_font_host: la familia llega sin Pro, sin PHP y sin Google ---\n";
+
+$up = sys_get_temp_dir() . '/es-uploads-' . getmypid();
+if ( ! function_exists( 'wp_upload_dir' ) ) {
+	function wp_upload_dir() {
+		return array( 'basedir' => $GLOBALS['wp']['uploads'], 'baseurl' => 'https://sitio.test/wp-content/uploads', 'error' => isset( $GLOBALS['wp']['upload_error'] ) ? $GLOBALS['wp']['upload_error'] : false );
+	}
+	function wp_mkdir_p( $dir ) {
+		return is_dir( $dir ) || mkdir( $dir, 0777, true );
+	}
+	function get_stylesheet() {
+		return 'tema-hijo';
+	}
+	function wp_get_custom_css( $stylesheet = '' ) {
+		return isset( $GLOBALS['wp']['custom_css'] ) ? $GLOBALS['wp']['custom_css'] : '';
+	}
+	function wp_update_custom_css_post( $css, $args = array() ) {
+		if ( ! empty( $GLOBALS['wp']['custom_css_ro'] ) ) {
+			return new WP_Error( 'css', 'no se pudo guardar' );
+		}
+		$GLOBALS['wp']['custom_css'] = $css;
+		return (object) array( 'post_content' => $css );
+	}
+}
+$woff2 = 'wOF2' . str_repeat( "\0", 64 );
+
+wp_fake_reset();
+$GLOBALS['wp']['uploads'] = $up;
+$r = grab(
+	function () use ( $woff2 ) {
+		return es_font_host( 'Fraunces', $woff2, '400 700' );
+	}
+);
+ok( is_string( $r['ret'] ) && has( $r['ret'], 'https://sitio.test/wp-content/uploads/es-fonts/' ), 'devuelve la URL publica del fichero' );
+ok( is_file( $up . '/es-fonts/fraunces-normal-400-700.woff2' ) && $woff2 === file_get_contents( $up . '/es-fonts/fraunces-normal-400-700.woff2' ), 'el woff2 queda en uploads/es-fonts con sus bytes intactos' );
+$css = wp_get_custom_css();
+ok( has( $css, "font-family:'Fraunces'" ) && has( $css, 'font-weight:400 700' ) && has( $css, 'font-display:swap' ) && has( $css, "url('https://sitio.test/wp-content/uploads/es-fonts/fraunces-normal-400-700.woff2')" ), 'el CSS adicional lleva el @font-face con su rango real, swap y la URL entre comillas' );
+ok( 0 === strpos( $css, '/* es-fonts:begin */' ), 'y va entre marcas, para poder reescribirlo sin tocar el CSS de nadie mas' );
+ok( '0' === get_option( 'elementor_google_font' ), 'apaga el Google de Elementor (elementor_google_font = 0): servir lo propio y seguir pidiendo lo de Google no arregla nada' );
+ok( has( $r['out'], 'TODO el sitio' ) && has( $r['out'], 'elementor_google_font' ) && has( $r['out'], 'es_font_unhost' ), 'avisa UNA vez del efecto en todo el sitio: Google Fonts apagado, y como deshacerlo' );
+
+$GLOBALS['wp']['custom_css'] = "body{color:red}\n" . $GLOBALS['wp']['custom_css'];
+es_font_host( 'Fraunces', $woff2, '400 700' );
+es_font_host( 'Inter Tight', $woff2, '400 700' );
+$css = wp_get_custom_css();
+ok( 1 === substr_count( $css, "font-family:'Fraunces'" ), 'repetir la misma familia reemplaza su regla, no la duplica' );
+ok( 1 === substr_count( $css, "font-family:'Inter Tight'" ), 'una segunda familia se anade' );
+ok( has( $css, 'body{color:red}' ), 'y el CSS que habia fuera de las marcas sigue ahi' );
+
+$GLOBALS['wp']['custom_css'] = '';
+es_font_host( 'Fraunces', $woff2, '400 700', 'italic' );
+ok( has( wp_get_custom_css(), 'font-style:italic' ) && is_file( $up . '/es-fonts/fraunces-italic-400-700.woff2' ), 'el estilo italic es otra cara con su propio fichero' );
+
+$r = grab(
+	function () {
+		return es_font_host( 'Fraunces', '<html>404</html>' );
+	}
+);
+ok( false === $r['ret'] && has( $r['out'], 'woff2' ), 'unos bytes que no son una fuente se rechazan y se dice (un TTF o un 404 guardado como .woff2 no sirve nada)' );
+
+wp_fake_reset();
+$GLOBALS['wp']['uploads']       = $up;
+$GLOBALS['wp']['custom_css_ro'] = true;
+$r = grab(
+	function () use ( $woff2 ) {
+		return es_font_host( 'Fraunces', $woff2 );
+	}
+);
+ok( false === $r['ret'] && has( $r['out'], 'CSS adicional' ), 'si WordPress no guarda el CSS adicional, es un fallo con nombre y no un true' );
+
+
+if ( is_dir( $up . '/es-fonts' ) ) {
+	foreach ( glob( $up . '/es-fonts/*' ) as $f ) {
+		unlink( $f );
+	}
+	rmdir( $up . '/es-fonts' );
+}
+/* K2. Es un cambio de SITIO, no de pagina: deja registro de lo anterior, se deshace, y avisa. */
+wp_fake_reset();
+$GLOBALS['wp']['uploads']                         = $up;
+$GLOBALS['wp']['custom_css']                      = 'body{color:red}';
+$GLOBALS['wp']['options']['elementor_google_font'] = '1';
+$r = grab(
+	function () use ( $woff2 ) {
+		return es_font_host( 'Fraunces', $woff2, '400 700', 'normal', 'OFL TEXTO' );
+	}
+);
+$prev = get_option( 'es_font_host_previous' );
+ok( is_array( $prev ) && 'body{color:red}' === $prev['css'] && '1' === $prev['google'], 'la primera vez guarda el CSS adicional y el valor de Google Fonts de ANTES, en una sola opcion' );
+ok( has( $r['out'], '1' ) && has( $r['out'], 'valor anterior' ), 'y el aviso dice cual era el valor anterior' );
+ok( is_file( $up . '/es-fonts/fraunces-OFL.txt' ) && 'OFL TEXTO' === file_get_contents( $up . '/es-fonts/fraunces-OFL.txt' ), 'con licencia, el texto OFL se escribe junto a la fuente' );
+$r2 = grab(
+	function () use ( $woff2 ) {
+		return es_font_host( 'Inter Tight', $woff2, '400 700' );
+	}
+);
+$prev2 = get_option( 'es_font_host_previous' );
+ok( 'body{color:red}' === $prev2['css'] && '1' === $prev2['google'], 'una segunda ejecucion NO pisa el estado anterior' );
+ok( '' === $r2['out'], 'ni repite el aviso: ya no cambia nada de todo el sitio' );
+grab( 'es_sandbox_purge' );
+ok( is_array( get_option( 'es_font_host_previous' ) ), 'es_sandbox_purge() NO borra el registro: las fuentes se quedan en el sitio entregado y el deshacer vive ahi' );
+$u = es_font_unhost();
+ok( is_array( $u ), 'es_font_unhost() devuelve lo que hizo' );
+ok( 'body{color:red}' === trim( wp_get_custom_css() ), 'restaura el CSS adicional de antes' );
+ok( '1' === get_option( 'elementor_google_font' ), 'y el valor anterior de Google Fonts' );
+ok( array() === glob( $up . '/es-fonts/*' ), 'borra los ficheros que escribio, la licencia incluida' );
+ok( false === get_option( 'es_font_host_previous' ), 'y el registro' );
+$r = grab( 'es_font_unhost' );
+ok( false === $r['ret'] && has( $r['out'], 'es_font_host_previous' ), 'sin registro no hay nada que deshacer, y lo dice' );
+wp_fake_reset();
+$GLOBALS['wp']['uploads'] = $up;
+es_font_host( 'Fraunces', $woff2 );
+es_font_unhost();
+ok( false === get_option( 'elementor_google_font' ), 'si Google Fonts no tenia valor, deshacer lo deja sin valor, no en "0"' );
+
+/* K3. Las entradas van a CSS: lo que no es nombre, rango o estilo se rechaza y NO se escribe nada. */
+$malas = array(
+	array( "X';}body{display:none}/*", '400 700', 'normal' ),
+	array( "Fraunces\nX", '400 700', 'normal' ),
+	array( 'Fraunces', '400;}html{visibility:hidden}', 'normal' ),
+	array( 'Fraunces', '400 700', 'oblique' ),
+	array( '- -', '400', 'normal' ),
+	array( 'Ünï', '400', 'normal' ),
+);
+foreach ( $malas as $m ) {
+	wp_fake_reset();
+	$GLOBALS['wp']['uploads'] = $up;
+	$r = grab(
+		function () use ( $m, $woff2 ) {
+			return es_font_host( $m[0], $woff2, $m[1], $m[2] );
+		}
+	);
+	ok( false === $r['ret'] && '' === wp_get_custom_css() && ! is_dir( $up . '/es-fonts' ) && '' !== $r['out'], 'entrada rechazada y sin escribir nada: ' . str_replace( "\n", '\n', substr( $m[0] . ' / ' . $m[1] . ' / ' . $m[2], 0, 50 ) ) );
+}
+wp_fake_reset();
+$GLOBALS['wp']['uploads'] = $up;
+$r = grab(
+	function () {
+		return es_font_host( 'Fraunces', 'wOFF' . str_repeat( "\0", 64 ) );
+	}
+);
+ok( false === $r['ret'] && ! is_dir( $up . '/es-fonts' ), 'WOFF1 se rechaza: se guardaria como .woff2 con otro formato dentro' );
+wp_fake_reset();
+$GLOBALS['wp']['uploads']      = $up;
+$GLOBALS['wp']['upload_error'] = 'No se puede crear el directorio';
+$r = grab(
+	function () use ( $woff2 ) {
+		return es_font_host( 'Fraunces', $woff2 );
+	}
+);
+ok( false === $r['ret'] && has( $r['out'], 'No se puede crear' ) && ! is_dir( $up . '/es-fonts' ), 'wp_upload_dir()[error] se respeta' );
+wp_fake_reset();
+$GLOBALS['wp']['uploads'] = '';
+$r = grab(
+	function () use ( $woff2 ) {
+		return es_font_host( 'Fraunces', $woff2 );
+	}
+);
+ok( false === $r['ret'], 'un directorio base vacio se rechaza (escribiria en la raiz del disco)' );
+
+/* K4. El bloque va DESPUES de los @charset/@import iniciales (un @import tras otras reglas se ignora)
+       y repetir sigue dejando un solo par de marcas. */
+wp_fake_reset();
+$GLOBALS['wp']['uploads']    = $up;
+$GLOBALS['wp']['custom_css'] = "@charset \"UTF-8\";\n@import url('a.css');\nbody{color:red}";
+es_font_host( 'Fraunces', $woff2 );
+es_font_host( 'Inter Tight', $woff2 );
+$css = wp_get_custom_css();
+ok( strpos( $css, '@import' ) < strpos( $css, '/* es-fonts:begin */' ) && strpos( $css, '@charset' ) < strpos( $css, '@import' ), 'el bloque entra despues de @charset y @import' );
+ok( 1 === substr_count( $css, '/* es-fonts:begin */' ) && 1 === substr_count( $css, '/* es-fonts:end */' ) && has( $css, 'body{color:red}' ), 'un solo par de marcas tras repetir, y el CSS de fuera sigue' );
+es_font_unhost();
+if ( is_dir( $up . '/es-fonts' ) ) {
+	foreach ( glob( $up . '/es-fonts/*' ) as $f ) {
+		unlink( $f );
+	}
+	rmdir( $up . '/es-fonts' );
+}
+rmdir( $up );
+
+/* D5c. El espacio por defecto entre widgets es del KIT (`space_between_widgets`, 20px de fabrica) y
+   el kit no lo escribia: una maqueta con otro ritmo se desviaba en cada columna. El token por defecto
+   vale lo que Elementor: un build que no opta renderiza igual. */
+ok( ! isset( $ks['space_between_widgets'] ), 'sin token explicito el kit no recibe el espacio entre widgets' );
+wp_fake_reset();
+$GLOBALS['wp']['options']['elementor_active_kit'] = 5;
+es_tokens( array( 'sp_widget' => 0 ), true );
+es_kit_apply();
+$ks = get_post_meta( 5, '_elementor_page_settings', true );
+ok( '0' === $ks['space_between_widgets']['column'] && 'px' === $ks['space_between_widgets']['unit'], 'y el token lo mueve (0 es un valor valido, no "sin definir")' );
+es_tokens_reset();
+wp_fake_reset();
+$GLOBALS['wp']['options']['elementor_active_kit'] = 5;
+update_post_meta( 5, '_elementor_page_settings', array( 'default_generic_fonts' => 'Georgia', 'space_between_widgets' => array( 'column' => '33' ) ) );
+es_kit_apply();
+$ks = get_post_meta( 5, '_elementor_page_settings', true );
+ok( 'Georgia' === $ks['default_generic_fonts'] && '33' === $ks['space_between_widgets']['column'], 'lo que un humano puso en el kit sobrevive a es_kit_apply() cuando el build no lo pidio' );
 
 /* ---------------------------------------------------------------------------
  * EL KIT GLOBAL: donde es_tokens() se convierte en el sitio.
@@ -3025,6 +3439,55 @@ ok( 'Fraunces' === $tipo['primary']['typography_font_family'], 'y el par del pro
 ok( es_t( 'font_head' ) === $tipo['primary']['typography_font_family'], 'kit y widget leen el MISMO token de display' );
 ok( es_t( 'font_body' ) === $tipo['text']['typography_font_family'], 'y el mismo token de cuerpo' );
 es_tokens_reset();
+
+/* ---------------------------------------------------------------------------
+ * D3. es_owns_control() sobre un Elementor que NO esta en el editor.
+ *
+ * Medido en prueba1 (Elementor 4.2.4, CLI): `get_controls()` de `heading` devuelve 176 controles y
+ * NINGUNO de estilo (ni `title_color` ni `typography_*`); `divider` no trae `width` ni `gap`.
+ * Causa, leida del codigo de Elementor: `Core\Frontend\Performance::should_optimize_controls()` es
+ * true en cualquier peticion que no sea admin, ni vista previa, ni REST, y entonces
+ * `add_control_to_stack()` aparta los controles de estilo en `$stack['style_controls']`, que
+ * `get_controls()` solo vuelve a mezclar si alguien ha llamado a `set_use_style_controls(true)`.
+ * `get_stack()` trae las dos listas en cualquier contexto. Leer solo `get_controls()` hacia que
+ * es_owns_control( 'button', 'background_background' ) dijera "no" (es un control real de estilo del
+ * boton) y que la auditoria acusara de ofensor a un widget correcto.
+ * El Elementor falso va al FINAL del fichero: definir \Elementor\Plugin cambia lo que
+ * class_exists() responde en todo lo que se ejecute despues.
+ * ------------------------------------------------------------------------- */
+echo "--- es_owns_control lee la pila entera, no solo los controles de contenido ---\n";
+eval(
+	'namespace Elementor;
+	class Plugin {
+		public static $i;
+		public $widgets_manager;
+		public static function instance() { return self::$i; }
+	}
+	class FakeWidget {
+		public $stack;
+		/* Como en una peticion de front: SOLO los de contenido. */
+		public function get_controls() { return $this->stack["controls"]; }
+		public function get_stack( $with_common_controls = true ) { return $this->stack; }
+	}
+	class FakeWidgets {
+		public $types = array();
+		public function get_widget_types( $n = null ) { return isset( $this->types[ $n ] ) ? $this->types[ $n ] : null; }
+	}'
+);
+$bw                       = new \Elementor\FakeWidget();
+$bw->stack                = array(
+	'controls'       => array( 'text' => array( 'type' => 'text' ), 'align' => array( 'type' => 'choose' ) ),
+	'style_controls' => array( 'background_background' => array( 'type' => 'choose' ) ),
+);
+$ws                       = new \Elementor\FakeWidgets();
+$ws->types['button-fake'] = $bw;
+$pl                       = new \Elementor\Plugin();
+$pl->widgets_manager      = $ws;
+\Elementor\Plugin::$i     = $pl;
+ok( true === es_owns_control( 'button-fake', 'background_background' ), 'un control de estilo apartado por Elementor en el front SIGUE siendo del widget' );
+ok( true === es_owns_control( 'button-fake', 'text' ), 'y uno de contenido tambien' );
+ok( false === es_owns_control( 'button-fake', 'padding' ), 'una clave que no esta en ninguna de las dos listas no es del widget' );
+ok( false === es_owns_control( 'no-existe', 'text' ), 'y un widget que Elementor no conoce no posee nada' );
 
 echo "\n$pass OK / $fail FAIL\n";
 exit( $fail ? 1 : 0 );

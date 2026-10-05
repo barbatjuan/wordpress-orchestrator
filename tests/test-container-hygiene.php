@@ -80,6 +80,15 @@ $a = es_container_audit( array( $grid ) );
 ok( ! $a['offenders'], 'el idioma dominante del repo no dispara falsos positivos' );
 ok( has( $a['optimizable'], 'unico hijo es un grid' ), 'reportado como fusionable' );
 
+echo "--- un grid en la RAIZ: es_grid() con $inner = false, y la auditoria lo juzga bien ---\n";
+es_uid_reset( 't3b' );
+ok( true === es_grid( 2, array( es_p( 'a' ), es_p( 'b' ) ) )['isInner'], 'por defecto es_grid() sigue siendo interior: quien no opta no cambia' );
+$raiz = es_grid( 3, array( es_h( 'a' ), es_h( 'b' ), es_h( 'c' ) ), 24, array( 'content_width' => 'boxed' ), false );
+ok( false === $raiz['isInner'], 'con $inner false el grid es de la raiz (isInner false), sin tener que reescribirlo a mano' );
+ok( 'boxed' === $raiz['settings']['content_width'], 'y un grid boxed en la raiz conserva su ancho: no necesita seccion envolvente' );
+$a = es_container_audit( array( $raiz ) );
+ok( 1 === $a['containers'] && ! $a['offenders'] && ! $a['optimizable'], 'la auditoria lo da por limpio: un contenedor, sin offenders ni fusionables' );
+
 echo "--- es_wide: ancho sin envoltorio ---\n";
 es_uid_reset( 't4' );
 $w = es_wide( es_p( 'texto' ), 58 );

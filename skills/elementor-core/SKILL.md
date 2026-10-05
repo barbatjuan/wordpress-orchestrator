@@ -49,14 +49,14 @@ yes yourself and stop until you get it.
   (no verifier: nothing can tell a guessed control name from a researched one until the build silently renders nothing.)
 
 ## Execution Steps
-1. `es_manifest_read()`, then `es_manifest_verify()`. Any drift stops here: a stale id overwrites
-   the last session's work.
+1. `es_manifest_read()`, then `es_manifest_verify()`. Drift stops here: a stale id overwrites
+   last session's work.
 2. Copy `assets/es-builder.php` into `wp-content/novamira-sandbox/`; override `es_tokens()` — the
-   one edit point — with the approved maqueta's `:root` values. Defaults
-   ship every site the same green. Upload dependencies FIRST: a missing one stops the
+   one edit point — with the approved maqueta's `:root` values. Upload dependencies FIRST: a missing one stops the
    run.
 3. `es_overwrite_preflight()` with EVERY slug this run writes; show the block, get the yes
    (any other slug is refused; a corrected page needs a new preflight).
+   After the yes: `es_font_host()` serves the families (whole site, `knowledge.md`).
    Moving an existing page is `es_migrate_slug()`, never a second page at the new slug.
 4. Write one `es_build_<page>()` per page → `es_save_page(...)`, which defaults to the
    `elementor_header_footer` template so the global header/footer survive. Header, footer and
@@ -65,7 +65,7 @@ yes yourself and stop until you get it.
 6. `es_set_front_page()` once the home is saved: building a page called Inicio does nothing to
    what `/` serves. Read what it returns.
 7. Verify server-side: fetch compiled `post-<id>.css` / front HTML, `substr_count` the expected
-   selectors. State that visual confirmation needs the user.
+   selectors. Visual confirmation needs the user.
 8. `es_manifest_record('pages', …)` — slug → id **only**. Front page id: `'site'`; `'build'`:
    `es_build_fingerprint()`. A `false` means the next session starts blind.
 

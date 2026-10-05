@@ -85,9 +85,9 @@ stylesheet. That is what makes a Plantilla's techo nativo of zero custom CSS rul
 
 | Role | Maqueta token | Elementor Site Settings | How it is written today |
 |---|---|---|---|
-| Titulares | `--c-text` | Global colour `primary` | `es_kit_apply()` |
+| Titulares | `--c-ink`, else `--c-text` | Global colour `primary` | `es_kit_apply()`, from the `text` token |
 | Chrome | `--c-text-muted` | Global colour `secondary` | `es_kit_apply()` |
-| Cuerpo | soft body ink | Global colour `text` | `es_kit_apply()` |
+| Cuerpo | `--c-text` when the maqueta has `--c-ink`, else derived | Global colour `text` | `es_kit_apply()`, from the `text_soft` token |
 | Acento | `--c-accent` | Global colour `accent`, plus link and link-hover colours | `es_kit_apply()` |
 | Dominant ground | `--c-bg` | Site background colour | `es_kit_apply()` |
 | Alternate ground, border, states | `--c-bg-alt`, `--c-border`, `--c-success`… | Custom global colours | No helper yet: named in the hand-off and set in Site Settings |
@@ -98,6 +98,22 @@ The four system colour ids are **Elementor's own** and are never renamed; every 
 by id. `es_kit_apply()` merges into the kit, reads the write back and returns `0` when nothing landed
 (`elementor-core/references/gotchas.md`). The global fonts use those same four ids and are read the
 same way.
+
+### Maqueta `:root` → `es_tokens()`
+
+The edit point has fewer keys than a maqueta has variables; this is the mapping, so nothing is
+re-coloured by hand afterwards. Measured on the first real build (`terrazza`, prueba1): each of the
+three "hand fixes" below was a mapping the build did not make, not a missing token.
+
+| Maqueta | `es_tokens()` key | Note |
+|---|---|---|
+| `--c-bg`, `--c-bg-alt` | `bg`, `bg_alt` | |
+| `--c-ink` (heading ink); else `--c-text` | `text` | Becomes the kit's `primary`, and Elementor's heading colour defaults to `primary`, so a heading with no `title_color` is already ink. Never put the body colour here when the maqueta has an ink: every heading then needs a colour by hand. |
+| `--c-text` when `--c-ink` exists | `text_soft` | Derived (23% toward `bg`) unless overridden; an explicit value wins |
+| `--c-text-muted`, `--c-accent`, `--c-accent-hover` | `muted`, `accent`, `accent_hover` | |
+| `--font-display`, `--font-body` (first family) | `font_head`, `font_body` | Only the family. Elementor writes ONE generic after every family: set `font_fallback` to the generic of the body face |
+| H1 size at 1280 | `fs_h1_max` | The H1 IS the cap (94 gives 94px; the default 64 gives 64px). H2 is `cap ÷ ratio`, H3 one step down: a maqueta whose H2 is off that ratio (Terrazza: 40px) is set per heading with `typography_font_size`, and that is the contract, not a defect |
+| Gap between widgets in a column | `sp_widget` | The kit's own setting, 20px by default (Elementor's factory value). It is not set by the page, so a maqueta rhythm other than 20 drifts until this is |
 
 **Only the family is global; the scale is not.** Size, weight and line height stay per role, because
 the scale is four derived numbers and a global that fixed them would flatten the axis. What the
