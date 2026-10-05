@@ -324,6 +324,7 @@ $pid = wp_fake_page(
    wp_update_post() y la comprobacion pasaba igual. Lo destapo una corrida end-to-end contra un sitio
    real, donde el titulo si cambiaba. Un test que no puede distinguir el arreglo de su propio bug es
    exactamente lo que esta rama existe para eliminar. */
+approve( 'servicios' );
 $r = grab(
 	function () use ( $els ) {
 		$a = null;
@@ -724,15 +725,33 @@ wp_fake_reset();
 ok( array() === es_manifest_read()['sections'], 'sin manifiesto, se devuelve la forma vacia y no null' );
 
 ok( true === es_manifest_record( 'site', array( 'builder' => 'elementor' ) ), 'guardar una seccion devuelve true' );
-ok( true === es_manifest_record( 'design', array( 'personality' => 'PERS-EDITORIAL' ) ), 'y otra tambien' );
+ok( true === es_manifest_record( 'pages', array( 'inicio' => 101 ) ), 'y otra tambien' );
 $m = es_manifest_read();
 ok( 'elementor' === $m['sections']['site']['data']['builder'], 'la primera seccion sigue ahi' );
-ok( 'PERS-EDITORIAL' === $m['sections']['design']['data']['personality'], 'y la segunda no la piso' );
+ok( array( 'inicio' => 101 ) === $m['sections']['pages']['data'], 'y la segunda no la piso' );
 ok( '' !== $m['sections']['site']['at'], 'cada seccion lleva su propia marca de tiempo' );
 
 /* La lista de secciones deja de ser prosa repetida y pasa a ser un hecho invocable. */
 $secciones = es_manifest_sections();
-ok( array( 'site', 'design', 'pages', 'delivery', 'build' ) === $secciones, 'es_manifest_sections() devuelve las CINCO secciones, en ese orden, sin una sexta' );
+ok( array( 'site', 'pages', 'build' ) === $secciones, 'es_manifest_sections() devuelve las TRES secciones que alguien escribe, en ese orden, sin una cuarta' );
+
+/* Un sitio cuyo manifiesto guardado ya trae las dos secciones retiradas (design, delivery) se sigue
+   leyendo, se sigue verificando y no pierde esas claves al escribir otra seccion. */
+wp_fake_reset();
+$viva = wp_fake_page( 'inicio', 'publish', 'Inicio' );
+$GLOBALS['wp']['options']['es_novamira_manifest'] = array(
+	'schema'   => 1,
+	'updated'  => '20260101-000000',
+	'sections' => array(
+		'design'   => array( 'at' => '20260101-000000', 'data' => array( 'personality' => 'PERS-EDITORIAL' ) ),
+		'delivery' => array( 'at' => '20260101-000000', 'data' => array( 'shipped' => true ) ),
+		'pages'    => array( 'at' => '20260101-000000', 'data' => array( 'inicio' => $viva ) ),
+	),
+);
+ok( 'PERS-EDITORIAL' === es_manifest_read()['sections']['design']['data']['personality'], 'un manifiesto antiguo con design/delivery se lee' );
+$r = grab( 'es_manifest_verify' );
+ok( array() === $r['ret'] && '' === $r['out'], 'y se verifica sin deriva ni avisos por las claves que ya nadie escribe' );
+ok( true === es_manifest_record( 'build', array( 'php' => '8' ) ) && isset( es_manifest_read()['sections']['delivery'] ), 'escribir otra seccion no borra las antiguas' );
 
 $mal = array();
 $n   = 0;
@@ -846,6 +865,7 @@ ok( null === es_page_by_slug( 'contacto' ), 'un adjunto NO es una pagina, aunque
 ok( null !== get_page_by_path( 'contacto', OBJECT, 'page' ), 'y el doble reproduce que la funcion de WordPress SI lo devuelve' );
 
 $action = null;
+approve( 'contacto' );
 $r      = grab(
 	function () use ( $els, &$action ) {
 		return es_save_page( 'contacto', 'Contacto', $els, 'elementor_header_footer', $action );
@@ -942,6 +962,7 @@ $pid = wp_fake_page(
 		'_wp_page_template' => 'plantilla-vieja.php',
 	)
 );
+approve( 'servicios' );
 $a = null;
 grab(
 	function () use ( $els, &$a ) {
@@ -1057,6 +1078,7 @@ ok( has( $r['out'], '_wp_page_template' ), 'nombrando la pieza que falta' );
 $GLOBALS['wp']['meta_ro'] = array();
 wp_fake_reset();
 $pid = wp_fake_page( 'u', 'publish', 'T', '', array( '_elementor_data' => '[{"txt":"con \\\\\"comillas\\\\\""}]' ) );
+approve( 'u' );
 $a   = null;
 grab(
 	function () use ( $els, &$a ) {
@@ -1137,16 +1159,97 @@ ok( '' !== es_safe_mode_check(), 'un .crashed ilegible sigue siendo modo seguro'
 
 echo "--- aprobacion y portada: las dos reglas que solo vivian en la prosa ---\n";
 
+/* THE BUILD GATE, enforced. A slug the human was not shown writes NOTHING: no post, no meta, no
+   backup, and a failure the caller cannot take for success. */
 wp_fake_reset();
 $r = grab(
 	function () use ( $els ) {
-		$a = null;
-		return es_save_page( 'sin-preflight', 'Sin preflight', $els, 'elementor_header_footer', $a );
+		$a  = null;
+		$id = es_save_page( 'sin-preflight', 'Sin preflight', $els, 'elementor_header_footer', $a );
+		return array( $id, $a );
 	}
 );
-ok( $r['ret'] > 0, 'escribir sin preflight NO bloquea: un build interrumpido tiene que poder reanudarse' );
-ok( has( $r['out'], 'es_overwrite_preflight' ), 'pero avisa, nombrando la funcion que faltaba' );
-ok( has( $r['out'], 'sin-preflight' ), 'y el slug que se escribio sin que nadie lo viera' );
+ok( 0 === $r['ret'][0] && 'failed' === $r['ret'][1], 'escribir sin preflight devuelve 0 y action failed: la misma forma que cualquier otro fallo de escritura' );
+ok( has( $r['out'], 'es_overwrite_preflight' ), 'y el mensaje nombra la funcion que faltaba' );
+ok( has( $r['out'], 'sin-preflight' ), 'y el slug que no se escribio' );
+ok( has( $r['out'], 'NO se escribio' ), 'y dice que no se escribio nada, para que nadie lo lea como exito' );
+ok( ! any_layout_written() && array() === $GLOBALS['wp']['posts'], 'no se creo ni la pagina ni su layout' );
+
+/* Sobre una pagina que YA existe: ni titulo, ni meta, ni respaldo. */
+wp_fake_reset();
+$viva = wp_fake_page( 'viva', 'publish', 'Viva', '<p>clasica</p>' );
+$r    = grab(
+	function () use ( $els ) {
+		$a = null;
+		return es_save_page( 'viva', 'Nueva', $els, 'elementor_header_footer', $a );
+	}
+);
+ok( 0 === $r['ret'], 'una pagina existente sin preflight tampoco se toca' );
+ok( 'Viva' === $GLOBALS['wp']['posts'][ $viva ]->post_title, 'ni su titulo' );
+ok( empty( $GLOBALS['wp']['meta'][ $viva ] ), 'ni una clave de meta, respaldo incluido: un respaldo implicaria que hubo escritura' );
+
+/* Preflight de A, escritura de B: B no esta aprobada. */
+wp_fake_reset();
+approve( 'a' );
+$r = grab(
+	function () use ( $els ) {
+		$a = null;
+		return es_save_page( 'b', 'B', $els, 'elementor_header_footer', $a );
+	}
+);
+ok( 0 === $r['ret'] && ! isset( $GLOBALS['wp']['by_slug']['b'] ), 'aprobar A no aprueba B' );
+
+/* Preflight y luego guardar: se escribe, en silencio. */
+wp_fake_reset();
+approve( 'a' );
+$r = grab(
+	function () use ( $els ) {
+		$a = null;
+		return es_save_page( 'a', 'A', $els, 'elementor_header_footer', $a );
+	}
+);
+ok( $r['ret'] > 0 && isset( $GLOBALS['wp']['by_slug']['a'] ) && '' === $r['out'], 'preflight y luego guardar: se escribe, sin avisos' );
+
+/* La aprobacion sobrevive a la peticion (cada execute-php es una peticion nueva) y se gasta al
+   escribir: reanudar un build es volver a pasar por el preflight los slugs que faltan. */
+ok( array() === get_option( 'es_preflight_slugs' ), 'la aprobacion vive en una opcion, no en memoria, y se gasta al escribir la pagina' );
+$GLOBALS['wp']['options']['es_preflight_slugs'] = array( 'pendiente' );
+$r = grab(
+	function () use ( $els ) {
+		$a = null;
+		return es_save_page( 'pendiente', 'P', $els, 'elementor_header_footer', $a );
+	}
+);
+ok( $r['ret'] > 0, 'una aprobacion que viene de otra peticion vale' );
+$r = grab(
+	function () use ( $els ) {
+		$a = null;
+		return es_save_page( 'pendiente', 'P', $els, 'elementor_header_footer', $a );
+	}
+);
+ok( 0 === $r['ret'], 'pero cubre UNA escritura por slug: la segunda pide otro preflight, que es el estado actual que el humano debe ver' );
+
+/* Un fallo de escritura no gasta la aprobacion: reintentar no obliga a repetir el preflight. */
+wp_fake_reset();
+approve( 'fallida' );
+$GLOBALS['wp']['insert_ret'] = 0;
+grab(
+	function () use ( $els ) {
+		$a = null;
+		return es_save_page( 'fallida', 'F', $els, 'elementor_header_footer', $a );
+	}
+);
+ok( in_array( 'fallida', get_option( 'es_preflight_slugs' ), true ), 'una escritura que WordPress rechazo deja la aprobacion en pie' );
+
+/* Si la aprobacion no se pudo registrar, el preflight lo dice: nada se podra escribir despues. */
+wp_fake_reset();
+$GLOBALS['wp']['option_ro'] = array( 'es_preflight_slugs' );
+$r = grab(
+	function () {
+		return es_overwrite_preflight( array( 'x' ) );
+	}
+);
+ok( has( $r['out'], 'AVISO' ) && has( $r['out'], 'es_preflight_slugs' ), 'un preflight cuya aprobacion no quedo registrada avisa' );
 
 wp_fake_reset();
 $r = grab(
@@ -1178,7 +1281,7 @@ $r = grab(
 		return es_save_page( 'seis', 'La sexta', $els, 'elementor_header_footer', $a );
 	}
 );
-ok( has( $r['out'], 'seis' ), 'y la sexta, que nadie aprobo, avisa nombrandose — un flag por peticion ya estaria callado' );
+ok( has( $r['out'], 'seis' ) && 0 === $r['ret'], 'y la sexta, que nadie aprobo, se rechaza nombrandose' );
 
 /* La portada. */
 wp_fake_reset();

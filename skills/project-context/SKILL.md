@@ -1,6 +1,6 @@
 ---
 name: project-context
-description: "Trigger: detect stack, which builder, Elementor or Divi, read project, WordPress plugins, project constraints, brand. Inspect a WordPress site via NovaMira before building anything."
+description: "Trigger: detect stack, which builder, Elementor or Divi, read project, WordPress plugins, project constraints, brand. Inspect a WordPress site via its connector before building anything."
 license: Apache-2.0
 metadata:
   author: "juan"
@@ -24,12 +24,11 @@ Re-run if the target site changes.
 - Report the builder explicitly (`elementor` | `divi` | `unknown`); the orchestrator routes on it.
 - If the builder is `unknown` or ambiguous, say so — do not guess; let the orchestrator ask.
 
-## Execution Steps (via NovaMira `execute-php`)
+## Execution Steps (via the connector; step 7 names it)
 1. **Builder**: active plugins (`get_option('active_plugins')`) — `elementor/elementor.php`,
    `elementor-pro`, or Divi (`et_divi` theme / Divi Builder). Version from `ELEMENTOR_VERSION`.
 2. **Commerce**: is `woocommerce/woocommerce.php` active? note WC version.
-3. **Theme**: `wp_get_theme()` name + child theme. Recommendation for the orchestrator: on a NEW
-   Elementor build default to **Hello Elementor** (minimal, no conflicts with global tokens/Theme
+3. **Theme**: `wp_get_theme()` name + child theme. On a NEW Elementor build recommend **Hello Elementor** (minimal, no conflicts with global tokens/Theme
    Builder); if a lightweight theme is already active (Astra / GeneratePress), keep it and neutralize
    its defaults rather than swapping. Divi builds keep the Divi theme.
 4. **Existing structure**: pages (`post_type=page`), which use the builder
@@ -41,9 +40,10 @@ Re-run if the target site changes.
    `/inicio/` is dead. This is what a build must not silently repoint.
 6. **Constraints**: menu (`menu-principal` etc), brand palette/logo if present, NAP
    (phone/email/address), language.
-7. **Connector**: confirm the NovaMira connector UUID and that `create-upload-link` +
-   `execute-php` respond (retry on transient "requires additional permissions").
-8. **Sandbox state — check this before promising any build.** The Novamira loader `require_once`s
+7. **Connector**: name it from the session's tools (NovaMira `execute-php`, bridge
+   `amb-execute-php`; `references/connector.md`) and confirm PHP execution responds (retry on
+   transient "requires additional permissions").
+8. **Sandbox state (NovaMira) — check this before promising any build.** Its loader `require_once`s
    every `*.php` in `wp-content/novamira-sandbox/` on EVERY request, but returns early when a
    `.crashed` file exists, disabling ALL of them. One file's fatal switches the whole sandbox off,
    and the only notice is a wp-admin banner an agent never sees. Report: whether `.crashed`
@@ -55,7 +55,8 @@ Re-run if the target site changes.
 Return a compact block: `builder`, `builder_version`, `woocommerce` (y/n + version),
 `theme`, `pages` (id · slug · builder?), `front_page_id` (+ its slug, or `0` = blog),
 `theme_templates`, `sandbox` (safe-mode y/n + file count), `constraints`, `open_questions`.
-The orchestrator uses this to route and to decide what to ask the user.
+The orchestrator routes on it.
 
 ## References
+- `references/connector.md`: what each connector provides.
 - Pairs with `elementor-core` / `divi-core` (builder execution) and `ux-design-system` (look).

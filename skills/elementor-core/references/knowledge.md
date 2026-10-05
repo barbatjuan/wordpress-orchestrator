@@ -53,7 +53,7 @@
   chained builds need because `es_tokens( array() )` returns the PREVIOUS build's palette.
   Both, plus how a finished site reaches production and the three things the migration plugin does
   not know about it: `references/migration.md`.
-  The manifest's `design` section is empty in the current flow. The values Step 2 passes to
+  The manifest holds no design (`site`, `pages`, `build` only). The values Step 2 passes to
   `es_tokens()` come from the approved maqueta's `:root` (the brand `ux-design-system` placed
   inside the Plantilla's Enfoque; `qa-review` row 31 compares them).
   `es_manifest_verify()` contrasts the recorded page map and front page against the LIVE site and
@@ -156,11 +156,13 @@ is for.
   **before the first write**. Each row: `slug`, `id`, `action`, `status`, `is_elementor`,
   `is_front_page`, `converts`. The last two cost the most and show up the least.
   It also RECORDS the slugs it printed, and `es_save_page()` reads that record through
-  `es_approval_check($slug)`: writing a slug the block never covered warns, naming it. Per slug,
-  not once per run — a single flag goes quiet after the first warning, and the write it would then
-  hide is the unapproved one. It warns and does not block: an interrupted build has to be
-  resumable without re-approving the pages that already landed. `es_approval_check()` returns the
-  verdict, so it is readable without parsing stdout.
+  `es_approval_check($slug)`: a slug the block never covered is REFUSED — `'failed'`, return 0,
+  nothing written, not even the backup. The record is the option `es_preflight_slugs`, not a
+  variable: every connector call is a new PHP request and the human's yes comes between the
+  preflight and the build. A write that lands spends its slug, so one preflight covers one write.
+  Resuming an interrupted build is the same call on the slugs still to write: the unwritten ones
+  are still approved, a page that landed needs a new preflight, which is cheap and shows the human
+  the page as it is now. There is no override. `es_approval_check()` returns the verdict.
 - `es_front_page_check()` → `'nothing-built'` | `'page'` | `'posts'`. Called from
   `es_audit_summary()`, so a run that saved pages while `/` still serves the blog says so on the
   one line the operator is told to read before deploying. It does NOT judge which page is the

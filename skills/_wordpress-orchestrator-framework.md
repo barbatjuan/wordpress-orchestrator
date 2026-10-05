@@ -105,7 +105,8 @@ have reached it:
 | `html-mockup` | `mockup-guide.md` |
 | `qa-review` | `house-rules.md` — the most cross-referenced file in the framework |
 | `visual-verification` | `render-defects.md` — every defect found by looking, and the rule it produced |
-| `project-context`, `wordpress-performance`, `wordpress-seo`, `wordpress-security`, `wordpress-forms`, `wordpress-legal` | none |
+| `project-context` | `connector.md` — what the framework needs from a connector, and what NovaMira and the bridge provide |
+| `wordpress-performance`, `wordpress-seo`, `wordpress-security`, `wordpress-forms`, `wordpress-legal` | none |
 
 Gotchas are the gold — grow them every time something surprises you. Shape and rules:
 `CONTRIBUTING.md`.

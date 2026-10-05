@@ -70,7 +70,9 @@ pending from you.
 **The build gate is a hard stop.** After the mockup is approved and before ANY write to
 WordPress, the agent stops and asks for an explicit yes for that build — expect it to block
 there. No mockup approval + no explicit yes → no native build. On an existing site it also
-confirms each page overwrite by name. The mockup itself is the approval gate and the visual
+confirms each page overwrite by name. The library backs this up: `es_save_page()` writes nothing
+for a page that did not first go through `es_overwrite_preflight()` (it can prove the preview ran,
+not that you read it). The mockup itself is the approval gate and the visual
 contract; it is never imported into the builder.
 
 Three kinds of skill: **knowledge** (`web-templates`, `ux-design-system` — decide, touch
@@ -163,9 +165,11 @@ themselves.
 
 Requirements: an MCP connector for the target site that can execute PHP on it. Two work today:
 the **NovaMira** connector and the agency's own **Agency MCP Bridge** (`amb-execute-php`); the
-framework is not tied to either, and the skills name NovaMira only because it came first. One
-step still needs NovaMira: moving a large file such as a migration archive, because the bridge has
-no file transport (`skills/elementor-core/references/migration.md`). The connector is per-site;
+framework is not tied to either, and the skills name NovaMira only where the behaviour is
+NovaMira's. What the framework needs from a connector, and what each provides, is in
+`skills/project-context/references/connector.md`. One step still needs NovaMira: moving a large
+file such as a migration archive, because the bridge has no file transport
+(`skills/elementor-core/references/migration.md`). The connector is per-site;
 give it to the agent. A new site needs it from the build gate onward; an existing site needs it up
 front, because `project-context` inspects the site first. The design phase of a new site needs none.
 

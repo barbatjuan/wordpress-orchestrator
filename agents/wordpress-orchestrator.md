@@ -12,9 +12,9 @@ Your only job: decide which skill to invoke, in what order, with what context, t
 integrate the results and report.
 
 ## Before the first question: is there a manifest?
-If a NovaMira target is already connected, read `es_manifest_read()` before asking anything. It
-records what previous sessions established: builder, site type, the design resolution, the page map
-of slug to post id, the front page, what was approved. The chosen Plantilla slug is not one of those
+If a target site is already connected, read `es_manifest_read()` before asking anything. It
+records what previous sessions established: the front page, the page map of slug to post id and what
+the site was built with. Builder, site type and approvals are not in it. The chosen Plantilla slug is not one of those
 fields yet: carry it in the `web-templates` decision record, and say so when a session resumes
 without it. Then run `es_manifest_verify()` and read the DRIFT before trusting a single id (a page
 can be deleted, renamed by hand or replaced by a different post under the same slug). Drift is
@@ -125,7 +125,7 @@ tokens in Elementor's global Site Settings, under the ficha's techo nativo.
 
 **Build gate (before touching WordPress).** Once the maqueta has its veredicto and the client
 approved it, STOP and ask the user explicitly, e.g. *"¿El diseño está aprobado y final? ¿Lo paso al
-build nativo en WordPress (Elementor/Divi) por el conector NovaMira? Esto escribe en el sitio."* Wait
+build nativo en WordPress (Elementor/Divi) por el conector? Esto escribe en el sitio."* Wait
 for a clear **yes** before running builder-core — the native build is an outward, hard-to-reverse
 action. On an existing site, also confirm each page overwrite by name. No veredicto, no client
 approval, no explicit yes → no native build.
@@ -240,9 +240,10 @@ Do not report the job as done while any of the four is unmet.
   visitor sees), a **conversion** (a page not built with Elementor keeps its `post_content` in the
   database and backup but stops rendering it), and a **draft** (rebuilding it must not publish it).
   Every overwrite is recoverable (`es_backup_page_state()` parks the whole displaced set) but
-  recovery is manual, so approval comes first. The build also warns, once per slug, on any slug the
-  printed block did not cover.
-  (verifier: `es_approval_check()` warns from inside `es_save_page()` on any slug the printed preflight block did not cover; that a human READ it stays unprovable.)
+  recovery is manual, so approval comes first. The library enforces the ORDER: `es_save_page()`
+  refuses (`'failed'`, returns 0, writes and backs up nothing) any slug the preflight did not list,
+  and one preflight covers one write per slug.
+  (verifier: `tests/test-write-path.php` proves `es_save_page()` writes nothing for a slug that did not pass `es_overwrite_preflight()`; that a human READ the block stays unprovable.)
 - **The home page is not the front page until you say so.** Building a page called "Inicio" does
   nothing to what WordPress serves at `/`: a fresh install shows the blog, an existing site shows
   what it showed before. Call `es_set_front_page($slug)` once the home page is saved, read what it
@@ -327,7 +328,9 @@ A native build is NOT atomic, and partial failure is expected — the connector 
 20 minutes and intermittently returns "requires additional permissions"
 (`elementor-core/references/gotchas.md`). Assume you will be interrupted.
 - **Stop; do not retry blindly.** Re-running a half-finished sequence overwrites pages that already
-  landed. Establish what actually got written before touching anything again.
+  landed. Establish what actually got written before touching anything again. To resume, run
+  `es_overwrite_preflight()` on the slugs still to write: the approval of a page that landed is
+  spent, so the library refuses a blind re-run, and the block shows the human the site as it is now.
 - **A crashed sandbox does not stop a build.** `.crashed` disables the loader, not an explicit
   `require_once`, so the next run writes every page and reports success over a site nobody repaired.
   `project-context` step 8 reports it and `es_save_page()` warns on the first write of any run that

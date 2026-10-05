@@ -1,7 +1,7 @@
 # Local to production
 
 **This is one of two routes, and the optional one.** Building directly on the client's WordPress
-through the NovaMira connector is the default and stays exactly as it was — there is nothing here
+through the connector is the default and stays exactly as it was — there is nothing here
 to do on that route, because nothing moves. Everything below applies only when a site was built
 locally first.
 

@@ -93,7 +93,6 @@ function wp_fake_reset() {
 	   inherit the previous fixture's approvals and its list of saved pages — and the assertions
 	   that depend on them would pass for the wrong reason, which is the failure this whole suite
 	   is about. Reset with the site, not beside it. */
-	$GLOBALS['es_preflight_slugs'] = array();
 	$GLOBALS['es_saved_pages']     = array();
 	/* The style registry is site state too, and it is the one a fixture is likeliest to forget: it
 	   is built by wp_fake_style() rather than declared here, so a leftover from the previous
