@@ -1,7 +1,7 @@
 # Local to production
 
 **This is one of two routes, and the optional one.** Building directly on the client's WordPress
-through the NovaMira connector is the default and stays exactly as it was — there is nothing here
+through the connector is the default and stays exactly as it was — there is nothing here
 to do on that route, because nothing moves. Everything below applies only when a site was built
 locally first.
 
@@ -92,8 +92,8 @@ used once more for one last fix is a sandbox that ships. This is what covers the
 filter was never installed, was installed with a trailing slash, or stopped matching after a plugin
 update — none of which announce themselves.
 
-qa-review row 33 carries the production probe, including why a 403 is not a pass and why an empty
-200 is the trap.
+qa-review row 22 carries the HTTP probe (row 33 runs it on production), including why a 403 is not a
+pass and why an empty 200 is the trap.
 
 **2. EVERY VISIBILITY SWITCH TRAVELS, and they hide different things.** These are options, options
 are rows in the database, and the database is what a migration copies. Each one is set to a

@@ -3,7 +3,8 @@
 Modular system for building **premium WordPress sites**, reusable across
 projects (workshop, clinic, real-estate, ecommerce…) by swapping brand config and adding
 domain skills. The orchestrator and bases stay the same. Two builder paths exist —
-**Elementor is proven; Divi is an unvalidated scaffold** (see "Use" below).
+**Elementor is the proven path; Divi page builds are tested on a real Divi 5 site, with no helper
+library yet** (see "Use" below).
 
 **Principle: the agent thinks, the skills execute.** A tiny orchestrator agent decides
 *which* skill runs, in what order, with what context. It holds no CSS/HTML/PHP — those live
@@ -11,60 +12,77 @@ in skills and their `assets/`.
 
 ## What's inside
 ```
-agents/wordpress-orchestrator.md      # tiny router (thinks, asks, routes)
+agents/
+  wordpress-orchestrator.md           # tiny router (thinks, asks, routes)
+  wordpress-copywriter.md             # the real copy, in its own context window (explicit delegation only)
+  blind-judge-a.md  blind-judge-b.md  # the two blind judges used by blind-judges
 skills/
   _wordpress-orchestrator-framework.md # architecture overview
   project-context/                    # detect builder (elementor|divi), plugins, brand
-  web-templates/                      # the library of real Plantillas (lienzo, maqueta, photographs, ficha, veredicto), picked by Objetivo
+  web-templates/                      # the library of real Plantillas, picked by Objetivo
   ux-design-system/                   # builder-agnostic visual language (tokens, motion, layout)
-  html-mockup/                        # static HTML preview for client approval before the native build
-  elementor-core/                     # Elementor execution — battle-tested (+ es-builder.php)
-  divi-core/                          # Divi execution — scaffold, unvalidated, no assets yet
+  html-mockup/                        # the client's maqueta, one Artifact, for approval before the build
+  blind-judges/                       # two blind judges write the veredicto: professional? same hand?
+  visual-verification/                # judge a rendered page by eye, in a subagent, on a capture budget
+  elementor-core/                     # Elementor execution, battle-tested (+ es-builder.php)
+  divi-core/                          # Divi execution: page builds tested on Divi 5, no assets/ yet
   elementor-theme-parts/              # header, footer, Theme Builder parts (Elementor Pro)
   woocommerce/                        # shop / product / side cart / templates (Elementor path only)
   wordpress-forms/                    # contact/lead forms + a PROVEN delivery, not a rendered form
   wordpress-legal/                    # legal pages from the client's real data + a banner that blocks
   wordpress-performance/  wordpress-seo/  qa-review/
   wordpress-security/                 # one mu-plugin (xmlrpc, user enumeration, headers) + what is reported
+  framework-audit/                    # audits this repo itself, not a site
 ```
-
-Alongside the orchestrator, `agents/wordpress-copywriter.md` is a subagent that writes the real
-copy in its own context window. It is reached by explicit delegation only and never touches
-WordPress.
 
 ## Build flow
 The agent's **first question is "new site or existing site?"** — it decides whether
-WordPress is inspected at all.
+WordPress is inspected at all. The design phase is builder-agnostic and needs no WordPress.
 
-**New site (greenfield)** — nothing is written to WordPress until the gate:
+**New site (greenfield)** — nothing is written to WordPress until the build gate:
 ```
-web-templates → ux-design-system → html-mockup → [BUILD GATE] → project-context
-→ elementor-core | divi-core → woocommerce → performance / seo → qa-review
+web-templates → ux-design-system → Claude Design (the client's lienzo) → html-mockup
+→ blind-judges + visual-verification (veredicto) → client approval → [BUILD GATE]
+→ project-context → elementor-theme-parts → elementor-core | divi-core → woocommerce
+→ wordpress-legal → wordpress-forms → wordpress-performance / wordpress-seo
+→ wordpress-security → qa-review → visual-verification
 ```
 **Existing site** — inspect first, then route on what was actually found:
 ```
-project-context → web-templates → ux-design-system → html-mockup → [BUILD GATE]
-→ elementor-core | divi-core → woocommerce → performance / seo → qa-review
+project-context → web-templates → ux-design-system → Claude Design → html-mockup
+→ blind-judges + visual-verification → client approval → [BUILD GATE]
+→ elementor-theme-parts → elementor-core | divi-core → woocommerce → wordpress-legal
+→ wordpress-forms → wordpress-performance / wordpress-seo → wordpress-security
+→ qa-review → visual-verification
 ```
+Claude Design is the design skill, outside this repo. `elementor-theme-parts` is Elementor only,
+`woocommerce` runs only for commerce and `wordpress-forms` only when the site takes enquiries.
 `web-templates` picks a real Plantilla by Objetivo and asks you for references; `ux-design-system`
-places your brand inside its Enfoque and fixes tokens and motion; `html-mockup` derives a static
-maqueta you approve; builder-core reproduces it natively; `qa-review` diffs the native build against
-the approved mockup. The design phase is builder-agnostic and needs no WordPress.
+places your brand inside its Enfoque; `html-mockup` derives the maqueta from the approved lienzo; the
+judges give it a veredicto; builder-core reproduces it natively; `qa-review` diffs the native build
+against it.
+
+Each phase runs in a fresh agent, and the orchestrator thread only coordinates. State lives in the
+client folder's `diseno/estado.md`: every phase agent rewrites it when it closes and returns a short
+summary. A resumed or new session reads that file and nothing else to know the next step and what is
+pending from you.
 
 **The build gate is a hard stop.** After the mockup is approved and before ANY write to
 WordPress, the agent stops and asks for an explicit yes for that build — expect it to block
 there. No mockup approval + no explicit yes → no native build. On an existing site it also
-confirms each page overwrite by name. The mockup itself is the approval gate and the visual
-contract; it is never imported into the builder.
+confirms each page overwrite by name. The library backs this up: `es_save_page()` and
+`es_save_theme_part()` write nothing for a page or header/footer that did not first go through
+its preflight, or that changed since (it can prove the preview ran, not that you read it).
+`es_kit_apply()` backs up the site-wide kit before replacing it. Not gated: the front page
+setting, a slug move, backup pruning and a restore. The mockup itself is the approval gate and
+the visual contract; it is never imported into the builder.
 
 Three kinds of skill: **knowledge** (`web-templates`, `ux-design-system` — decide, touch
-nothing), **read-only** (`project-context`, `qa-review` — inspect and report, never write),
-and **operative** (`html-mockup` produces an Artifact; the rest write to the live site behind
-the gate). Only `elementor-core` and `woocommerce` currently have both a
-`references/knowledge.md` and a `references/gotchas.md`; `divi-core` has gotchas only, and
-`project-context` / `qa-review` / `wordpress-performance` / `wordpress-seo` / `wordpress-security` / `wordpress-forms` /
-`wordpress-legal` have no
-`references/` yet. See `skills/_wordpress-orchestrator-framework.md` for the full map.
+nothing), **read-only** (`project-context`, `qa-review`, `visual-verification`, `framework-audit` —
+inspect and report, never write), and **operative** (`html-mockup` produces an Artifact;
+`blind-judges` writes and seals the veredicto, its judges being read-only; the rest write to the live
+site behind the gate). Which skills have `references/` and what each holds:
+`skills/_wordpress-orchestrator-framework.md`.
 
 ## Install
 
@@ -147,19 +165,28 @@ yes, then builds and verifies server-side. You can also invoke a skill directly 
 (e.g. `elementor-core`, `woocommerce`) — the operative skills enforce the build gate
 themselves.
 
-Requirements: a connected **NovaMira** MCP connector for the target site (the connector UUID
-is per-site; give it to the agent) — needed only from the build gate onward, not for the
-design phase.
+Requirements: an MCP connector for the target site that can execute PHP on it. Two work today:
+the **NovaMira** connector and the agency's own **Agency MCP Bridge** (`amb-execute-php`); the
+framework is not tied to either, and the skills name NovaMira only where the behaviour is
+NovaMira's. What the framework needs from a connector, and what each provides, is in
+`skills/project-context/references/connector.md`. One step still needs NovaMira: moving a large
+file such as a migration archive, because the bridge has no file transport
+(`skills/elementor-core/references/migration.md`). The connector is per-site;
+give it to the agent. A new site needs it from the build gate onward; an existing site needs it up
+front, because `project-context` inspects the site first. The design phase of a new site needs none.
 
-**Elementor is the proven path.** Divi is a scaffold: `divi-core` is v0.2, has no `assets/`
-and no helper library, and no Divi build has been validated end-to-end on a real site.
-`woocommerce` and `qa-review` are likewise Elementor-only in practice today. Treat any Divi
-step as unverified and record what you learn in `divi-core/references/gotchas.md`.
+**Elementor is the proven path.** Divi page builds are tested on a real Divi 5 site (from D4
+shortcodes; four confirmed gotchas in `divi-core/references/gotchas.md`). Still true: `divi-core`
+has no `assets/` and no helper library, `elementor-theme-parts` is Elementor Pro only, and
+`woocommerce` has no Divi path (the skill stops on a Divi site). `qa-review` reports the rows whose
+checks read Elementor artefacts as UNVERIFIED on a Divi build. Verify each Divi step on the site and
+record what you learn in `divi-core/references/gotchas.md`.
 
 ## Contributing (grow the gotchas)
 The `references/gotchas.md` files are the real value. When something surprises you on a
 build, add a confirmed entry (symptom → cause → fix → "do NOT"). Keep `SKILL.md` bodies
-concise (~180–450 tokens); put detail in `references/` and code in `assets/`.
+short (the audit enforces the word ceiling); put detail in `references/` and code in `assets/`.
+The rules are in `CONTRIBUTING.md`.
 
 1. `git checkout -b gotcha/<short-name>`
 2. Edit the relevant skill / reference / asset.

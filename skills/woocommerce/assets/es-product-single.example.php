@@ -2,6 +2,9 @@
 /**
  * Example - single product template (Elementor Pro Theme Builder).
  * Native WooCommerce single-product widgets only.
+ *
+ * Flow: es_theme_part_preflight( array( 'es-single-product' => array( 'include/product' ) ) ),
+ * show the block, get the yes, then build. es_save_theme_part() refuses a part the preflight did not list.
  */
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;

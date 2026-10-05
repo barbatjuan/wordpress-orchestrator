@@ -1707,6 +1707,9 @@ function es_audit_verdict( $rest, $code ) {
  * Pass `elementor_canvas` explicitly only for a page that must have no chrome (standalone landing,
  * coming-soon splash).
  *
+ * BUILD GATE: a slug that did not pass `es_overwrite_preflight()` is refused ('failed', return 0,
+ * nothing written, not even the backup). Resuming an interrupted build = preflight the slugs left.
+ *
  * Overwriting an existing page is destructive: writing `_elementor_data` through the meta API replaces
  * the whole layout and leaves no revision. Every overwrite therefore parks the displaced state in a
  * timestamped backup key first (see es_backup_page_state): the layout AND the page template, edit
@@ -1726,7 +1729,12 @@ function es_audit_verdict( $rest, $code ) {
  */
 function es_save_page( $slug, $title, array $elements, $tpl = 'elementor_header_footer', &$action = null ) {
 	es_safe_mode_check();
-	es_approval_check( $slug );
+	/* The build gate. BEFORE the lookup, the backup and every write: a slug nobody was shown writes
+	   nothing, and reports it the way every other refused write does ('failed', 0). */
+	if ( ! es_approval_check( $slug ) ) {
+		$action = 'failed';
+		return 0;
+	}
 	$page = es_page_by_slug( $slug );
 	if ( $page ) {
 		$id     = $page->ID;
@@ -1819,6 +1827,10 @@ function es_save_page( $slug, $title, array $elements, $tpl = 'elementor_header_
 	}
 	$landed = (string) get_post_field( 'post_name', $id );
 	$es_saved_pages[ '' !== $landed ? $landed : $slug ] = (int) $id;
+
+	/* One preflight covers ONE write per slug. Spent only now, after the write landed: an interrupted
+	   page keeps its approval, a page that landed needs a new preflight (it is a different overwrite). */
+	es_preflight_spend( $slug );
 
 	return $id;
 }
@@ -2240,18 +2252,20 @@ function es_manifest_read() {
 }
 
 /**
- * The five sections the manifest knows how to hold, in order. A flat list, not a writer map: who
- * writes a section is a fact about the tree (grep `es_manifest_record( '<name>'` call sites), not
- * something this function should assert.
+ * The three sections the manifest holds, in order. A flat list, not a writer map: who writes a
+ * section is a fact about the tree (grep `es_manifest_record( '<name>'` call sites), not something
+ * this function should assert.
  *
- * Observed today: `pages` is written by `elementor-core` step 8 (slug => id); `site` by that same step
- * (`front_page_id`) and read back by `es_manifest_verify()`; `design` and `delivery` by nothing and
- * read by nothing (named so the gap is countable). `build` holds what the site was built WITH (`es_build_fingerprint()`), written by
- * `elementor-core` SKILL.md step 8 alongside `pages`; it lets a later check tell whether production
- * runs the same PHP, WordPress, Elementor and Elementor Pro as the QA pass.
+ * `pages` is written by `elementor-core` step 8 (slug => id); `site` by that same step
+ * (`front_page_id`) and read back by `es_manifest_verify()`. `build` holds what the site was built
+ * WITH (`es_build_fingerprint()`), written by step 8 alongside `pages`; it lets a later check tell
+ * whether production runs the same PHP, WordPress, Elementor and Elementor Pro as the QA pass.
+ *
+ * `design` and `delivery` were retired: nothing wrote or read them. A manifest stored before that
+ * still carries them; reading ignores them and recording another section leaves them in place.
  */
 function es_manifest_sections() {
-	return array( 'site', 'design', 'pages', 'delivery', 'build' );
+	return array( 'site', 'pages', 'build' );
 }
 
 /**
@@ -2474,6 +2488,12 @@ function es_sandbox_report() {
  * never removes the directory itself.
  */
 function es_sandbox_purge() {
+	/* The preflight approvals are build state, not site state: they must not stay on the client's site
+	   or travel in an export. Read back like every delete here. */
+	delete_option( 'es_preflight_slugs' );
+	if ( false !== get_option( 'es_preflight_slugs' ) ) {
+		es_warn( 'la opcion es_preflight_slugs (aprobaciones del build) no se pudo borrar y se queda en el sitio. Borrala a mano antes de entregar.' );
+	}
 	$dir  = es_sandbox_dir();
 	$real = realpath( $dir );
 	if ( ! $real || ! is_dir( $real ) ) {
@@ -2719,6 +2739,10 @@ function es_overwrite_preflight( array $slugs ) {
 	$make  = 0;
 
 	foreach ( $slugs as $slug ) {
+		if ( ! is_string( $slug ) || '' === $slug ) {
+			es_warn( 'el preflight ignora un slug vacio o que no es texto: no puede aprobarse ni escribirse.' );
+			continue;
+		}
 		$page = es_page_by_slug( $slug );
 		if ( ! $page ) {
 			$rows[] = array(
@@ -2768,13 +2792,64 @@ function es_overwrite_preflight( array $slugs ) {
 	/* Recorded AFTER the block is printed, never before. The approval artifact is the text a human
 	   read, so a preflight that dies partway through approves nothing — the same reason every write
 	   in this file is read back instead of trusted to its return value. */
-	global $es_preflight_slugs;
-	if ( ! isset( $es_preflight_slugs ) || ! is_array( $es_preflight_slugs ) ) {
-		$es_preflight_slugs = array();
-	}
+	$seen = array();
 	foreach ( $rows as $row ) {
-		$es_preflight_slugs[] = $row['slug'];
+		$seen[ $row['slug'] ] = $row['id'];   /* the id the human saw; 0 = the page did not exist */
 	}
+	es_preflight_record( $seen, false );
+
+	return array(
+		'rows'       => $rows,
+		'overwrites' => $over,
+		'creates'    => $make,
+	);
+}
+
+/**
+ * The preflight for theme parts (header, footer, templates): what `es_overwrite_preflight()` is for
+ * pages. A theme part applies to EVERY page its conditions match, so it is the write with the
+ * widest reach and the same rule: nobody approves what they were not shown.
+ *
+ * `$parts` is `array( slug => array( new display conditions ) )`. Prints, per part, CREA or PISA,
+ * the existing template id, the conditions it has now against the new ones, and the other templates
+ * registered at the same locations (`es_theme_location_rivals()`). Records `tpl:<slug> => id seen`
+ * for `es_save_theme_part()`. Returns `array( 'rows' => [...], 'overwrites' => int, 'creates' => int )`.
+ */
+function es_theme_part_preflight( array $parts ) {
+	$rows = array();
+	$out  = '';
+	$over = 0;
+	$make = 0;
+	$seen = array();
+	foreach ( $parts as $slug => $conditions ) {
+		if ( ! is_string( $slug ) || '' === $slug ) {
+			es_warn( 'el preflight de theme parts ignora un slug vacio o que no es texto.' );
+			continue;
+		}
+		$conditions = array_map( 'strval', (array) $conditions );
+		$id         = es_gate_seen_id( 'tpl:' . $slug );
+		$seen[ 'tpl:' . $slug ] = $id;
+		if ( ! $id ) {
+			$make++;
+			$rows[] = array( 'slug' => $slug, 'id' => 0, 'action' => 'create', 'conditions' => array(), 'new_conditions' => $conditions, 'rivals' => array() );
+			$out   .= "\n  CREA       " . $slug . '  condiciones: ' . implode( ', ', $conditions );
+			continue;
+		}
+		$over++;
+		$now    = get_post_meta( $id, '_elementor_conditions', true );
+		$now    = is_array( $now ) ? array_map( 'strval', $now ) : array();
+		$rivals = es_theme_location_rivals( $id );
+		$rows[] = array( 'slug' => $slug, 'id' => $id, 'action' => 'overwrite', 'conditions' => $now, 'new_conditions' => $conditions, 'rivals' => $rivals );
+		$out   .= "\n  PISA       " . $slug . ' #' . $id . '  condiciones ahora: ' . ( $now ? implode( ', ', $now ) : '(ninguna)' )
+			. ' -> nuevas: ' . implode( ', ', $conditions );
+		foreach ( $rivals as $location => $others ) {
+			$out .= "\n             otras plantillas en " . $location . ': #' . implode( ', #', $others );
+		}
+	}
+	$out = 'WordPress Orchestrator preflight de theme parts: ' . count( $rows ) . ' — ' . $over . ' se pisan, ' . $make . ' se crean' . $out;
+	error_log( str_replace( "\n", ' | ', $out ) );
+	echo $out . "\n";
+	es_preflight_record( $seen, true );
 
 	return array(
 		'rows'       => $rows,
@@ -2832,26 +2907,106 @@ function es_safe_mode_check() {
  * Per slug, not once per request: a per-request flag falls silent after the first warning and hides
  * the unapproved write that follows.
  *
- * It WARNS and does not block: a build interrupted mid-flight (the connector's ~20-minute token makes
- * that routine) must be resumable without re-approving pages that landed, and refusing here would make
- * the recovery path the one that cannot run. The backup still happens either way; approval comes
- * before the write or it is not approval.
+ * It BLOCKS: `es_save_page()` and `es_save_theme_part()` write nothing for a key this says no to.
+ * The record is the option `es_preflight_slugs` (`slug => id the human saw`, 0 = it did not exist;
+ * `tpl:<slug>` for a theme part), not a variable, because every connector call is a new PHP request
+ * and the human's yes arrives between the preflight and the build. What was approved is what was
+ * SHOWN: if the page found at the slug now is not the one the preflight saw, the site changed and
+ * the answer is no. Resuming an interrupted build needs no override: the keys still unwritten are
+ * still approved, and one that already landed is preflighted again, which is cheap and shows the
+ * human the page as it is now. A corrected page after an audit verdict is the same case.
  *
  * Returns the verdict so a caller (or a test) can read it without parsing stdout.
  */
 function es_approval_check( $slug ) {
-	global $es_preflight_slugs;
+	if ( ! is_string( $slug ) || '' === $slug ) {
+		es_warn( 'se pidio escribir un slug vacio o que no es texto: NO se escribio nada.' );
 
-	if ( isset( $es_preflight_slugs ) && is_array( $es_preflight_slugs ) && in_array( $slug, $es_preflight_slugs, true ) ) {
-		return true;
+		return false;
 	}
-	es_warn(
-		'se va a escribir "' . $slug . '" sin haberlo pasado por es_overwrite_preflight(). Nadie ha visto el bloque que '
-		. 'dice si esa pagina ya existe, si es la portada, o si su contenido actual deja de renderizarse. El respaldo se '
-		. 'hace igual, pero la aprobacion va ANTES de la escritura: despues ya no es una aprobacion, es un aviso.'
-	);
+	$fn   = 0 === strpos( $slug, 'tpl:' ) ? 'es_theme_part_preflight()' : 'es_overwrite_preflight()';
+	$seen = es_preflight_approved();
+	if ( ! array_key_exists( $slug, $seen ) ) {
+		es_warn(
+			'"' . $slug . '" NO se escribio: no paso por ' . $fn . ', asi que nadie ha visto el bloque que dice si ya existe, '
+			. 'si es la portada, o si su contenido actual deja de renderizarse. Corre ' . $fn . ' con los slugs que faltan, '
+			. 'ensena el bloque y vuelve a guardar. Si el build se interrumpio, o corregiste una pagina ya guardada tras el '
+			. 'veredicto, es lo mismo: cada escritura necesita un preflight nuevo de ese slug.'
+		);
 
-	return false;
+		return false;
+	}
+	if ( es_gate_seen_id( $slug ) !== (int) $seen[ $slug ] ) {
+		es_warn(
+			'"' . $slug . '" NO se escribio: el sitio cambio desde el preflight (lo que hay en ese slug ya no es lo que se enseño). '
+			. 'Corre ' . $fn . ' otra vez, ensena el bloque nuevo y vuelve a guardar.'
+		);
+
+		return false;
+	}
+
+	return true;
+}
+
+/** What the preflight recorded and no write has spent yet: `key => id seen`. */
+function es_preflight_approved() {
+	$list = get_option( 'es_preflight_slugs' );
+
+	return is_array( $list ) ? $list : array();
+}
+
+/** The id found NOW for a gate key: a page for a plain slug, a template for `tpl:<slug>`. 0 = none. */
+function es_gate_seen_id( $key ) {
+	if ( 0 === strpos( $key, 'tpl:' ) ) {
+		$found = get_posts(
+			array(
+				'post_type'      => 'elementor_library',
+				'name'           => substr( $key, 4 ),
+				'posts_per_page' => 1,
+				'post_status'    => 'any',
+			)
+		);
+
+		return $found ? (int) $found[0]->ID : 0;
+	}
+	$page = es_page_by_slug( $key );
+
+	return $page ? (int) $page->ID : 0;
+}
+
+/**
+ * Store one kind of preflight (pages, or theme parts), REPLACING the earlier entries of that kind:
+ * the run's slugs go in one call, so what an earlier build or session approved cannot linger. The
+ * other kind is kept. Read back: an approval that did not land makes every later save refuse.
+ */
+function es_preflight_record( array $seen, $theme_parts ) {
+	$keep = array();
+	foreach ( es_preflight_approved() as $key => $id ) {
+		if ( ( 0 === strpos( (string) $key, 'tpl:' ) ) !== $theme_parts ) {
+			$keep[ $key ] = $id;
+		}
+	}
+	$map = $keep + $seen;
+	update_option( 'es_preflight_slugs', $map );
+	if ( get_option( 'es_preflight_slugs' ) !== $map ) {
+		es_warn(
+			'el preflight se imprimio pero la opcion es_preflight_slugs no quedo escrita, asi que el guardado va a rechazar estos slugs. '
+			. 'Revisa permisos o un plugin que filtre las opciones.'
+		);
+	}
+}
+
+/** A write landed: its approval is spent (one preflight, one write). Read back, like every write here. */
+function es_preflight_spend( $key ) {
+	$seen = es_preflight_approved();
+	unset( $seen[ $key ] );
+	update_option( 'es_preflight_slugs', $seen );
+	if ( array_key_exists( $key, es_preflight_approved() ) ) {
+		es_warn(
+			'"' . $key . '" se escribio, pero su aprobacion sigue en la opcion es_preflight_slugs y no se pudo gastar: '
+			. 'otra escritura del mismo slug pasaria sin un preflight nuevo. Revisa permisos o una cache de opciones.'
+		);
+	}
 }
 
 /**
@@ -2921,7 +3076,7 @@ function es_front_page_check() {
  * ran.
  *
  * The once-per-build latch is a GLOBAL, not a `static` like `es_safe_mode_check()`'s, deliberately: it
- * is per-build state like `$es_saved_pages` and `$es_preflight_slugs`, and a static cannot be reset, so
+ * is per-build state like `$es_saved_pages`, and a static cannot be reset, so
  * a suite could observe the warning or its silence, never both.
  */
 function es_font_serving_check() {
@@ -3289,6 +3444,8 @@ function es_kit_apply() {
 		array( '_id' => 'accent',    'title' => 'Acento',    'typography_typography' => 'custom', 'typography_font_family' => $t['font_body'] ),
 	);
 
+	/* Site-wide colours and typography, replaced: park the previous settings first (es_restore_page_state). */
+	es_backup_page_state( $kit, array( '_elementor_page_settings' ) );
 	update_post_meta( $kit, '_elementor_page_settings', $settings );
 
 	$back = get_post_meta( $kit, '_elementor_page_settings', true );

@@ -169,9 +169,10 @@ that enforces the rules:
 - `test-container-hygiene.php`: what the container walk decides.
 - `test-audit-signals.php`: what each channel may mute and what each return value means. It runs
   itself twice, in a parent and a `--loud` child, because `ES_AUDIT_SILENT` is a constant.
-- `test-write-path.php`: what the save functions report when the write did not do what was asked. It
-  drives a fake WordPress that can be told to fail on demand (`tests/lib/fake-wp.php`, shared with
-  `test-replay.php` so two fakes cannot drift).
+- `test-write-path.php`: what the save functions report when the write did not do what was asked,
+  and the build gate: `es_save_page()` writes nothing for a slug that did not pass
+  `es_overwrite_preflight()`. It drives a fake WordPress that can be told to fail on demand
+  (`tests/lib/fake-wp.php`, shared with `test-replay.php` so two fakes cannot drift).
 - `test-replay.php`: a build reproduces itself (migration-by-replay rests on it).
 - `test-herramientas.php`: the shared `skills/html-mockup/assets/herramientas/` toolbox (`color.php`,
   `scrim.php`, `huella.php`), library functions in-process and the CLI's `0`/`1`/`2` exit contract
@@ -189,8 +190,9 @@ Then install locally (`install.ps1` / `install.sh`) and test at the right depth:
 - **Design-phase changes** (`web-templates`, `ux-design-system`, `html-mockup`) need **no
   WordPress at all** — that phase is builder-agnostic by design. Run it greenfield and read the
   Artifact.
-- **Anything that writes** needs a throwaway NovaMira site. Confirm the build gate blocks: a skill
-  reached directly, without the orchestrator, must still refuse to write until you say yes. A change
-  that lets a write through unasked is a regression.
+- **Anything that writes** needs a throwaway site on a connector (`skills/project-context/references/connector.md`).
+  Confirm the build gate blocks: a skill reached directly, without the orchestrator, must still
+  refuse to write until you say yes, and `es_save_page()` must refuse a slug the preflight did not
+  list. A change that lets a write through unasked is a regression.
 - Then confirm `qa-review` passes with server-side evidence (fetched CSS/HTML with counted selectors,
   never a claimed visual result), including its house-rules checklist, before merging.

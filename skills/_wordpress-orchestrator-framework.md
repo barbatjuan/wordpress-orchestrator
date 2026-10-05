@@ -76,18 +76,18 @@ the result against it.
   and never guesses), `wordpress-performance`, `wordpress-seo`, `wordpress-forms` (it routes on
   the form plugin, not the page builder) and `wordpress-legal` (on the consent plugin).
 - **Builder-aware, validated on Elementor only**: `qa-review` — its evidence checks look for
-  Elementor build artefacts; the Divi equivalents are not validated. Also `woocommerce`: the
+  Elementor build artefacts; the Divi equivalents are not confirmed. Also `woocommerce`: the
   commerce structure is generic, but every execution step and asset targets the Elementor
   Theme Builder, so there is no Divi commerce path today.
 - **Builder-specific**: `elementor-core` (battle-tested), `elementor-theme-parts`
-  (Elementor Pro Theme Builder only — no Divi equivalent) and `divi-core` (scaffold).
+  (Elementor Pro Theme Builder only — no Divi equivalent) and `divi-core` (page builds tested on Divi 5; no helper library).
 
-**The Divi path is unvalidated.** `divi-core` has no `assets/` directory at all, and the
+**The Divi path is tested for page builds only.** `divi-core` has no `assets/` directory at all, and the
 `di_section` / `di_row` / `di_module` helper library its own SKILL.md describes does not exist
 yet — which also means no Divi build gets an automatic container audit, because that audit
-lives in the Elementor helper library. Nothing on the Divi path has been proven end-to-end on a real site. Do
-not present it as parity with Elementor: flag unverified steps as unverified and append
-confirmed findings to `divi-core/references/gotchas.md`.
+lives in the Elementor helper library. Page builds are tested on a real Divi 5 site (four confirmed gotchas); commerce and
+Theme Builder are not. Do not present it as parity with Elementor: flag unverified steps as
+unverified and append confirmed findings to `divi-core/references/gotchas.md`.
 
 ## Knowledge vs gotchas — what actually exists today
 The intended shape is that each core skill splits stable knowledge
@@ -105,7 +105,8 @@ have reached it:
 | `html-mockup` | `mockup-guide.md` |
 | `qa-review` | `house-rules.md` — the most cross-referenced file in the framework |
 | `visual-verification` | `render-defects.md` — every defect found by looking, and the rule it produced |
-| `project-context`, `wordpress-performance`, `wordpress-seo`, `wordpress-security`, `wordpress-forms`, `wordpress-legal` | none |
+| `project-context` | `connector.md` — what the framework needs from a connector, and what NovaMira and the bridge provide |
+| `wordpress-performance`, `wordpress-seo`, `wordpress-security`, `wordpress-forms`, `wordpress-legal` | none |
 
 Gotchas are the gold — grow them every time something surprises you. Shape and rules:
 `CONTRIBUTING.md`.

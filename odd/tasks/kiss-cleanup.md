@@ -149,3 +149,69 @@ Not run by anyone: Elementor's rendered-CSS minifier vs the marker (irrelevant w
 stored data); `install.ps1` self-install guard and `--clean` under Windows PowerShell 5.1.
 Still open, pre-existing: orchestrator line on Permalinks/404 overstates what `migration.md` measured.
 Next: owner decides PR vs merge; then `install.ps1 --clean` to update `~/.claude`.
+
+## Second pass (owner, 2026-10-05: "dale")
+Branch `chore/kiss-pass-2` from main 5f740d9. The first pass left the orchestrator at 359 lines and
+`house-rules.md` at 51 KB with no rows merged.
+- [x] T5 (delegated writer) `house-rules.md`: merge rows that are the same check run once (e.g. the
+  header rows, the three Lighthouse rows, 22/33 overlap) only where criterion and procedure can be
+  stated together without losing any PASS/FAIL/UNVERIFIED condition. Numbers stay stable: a merged
+  row keeps the lowest number, absorbed numbers disappear, every citation of an absorbed number is
+  repointed. Orchestrator: every house rule it restates becomes a pointer to its row once the row is
+  confirmed to hold the whole rule; what only the orchestrator knows stays.
+
+T5 (2026-10-05, delegated writer): only two groups met the same-check test — rows 7+9 → 7 and
+11+28 → 11 (42 → 40 rows, numbers stable, citations repointed). Deliberately NOT merged: 13/14/15
+(one Lighthouse run but different owners, and performance is non-blocking), 22/33 (different phase),
+header rows 2/4/5/6/8/10 (different criteria or builder scope), 29/30, 38/39/40. Orchestrator
+359 → 345 lines: restated rules became pointers to rows 11, 22, 23, 37 after confirming each row
+holds the whole rule. Permalinks/404 wording corrected to what migration.md measured.
+house-rules 50,902 → 50,080 bytes. The duplication left is small; further size would need cutting
+rules, not narration. Audit `0 FAIL / 3 WARN`; tests unchanged and green.
+
+README + Divi status (2026-10-05, b145111): README brought in line with the tree (17 skills, 4
+agents, real build flow, estado.md, connector note); Divi wording now "page builds tested on a real
+Divi 5 site", commerce/theme-parts/helpers still stated as not available.
+
+## Third pass (owner, 2026-10-05: "dale con todo lo nuestro y lo que vale la pena de gpt, luego actualiza el readme")
+From an external review, verified against the code; only what is worth it, KISS:
+- [x] T6a Build gate enforced at runtime (strict TDD): `es_approval_check()` warns and the write at
+  `es-builder.php:1729` proceeds. A write to a slug that did not pass `es_overwrite_preflight()` must
+  fail and write nothing, with one explicit, named override for resuming a partially executed build.
+  No token/hash scheme: the runtime cannot prove a human said yes, it can prove the preflight ran.
+- [x] T6b Manifest: drop the `design` and `delivery` sections nothing writes or reads.
+- [x] T6c Connector contract: one short reference stating what the framework needs from a connector
+  (execute PHP, sandbox directory, optional file upload), which connectors provide it (NovaMira,
+  Agency MCP Bridge) and the bridge's known limit (no file transport); skills point at it instead of
+  assuming NovaMira. Identifiers that are real (option name, sandbox path) are not renamed.
+- [x] T6d qa-review row 31(a): compare only the axes the maqueta's `:root` declares; an axis it does
+  not declare is reported N/A, not silently skipped.
+- [x] T6e README updated for the above.
+Kept on purpose: the two bleed audit rows (guard for a documented pattern). Still the owner's, not
+done here: re-judging barro and corte, blind-judges self-judgement, stale worktrees and branches.
+
+T6 (2026-10-05, delegated writer, RED first for T6a/T6b): `es_save_page()` refuses a slug that was
+not preflighted (returns 0 / `failed`, nothing written, check runs before lookup and backup).
+Discovery: the old record was a PHP global, but each connector call is its own request, so it could
+never have held across the human's yes; the preflight now records slugs in the option
+`es_preflight_slugs` (read-back checked) and a landed write spends its slug. Resume = run the
+preflight again on what is left; no override exists. Manifest sections now `site, pages, build`
+(old stored keys still read). `skills/project-context/references/connector.md` added; unknowns about
+the bridge marked "not recorded in this repo". Row 31(a) reports undeclared axes as N/A.
+write-path 561 → 576; golden fixture unchanged; audit `0 FAIL / 3 WARN`.
+Superseded below — was: `es_save_theme_part()` and kit / front page / slug move / restore are NOT
+gated (the preflight only describes pages); whether a spent approval should last; the stale
+`openspec/specs/manifest-section-contract` spec; `es_preflight_slugs` option is left on the site.
+
+Independent verification of 7a0f1be (2026-10-05, opus, read-only): pass with findings — no side
+effect before the refusal, no slug-normalisation bypass. One correction round applied (RED first):
+approvals store `slug => id seen` and are refused when the site changed since; each preflight
+replaces earlier entries of its kind; spending is read back; empty/non-string slugs refused; the
+approvals option is deleted in `es_sandbox_purge()`; `es_kit_apply()` backs up the kit first;
+theme parts gated through `es_theme_part_preflight()` + `tpl:<slug>`; connector.md contradictions
+fixed; orchestrator states which writers check; openspec manifest spec updated to three sections.
+write-path 576 → 600; golden fixture byte-identical; audit `0 FAIL / 3 WARN`.
+What the gate guarantees: `es_save_page()` and `es_save_theme_part()` write only what a preflight
+printed for the site as it still is. It cannot prove a human read the block; arbitrary PHP through
+the connector bypasses the library.
+Not gated on purpose: `es_set_front_page`, `es_migrate_slug`, `es_prune_backups`, `es_restore_page_state`.

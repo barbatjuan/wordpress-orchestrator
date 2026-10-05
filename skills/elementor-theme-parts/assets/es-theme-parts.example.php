@@ -1,6 +1,9 @@
 <?php
 /**
  * Example site - global header and footer (Elementor Pro Theme Builder).
+ *
+ * Flow: es_theme_part_preflight( array( 'es-header' => array( 'include/general' ), 'es-footer' => array( 'include/general' ) ) ),
+ * show the block, get the yes, then build. es_save_theme_part() refuses a part the preflight did not list.
  */
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -37,6 +40,9 @@ foreach ( array( 'es-builder.php' ) as $es_dep ) {
  * never renders. Regeneration is therefore part of saving a theme part, not something
  * a caller has to remember, and the result is verified before we call it done.
  *
+ * BUILD GATE: call `es_theme_part_preflight( array( slug => conditions ) )` first and show its block;
+ * a part it did not list is refused ('failed', 0, nothing written). One preflight, one write.
+ *
  * Overwriting also replaces `_elementor_data` outright with no revision behind it, so the
  * displaced state is parked in a timestamped backup key first (see es_backup_page_state in
  * es-builder.php) — including `_elementor_conditions`, the key that decides WHERE a template
@@ -58,6 +64,13 @@ foreach ( array( 'es-builder.php' ) as $es_dep ) {
  * that appears LATER is a new fact and still warns, which is the whole reason the check exists.
  */
 function es_save_theme_part( $slug, $title, $type, array $elements, array $conditions, &$action = null, array $known_rivals = array() ) {
+	/* The build gate: a theme part reaches every page its conditions match, so it writes nothing
+	   unless `es_theme_part_preflight()` showed this slug and the template found now is the one it
+	   saw. Same refusal as es_save_page(): 'failed', 0. */
+	if ( ! es_approval_check( is_string( $slug ) && '' !== $slug ? 'tpl:' . $slug : '' ) ) {
+		$action = 'failed';
+		return 0;
+	}
 	$existing = get_posts(
 		array(
 			'post_type'      => 'elementor_library',
@@ -159,6 +172,7 @@ function es_save_theme_part( $slug, $title, $type, array $elements, array $condi
 			);
 		}
 	}
+	es_preflight_spend( 'tpl:' . $slug );   /* one preflight, one write */
 
 	return $id;
 }

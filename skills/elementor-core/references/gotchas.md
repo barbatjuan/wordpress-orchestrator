@@ -3,7 +3,8 @@
 Every one of these cost real debugging time. Trust them.
 
 ## Deploy pipeline (the ONLY reliable order)
-1. **Upload** files via `novamira/create-upload-link` + multipart `curl -F file=@`.
+1. **Upload** files. NovaMira: `novamira/create-upload-link` + multipart `curl -F file=@` (the
+   bridge has no file transport: `project-context/references/connector.md`).
    Raw PUT `--data-binary` is Forbidden by hosting. Token expires (~20 min) and
    the connector intermittently returns "requires additional permissions" — just retry.
 2. `require_once` the builder files, then **call the build function explicitly**. End that build

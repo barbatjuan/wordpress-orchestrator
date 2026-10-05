@@ -109,7 +109,7 @@ tokens, so the two agree — and collapsing those per-widget writes onto the glo
 fluid value with no native control is either redesigned in the lienzo or written in the ficha's
 Mapeo nativo Nota column with its reason — never slipped into `custom_css`.
 
-**Divi**: its global colours play the same role; the mapping is not validated in this repo.
+**Divi**: its global colours play the same role; the mapping is not confirmed in this repo.
 
 ## The Enfoque's eight axes
 Eight axes carry what makes two sites feel different; the accent COLOUR is NOT one of them, it

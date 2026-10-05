@@ -9,13 +9,13 @@ metadata:
 
 # Elementor Core (execution)
 
-Build Elementor pages as raw PHP emitting `_elementor_data` JSON, deployed through the NovaMira
+Build Elementor pages as raw PHP emitting `_elementor_data` JSON, deployed through the site's
 connector. Owns the helper library, the deploy pipeline and the Elementor failure modes; the
 visual spec comes from `ux-design-system`.
 
 ## Activation Contract
-Use when `project-context` reports builder = `elementor` and work runs through NovaMira
-`execute-php` (not the Elementor UI).
+Use when `project-context` reports builder = `elementor` and work runs through the connector's
+PHP execution (not the Elementor UI).
 
 **Build gate — blocking.** This skill writes to a live WordPress site. Do not run until the user
 has given an explicit **yes** for THIS build; reached directly rather than routed, ask for that
@@ -41,7 +41,7 @@ yes yourself and stop until you get it.
   (verifier: es_container_report() prints the container verdict from inside the save, before that page's data is written.)
 - Deterministic IDs: `es_uid_reset('<page>')` once per page, `es_uid()` per element.
   (verifier: `tests/test-replay.php` builds one page twice and diffs the emitted bytes, with a control proving the diff can fail.)
-- Wrap all build logic in named functions — the sandbox `require_once`s every `.php` it holds on
+- Wrap all build logic in named functions — NovaMira's sandbox `require_once`s every `.php` on
   EVERY request, not on upload, and one fatal switches the whole directory off.
   (no verifier: self-verifying — top-level logic fatals the site before `execute-php` is ever reached, so a violation cannot ship quietly.)
 - **Read `references/gotchas.md` before the first deploy.** Introspect widget/control names;
@@ -49,13 +49,14 @@ yes yourself and stop until you get it.
   (no verifier: nothing can tell a guessed control name from a researched one until the build silently renders nothing.)
 
 ## Execution Steps
-1. `es_manifest_read()`, then `es_manifest_verify()`. Any drift stops here: a recorded id the site
-   disagrees with is how this session overwrites what the last one agreed to leave alone.
+1. `es_manifest_read()`, then `es_manifest_verify()`. Any drift stops here: a stale id overwrites
+   the last session's work.
 2. Copy `assets/es-builder.php` into `wp-content/novamira-sandbox/`; override `es_tokens()` — the
-   one edit point — with the approved maqueta's `:root` values. Left at its
-   defaults, every site ships the same green. Upload dependencies FIRST: a missing one stops the
+   one edit point — with the approved maqueta's `:root` values. Defaults
+   ship every site the same green. Upload dependencies FIRST: a missing one stops the
    run.
-3. `es_overwrite_preflight()` with EVERY slug this run writes; show the block, get the yes.
+3. `es_overwrite_preflight()` with EVERY slug this run writes; show the block, get the yes
+   (any other slug is refused; a corrected page needs a new preflight).
    Moving an existing page is `es_migrate_slug()`, never a second page at the new slug.
 4. Write one `es_build_<page>()` per page → `es_save_page(...)`, which defaults to the
    `elementor_header_footer` template so the global header/footer survive. Header, footer and

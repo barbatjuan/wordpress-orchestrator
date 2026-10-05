@@ -1,7 +1,7 @@
-# Divi gotchas — to be discovered
+# Divi gotchas
 
-This file starts almost empty ON PURPOSE. Divi is not yet battle-tested here. Every time a
-Divi build surprises you, add a confirmed entry below in this shape:
+Page builds are tested on a real Divi 5 site; the confirmed entries are below. Every time a
+Divi build surprises you, add a confirmed entry in this shape:
 
 ```
 ## <short title>

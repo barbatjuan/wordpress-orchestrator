@@ -1,20 +1,20 @@
 ---
 name: divi-core
-description: "Trigger: Divi builder, Divi theme, Divi via PHP, build Divi page, Divi theme builder, et_pb. Generate and deploy Divi layouts via WordPress Orchestrator. SCAFFOLD — validate each step and record gotchas as you learn them."
+description: "Trigger: Divi builder, Divi theme, Divi via PHP, build Divi page, Divi theme builder, et_pb. Generate and deploy Divi layouts via WordPress Orchestrator. Page builds tested on Divi 5; validate the rest and record gotchas."
 license: Apache-2.0
 metadata:
   author: "juan"
   version: "0.3"
 ---
 
-# Divi Core (execution) — scaffold
+# Divi Core (execution)
 
 Parallel of `elementor-core` for sites where `project-context` reports builder = `divi`.
 The visual spec still comes from `ux-design-system`; only the emit/deploy mechanics differ.
 
-> STATUS: scaffold, NOT battle-tested like Elementor. Verify every step on the real site and
-> append confirmed findings to `references/gotchas.md`. Do not present unverified Divi behavior
-> as proven — say "unverified" to the orchestrator.
+> STATUS: page builds tested on a real Divi 5 site; no `assets/` or helpers yet. Verify
+> anything beyond `references/gotchas.md` on the site and append it there. Do not present
+> unverified Divi behavior as proven — say "unverified" to the orchestrator.
 
 ## Activation Contract
 Use only when the active builder is Divi. Otherwise route to `elementor-core`.
@@ -64,5 +64,5 @@ Report what was built, what was VERIFIED vs assumed, and every new Divi fact dis
 Flag unverified assumptions explicitly.
 
 ## References
-- `references/gotchas.md` — Divi findings (starts near-empty; grow it).
+- `references/gotchas.md` — Divi findings (confirmed on Divi 5; grow it).
 - Mirror the concepts in `elementor-core/references/knowledge.md`, translated to Divi.
