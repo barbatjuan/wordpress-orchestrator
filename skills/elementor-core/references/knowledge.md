@@ -12,7 +12,7 @@
   `_element_custom_width`) instead of a wrapper container. Works on widgets and containers.
 - `es_photo($slug,$height,$extra)` — image widget with `object-fit:cover`. Use instead of a
   container `background_image`: keeps the `alt`, saves a container.
-- `es_grid($cols,$children,$gap,$extra)` — grid container (rows forced to `auto`, see gotchas).
+- `es_grid($cols,$children,$gap,$extra,$inner=true)` — grid container (rows forced to `auto`, see gotchas); `$inner=false` for a root-level grid.
 - `es_row`, `es_eyebrow`, `es_h`, `es_p`, `es_btn($text,$link,$style,$extra)`
   (styles: primary / dark / outline / outline-light), `es_card`, `es_feature_card`, `es_iconbox`.
 - `es_cta_banner($img_slug,$title,$text,$btn_text,$btn_link,$bg)` — rounded closing-CTA band:
@@ -39,8 +39,9 @@
   `dimensions` control on **three** (`nested-tabs`, `call-to-action`, `table-of-contents`) and
   `background_background` a real `choose` control on **seven** (`button`, `archive-posts`,
   `loop-grid`, `off-canvas`, `posts`, `paypal-button`, `stripe-button`).
-  `es_owns_control($widget_type,$key)` asks Elementor directly when it is there and falls back to
-  that measured list offline. Re-run the introspection when Elementor moves.
+  `es_owns_control($widget_type,$key)` asks Elementor directly (the whole `get_stack()`, content AND
+  style controls: `get_controls()` alone omits the style ones outside the editor/REST, see gotchas)
+  and falls back to that measured list only offline. Re-run the introspection when Elementor moves.
 - **Manifest** (state between sessions): `es_manifest_read()` → `{schema, updated, sections}`;
   `es_manifest_record($section,$data)` merges ONE section, stamps it, READS IT BACK and returns
   false when it did not land. Section names come from `es_manifest_sections()`, so two skills
@@ -230,7 +231,7 @@ is for.
   looked at, and the warning names which half it could not see. Generic and web-safe faces are
   skipped. The once-per-build latch is `$es_font_said`, a global rather than a `static`, because a
   static cannot be reset and half the behaviour would be untestable.
-- `es_front_font_probe( $url = '' )` → `'sin-http'` | `'google'` | `'limpio'` | `'sin-confirmar'`.
+- `es_front_font_probe( $url = '' )` → `'sin-http'` | `'google'` | `'sin-servir'` | `'limpio'` | `'sin-confirmar'`.
   The OTHER END of the same question, and an **entry point**: nothing in the asset calls it,
   `qa-review` does (its Hard Rules name it). It fetches the served HTML — the only place the answer
   lives — and is the only thing that can honestly clear the build's permanent `'sin-confirmar'`.
@@ -241,14 +242,30 @@ is for.
   the bytes are known to be the page's. Both needles — `fonts.googleapis.com` is the stylesheet,
   `fonts.gstatic.com` the font file a bad self-hosting job still pulls from the same third country.
   `'limpio'` is a statement about THE URL FETCHED, not about the site, which is why `$url` exists.
+  **`'limpio'` also means every declared family ARRIVES.** The families come from the kit's global
+  typography (what the site says; the probe runs in another request, whose `es_tokens()` are the
+  defaults), falling back to the tokens when there is no kit. Each one that is not generic or a system
+  face needs an `@font-face` reachable from the served HTML (inline `<style>` or a linked stylesheet,
+  `url()` resolved against it) whose file is a `data:` URI of font bytes or answers **200 with font
+  magic bytes** (a 404 and a theme's soft-404 do not count). Anything else is `'sin-servir'`: a FAIL,
+  not a warning. Measured on prueba1 (Elementor 4.2.4): Fraunces and Inter Tight declared in the kit,
+  served from nowhere, the page rendered system fonts and the probe said `limpio`.
+- `es_font_host( $family, $woff2_bytes, $weight = '400 700', $style = 'normal' )` → the file's URL, or
+  `false` after saying why. The no-Pro, no-PHP, no-Google way to serve a face: writes the `woff2` to
+  `uploads/es-fonts/`, adds its `@font-face` (`font-display:swap`) to WordPress's Additional CSS between
+  `es-fonts` markers (idempotent per family/style/weight; other CSS untouched), and sets
+  `elementor_google_font` to `0`. It reads the CSS back and says so when WordPress did not keep it.
+  Elementor writes ONE generic fallback per site after every family (kit `default_generic_fonts`, token
+  `font_fallback`, default `Sans-serif` = Elementor's own): set it to the generic of the face that
+  carries most of the text, because it cannot follow a serif head and a sans body at once.
 
 ### Servir las familias tipograficas
 
 `es_tokens()` names `font_head` and `font_body` and every heading and paragraph this framework emits
-carries them as `typography_font_family`. **Nothing in this framework makes those families exist on
-the site** — there is no `@font-face`, no enqueue, no registration anywhere. The family is a value
-written into Elementor; whether a browser can render it is a separate fact nobody was checking, and
-a build with every gate green can still ship the client a system fallback.
+carries them as `typography_font_family`. **Writing them does not make them exist on the
+site**: the family is a value written into Elementor, and whether a browser can render it is a
+separate fact. `es_font_host()` (below) is what makes it exist, and `es_front_font_probe()` is what
+proves it; skip either and a build with every gate green ships the client a system fallback.
 
 **Self-host. Never Google's CDN.** This is not a preference and not a performance note: a page that
 requests `fonts.googleapis.com` sends every visitor's IP address to a third country the moment the
@@ -256,27 +273,28 @@ page opens, with no consent and no legal basis, and EU courts have fined *site o
 Munich ruling of Jan 2022 being the one everybody cites. This framework's clients are Spanish. See
 `wordpress-legal`, which owns the consent side of the same problem.
 
-The procedure, and it is a **human's**, for the same reason `es_slug_redirects` is: this framework
-writes `.php` outside the sandbox only with explicit human authorization obtained beforehand, naming the exact file and destination; without it nothing is written, and the sandbox is emptied at hand-off.
+The procedure. The default needs **no PHP file**, so it needs no authorization beyond the build's own yes:
 
-1. **Download the family.** The families this repo ships as defaults are SIL Open Font License, so
-   downloading the `woff2` files and serving them from the client's own domain is licensed. Take
-   only the weights the build actually uses — every extra weight is a request nobody reads.
-2. **Elementor Pro:** *Elementor → Custom Fonts → Add New*. Name it **exactly** the token value
-   (`Space Grotesk`, not `space-grotesk`): `es_font_serving_check()` matches on that title, and so
-   does Elementor when it resolves `typography_font_family`. Upload one `woff2` per weight/style.
-3. **Without Elementor Pro:** the `woff2` files go in the child theme, with `@font-face` (and
-   `font-display:swap`) plus a `wp_enqueue_style` for the stylesheet that declares them. That is PHP
-   outside the sandbox, so it needs that explicit authorization first; without it a person writes it.
+1. **Take the bytes.** The families this repo ships are SIL Open Font License, so serving them from the
+   client's own domain is licensed. The Plantilla's maqueta names its two families; the OFL `woff2`
+   subsets (latin, enough for Spanish) are in `skills/html-mockup/assets/fonts/` (`_fonts.php` maps
+   family name to file). Only the weights the build uses.
+2. **`es_font_host()` once per face**, with the file's bytes as the argument and the face's true weight
+   range (`'400 700'` for the variable Fraunces and Inter Tight). Names must equal the token value
+   (`Fraunces`, not `fraunces`). This is the mechanism that works without Elementor Pro.
+3. **Elementor Pro alternative:** *Elementor → Custom Fonts → Add New*, named exactly as the token.
+   **Child-theme alternative:** `@font-face` in a stylesheet plus a `wp_enqueue_style`. That is PHP
+   outside the sandbox: this framework writes `.php` there only with explicit human authorization
+   obtained beforehand, naming the exact file and destination; without it nothing is written.
 4. **Then turn Google's copy off**, or the self-hosted files are dead weight under a request that
    still leaks. In Elementor that is the *Google Fonts* dropdown under *Elementor → Settings*, set
-   to *Disable* — the tab it sits on has moved between Elementor versions, so find the dropdown
-   rather than trusting a path. A theme or plugin that enqueues its own Google stylesheet has to be
+   to *Disable* (option `elementor_google_font` = `0`, which `es_font_host()` writes). A theme or plugin that enqueues its own Google stylesheet has to be
    switched off separately, and only the network requests prove it is gone.
 5. **Re-run the build** and read `es_audit_summary()`. `'alojada'` means the check found the family
-   installed. `'sin-confirmar'` means it could not confirm it from a build request — which is the
-   honest answer, not a failure, and `qa-review` closes it by loading a real page and reading the
-   network requests, which is the only place the truth is visible.
+   installed (Custom Fonts only: `es_font_host()` leaves no font post). `'sin-confirmar'` means it could
+   not confirm it from a build request — the honest answer, not a failure. `qa-review` row 36 closes it:
+   `es_front_font_probe()` per page must answer `limpio`, and a family that is declared and not served is
+   `sin-servir`, a FAIL.
 
 ## Containers, flex, grid
 - Layout with flex + grid containers, not the legacy section/column. `content_width` boxed|full.
@@ -289,11 +307,13 @@ writes `.php` outside the sandbox only with explicit human authorization obtaine
   `NO AUDITABLE` block too: pre-3.6 `section`/`column` elTypes and kit imports are elements this
   audit has no opinion about. They are counted and named there rather than skipped (a page built
   entirely of them would otherwise read as clean).
-- Open question worth resolving on a real site: `es_section( es_grid(...) )` is this repo's dominant
-  idiom and costs one level. A single grid container with `content_width:'boxed'` plus the section
-  padding *should* collapse the pair into one. Plausible, NOT confirmed — the audit reports it as
-  `optimizable`, never as an error. Confirm on a live build before flattening anything wholesale,
-  then record the result here.
+- **Confirmed on Elementor 4.2.4 (prueba1, `terrazza`):** a single grid container with
+  `content_width:'boxed'` at the ROOT (no wrapping section) renders as one container at the boxed
+  width with its columns intact (the carta's two columns and the two-menu band, measured in the 1280px
+  render). Use `es_grid( $cols, $kids, $gap, array( 'content_width' => 'boxed', …padding ), false )`:
+  the last argument is `$inner`, and a root container is not an inner one (default `true`, unchanged).
+  `es_section( es_grid(...) )` still works and the audit still reports it as `optimizable`; the flat
+  form saves the level. The audit judges the root grid clean (one container, no offender).
 - Flex item sizing: `_flex_grow` / `_flex_shrink` / `_element_width:auto`. To keep a cluster from
   stretching, set grow/shrink 0 and DON'T set `content_width:full` on it (that forces ~100% width).
 - Grid columns: `grid_columns_grid` (+ `_tablet` / `_mobile`). For a 2-col mobile grid pass

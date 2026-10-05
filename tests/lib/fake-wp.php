@@ -221,6 +221,29 @@ function wp_update_post( array $args ) {
 	return $id;   /* WordPress returns the post id on success. */
 }
 
+/**
+ * Trashing a post the way WordPress does it, which is NOT "the same post with another status".
+ *
+ * MEASURED on prueba1 (WordPress 7.1): `wp_trash_post()` sets `post_status` to `trash` AND renames the
+ * slug to `<slug>__trashed` (`wp_add_trashed_suffix_to_post_name_for_trashed_posts()`), so the page
+ * is no longer found by its old slug and `post_name` no longer says what it used to. A fake that only
+ * flipped the status let es_manifest_verify() read a trashed page as "renamed by someone": the one
+ * thing the real site does that the double did not.
+ */
+function wp_trash_post( $id ) {
+	$w = &$GLOBALS['wp'];
+	if ( ! isset( $w['posts'][ $id ] ) ) {
+		return false;
+	}
+	$obj = $w['posts'][ $id ];
+	unset( $w['by_slug'][ $obj->post_name ] );
+	$obj->post_status       = 'trash';
+	$obj->post_name         = $obj->post_name . '__trashed';
+	$w['by_slug'][ $obj->post_name ] = $obj;
+
+	return $obj;
+}
+
 function get_post_field( $field, $post ) {
 	$w  = &$GLOBALS['wp'];
 	$id = is_object( $post ) ? $post->ID : (int) $post;

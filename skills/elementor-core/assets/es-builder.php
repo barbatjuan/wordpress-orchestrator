@@ -517,6 +517,10 @@ function es_tokens( array $override = array(), $reset = false ) {
 			/* scale ------------------------------------------------- */
 			'font_head'          => 'Space Grotesk',
 			'font_body'          => 'Manrope',
+			/* Elementor writes ONE generic fallback per SITE (kit `default_generic_fonts`) after every family,
+			   so it cannot follow a serif head and a sans body at once. The default is Elementor's own, so an
+			   untouched build is unchanged; set it to the generic of the face that carries most of the text. */
+			'font_fallback'      => 'Sans-serif',
 			/* The four numbers that ARE the scale axis, at the `classic`
 			   position from design-system.md's "Perceptual axes" table. Every
 			   heading and body size in this file is es_fs(step) off these; no
@@ -548,6 +552,9 @@ function es_tokens( array $override = array(), $reset = false ) {
 			/* `standard`. Applied inside es_box() and the three gap defaults,
 			   so one multiplier moves the whole rhythm. */
 			'sp_scale'           => 1.0,
+			/* The kit's gap between widgets, in px. 20 is Elementor's own factory value, so a build that
+			   does not set it renders as before; a maqueta with another rhythm sets it here. */
+			'sp_widget'          => 20,
 			/* elevation --------------------------------------------- */
 			/* The rest state, which did not exist at all before: this file had
 			   five :hover shadows and nothing underneath them, which is why
@@ -899,8 +906,12 @@ function es_products_css( $extra_css = '' ) {
  * grid_rows_grid defaults to 2fr, which paints an empty second row (and a big
  * gap) whenever a grid holds a single row of content. Forcing auto rows makes
  * the grid height follow its content.
+ *
+ * `$inner` is `isInner`: true (the default, as ever) for a grid INSIDE a section; pass false for a grid
+ * that IS the section, a root-level boxed grid with `content_width => 'boxed'` in `$extra` (confirmed
+ * on Elementor 4.2.4: it renders as one container, no wrapper).
  */
-function es_grid( $cols, array $children, $gap = 24, array $extra = array() ) {
+function es_grid( $cols, array $children, $gap = 24, array $extra = array(), $inner = true ) {
 	$gap      = es_sp( $gap );   /* ver es_split(): la densidad se aplica aqui, no en la llamada */
 	$settings = array(
 		'container_type'          => 'grid',
@@ -922,7 +933,7 @@ function es_grid( $cols, array $children, $gap = 24, array $extra = array() ) {
 		'custom_css'              => es_card_hover_css(),
 	);
 	$settings = array_merge( $settings, $extra );
-	return es_c( $settings, $children, true );
+	return es_c( $settings, $children, (bool) $inner );
 }
 
 /**
@@ -2205,7 +2216,12 @@ function es_owns_control( $widget_type, $key ) {
 	if ( class_exists( '\Elementor\Plugin' ) ) {
 		if ( ! isset( $live[ $widget_type ] ) ) {
 			$w                    = \Elementor\Plugin::instance()->widgets_manager->get_widget_types( $widget_type );
-			$live[ $widget_type ] = ( $w && method_exists( $w, 'get_controls' ) ) ? (array) $w->get_controls() : array();
+			/* The STACK, not `get_controls()`: on a front-end or CLI request Elementor sets the style
+			   controls aside in `style_controls` and `get_controls()` leaves them out (measured on
+			   4.2.4: `heading` 176 controls, no `title_color`, no `typography_*`). The stack holds both. */
+			$stack                = ( $w && method_exists( $w, 'get_stack' ) ) ? (array) $w->get_stack() : array();
+			$live[ $widget_type ] = ( isset( $stack['controls'] ) ? (array) $stack['controls'] : array() )
+				+ ( isset( $stack['style_controls'] ) ? (array) $stack['style_controls'] : array() );
 		}
 
 		/* Elementor is HERE, so Elementor is the answer — including when it answers "no such widget",
@@ -2360,11 +2376,19 @@ function es_manifest_verify() {
 		$id   = (int) $id;
 		$page = es_page_by_slug( $slug );
 		if ( ! $page ) {
+			/* By ID and STATUS, never by slug: WordPress trashes a page by renaming its slug to
+			   `<slug>__trashed` (measured on 7.1), so the slug lookup fails and the live slug looks
+			   like somebody renamed it. */
+			if ( 'trash' === (string) get_post_field( 'post_status', $id ) ) {
+				$drift[] = 'la pagina "' . $slug . '" (#' . $id . ') esta en la papelera: se movio alli desde la ultima sesion. Restaurala o '
+					. 'corrige el manifiesto; el framework no lo decide';
+				continue;
+			}
 			$real = (string) get_post_field( 'post_name', $id );
 			$drift[] = '' !== $real
 				? 'el manifiesto llama "' . $slug . '" a la pagina #' . $id . ', y el slug vivo de esa pagina es "' . $real
 					. '". Los dos hechos, sin conclusion: puede que la renombraran fuera de este framework, o que lo anotado nunca fuera un slug'
-				: 'la pagina "' . $slug . '" (#' . $id . ') ya no existe: borrada o en la papelera desde la ultima sesion';
+				: 'la pagina "' . $slug . '" (#' . $id . ') ya no existe: borrada del todo desde la ultima sesion';
 			continue;
 		}
 		if ( (int) $page->ID !== $id ) {
@@ -3094,23 +3118,8 @@ function es_font_serving_check() {
 		return 'sin-wordpress';
 	}
 
-	/* Derived from the token block, not a list of key names typed here: `es_tokens()` is the one
-	   edit point, and a project that adds `font_mono` must not silently fall out of this check. */
-	$familias = array();
-	foreach ( es_tokens() as $clave => $valor ) {
-		if ( 0 !== strpos( $clave, 'font_' ) || ! is_string( $valor ) || '' === trim( $valor ) ) {
-			continue;
-		}
-		/* The first face of the stack is the one that has to arrive; the rest are the fallbacks it
-		   arrives INSTEAD of. */
-		$partes = explode( ',', $valor );
-		$nombre = trim( $partes[0], " \t'\"" );
-		$cara   = strtolower( $nombre );
-		if ( in_array( $cara, es_font_system_faces(), true ) ) {
-			continue;
-		}
-		$familias[ $cara ] = $nombre;
-	}
+	$familias = es_font_declared();
+
 	if ( ! $familias ) {
 		return 'sin-familias';
 	}
@@ -3211,10 +3220,10 @@ function es_font_serving_check() {
 			$dice = '';
 			if ( $faltan ) {
 				$dice .= 'NO SE PUEDE CONFIRMAR QUE ESTE SITIO SIRVA ' . implode( ' NI ', $faltan ) . '. es_tokens() la escribe '
-					. 'en cada titular y cada parrafo de este build, y NADA en este framework la instala: si no esta, el '
+					. 'en cada titular y cada parrafo de este build, y el build no la instala (es_font_host() la sirve sin Pro): si no esta, el '
 					. 'navegador cae al tipo de letra del sistema y el diseno aprobado no es el que ve el cliente. He mirado '
 					. 'los tipos de contenido de fuentes registrados (Custom Fonts de Elementor Pro y equivalentes) y ahi no '
-					. 'aparece. ';
+					. 'aparece (una cara de es_font_host() no deja ese registro: la prueba es es_front_font_probe()). ';
 			}
 			if ( ! $mirado ) {
 				$dice .= 'NO SE VE QUE CARGA EL FRONT: en esta peticion no hay ni una hoja de estilo encolada ni impresa — un '
@@ -3241,6 +3250,48 @@ function es_font_serving_check() {
 	}
 
 	return $veredicto;
+}
+
+/**
+ * The families this site DECLARES, keyed by lower-cased name: `array( 'fraunces' => 'Fraunces' )`.
+ *
+ * The kit's global typography is the source of truth when there is one, because that is what the
+ * SITE says and it survives the process: `qa-review` probes from another request whose `es_tokens()`
+ * are the defaults, and judging the site against defaults it was never built with is how a probe
+ * ends up asking about the wrong typefaces. With no kit (a bare build, a test) the tokens are all
+ * there is. Derived from the `font_*` keys, never a list typed here, so a project that adds
+ * `font_mono` does not fall out. Only the FIRST face of a stack counts: the rest are what it falls
+ * back to. Generic and system faces are dropped, they have no file.
+ */
+function es_font_declared() {
+	$stacks = array();
+	$kit    = function_exists( 'get_option' ) ? (int) get_option( 'elementor_active_kit' ) : 0;
+	$ks     = ( $kit && function_exists( 'get_post_meta' ) ) ? get_post_meta( $kit, '_elementor_page_settings', true ) : null;
+	if ( is_array( $ks ) && ! empty( $ks['system_typography'] ) && is_array( $ks['system_typography'] ) ) {
+		foreach ( $ks['system_typography'] as $slot ) {
+			if ( is_array( $slot ) && ! empty( $slot['typography_font_family'] ) ) {
+				$stacks[] = (string) $slot['typography_font_family'];
+			}
+		}
+	}
+	if ( ! $stacks ) {
+		foreach ( es_tokens() as $clave => $valor ) {
+			if ( 0 === strpos( $clave, 'font_' ) && 'font_fallback' !== $clave && is_string( $valor ) && '' !== trim( $valor ) ) {
+				$stacks[] = $valor;
+			}
+		}
+	}
+	$familias = array();
+	foreach ( $stacks as $valor ) {
+		$partes = explode( ',', $valor );
+		$nombre = trim( $partes[0], " \t'\"" );
+		$cara   = strtolower( $nombre );
+		if ( ! in_array( $cara, es_font_system_faces(), true ) ) {
+			$familias[ $cara ] = $nombre;
+		}
+	}
+
+	return $familias;
 }
 
 /**
@@ -3369,7 +3420,245 @@ function es_front_font_probe( $url = '' ) {
 		return 'google';
 	}
 
+	/* "Asks nothing of Google" is half of clean; the other half is that the declared families ARRIVE. A
+	   site that names Fraunces and serves it from nowhere asks Google for nothing and renders Georgia. */
+	$faltan = es_font_unserved( es_font_declared(), $cuerpo, $url );
+	if ( $faltan ) {
+		es_warn(
+			'EL HTML QUE SIRVE ' . $url . ' NO SIRVE ' . implode( ' NI ', $faltan ) . ': el kit la declara y no hay un @font-face '
+			. 'alcanzable desde esa pagina con un fichero que conteste 200 con bytes de fuente. El navegador cae al tipo de '
+			. 'letra del sistema y el diseno aprobado no es el que ve el visitante, con Google sin tocar. Es un FALLO, no un '
+			. 'aviso. Subela AUTOALOJADA (es_font_host(), o el procedimiento de elementor-core/references/knowledge.md, '
+			. '"Servir las familias tipograficas").'
+		);
+
+		return 'sin-servir';
+	}
+
 	return 'limpio';
+}
+
+/**
+ * Put ONE self-hosted face on the site WITHOUT Elementor Pro, without a PHP file and without Google.
+ *
+ * Custom Fonts is Pro; an `@font-face` in the child theme is PHP outside the sandbox (human
+ * authorization first). What needs neither is data: the `woff2` in `uploads/es-fonts/` and the rule in
+ * WordPress's own Additional CSS, which core's `wp_update_custom_css_post()` writes and the theme prints
+ * on every page. Elementor's Google Fonts switch is turned off in the same call, because a served file
+ * under a request that still leaves for Google is the legal problem unchanged.
+ *
+ * `$woff2` is the raw bytes (the repo ships OFL families in `skills/html-mockup/assets/fonts/`; the
+ * caller reads the file and hands the bytes over: there is no filesystem path shared with the site on
+ * a connector). `$weight` is the face's TRUE range, `$style` `normal` or `italic`. Calling it again for
+ * the same family, style and weight replaces that rule; other rules and CSS outside the markers stay.
+ * Returns the file's public URL, or false after saying why. Verify with `es_front_font_probe()`.
+ */
+function es_font_host( $family, $woff2, $weight = '400 700', $style = 'normal' ) {
+	$family = trim( (string) $family );
+	if ( '' === $family || ! in_array( substr( (string) $woff2, 0, 4 ), array( 'wOF2', 'wOFF' ), true ) ) {
+		es_warn( 'es_font_host("' . $family . '"): los bytes no son un woff2 (no empiezan por wOF2), asi que no se ha escrito nada. Un TTF, o un 404 guardado como .woff2, no sirve la familia.' );
+
+		return false;
+	}
+	$style = ( 'italic' === $style ) ? 'italic' : 'normal';
+
+	$up   = wp_upload_dir();
+	$dir  = $up['basedir'] . '/es-fonts';
+	$name = trim( preg_replace( '/[^a-z0-9]+/', '-', strtolower( $family . '-' . $style . '-' . $weight ) ), '-' ) . '.woff2';
+	$url  = rtrim( $up['baseurl'], '/' ) . '/es-fonts/' . $name;
+	if ( ! wp_mkdir_p( $dir ) || false === file_put_contents( $dir . '/' . $name, $woff2 ) || file_get_contents( $dir . '/' . $name ) !== $woff2 ) {
+		es_warn( 'es_font_host("' . $family . '"): no se pudo escribir ' . $dir . '/' . $name . ' (o no se relee igual).' );
+
+		return false;
+	}
+
+	$begin = '/* es-fonts:begin */';
+	$end   = '/* es-fonts:end */';
+	$css   = (string) wp_get_custom_css();
+	$reglas = array();
+	$a      = strpos( $css, $begin );
+	$b      = strpos( $css, $end );
+	if ( false !== $a && false !== $b && $b > $a ) {
+		$reglas = array_filter( array_map( 'trim', explode( "\n", substr( $css, $a + strlen( $begin ), $b - $a - strlen( $begin ) ) ) ) );
+		$css    = substr( $css, 0, $a ) . ltrim( substr( $css, $b + strlen( $end ) ) );
+	}
+	$clave  = "@font-face{font-family:'" . $family . "';font-style:" . $style . ';font-weight:' . $weight . ';';
+	$reglas = array_values( array_filter( $reglas, function ( $r ) use ( $clave ) {
+		return 0 !== strpos( $r, $clave );
+	} ) );
+	$reglas[] = $clave . 'font-display:swap;src:url(' . $url . ") format('woff2')}";
+	$css      = $begin . "\n" . implode( "\n", $reglas ) . "\n" . $end . ( '' === trim( $css ) ? '' : "\n" . ltrim( $css ) );
+
+	$res = wp_update_custom_css_post( $css, array( 'stylesheet' => get_stylesheet() ) );
+	if ( ( function_exists( 'is_wp_error' ) && is_wp_error( $res ) ) || ! $res || false === strpos( (string) wp_get_custom_css(), $url ) ) {
+		es_warn( 'es_font_host("' . $family . '"): WordPress no guardo el CSS adicional (o no contiene la regla al releerlo), asi que el fichero esta subido y la familia NO esta declarada.' );
+
+		return false;
+	}
+
+	update_option( 'elementor_google_font', '0' );
+	if ( '0' !== (string) get_option( 'elementor_google_font' ) ) {
+		es_warn( 'es_font_host("' . $family . '"): no se pudo apagar elementor_google_font; Elementor puede seguir pidiendo la familia a Google. Apagalo en Elementor > Ajustes > Avanzado.' );
+	}
+
+	return $url;
+}
+
+/**
+ * Which of `$familias` has NO usable `@font-face` reachable from this served page?
+ *
+ * Reads the CSS the visitor's browser would: every inline `<style>` and every `<link rel=stylesheet>`
+ * (fetched, resolved against the page), then each `@font-face` rule's `url()`. A face counts as served
+ * only when its file is a `data:` URI carrying font bytes or answers 200 with font magic bytes: a 404
+ * and a theme's soft-404 (a 200 that is HTML) serve nothing. Same family names are compared
+ * case-insensitively, as the browser does. `@import` and JavaScript-loaded faces are not followed.
+ */
+function es_font_unserved( array $familias, $html, $url ) {
+	if ( ! $familias ) {
+		return array();
+	}
+	$fuente = function ( $bytes ) {
+		return in_array( substr( (string) $bytes, 0, 4 ), array( 'wOF2', 'wOFF', 'OTTO', "\0\1\0\0", 'true' ), true );
+	};
+	$resolver = function ( $ref, $base ) {
+		$ref = trim( $ref );
+		if ( preg_match( '#^https?://#i', $ref ) ) {
+			return $ref;
+		}
+		$p = parse_url( $base );
+		if ( 0 === strpos( $ref, '//' ) ) {
+			return ( isset( $p['scheme'] ) ? $p['scheme'] : 'https' ) . ':' . $ref;
+		}
+		$raiz = ( isset( $p['scheme'] ) ? $p['scheme'] : 'https' ) . '://' . ( isset( $p['host'] ) ? $p['host'] : '' ) . ( isset( $p['port'] ) ? ':' . $p['port'] : '' );
+		if ( '/' === substr( $ref, 0, 1 ) ) {
+			return $raiz . $ref;
+		}
+		$dir = isset( $p['path'] ) ? preg_replace( '#/[^/]*$#', '/', $p['path'] ) : '/';
+
+		return $raiz . $dir . $ref;
+	};
+
+	/* CSS blocks, each with the URL its relative references resolve against. */
+	$bloques = array();
+	if ( preg_match_all( '#<style\b[^>]*>(.*?)</style>#is', $html, $m ) ) {
+		foreach ( $m[1] as $css ) {
+			$bloques[] = array( $css, $url );
+		}
+	}
+	if ( preg_match_all( '#<link\b[^>]*>#i', $html, $m ) ) {
+		$n = 0;
+		foreach ( $m[0] as $tag ) {
+			if ( ! preg_match( '#rel=["\']?stylesheet#i', $tag ) || ! preg_match( '#href=["\']([^"\']+)#i', $tag, $h ) || $n++ >= 40 ) {
+				continue;
+			}
+			$href = $resolver( html_entity_decode( $h[1] ), $url );
+			if ( false !== stripos( $href, 'fonts.googleapis.com' ) ) {
+				continue;
+			}
+			$res = wp_remote_get( $href, array( 'timeout' => 15 ) );
+			if ( ! ( function_exists( 'is_wp_error' ) && is_wp_error( $res ) ) && 200 === (int) wp_remote_retrieve_response_code( $res ) ) {
+				$bloques[] = array( (string) wp_remote_retrieve_body( $res ), $href );
+			}
+		}
+	}
+
+	$servidas = array();
+	foreach ( $bloques as $b ) {
+		if ( ! preg_match_all( '#@font-face\s*\{(.*?)\}#is', $b[0], $caras ) ) {
+			continue;
+		}
+		foreach ( $caras[1] as $cara ) {
+			if ( ! preg_match( '#font-family\s*:\s*([^;}]+)#i', $cara, $f ) ) {
+				continue;
+			}
+			$nombre = strtolower( trim( $f[1], " \t\r\n'\"" ) );
+			if ( isset( $servidas[ $nombre ] ) || ! preg_match_all( '#url\(\s*([\'"]?)(.*?)\1\s*\)#is', $cara, $us ) ) {
+				continue;
+			}
+			foreach ( $us[2] as $u ) {
+				if ( 0 === stripos( $u, 'data:' ) ) {
+					$pos   = strpos( $u, ',' );
+					$bytes = ( false !== $pos && false !== stripos( substr( $u, 0, $pos ), 'base64' ) ) ? base64_decode( substr( $u, $pos + 1 ) ) : '';
+				} else {
+					$res   = wp_remote_get( $resolver( $u, $b[1] ), array( 'timeout' => 15 ) );
+					$bytes = ( ! ( function_exists( 'is_wp_error' ) && is_wp_error( $res ) ) && 200 === (int) wp_remote_retrieve_response_code( $res ) ) ? (string) wp_remote_retrieve_body( $res ) : '';
+				}
+				if ( $fuente( $bytes ) ) {
+					$servidas[ $nombre ] = true;
+					break;
+				}
+			}
+		}
+	}
+
+	$faltan = array();
+	foreach ( $familias as $cara => $nombre ) {
+		if ( ! isset( $servidas[ $cara ] ) ) {
+			$faltan[] = $nombre;
+		}
+	}
+
+	return $faltan;
+}
+
+/**
+ * The kit settings the tokens decide, merged over `$settings` and returned. Pure: nothing is written.
+ *
+ * Split from `es_kit_apply()` so the settings are a thing the suite can read (a token that only the
+ * kit reads is otherwise invisible to "does anybody read this token?") and so the write stays one
+ * line. Everything below is what Elementor resolves a widget's missing value against.
+ */
+function es_kit_settings( array $settings ) {
+	$t = es_tokens();
+
+	$settings['system_colors'] = array(
+		array( '_id' => 'primary',   'title' => 'Titulares', 'color' => $t['text'] ),
+		array( '_id' => 'secondary', 'title' => 'Chrome',    'color' => $t['muted'] ),
+		array( '_id' => 'text',      'title' => 'Cuerpo',    'color' => $t['text_soft'] ),
+		array( '_id' => 'accent',    'title' => 'Acento',    'color' => $t['accent'] ),
+	);
+
+	/* Both keys or neither: Elementor ignores `body_background_color` unless the background TYPE
+	   says there is one, so writing the colour alone is a value nobody reads. */
+	$settings['body_background_background'] = 'classic';
+	$settings['body_background_color']      = $t['bg'];
+
+	/* The fallback after every family Elementor writes: one slot per site, so it is a kit setting. */
+	$settings['default_generic_fonts'] = $t['font_fallback'];
+
+	/* The gap Elementor puts between widgets (its factory value is 20px). It is the kit's, not the
+	   page's, so a maqueta whose rhythm is not 20 never matched until this was written. */
+	$settings['space_between_widgets'] = array(
+		'column'   => (string) $t['sp_widget'],
+		'row'      => (string) $t['sp_widget'],
+		'unit'     => 'px',
+		'isLinked' => true,
+	);
+
+	/* A link and a button never disagree about what "the accent" is. */
+	$settings['link_normal_color'] = $t['accent'];
+	$settings['link_hover_color']  = $t['accent_hover'];
+
+	/* The type pair, in the same four ids Elementor gives the colours, and read by widgets the same
+	   way: by id. This file already wrote `font_head` and `font_body` widget by widget — six places
+	   and counting — which is a family per element instead of a family per site: changing the
+	   brand's typeface meant editing every widget that had ever been written, and none of it was
+	   reachable from Site Settings. `design-tokens.md` named the gap in its own table («Global font
+	   primary / text — No helper yet»); this closes it with the tokens that already existed rather
+	   than inventing a second pair of keys for the same thing.
+
+	   Only the family is global. Size, weight and line height stay where they are, per role, because
+	   the scale axis is four numbers this file derives and a global that fixed them would flatten it.
+	   `typography_typography => custom` is not decoration: without it Elementor ignores the family
+	   sitting next to it. */
+	$settings['system_typography'] = array(
+		array( '_id' => 'primary',   'title' => 'Titulares', 'typography_typography' => 'custom', 'typography_font_family' => $t['font_head'] ),
+		array( '_id' => 'secondary', 'title' => 'Chrome',    'typography_typography' => 'custom', 'typography_font_family' => $t['font_body'] ),
+		array( '_id' => 'text',      'title' => 'Cuerpo',    'typography_typography' => 'custom', 'typography_font_family' => $t['font_body'] ),
+		array( '_id' => 'accent',    'title' => 'Acento',    'typography_typography' => 'custom', 'typography_font_family' => $t['font_body'] ),
+	);
+
+	return $settings;
 }
 
 /**
@@ -3405,44 +3694,7 @@ function es_kit_apply() {
 
 	$t        = es_tokens();
 	$settings = get_post_meta( $kit, '_elementor_page_settings', true );
-	if ( ! is_array( $settings ) ) {
-		$settings = array();
-	}
-
-	$settings['system_colors'] = array(
-		array( '_id' => 'primary',   'title' => 'Titulares', 'color' => $t['text'] ),
-		array( '_id' => 'secondary', 'title' => 'Chrome',    'color' => $t['muted'] ),
-		array( '_id' => 'text',      'title' => 'Cuerpo',    'color' => $t['text_soft'] ),
-		array( '_id' => 'accent',    'title' => 'Acento',    'color' => $t['accent'] ),
-	);
-
-	/* Both keys or neither: Elementor ignores `body_background_color` unless the background TYPE
-	   says there is one, so writing the colour alone is a value nobody reads. */
-	$settings['body_background_background'] = 'classic';
-	$settings['body_background_color']      = $t['bg'];
-
-	/* A link and a button never disagree about what "the accent" is. */
-	$settings['link_normal_color'] = $t['accent'];
-	$settings['link_hover_color']  = $t['accent_hover'];
-
-	/* The type pair, in the same four ids Elementor gives the colours, and read by widgets the same
-	   way: by id. This file already wrote `font_head` and `font_body` widget by widget — six places
-	   and counting — which is a family per element instead of a family per site: changing the
-	   brand's typeface meant editing every widget that had ever been written, and none of it was
-	   reachable from Site Settings. `design-tokens.md` named the gap in its own table («Global font
-	   primary / text — No helper yet»); this closes it with the tokens that already existed rather
-	   than inventing a second pair of keys for the same thing.
-
-	   Only the family is global. Size, weight and line height stay where they are, per role, because
-	   the scale axis is four numbers this file derives and a global that fixed them would flatten it.
-	   `typography_typography => custom` is not decoration: without it Elementor ignores the family
-	   sitting next to it. */
-	$settings['system_typography'] = array(
-		array( '_id' => 'primary',   'title' => 'Titulares', 'typography_typography' => 'custom', 'typography_font_family' => $t['font_head'] ),
-		array( '_id' => 'secondary', 'title' => 'Chrome',    'typography_typography' => 'custom', 'typography_font_family' => $t['font_body'] ),
-		array( '_id' => 'text',      'title' => 'Cuerpo',    'typography_typography' => 'custom', 'typography_font_family' => $t['font_body'] ),
-		array( '_id' => 'accent',    'title' => 'Acento',    'typography_typography' => 'custom', 'typography_font_family' => $t['font_body'] ),
-	);
+	$settings = es_kit_settings( is_array( $settings ) ? $settings : array() );
 
 	/* Site-wide colours and typography, replaced: park the previous settings first (es_restore_page_state). */
 	es_backup_page_state( $kit, array( '_elementor_page_settings' ) );
